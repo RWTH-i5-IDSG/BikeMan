@@ -1,0 +1,16 @@
+{
+  "generator-jhipster": {
+    "baseName": "velocity",
+    "packageName": "de.rwth.idsg.velocity",
+    "packageFolder": "de/rwth/idsg/velocity",
+    "authenticationType": "token",
+    "hibernateCache": "ehcache",
+    "clusteredHttpSession": "no",
+    "websocket": "no",
+    "databaseType": "sql",
+    "devDatabaseType": "postgresql",
+    "prodDatabaseType": "postgresql",
+    "useCompass": false,
+    "javaVersion": "7"
+  }
+}
