@@ -70,7 +70,6 @@ public class Address implements Serializable {
         this.country = country;
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {

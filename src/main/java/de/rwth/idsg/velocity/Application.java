@@ -1,6 +1,10 @@
 package de.rwth.idsg.velocity;
 
 import de.rwth.idsg.velocity.config.Constants;
+import de.rwth.idsg.velocity.domain.Customer;
+import de.rwth.idsg.velocity.domain.User;
+import de.rwth.idsg.velocity.repository.CustomerRepository;
+import de.rwth.idsg.velocity.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -25,6 +29,12 @@ public class Application {
     @Inject
     private Environment env;
 
+    @Inject
+    private CustomerRepository customerRepository;
+
+    @Inject
+    private UserRepository userRepository;
+
     /**
      * Initializes velocity.
      * <p/>
@@ -38,6 +48,7 @@ public class Application {
         } else {
             log.info("Running with Spring profile(s) : {}", Arrays.toString(env.getActiveProfiles()));
         }
+
     }
 
     /**

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
-    <changeSet author="jhipster" id="1399478463345-37">
+    <changeSet author="jhipster" id="1399552203878-34">
         <createTable catalogName="" schemaName="public" tableName="T_ADDRESS">
             <column name="id" type="INT8">
                 <constraints nullable="false"/>
@@ -11,7 +11,30 @@
             <column name="zip" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
-    <changeSet author="jhipster" id="1399478463345-38">
+    <changeSet author="jhipster" id="1399552203878-35">
+        <createTable catalogName="" schemaName="public" tableName="T_CUSTOMER">
+            <column name="birthday" type="date"/>
+            <column name="card_id" type="VARCHAR(255)"/>
+            <column name="card_pin" type="INT4"/>
+            <column name="customer_id" type="VARCHAR(255)"/>
+            <column name="firstname" type="VARCHAR(255)"/>
+            <column name="is_activated" type="BOOLEAN"/>
+            <column name="lastname" type="VARCHAR(255)"/>
+            <column name="mail_address" type="VARCHAR(255)"/>
+            <column name="login" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="address_id" type="INT8"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="jhipster" id="1399552203878-36">
+        <createTable catalogName="" schemaName="public" tableName="T_MANAGER">
+            <column name="login" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="jhipster" id="1399552203878-37">
         <createTable catalogName="" schemaName="public" tableName="T_PEDELEC">
             <column name="id" type="INT">
                 <constraints nullable="false"/>
@@ -20,7 +43,7 @@
             <column name="state_of_charge" type="FLOAT4"/>
         </createTable>
     </changeSet>
-    <changeSet author="jhipster" id="1399478463345-39">
+    <changeSet author="jhipster" id="1399552203878-38">
         <createTable catalogName="" schemaName="public" tableName="T_STATION">
             <column name="id" type="INT">
                 <constraints nullable="false"/>
@@ -32,7 +55,7 @@
             <column name="address_id" type="INT8"/>
         </createTable>
     </changeSet>
-    <changeSet author="jhipster" id="1399478463345-40">
+    <changeSet author="jhipster" id="1399552203878-39">
         <createTable catalogName="" schemaName="public" tableName="T_STATIONSLOT">
             <column name="id" type="INT">
                 <constraints nullable="false"/>
@@ -41,7 +64,7 @@
             <column name="station_station_slot" type="INT"/>
         </createTable>
     </changeSet>
-    <changeSet author="jhipster" id="1399478463345-41">
+    <changeSet author="jhipster" id="1399552203878-40">
         <createTable catalogName="" schemaName="public" tableName="T_TRANSACTION">
             <column name="id" type="INT">
                 <constraints nullable="false"/>
@@ -54,119 +77,68 @@
             <column name="to_slot_id" type="INT"/>
         </createTable>
     </changeSet>
-    <changeSet author="jhipster" id="1399478463345-42">
-        <addColumn catalogName="" schemaName="public" tableName="T_USER">
-            <column name="address_id" type="int8"/>
-        </addColumn>
-    </changeSet>
-    <changeSet author="jhipster" id="1399478463345-43">
-        <addColumn catalogName="" schemaName="public" tableName="T_USER">
-            <column name="birthday" type="date"/>
-        </addColumn>
-    </changeSet>
-    <changeSet author="jhipster" id="1399478463345-44">
-        <addColumn catalogName="" schemaName="public" tableName="T_USER">
-            <column name="card_id" type="varchar(255)"/>
-        </addColumn>
-    </changeSet>
-    <changeSet author="jhipster" id="1399478463345-45">
-        <addColumn catalogName="" schemaName="public" tableName="T_USER">
-            <column name="card_pin" type="int4"/>
-        </addColumn>
-    </changeSet>
-    <changeSet author="jhipster" id="1399478463345-46">
-        <addColumn catalogName="" schemaName="public" tableName="T_USER">
-            <column name="customer_id" type="varchar(255)"/>
-        </addColumn>
-    </changeSet>
-    <changeSet author="jhipster" id="1399478463345-47">
-        <addColumn catalogName="" schemaName="public" tableName="T_USER">
-            <column name="firstname" type="varchar(255)"/>
-        </addColumn>
-    </changeSet>
-    <changeSet author="jhipster" id="1399478463345-48">
-        <addColumn catalogName="" schemaName="public" tableName="T_USER">
-            <column name="is_activated" type="boolean"/>
-        </addColumn>
-    </changeSet>
-    <changeSet author="jhipster" id="1399478463345-49">
-        <addColumn catalogName="" schemaName="public" tableName="T_USER">
-            <column name="lastname" type="varchar(255)"/>
-        </addColumn>
-    </changeSet>
-    <changeSet author="jhipster" id="1399478463345-50">
-        <addColumn catalogName="" schemaName="public" tableName="T_USER">
-            <column name="mail_address" type="varchar(255)"/>
-        </addColumn>
-    </changeSet>
-    <changeSet author="jhipster" id="1399478463345-51">
+    <changeSet author="jhipster" id="1399552203878-41">
         <addColumn catalogName="" schemaName="public" tableName="T_USER">
             <column name="user_type" type="varchar(31)">
                 <constraints nullable="false"/>
             </column>
         </addColumn>
     </changeSet>
-    <changeSet author="jhipster" id="1399478463345-52">
+    <changeSet author="jhipster" id="1399552203878-42">
         <addPrimaryKey catalogName="" columnNames="id" constraintName="T_ADDRESSPK" schemaName="public" tableName="T_ADDRESS"/>
     </changeSet>
-    <changeSet author="jhipster" id="1399478463345-53">
+    <changeSet author="jhipster" id="1399552203878-43">
+        <addPrimaryKey catalogName="" columnNames="login" constraintName="T_CUSTOMERPK" schemaName="public" tableName="T_CUSTOMER"/>
+    </changeSet>
+    <changeSet author="jhipster" id="1399552203878-44">
+        <addPrimaryKey catalogName="" columnNames="login" constraintName="T_MANAGERPK" schemaName="public" tableName="T_MANAGER"/>
+    </changeSet>
+    <changeSet author="jhipster" id="1399552203878-45">
         <addPrimaryKey catalogName="" columnNames="id" constraintName="T_PEDELECPK" schemaName="public" tableName="T_PEDELEC"/>
     </changeSet>
-    <changeSet author="jhipster" id="1399478463345-54">
+    <changeSet author="jhipster" id="1399552203878-46">
         <addPrimaryKey catalogName="" columnNames="id" constraintName="T_STATIONPK" schemaName="public" tableName="T_STATION"/>
     </changeSet>
-    <changeSet author="jhipster" id="1399478463345-55">
+    <changeSet author="jhipster" id="1399552203878-47">
         <addPrimaryKey catalogName="" columnNames="id" constraintName="T_STATIONSLOTPK" schemaName="public" tableName="T_STATIONSLOT"/>
     </changeSet>
-    <changeSet author="jhipster" id="1399478463345-56">
+    <changeSet author="jhipster" id="1399552203878-48">
         <addPrimaryKey catalogName="" columnNames="id" constraintName="T_TRANSACTIONPK" schemaName="public" tableName="T_TRANSACTION"/>
     </changeSet>
-    <changeSet author="jhipster" id="1399478463345-57">
-        <addForeignKeyConstraint baseColumnNames="customer_id" baseTableCatalogName="" baseTableName="T_TRANSACTION" baseTableSchemaName="public" constraintName="FK_2lhktrkgic9tc5fakg29b426r" deferrable="false" initiallyDeferred="false" referencedColumnNames="login" referencedTableCatalogName="" referencedTableName="T_USER" referencedTableSchemaName="public"/>
+    <changeSet author="jhipster" id="1399552203878-49">
+        <addForeignKeyConstraint baseColumnNames="customer_id" baseTableCatalogName="" baseTableName="T_TRANSACTION" baseTableSchemaName="public" constraintName="FK_2lhktrkgic9tc5fakg29b426r" deferrable="false" initiallyDeferred="false" referencedColumnNames="login" referencedTableCatalogName="" referencedTableName="T_CUSTOMER" referencedTableSchemaName="public"/>
     </changeSet>
-    <changeSet author="jhipster" id="1399478463345-58">
+    <changeSet author="jhipster" id="1399552203878-50">
         <addForeignKeyConstraint baseColumnNames="pedelec_id" baseTableCatalogName="" baseTableName="T_TRANSACTION" baseTableSchemaName="public" constraintName="FK_3vlrj8gl76aiikbebu8jjjil8" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableCatalogName="" referencedTableName="T_PEDELEC" referencedTableSchemaName="public"/>
     </changeSet>
-    <changeSet author="jhipster" id="1399478463345-59">
+    <changeSet author="jhipster" id="1399552203878-51">
         <addForeignKeyConstraint baseColumnNames="pedelec_id" baseTableCatalogName="" baseTableName="T_STATIONSLOT" baseTableSchemaName="public" constraintName="FK_co28y41390i4nqe6aw2pg2glh" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableCatalogName="" referencedTableName="T_PEDELEC" referencedTableSchemaName="public"/>
     </changeSet>
-    <changeSet author="jhipster" id="1399478463345-60">
-        <addForeignKeyConstraint baseColumnNames="address_id" baseTableCatalogName="" baseTableName="T_USER" baseTableSchemaName="public" constraintName="FK_d4noe1wuwnot3uvhgs7f7yy38" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableCatalogName="" referencedTableName="T_ADDRESS" referencedTableSchemaName="public"/>
-    </changeSet>
-    <changeSet author="jhipster" id="1399478463345-61">
+    <changeSet author="jhipster" id="1399552203878-52">
         <addForeignKeyConstraint baseColumnNames="to_slot_id" baseTableCatalogName="" baseTableName="T_TRANSACTION" baseTableSchemaName="public" constraintName="FK_fm9359xne09h8exlrn83rquk1" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableCatalogName="" referencedTableName="T_STATIONSLOT" referencedTableSchemaName="public"/>
     </changeSet>
-    <changeSet author="jhipster" id="1399478463345-62">
+    <changeSet author="jhipster" id="1399552203878-53">
+        <addForeignKeyConstraint baseColumnNames="login" baseTableCatalogName="" baseTableName="T_MANAGER" baseTableSchemaName="public" constraintName="FK_jf09503u8fdkybd82kxmxwegv" deferrable="false" initiallyDeferred="false" referencedColumnNames="login" referencedTableCatalogName="" referencedTableName="T_USER" referencedTableSchemaName="public"/>
+    </changeSet>
+    <changeSet author="jhipster" id="1399552203878-54">
+        <addForeignKeyConstraint baseColumnNames="address_id" baseTableCatalogName="" baseTableName="T_CUSTOMER" baseTableSchemaName="public" constraintName="FK_lcbxy0yb275b9urru0eqpxb5h" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableCatalogName="" referencedTableName="T_ADDRESS" referencedTableSchemaName="public"/>
+    </changeSet>
+    <changeSet author="jhipster" id="1399552203878-55">
         <addForeignKeyConstraint baseColumnNames="from_slot_id" baseTableCatalogName="" baseTableName="T_TRANSACTION" baseTableSchemaName="public" constraintName="FK_p9nwsp1g2e4m2vrrs5lr7wym4" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableCatalogName="" referencedTableName="T_STATIONSLOT" referencedTableSchemaName="public"/>
     </changeSet>
-    <changeSet author="jhipster" id="1399478463345-63">
+    <changeSet author="jhipster" id="1399552203878-56">
+        <addForeignKeyConstraint baseColumnNames="login" baseTableCatalogName="" baseTableName="T_CUSTOMER" baseTableSchemaName="public" constraintName="FK_rdncghmbs9p54dppu9ei2i6af" deferrable="false" initiallyDeferred="false" referencedColumnNames="login" referencedTableCatalogName="" referencedTableName="T_USER" referencedTableSchemaName="public"/>
+    </changeSet>
+    <changeSet author="jhipster" id="1399552203878-57">
         <addForeignKeyConstraint baseColumnNames="address_id" baseTableCatalogName="" baseTableName="T_STATION" baseTableSchemaName="public" constraintName="FK_ssq9hlkby7cdmaqt6dr0evxcu" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableCatalogName="" referencedTableName="T_ADDRESS" referencedTableSchemaName="public"/>
     </changeSet>
-    <changeSet author="jhipster" id="1399478463345-64">
+    <changeSet author="jhipster" id="1399552203878-58">
         <addForeignKeyConstraint baseColumnNames="station_station_slot" baseTableCatalogName="" baseTableName="T_STATIONSLOT" baseTableSchemaName="public" constraintName="FK_t0xml919jqc9epblwwok21x8k" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableCatalogName="" referencedTableName="T_STATION" referencedTableSchemaName="public"/>
     </changeSet>
-    <changeSet author="jhipster" id="1399478463345-71">
+    <changeSet author="jhipster" id="1399552203878-65">
         <dropColumn catalogName="velocity" columnName="first_name" schemaName="public" tableName="t_user"/>
     </changeSet>
-    <changeSet author="jhipster" id="1399478463345-72">
+    <changeSet author="jhipster" id="1399552203878-66">
         <dropColumn catalogName="velocity" columnName="last_name" schemaName="public" tableName="t_user"/>
     </changeSet>
-
-    <changeSet author="jhipster" id="1399478463345-73">
-        <loadData encoding="UTF-8"
-                  file="config/liquibase/customers.csv"
-                  separator=";"
-                  tableName="T_USER"/>
-
-        <loadData encoding="UTF-8"
-                  file="config/liquibase/authorities.csv"
-                  separator=";"
-                  tableName="T_AUTHORITY"/>
-
-        <loadData encoding="UTF-8"
-                  file="config/liquibase/users_authorities.csv"
-                  separator=";"
-                  tableName="T_USER_AUTHORITY"/>
-    </changeSet>
-
 </databaseChangeLog>

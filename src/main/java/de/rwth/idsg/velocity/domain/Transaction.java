@@ -59,6 +59,62 @@ public class Transaction implements Serializable {
     @JoinColumn(name="to_slot_id")
     private StationSlot toSlot;
 
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
+    public LocalDateTime getStartDateTime() {
+        return startDateTime;
+    }
+
+    public void setStartDateTime(LocalDateTime startDateTime) {
+        this.startDateTime = startDateTime;
+    }
+
+    public LocalDateTime getEndDateTime() {
+        return endDateTime;
+    }
+
+    public void setEndDateTime(LocalDateTime endDateTime) {
+        this.endDateTime = endDateTime;
+    }
+
+    public Pedelec getPedelec() {
+        return pedelec;
+    }
+
+    public void setPedelec(Pedelec pedelec) {
+        this.pedelec = pedelec;
+    }
+
+    public StationSlot getFromSlot() {
+        return fromSlot;
+    }
+
+    public void setFromSlot(StationSlot fromSlot) {
+        this.fromSlot = fromSlot;
+    }
+
+    public StationSlot getToSlot() {
+        return toSlot;
+    }
+
+    public void setToSlot(StationSlot toSlot) {
+        this.toSlot = toSlot;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

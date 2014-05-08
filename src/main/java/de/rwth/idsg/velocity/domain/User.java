@@ -15,7 +15,7 @@ import java.util.Set;
  * A user.
  */
 @Entity
-@Inheritance
+@Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "user_type")
 @Table(name = "T_USER")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
