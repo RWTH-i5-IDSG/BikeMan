@@ -1,0 +1,1 @@
+package de.rwth.idsg.velocity.domain;import javax.persistence.DiscriminatorValue;import javax.persistence.Entity;import javax.persistence.Table;import java.io.Serializable;/** * A Customer. */@Entity@DiscriminatorValue("manager")@Table(name="T_MANAGER")public class Manager extends User implements Serializable {}
