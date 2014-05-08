@@ -92,7 +92,7 @@ velocityApp.factory('Session', [
             this.firstName = null;
             this.lastName = null;
             this.email = null;
-            this.roles = null;
+            this.userRoles = null;
         };
         return this;
     }]);
