@@ -141,4 +141,21 @@
     <changeSet author="jhipster" id="1399552203878-66">
         <dropColumn catalogName="velocity" columnName="last_name" schemaName="public" tableName="t_user"/>
     </changeSet>
+
+    <changeSet author="max" id="1399552203878-67">
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/users.csv"
+                  separator=";"
+                  tableName="T_USER"/>
+
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/authorities.csv"
+                  separator=";"
+                  tableName="T_AUTHORITY"/>
+
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/users_authorities.csv"
+                  separator=";"
+                  tableName="T_USER_AUTHORITY"/>
+    </changeSet>
 </databaseChangeLog>
