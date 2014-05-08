@@ -308,11 +308,11 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-spatial</artifactId>
-            <version>4.3-SNAPSHOT</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.hibernate</groupId>-->
+            <!--<artifactId>hibernate-spatial</artifactId>-->
+            <!--<version>4.3-SNAPSHOT</version>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>org.jadira.usertype</groupId>
             <artifactId>usertype.core</artifactId>

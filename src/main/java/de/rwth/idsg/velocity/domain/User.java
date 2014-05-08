@@ -15,6 +15,8 @@ import java.util.Set;
  * A user.
  */
 @Entity
+@Inheritance
+@DiscriminatorColumn(name = "user_type")
 @Table(name = "T_USER")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class User implements Serializable {

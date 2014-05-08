@@ -6,6 +6,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Set;
 
 /**
@@ -31,9 +32,11 @@ public class Station implements Serializable {
     @JsonManagedReference("station_station_slots")
     private Set<StationSlot> stationSlots;
 
-//    @Type(type="org.hibernate.spatial.GeometryType")
-//    @Column(name = "location")
-//    private Point location;
+    @Column(name = "location_latitude", scale = 18, precision = 24)
+    private BigDecimal locationLatitude;
+
+    @Column(name = "location_longitude", scale = 18, precision = 24)
+    private BigDecimal locationLongitude;
 
     @Lob
     @Column(name = "note")

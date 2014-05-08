@@ -21,14 +21,9 @@ import java.util.Set;
  * A Customer.
  */
 @Entity
-@Table(name = "T_CUSTOMER")
-@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class Customer implements Serializable {
+@DiscriminatorValue("customer")
+public class Customer extends User implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", columnDefinition = "serial")
-    private Integer id;
 
     @Column(name = "customer_id")
     private String customerId;
@@ -75,24 +70,20 @@ public class Customer implements Serializable {
 
         Customer customer = (Customer) o;
 
-        if (id != customer.id) {
-            return false;
-        }
-
-        return true;
+        return customer.equals(o);
     }
 
-    @Override
-    public int hashCode() {
-        return (int) (id ^ (id >>> 32));
-    }
+//    @Override
+//    public int hashCode() {
+//        return (int) (id ^ (id >>> 32));
+//    }
 
-    @Override
-    public String toString() {
-        return "Customer{" +
-                "id=" + id +
-//                ", sampleTextAttribute='" + sampleTextAttribute + '\'' +
-//                ", sampleDateAttribute=" + sampleDateAttribute +
-                '}';
-    }
+//    @Override
+//    public String toString() {
+//        return "Customer{" +
+//                "id=" + id +
+////                ", sampleTextAttribute='" + sampleTextAttribute + '\'' +
+////                ", sampleDateAttribute=" + sampleDateAttribute +
+//                '}';
+//    }
 }
