@@ -23,47 +23,46 @@ public class Transaction implements Serializable {
 
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", columnDefinition = "serial")
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.TABLE)
+    private long id;
 
     @ManyToOne
     @JsonBackReference("customer_transactions")
-    @JoinColumn(name="customer_id")
+    @JoinColumn(name = "customer_id")
     private Customer customer;
 
-    @Column(name="start_datetime")
-    @Type(type="org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
+    @Column(name = "start_datetime")
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
     @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
     @JsonDeserialize(using = CustomLocalDateTimeDeserializer.class)
     private LocalDateTime startDateTime;
 
-    @Column(name="end_datetime")
-    @Type(type="org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
+    @Column(name = "end_datetime")
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
     @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
     @JsonDeserialize(using = CustomLocalDateTimeDeserializer.class)
     private LocalDateTime endDateTime;
 
     @OneToOne
     @JsonBackReference("pedelec_current_transaction")
-    @JoinColumn(name="pedelec_id")
+    @JoinColumn(name = "pedelec_id")
     private Pedelec pedelec;
 
     @ManyToOne
     @JsonBackReference("transaction_fromslot")
-    @JoinColumn(name="from_slot_id")
+    @JoinColumn(name = "from_slot_id")
     private StationSlot fromSlot;
 
     @ManyToOne
     @JsonBackReference("transaction_toslot")
-    @JoinColumn(name="to_slot_id")
+    @JoinColumn(name = "to_slot_id")
     private StationSlot toSlot;
 
-    public Integer getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(long id) {
         this.id = id;
     }
 

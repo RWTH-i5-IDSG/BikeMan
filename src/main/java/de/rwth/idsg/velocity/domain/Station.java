@@ -18,9 +18,8 @@ import java.util.Set;
 public class Station implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", columnDefinition = "serial")
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.TABLE)
+    private long id;
 
     @Column(name = "name")
     private String name;
@@ -41,6 +40,62 @@ public class Station implements Serializable {
     @Lob
     @Column(name = "note")
     private String note;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
+    public Set<StationSlot> getStationSlots() {
+        return stationSlots;
+    }
+
+    public void setStationSlots(Set<StationSlot> stationSlots) {
+        this.stationSlots = stationSlots;
+    }
+
+    public BigDecimal getLocationLatitude() {
+        return locationLatitude;
+    }
+
+    public void setLocationLatitude(BigDecimal locationLatitude) {
+        this.locationLatitude = locationLatitude;
+    }
+
+    public BigDecimal getLocationLongitude() {
+        return locationLongitude;
+    }
+
+    public void setLocationLongitude(BigDecimal locationLongitude) {
+        this.locationLongitude = locationLongitude;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
 
     @Override
     public boolean equals(Object o) {

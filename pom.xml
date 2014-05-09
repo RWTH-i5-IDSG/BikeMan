@@ -1,4 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.rwth.idsg.velocity</groupId>
@@ -171,12 +171,16 @@
         <pluginRepository>
             <id>spring-snapshots</id>
             <url>http://repo.spring.io/libs-snapshot</url>
-            <snapshots><enabled>true</enabled></snapshots>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
         </pluginRepository>
         <pluginRepository>
             <id>spring-milestones</id>
             <url>http://repo.spring.io/milestone</url>
-            <snapshots><enabled>true</enabled></snapshots>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
         </pluginRepository>
     </pluginRepositories>
 
@@ -309,9 +313,9 @@
             <artifactId>hibernate-validator</artifactId>
         </dependency>
         <!--<dependency>-->
-            <!--<groupId>org.hibernate</groupId>-->
-            <!--<artifactId>hibernate-spatial</artifactId>-->
-            <!--<version>4.3-SNAPSHOT</version>-->
+        <!--<groupId>org.hibernate</groupId>-->
+        <!--<artifactId>hibernate-spatial</artifactId>-->
+        <!--<version>4.3-SNAPSHOT</version>-->
         <!--</dependency>-->
         <dependency>
             <groupId>org.jadira.usertype</groupId>
@@ -384,10 +388,17 @@
             <artifactId>spring-security-oauth2</artifactId>
             <version>${spring-security-oauth2.version}</version>
         </dependency>
+        <!--<dependency>-->
+        <!--<groupId>io.github.jhipster.loaded</groupId>-->
+        <!--<artifactId>core</artifactId>-->
+        <!--<version>${jhipsterloaded.version}</version>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>io.github.jhipster.loaded</groupId>
             <artifactId>core</artifactId>
-            <version>${jhipsterloaded.version}</version>
+            <version>0.8</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/spring_loaded/core-0.8.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.mangofactory</groupId>
@@ -401,7 +412,7 @@
             <artifactId>postgresql</artifactId>
             <version>9.3-1100-jdbc41</version>
         </dependency>
-        
+
 
         <!-- Test dependencies -->
         <dependency>
@@ -462,11 +473,15 @@
                         <configuration>
                             <rules>
                                 <requireMavenVersion>
-                                    <message>You are running an older version of Maven. JHipster requires at least Maven 3.0</message>
+                                    <message>You are running an older version of Maven. JHipster requires at least Maven
+                                        3.0
+                                    </message>
                                     <version>[3.0.0,)</version>
                                 </requireMavenVersion>
                                 <requireJavaVersion>
-                                    <message>You are running an older version of Java. JHipster requires at least JDK 1.7</message>
+                                    <message>You are running an older version of Java. JHipster requires at least JDK
+                                        1.7
+                                    </message>
                                     <version>[1.7.0,)</version>
                                 </requireJavaVersion>
                             </rules>
@@ -571,7 +586,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <execute />
+                                        <execute/>
                                     </action>
                                 </pluginExecution>
                             </pluginExecutions>

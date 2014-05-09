@@ -25,20 +25,42 @@ import java.io.Serializable;
 public class StationSlot implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", columnDefinition = "serial")
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.TABLE)
+    private long id;
 
     @OneToOne
     @JsonBackReference("pedelec_station_slot")
-    @JoinColumn(name="pedelec_id")
+    @JoinColumn(name = "pedelec_id")
     private Pedelec pedelec;
 
     @ManyToOne
     @JsonBackReference
-    @JoinColumn(name="station_station_slot")
+    @JoinColumn(name = "station_station_slot")
     private Station station;
 
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public Pedelec getPedelec() {
+        return pedelec;
+    }
+
+    public void setPedelec(Pedelec pedelec) {
+        this.pedelec = pedelec;
+    }
+
+    public Station getStation() {
+        return station;
+    }
+
+    public void setStation(Station station) {
+        this.station = station;
+    }
 
     @Override
     public boolean equals(Object o) {

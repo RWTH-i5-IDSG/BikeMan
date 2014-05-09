@@ -26,9 +26,11 @@ import java.util.Set;
 public class Pedelec implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", columnDefinition = "serial")
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.TABLE)
+    private long id;
+
+    @Column(name = "pedelec_id")
+    private String pedelecId;
 
     @Column(name = "state_of_charge")
     private Float stateOfCharge;
@@ -47,6 +49,62 @@ public class Pedelec implements Serializable {
     @OneToOne(mappedBy = "pedelec")
     @JsonManagedReference("pedelec_current_transaction")
     private Transaction currentTransaction;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getPedelecId() {
+        return pedelecId;
+    }
+
+    public void setPedelecId(String pedelecId) {
+        this.pedelecId = pedelecId;
+    }
+
+    public Float getStateOfCharge() {
+        return stateOfCharge;
+    }
+
+    public void setStateOfCharge(Float stateOfCharge) {
+        this.stateOfCharge = stateOfCharge;
+    }
+
+    public Boolean getIsAvailable() {
+        return isAvailable;
+    }
+
+    public void setIsAvailable(Boolean isAvailable) {
+        this.isAvailable = isAvailable;
+    }
+
+    public Set<Transaction> getTransactions() {
+        return transactions;
+    }
+
+    public void setTransactions(Set<Transaction> transactions) {
+        this.transactions = transactions;
+    }
+
+    public StationSlot getStationSlot() {
+        return stationSlot;
+    }
+
+    public void setStationSlot(StationSlot stationSlot) {
+        this.stationSlot = stationSlot;
+    }
+
+    public Transaction getCurrentTransaction() {
+        return currentTransaction;
+    }
+
+    public void setCurrentTransaction(Transaction currentTransaction) {
+        this.currentTransaction = currentTransaction;
+    }
 
     @Override
     public boolean equals(Object o) {
