@@ -17,6 +17,8 @@
                 "logout": "Log out",
                 "apidocs": "API"
             },
+            "station": "Station",
+            "pedelec": "Pedelec",
             "admin": "Administration",
             "language": "Language"
         },
