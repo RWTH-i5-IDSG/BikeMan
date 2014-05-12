@@ -26,21 +26,21 @@
                         </div>
 
                         <div class="form-group">
-                            <label translate="stations.create.street">Street</label>
+                            <label translate="stations.create.streetAndHousenumber">Street</label>
                             <input type="text" class="form-control" name="addressStreet"
-                                   ng-model="station.address.street" ng-minlength=1 ng-maxlength=255 required>
-                        </div>
-
-                        <div class="form-group">
-                            <label translate="stations.create.city">City</label>
-                            <input type="text" class="form-control" name="addressCity"
-                                   ng-model="station.address.city" ng-minlength=1 ng-maxlength=255 required>
+                                   ng-model="station.address.streetAndHousenumber" ng-minlength=1 ng-maxlength=255 required>
                         </div>
 
                         <div class="form-group">
                             <label translate="stations.create.zip">ZIP</label>
                             <input type="text" class="form-control" name="addressZip"
                                    ng-model="station.address.zip" ng-minlength=1 ng-maxlength=255 required>
+                        </div>
+
+                        <div class="form-group">
+                            <label translate="stations.create.city">City</label>
+                            <input type="text" class="form-control" name="addressCity"
+                                   ng-model="station.address.city" ng-minlength=1 ng-maxlength=255 required>
                         </div>
 
                         <div class="form-group">
@@ -80,8 +80,8 @@
                 <tr ng-repeat="station in stations">
                     <!--<td>{{station.id}}</td>-->
                     <td>{{station.name}}</td>
-                    <td>{{station.address}}</td>
-                    <td>{{station.slots}}</td>
+                    <td>{{station.address.streetAndHousenumber + ', ' + station.address.zip + ', ' + station.address.city + ', ' + station.address.country}}</td>
+                    <td>{{station.slots.length}}</td>
                     <td>
                         <button type="submit"
                                 ng-click="update(station.id)"

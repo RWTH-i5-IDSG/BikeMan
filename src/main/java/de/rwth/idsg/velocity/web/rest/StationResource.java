@@ -3,8 +3,11 @@ package de.rwth.idsg.velocity.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import de.rwth.idsg.velocity.domain.Station;
 import de.rwth.idsg.velocity.repository.StationRepository;
+import de.rwth.idsg.velocity.service.StationService;
+import de.rwth.idsg.velocity.web.rest.dto.StationDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
@@ -20,8 +23,11 @@ public class StationResource {
 
     private final Logger log = LoggerFactory.getLogger(StationResource.class);
 
-    @Inject
+    @Autowired
     private StationRepository stationRepository;
+
+    @Inject
+    private StationService stationService;
 
     /**
      * POST  /rest/stations -> Create a new station.
@@ -30,9 +36,10 @@ public class StationResource {
             method = RequestMethod.POST,
             produces = "application/json")
     @Timed
-    public void create(@RequestBody Station station) {
+    public void create(@RequestBody StationDTO station) {
         log.debug("REST request to save Station : {}", station);
-        stationRepository.save(station);
+//        stationRepository.save(station);
+        stationService.createStation(station);
     }
 
     /**

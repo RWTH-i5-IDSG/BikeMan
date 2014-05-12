@@ -82,7 +82,9 @@ public class StationSlot implements Serializable {
 
     @Override
     public int hashCode() {
-        return (int) (id ^ (id >>> 32));
+        // always hashed to the same value on creation! (id generationtype: table)
+        return System.identityHashCode(this);
+//        return (int) (id ^ (id >>> 32));
     }
 
 //    @Override
