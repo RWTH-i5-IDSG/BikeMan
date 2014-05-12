@@ -41,6 +41,9 @@ public class Station implements Serializable {
     @Column(name = "note")
     private String note;
 
+    @Column(name = "state")
+    private Boolean state;
+
     public long getId() {
         return id;
     }
@@ -95,6 +98,14 @@ public class Station implements Serializable {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    public Boolean getState() {
+        return state;
+    }
+
+    public void setState(Boolean state) {
+        this.state = state;
     }
 
     @Override

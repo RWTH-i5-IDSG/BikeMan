@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import javax.inject.Inject;
 
+import de.rwth.idsg.velocity.domain.Address;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,6 +32,9 @@ import de.rwth.idsg.velocity.Application;
 import de.rwth.idsg.velocity.domain.Station;
 import de.rwth.idsg.velocity.repository.StationRepository;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 
 /**
  * Test class for the StationResource REST controller.
@@ -40,12 +44,12 @@ import de.rwth.idsg.velocity.repository.StationRepository;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Application.class)
 @WebAppConfiguration
-@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
-    DirtiesContextTestExecutionListener.class,
-    TransactionalTestExecutionListener.class })
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
+        DirtiesContextTestExecutionListener.class,
+        TransactionalTestExecutionListener.class})
 @ActiveProfiles("dev")
 public class StationResourceTest {
-    
+
     private static final Long DEFAULT_ID = new Long(1L);
 
     private static final LocalDate DEFAULT_SAMPLE_DATE_ATTR = new LocalDate(0L);
@@ -56,11 +60,19 @@ public class StationResourceTest {
 
     private static final String UPD_SAMPLE_TEXT_ATTR = "sampleTextAttributeUpt";
 
+    private static final BigDecimal DEFAULT_SAMPLE_NUMBER_ATTR = new BigDecimal(0.1234);
+
+    private static final BigDecimal UPD_SAMPLE_NUMBER_ATTR = new BigDecimal(0.4321);
+
+    private static final Boolean DEFAULT_SAMPLE_BOOLEAN_ATTR = true;
+
+    private static final Boolean UPD_SAMPLE_BOOLEAN_ATTR = false;
+
     @Inject
     private StationRepository stationRepository;
 
     private MockMvc restStationMockMvc;
-    
+
     private Station station;
 
     @Before
@@ -72,54 +84,79 @@ public class StationResourceTest {
         this.restStationMockMvc = MockMvcBuilders.standaloneSetup(stationResource).build();
 
         station = new Station();
-//        station.setId(DEFAULT_ID);
-//    	station.setSampleDateAttribute(DEFAULT_SAMPLE_DATE_ATTR);
-//    	station.setSampleTextAttribute(DEFAULT_SAMPLE_TEXT_ATTR);
+        station.setId(DEFAULT_ID);
+        station.setLocationLatitude(DEFAULT_SAMPLE_NUMBER_ATTR);
+        station.setLocationLongitude(DEFAULT_SAMPLE_NUMBER_ATTR);
+        station.setName(DEFAULT_SAMPLE_TEXT_ATTR);
+        station.setNote(DEFAULT_SAMPLE_TEXT_ATTR);
+
+        Address address = new Address();
+        address.setStreetAndHousenumber(DEFAULT_SAMPLE_TEXT_ATTR);
+        address.setCity(DEFAULT_SAMPLE_TEXT_ATTR);
+        address.setCountry(DEFAULT_SAMPLE_TEXT_ATTR);
+        address.setId(DEFAULT_ID);
+        address.setZip(DEFAULT_SAMPLE_TEXT_ATTR);
+
+        station.setAddress(address);
+        station.setState(DEFAULT_SAMPLE_BOOLEAN_ATTR);
+
     }
 
     @Test
     public void testCRUDStation() throws Exception {
 
-    	// Create Station
-    	restStationMockMvc.perform(post("/app/rest/stations")
-    			.contentType(TestUtil.APPLICATION_JSON_UTF8)
+        // Create Station
+        restStationMockMvc.perform(post("/app/rest/stations")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(station)))
                 .andExpect(status().isOk());
 
-    	// Read Station
-    	restStationMockMvc.perform(get("/app/rest/stations/{id}", DEFAULT_ID))
+        // Read Station
+        restStationMockMvc.perform(get("/app/rest/stations/{id}", DEFAULT_ID))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(DEFAULT_ID.intValue()))
-    			.andExpect(jsonPath("$.sampleDateAttribute").value(DEFAULT_SAMPLE_DATE_ATTR.toString()))
-    			.andExpect(jsonPath("$.sampleTextAttribute").value(DEFAULT_SAMPLE_TEXT_ATTR));
+                .andExpect(jsonPath("$.sampleDateAttribute").value(DEFAULT_SAMPLE_DATE_ATTR.toString()))
+                .andExpect(jsonPath("$.sampleTextAttribute").value(DEFAULT_SAMPLE_TEXT_ATTR));
 
-    	// Update Station
-//    	station.setSampleDateAttribute(UPD_SAMPLE_DATE_ATTR);
-//    	station.setSampleTextAttribute(UPD_SAMPLE_TEXT_ATTR);
-  
-    	restStationMockMvc.perform(post("/app/rest/stations")
-    			.contentType(TestUtil.APPLICATION_JSON_UTF8)
+        // Update Station
+        station.setLocationLatitude(UPD_SAMPLE_NUMBER_ATTR);
+        station.setLocationLongitude(UPD_SAMPLE_NUMBER_ATTR);
+        station.setName(UPD_SAMPLE_TEXT_ATTR);
+        station.setNote(UPD_SAMPLE_TEXT_ATTR);
+        station.setState(UPD_SAMPLE_BOOLEAN_ATTR);
+
+        restStationMockMvc.perform(post("/app/rest/stations")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(station)))
                 .andExpect(status().isOk());
 
-    	// Read updated Station
-    	restStationMockMvc.perform(get("/app/rest/stations/{id}", DEFAULT_ID))
+        // Read updated Station
+        restStationMockMvc.perform(get("/app/rest/stations/{id}", DEFAULT_ID))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(DEFAULT_ID.intValue()))
-    			.andExpect(jsonPath("$.sampleDateAttribute").value(UPD_SAMPLE_DATE_ATTR.toString()))
-    			.andExpect(jsonPath("$.sampleTextAttribute").value(UPD_SAMPLE_TEXT_ATTR));
+                .andExpect(jsonPath("$.locationLatitude").value(UPD_SAMPLE_NUMBER_ATTR.doubleValue()))
+                .andExpect(jsonPath("$.locationLongitude").value(UPD_SAMPLE_NUMBER_ATTR.doubleValue()))
+                .andExpect(jsonPath("$.name").value(UPD_SAMPLE_TEXT_ATTR.toString()))
+                .andExpect(jsonPath("$.note").value(UPD_SAMPLE_TEXT_ATTR.toString()))
+                .andExpect(jsonPath("$.state").value(UPD_SAMPLE_BOOLEAN_ATTR.booleanValue()));
 
-    	// Delete Station
-    	restStationMockMvc.perform(delete("/app/rest/stations/{id}", DEFAULT_ID)
+        // Delete Station
+        restStationMockMvc.perform(delete("/app/rest/stations/{id}", DEFAULT_ID)
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
 
-    	// Read nonexisting Station
-    	restStationMockMvc.perform(get("/app/rest/stations/{id}", DEFAULT_ID)
+        // Read nonexisting Station
+        restStationMockMvc.perform(get("/app/rest/stations/{id}", DEFAULT_ID)
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isNotFound());
+
+        // Set station state
+        restStationMockMvc.perform(post("/app/rest/stations/setState/{id}", DEFAULT_ID)
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(UPD_SAMPLE_BOOLEAN_ATTR)))
+                .andExpect(status().isOk());
 
     }
 }

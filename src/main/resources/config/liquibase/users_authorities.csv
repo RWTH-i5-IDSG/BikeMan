@@ -1,4 +1,6 @@
 login;name
 admin;ROLE_ADMIN
 admin;ROLE_USER
+admin;ROLE_MANAGER
 user;ROLE_USER
+user;ROLE_CUSTOMER

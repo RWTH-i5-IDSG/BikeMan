@@ -35,8 +35,8 @@ public class Pedelec implements Serializable {
     @Column(name = "state_of_charge")
     private Float stateOfCharge;
 
-    @Column(name = "is_available")
-    private Boolean isAvailable;
+    @Column(name = "state")
+    private Boolean state;
 
     @OneToMany(mappedBy = "pedelec")
     @JsonManagedReference("pedelec_transactions")
@@ -74,12 +74,12 @@ public class Pedelec implements Serializable {
         this.stateOfCharge = stateOfCharge;
     }
 
-    public Boolean getIsAvailable() {
-        return isAvailable;
+    public Boolean getState() {
+        return state;
     }
 
-    public void setIsAvailable(Boolean isAvailable) {
-        this.isAvailable = isAvailable;
+    public void setState(Boolean state) {
+        this.state = state;
     }
 
     public Set<Transaction> getTransactions() {

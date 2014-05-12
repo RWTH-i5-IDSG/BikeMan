@@ -1,12 +1,15 @@
 package de.rwth.idsg.velocity.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import de.rwth.idsg.velocity.domain.Station;
 import de.rwth.idsg.velocity.domain.StationSlot;
 import de.rwth.idsg.velocity.repository.StationSlotRepository;
+import de.rwth.idsg.velocity.security.AuthoritiesConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -73,5 +76,19 @@ public class StationSlotResource {
     public void delete(@PathVariable Long id, HttpServletResponse response) {
         log.debug("REST request to delete StationSlot : {}", id);
         stationslotRepository.delete(id);
+    }
+
+    /**
+     * POST /rest/stationslots/setState/:id -> Set state of "id" stationslot.
+     */
+    @RolesAllowed(AuthoritiesConstants.MANAGER)
+    @RequestMapping(value = "/rest/stationslots/setState",
+            method = RequestMethod.POST,
+            produces = "application/json")
+    @Timed
+    public void changeRentState(@PathVariable long id, @RequestParam Boolean state) {
+        StationSlot stationSlot = stationslotRepository.findOne(id);
+        stationSlot.setState(state);
+        stationslotRepository.save(stationSlot);
     }
 }

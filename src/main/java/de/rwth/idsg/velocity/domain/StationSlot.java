@@ -38,6 +38,9 @@ public class StationSlot implements Serializable {
     @JoinColumn(name = "station_station_slot")
     private Station station;
 
+    @Column(name = "state")
+    private Boolean state;
+
     public long getId() {
         return id;
     }
@@ -60,6 +63,14 @@ public class StationSlot implements Serializable {
 
     public void setStation(Station station) {
         this.station = station;
+    }
+
+    public Boolean getState() {
+        return state;
+    }
+
+    public void setState(Boolean state) {
+        this.state = state;
     }
 
     @Override
