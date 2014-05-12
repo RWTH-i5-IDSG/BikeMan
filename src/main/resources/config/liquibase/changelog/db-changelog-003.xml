@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet author="jhipster" id="1399722066869-5">
+        <addColumn catalogName="" schemaName="public" tableName="T_PEDELEC">
+            <column name="state" type="boolean"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="jhipster" id="1399722066869-6">
+        <addColumn catalogName="" schemaName="public" tableName="T_STATION">
+            <column name="state" type="boolean"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="jhipster" id="1399722066869-7">
+        <addColumn catalogName="" schemaName="public" tableName="T_STATIONSLOT">
+            <column name="state" type="boolean"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="jhipster" id="1399722066869-8">
+        <dropColumn catalogName="velocity" columnName="is_available" schemaName="public" tableName="t_pedelec"/>
+    </changeSet>
+</databaseChangeLog>
