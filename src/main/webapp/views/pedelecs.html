@@ -26,15 +26,9 @@
                         </div>
 
                         <div class="form-group">
-                            <label>Sample text attribute</label>
+                            <label>Pedelec Identifier</label>
                             <input type="text" class="form-control" name="test"
-                                   ng-model="pedelec.sampleTextAttribute" ng-minlength=1 ng-maxlength=50 required>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Sample date attribute</label>
-                            <input type="date" class="form-control" name="test"
-                                   ng-model="pedelec.sampleDateAttribute" required>
+                                   ng-model="pedelec.pedelecId" ng-minlength=1 ng-maxlength=50 required>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -55,16 +49,18 @@
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Sample text</th>
-                    <th>Sample date</th>
+                    <th>State of Charge</th>
+                    <th>Availability</th>
+                    <th>Station</th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
                 <tr ng-repeat="pedelec in pedelecs">
-                    <td>{{pedelec.id}}</td>
-                    <td>{{pedelec.sampleTextAttribute}}</td>
-                    <td>{{pedelec.sampleDateAttribute}}</td>
+                    <td>{{pedelec.pedelecId}}</td>
+                    <td>{{pedelec.stateOfCharge}}</td>
+                    <td>{{pedelec.isAvailable}}</td>
+                    <td>{{pedelec.stationSlot}}</td>
                     <td>
                         <button type="submit"
                                 ng-click="update(pedelec.id)"

@@ -16,34 +16,50 @@
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
                                 ng-click="clear()">&times;</button>
-                        <h4 class="modal-title" id="myStationLabel">Create or edit a Station</h4>
+                        <h4 class="modal-title" id="myStationLabel" translate="stations.header">Create or edit a Station</h4>
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
-                            <label>ID</label>
-                            <input type="text" class="form-control" name="id"
-                                   ng-model="station.id" readonly>
+                            <label translate="stations.create.name">Name</label>
+                            <input type="text" class="form-control" name="name"
+                                   ng-model="station.name" ng-minlength=1 ng-maxlength=255 required>
                         </div>
 
                         <div class="form-group">
-                            <label>Sample text attribute</label>
-                            <input type="text" class="form-control" name="test"
-                                   ng-model="station.sampleTextAttribute" ng-minlength=1 ng-maxlength=50 required>
+                            <label translate="stations.create.streetAndHousenumber">Street</label>
+                            <input type="text" class="form-control" name="addressStreet"
+                                   ng-model="station.address.streetAndHousenumber" ng-minlength=1 ng-maxlength=255 required>
                         </div>
 
                         <div class="form-group">
-                            <label>Sample date attribute</label>
-                            <input type="date" class="form-control" name="test"
-                                   ng-model="station.sampleDateAttribute" required>
+                            <label translate="stations.create.zip">ZIP</label>
+                            <input type="text" class="form-control" name="addressZip"
+                                   ng-model="station.address.zip" ng-minlength=1 ng-maxlength=255 required>
                         </div>
+
+                        <div class="form-group">
+                            <label translate="stations.create.city">City</label>
+                            <input type="text" class="form-control" name="addressCity"
+                                   ng-model="station.address.city" ng-minlength=1 ng-maxlength=255 required>
+                        </div>
+
+                        <div class="form-group">
+                            <label translate="stations.create.country">ZIP</label>
+                            <input type="text" class="form-control" name="addressCountry"
+                                   ng-model="station.address.country" ng-minlength=1 ng-maxlength=255 required>
+                        </div>
+
+                        <div class="form-group">
+                            <label translate="stations.create.numberOfSlots">Opening Hours</label>
+                            <input type="text" class="form-control" name="numberOfSlots"
+                                   ng-model="station.numberOfSlots" ng-minlength=1 ng-maxlength=255 required>
+                        </div>
+
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clear()">
-                            <span class="glyphicon glyphicon-ban-circle"></span> Cancel
+                        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clear()" translate="stations.create.cancel">Cancel
                         </button>
-                        <button type="submit" ng-disabled="form.$invalid" class="btn btn-primary">
-                            <span class="glyphicon glyphicon-save"></span> Save
-                        </button>
+                        <button type="submit" ng-disabled="form.$invalid" class="btn btn-primary" translate="stations.create.save">Save</button>
                     </div>
                 </form>
             </div>
@@ -54,17 +70,18 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Sample text</th>
-                    <th>Sample date</th>
-                    <th></th>
+                    <!--<th>ID</th>-->
+                    <th>Name</th>
+                    <th>Address</th>
+                    <th>Slots</th>
                 </tr>
             </thead>
             <tbody>
                 <tr ng-repeat="station in stations">
-                    <td>{{station.id}}</td>
-                    <td>{{station.sampleTextAttribute}}</td>
-                    <td>{{station.sampleDateAttribute}}</td>
+                    <!--<td>{{station.id}}</td>-->
+                    <td>{{station.name}}</td>
+                    <td>{{station.address.streetAndHousenumber + ', ' + station.address.zip + ', ' + station.address.city + ', ' + station.address.country}}</td>
+                    <td>{{station.slots.length}}</td>
                     <td>
                         <button type="submit"
                                 ng-click="update(station.id)"

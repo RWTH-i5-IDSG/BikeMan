@@ -27,6 +27,7 @@ velocityApp.controller('PedelecController', ['$scope', 'resolvedPedelec', 'Pedel
         };
 
         $scope.clear = function () {
-            $scope.pedelec = {id: null, sampleTextAttribute: null, sampleDateAttribute: null};
+//            $scope.pedelec = {id: null, sampleTextAttribute: null, sampleDateAttribute: null};
+            $scope.pedelec = {pedelecId: null};
         };
     }]);

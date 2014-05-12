@@ -23,11 +23,23 @@
         <div class="development"></div>
         <div class="container">
             <div class="header" ng-switch="authenticated">
-                <ul class="nav nav-pills pull-right">
+                <ul class="nav nav-pills pull-right" ng-cloak>
                     <li>
                         <a href="#">
                             <span class="glyphicon glyphicon-home"></span>
                             <span translate="global.menu.home">Home</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#/station">
+                            <span class="glyphicon glyphicon-briefcase"></span>
+                            <span translate="global.menu.station">Station</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#/pedelec">
+                            <span class="glyphicon glyphicon-briefcase"></span>
+                            <span translate="global.menu.pedelec">Pedelec</span>
                         </a>
                     </li>
                     <li class="dropdown pointer">
@@ -173,6 +185,7 @@
         <script src="scripts/address/router.js"></script>
         <script src="scripts/address/controller.js"></script>
         <script src="scripts/address/service.js"></script>
+        <script src='//maps.googleapis.com/maps/api/js?sensor=false'></script>
         <!-- endbuild -->
 </body>
 </html>
