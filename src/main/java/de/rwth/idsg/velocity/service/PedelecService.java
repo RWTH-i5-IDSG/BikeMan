@@ -24,7 +24,7 @@ public class PedelecService {
     public void createPedelec(PedelecDTO pedelec) {
         Pedelec newPedelec = new Pedelec();
 
-        newPedelec.setIsAvailable(true);
+        newPedelec.setState(true);
         newPedelec.setStateOfCharge(1.0f);
         newPedelec.setPedelecId(pedelec.getPedelecId());
 

@@ -5,7 +5,7 @@ package de.rwth.idsg.velocity.web.rest.dto;
  */
 public class PedelecDTO {
 
-    private Boolean isAvailable;
+    private Boolean state;
 
     private Float stateOfCharge;
 
@@ -14,18 +14,18 @@ public class PedelecDTO {
     public PedelecDTO() {
     }
 
-    public PedelecDTO(String pedelecId, Float stateOfCharge, Boolean isAvailable) {
+    public PedelecDTO(String pedelecId, Float stateOfCharge, Boolean state) {
         this.pedelecId = pedelecId;
         this.stateOfCharge = stateOfCharge;
-        this.isAvailable = isAvailable;
+        this.state = state;
     }
 
-    public Boolean getIsAvailable() {
-        return isAvailable;
+    public Boolean getState() {
+        return state;
     }
 
-    public void setIsAvailable(Boolean isAvailable) {
-        this.isAvailable = isAvailable;
+    public void setState(Boolean state) {
+        this.state = state;
     }
 
     public Float getStateOfCharge() {
@@ -47,7 +47,7 @@ public class PedelecDTO {
     @Override
     public String toString() {
         return "PedelecDTO{" +
-                "isAvailable=" + isAvailable +
+                "state=" + state +
                 ", stateOfCharge=" + stateOfCharge +
                 ", pedelecId='" + pedelecId + '\'' +
                 '}';

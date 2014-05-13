@@ -50,7 +50,7 @@
                 <tr>
                     <th>ID</th>
                     <th>State of Charge</th>
-                    <th>Availability</th>
+                    <th>State</th>
                     <th>Station</th>
                     <th></th>
                 </tr>
@@ -59,7 +59,7 @@
                 <tr ng-repeat="pedelec in pedelecs">
                     <td>{{pedelec.pedelecId}}</td>
                     <td>{{pedelec.stateOfCharge}}</td>
-                    <td>{{pedelec.isAvailable}}</td>
+                    <td>{{pedelec.state}}</td>
                     <td>{{pedelec.stationSlot}}</td>
                     <td>
                         <button type="submit"
