@@ -1,8 +1,8 @@
 'use strict';
 
 velocityApp
-    .config(['$routeProvider', '$httpProvider', '$translateProvider',
-        function ($routeProvider, $httpProvider, $translateProvider) {
+    .config(['$routeProvider', '$httpProvider', '$translateProvider', 'USER_ROLES',
+        function ($routeProvider, $httpProvider, $translateProvider, USER_ROLES) {
             $routeProvider
                 .when('/station', {
                     templateUrl: 'views/stations.html',
@@ -11,6 +11,25 @@ velocityApp
                         resolvedStation: ['Station', function (Station) {
                             return Station.query();
                         }]
+                    },
+                    access: {
+                        authorizedRoles: [USER_ROLES.all]
+                    }
+                })
+                .when('/stations/:stationId', {
+                    templateUrl: 'views/stationDetail.html',
+                    controller: 'StationDetailController',
+                    resolve:{
+                        resolvedStation: function (Station, $route) {
+                            console.log($route);
+                            return Station.get({id: $route.current.params.stationId});
+                        }
+                    },
+                    access: {
+                        authorizedRoles: [USER_ROLES.all]
                     }
                 })
         }]);
+
+// Station.get({id: idparam})
+//$route.current.params.Id

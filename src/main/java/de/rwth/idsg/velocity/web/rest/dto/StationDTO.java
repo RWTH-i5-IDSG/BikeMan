@@ -9,6 +9,17 @@ import java.math.BigDecimal;
  */
 public class StationDTO {
 
+    public StationDTO () {
+    }
+
+    public StationDTO(String name, BigDecimal locationLatitude, BigDecimal locationLongitude, Address address, int numberOfSlots) {
+        this.name = name;
+        this.locationLatitude = locationLatitude;
+        this.locationLongitude = locationLongitude;
+        this.address = address;
+        this.numberOfSlots = numberOfSlots;
+    }
+
     private String name;
 
     private BigDecimal locationLatitude;
@@ -16,7 +27,6 @@ public class StationDTO {
     private BigDecimal locationLongitude;
 
     private Address address;
-
 
     private int numberOfSlots;
 
@@ -60,6 +70,7 @@ public class StationDTO {
     public void setNumberOfSlots(int numberOfSlots) {
         this.numberOfSlots = numberOfSlots;
     }
+
 
     @Override
     public String toString() {

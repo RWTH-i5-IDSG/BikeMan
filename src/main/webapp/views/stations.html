@@ -50,6 +50,14 @@
                         </div>
 
                         <div class="form-group">
+                            <label translate="stations.create.Coordinates">Coordinates</label>
+                            <input type="text" class="form-control" name="locationLatitude"
+                                   ng-model="station.locationLatitude" ng-minlength=1 ng-maxlength=255 required>
+                            <input type="text" class="form-control" name="locationLongitude"
+                                   ng-model="station.locationLongitude" ng-minlength=1 ng-maxlength=255 required>
+                        </div>
+
+                        <div class="form-group">
                             <label translate="stations.create.numberOfSlots">Opening Hours</label>
                             <input type="text" class="form-control" name="numberOfSlots"
                                    ng-model="station.numberOfSlots" ng-minlength=1 ng-maxlength=255 required>
@@ -79,9 +87,9 @@
             <tbody>
                 <tr ng-repeat="station in stations">
                     <!--<td>{{station.id}}</td>-->
-                    <td>{{station.name}}</td>
-                    <td>{{station.address.streetAndHousenumber + ', ' + station.address.zip + ', ' + station.address.city + ', ' + station.address.country}}</td>
-                    <td>{{station.slots.length}}</td>
+                    <td><a ng-href="#/stations/{{station.id}}">{{station.name}}</a></td>
+                    <td><a ng-href="#/stations/{{station.id}}">{{station.address.streetAndHousenumber + ', ' + station.address.zip + ', ' + station.address.city + ', ' + station.address.country}}</a></td>
+                    <td>{{station.stationSlots.length}}</td>
                     <td>
                         <button type="submit"
                                 ng-click="update(station.id)"

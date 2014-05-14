@@ -1,8 +1,8 @@
 'use strict';
 
 velocityApp
-    .config(['$routeProvider', '$httpProvider', '$translateProvider',
-        function ($routeProvider, $httpProvider, $translateProvider) {
+    .config(['$routeProvider', '$httpProvider', '$translateProvider', 'USER_ROLES',
+        function ($routeProvider, $httpProvider, $translateProvider, USER_ROLES) {
             $routeProvider
                 .when('/pedelec', {
                     templateUrl: 'views/pedelecs.html',
@@ -11,6 +11,9 @@ velocityApp
                         resolvedPedelec: ['Pedelec', function (Pedelec) {
                             return Pedelec.query();
                         }]
+                    },
+                    access: {
+                        authorizedRoles: [USER_ROLES.all]
                     }
                 })
         }]);

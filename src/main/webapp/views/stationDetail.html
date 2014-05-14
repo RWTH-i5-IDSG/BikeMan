@@ -1,0 +1,24 @@
+<div>
+
+    <h2>{{station.name}}</h2>
+
+    <p>{{station.note}}</p>
+
+    <p>{{station.address.streetAndHousenumber + ', ' + station.address.zip + ', ' + station.address.city + ', ' + station.address.country}}</p>
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th colspan="{{station.stationSlots.length}}">Slots</th>
+            </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td ng-repeat="slot in station.stationSlots">{{slot.id}} <span class="glyphicon">&times;</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>

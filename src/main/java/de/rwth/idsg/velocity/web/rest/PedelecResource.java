@@ -3,8 +3,11 @@ package de.rwth.idsg.velocity.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import de.rwth.idsg.velocity.domain.Pedelec;
 import de.rwth.idsg.velocity.repository.PedelecRepository;
+import de.rwth.idsg.velocity.service.PedelecService;
+import de.rwth.idsg.velocity.web.rest.dto.PedelecDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
@@ -20,8 +23,11 @@ public class PedelecResource {
 
     private final Logger log = LoggerFactory.getLogger(PedelecResource.class);
 
-    @Inject
+    @Autowired
     private PedelecRepository pedelecRepository;
+
+    @Inject
+    private PedelecService pedelecService;
 
     /**
      * POST  /rest/pedelecs -> Create a new pedelec.
@@ -30,9 +36,10 @@ public class PedelecResource {
             method = RequestMethod.POST,
             produces = "application/json")
     @Timed
-    public void create(@RequestBody Pedelec pedelec) {
+//    public void create(@RequestBody Pedelec pedelec) {
+    public void create(@RequestBody PedelecDTO pedelec) {
         log.debug("REST request to save Pedelec : {}", pedelec);
-        pedelecRepository.save(pedelec);
+        pedelecService.createPedelec(pedelec);
     }
 
     /**
