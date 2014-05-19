@@ -41,7 +41,7 @@ public class StationService {
         newStation.setLocationLongitude(station.getLocationLongitude());
 
         Set<StationSlot> stationSlots = new HashSet<>();
-        int count = station.getNumberOfSlots();
+        long count = station.getNumberOfSlots();
         for (int i = 0; i < count; i++) {
             StationSlot slot = new StationSlot();
             slot.setStation(newStation);
@@ -54,4 +54,5 @@ public class StationService {
 
         log.info("created new station: {}", newStation);
     }
+
 }

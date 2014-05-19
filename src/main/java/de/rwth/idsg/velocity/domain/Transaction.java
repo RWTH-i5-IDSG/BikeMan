@@ -43,8 +43,8 @@ public class Transaction implements Serializable {
     @JsonDeserialize(using = CustomLocalDateTimeDeserializer.class)
     private LocalDateTime endDateTime;
 
-    @OneToOne
-    @JsonBackReference("pedelec_current_transaction")
+    @ManyToOne
+    @JsonBackReference("pedelec_transactions")
     @JoinColumn(name = "pedelec_id")
     private Pedelec pedelec;
 

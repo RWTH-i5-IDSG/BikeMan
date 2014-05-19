@@ -49,9 +49,10 @@ public class StationResource {
             method = RequestMethod.GET,
             produces = "application/json")
     @Timed
-    public List<Station> getAll() {
+    public List<StationDTO> getAll() {
         log.info("REST request to get all Stations");
-        return stationRepository.findAll();
+        List<StationDTO> stations = stationRepository.listOfStations();
+        return stations;
     }
 
     /**

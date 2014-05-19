@@ -37,10 +37,6 @@ public class Pedelec implements Serializable {
     @JsonManagedReference("pedelec_station_slot")
     private StationSlot stationSlot;
 
-    @OneToOne(mappedBy = "pedelec")
-    @JsonManagedReference("pedelec_current_transaction")
-    private Transaction currentTransaction;
-
     public long getId() {
         return id;
     }
@@ -87,14 +83,6 @@ public class Pedelec implements Serializable {
 
     public void setStationSlot(StationSlot stationSlot) {
         this.stationSlot = stationSlot;
-    }
-
-    public Transaction getCurrentTransaction() {
-        return currentTransaction;
-    }
-
-    public void setCurrentTransaction(Transaction currentTransaction) {
-        this.currentTransaction = currentTransaction;
     }
 
     @Override

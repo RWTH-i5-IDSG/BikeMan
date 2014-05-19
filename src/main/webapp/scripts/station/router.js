@@ -21,7 +21,6 @@ velocityApp
                     controller: 'StationDetailController',
                     resolve:{
                         resolvedStation: function (Station, $route) {
-                            console.log($route);
                             return Station.get({id: $route.current.params.stationId});
                         }
                     },

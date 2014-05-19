@@ -34,7 +34,7 @@ public class StationSlot implements Serializable {
     private Pedelec pedelec;
 
     @ManyToOne
-    @JsonBackReference
+    @JsonBackReference("station_station_slots")
     @JoinColumn(name = "station_station_slot")
     private Station station;
 

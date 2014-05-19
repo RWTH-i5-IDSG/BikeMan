@@ -199,6 +199,11 @@
                   tableName="T_USER"/>
 
         <loadData encoding="UTF-8"
+                  file="config/liquibase/customers.csv"
+                  separator=";"
+                  tableName="T_CUSTOMER"/>
+
+        <loadData encoding="UTF-8"
                   file="config/liquibase/authorities.csv"
                   separator=";"
                   tableName="T_AUTHORITY"/>

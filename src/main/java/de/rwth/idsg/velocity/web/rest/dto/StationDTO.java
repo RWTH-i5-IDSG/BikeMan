@@ -38,7 +38,6 @@ public class StationDTO {
         this.name = name;
     }
 
-
     public Address getAddress() {
         return address;
     }
