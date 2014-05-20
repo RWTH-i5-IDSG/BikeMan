@@ -1,6 +1,8 @@
 package de.rwth.idsg.velocity.web.rest.dto;
 
 import de.rwth.idsg.velocity.domain.Address;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.hibernate.validator.constraints.NotBlank;
 
 import java.math.BigDecimal;
 
@@ -8,6 +10,21 @@ import java.math.BigDecimal;
  * Created by max on 12/05/14.
  */
 public class StationDTO {
+
+    @NotBlank
+    private String name;
+
+    @NotBlank
+    private BigDecimal locationLatitude;
+
+    @NotBlank
+    private BigDecimal locationLongitude;
+
+    @NotBlank
+    private Address address;
+
+    @NotBlank
+    private int numberOfSlots;
 
     public StationDTO () {
     }
@@ -19,16 +36,6 @@ public class StationDTO {
         this.address = address;
         this.numberOfSlots = numberOfSlots;
     }
-
-    private String name;
-
-    private BigDecimal locationLatitude;
-
-    private BigDecimal locationLongitude;
-
-    private Address address;
-
-    private int numberOfSlots;
 
     public String getName() {
         return name;
@@ -70,15 +77,14 @@ public class StationDTO {
         this.numberOfSlots = numberOfSlots;
     }
 
-
     @Override
     public String toString() {
-        return "StationDTO{" +
-                "name='" + name + '\'' +
-                ", address='" + address + '\'' +
-                ", locationLatitude=" + locationLatitude +
-                ", locationLongitude=" + locationLongitude +
-                ", numberOfSlots=" + numberOfSlots +
-                '}';
+        return new ToStringBuilder(this)
+                .append("name", name)
+                .append("address", address)
+                .append("locationLatitude", locationLatitude)
+                .append("locationLongitude", locationLongitude)
+                .append("numberOfSlots", numberOfSlots)
+                .toString();
     }
 }

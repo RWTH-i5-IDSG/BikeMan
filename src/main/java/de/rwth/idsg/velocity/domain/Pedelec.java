@@ -27,7 +27,8 @@ public class Pedelec implements Serializable {
     private Float stateOfCharge;
 
     @Column(name = "state")
-    private Boolean state;
+    @Enumerated(EnumType.STRING)
+    private PedelecState state;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "pedelec")
     @JsonManagedReference("pedelec_transactions")
@@ -61,11 +62,11 @@ public class Pedelec implements Serializable {
         this.stateOfCharge = stateOfCharge;
     }
 
-    public Boolean getState() {
+    public PedelecState getState() {
         return state;
     }
 
-    public void setState(Boolean state) {
+    public void setState(PedelecState state) {
         this.state = state;
     }
 

@@ -2,9 +2,9 @@
 <databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
-    <changeSet author="jhipster" id="1399722066869-5">
+    <changeSet author="jhipster" id="1400573242411-3">
         <addColumn catalogName="" schemaName="public" tableName="T_PEDELEC">
-            <column name="state" type="boolean"/>
+            <column name="state" type="varchar(255)"/>
         </addColumn>
     </changeSet>
     <changeSet author="jhipster" id="1399722066869-6">

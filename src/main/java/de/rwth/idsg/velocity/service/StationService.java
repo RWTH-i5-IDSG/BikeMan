@@ -23,7 +23,8 @@ import java.util.Set;
 @Service
 @Transactional
 public class StationService {
-    private final Logger log = LoggerFactory.getLogger(UserService.class);
+
+    private static final Logger log = LoggerFactory.getLogger(StationService.class);
 
     @Inject
     private StationRepository stationRepository;

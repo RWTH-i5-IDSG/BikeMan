@@ -2,12 +2,11 @@ package de.rwth.idsg.velocity.web.rest.dto;
 
 import ch.qos.logback.classic.Logger;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import org.apache.commons.lang.builder.ToStringBuilder;
 
 public class LoggerDTO {
 
-    private String name;
-
-    private String level;
+    private String name, level;
 
     public LoggerDTO(Logger logger) {
         this.name = logger.getName();
@@ -15,8 +14,7 @@ public class LoggerDTO {
     }
 
     @JsonCreator
-    public LoggerDTO() {
-    }
+    public LoggerDTO() { }
 
     public String getName() {
         return name;
@@ -36,9 +34,9 @@ public class LoggerDTO {
 
     @Override
     public String toString() {
-        return "LoggerDTO{" +
-                "name='" + name + '\'' +
-                ", level='" + level + '\'' +
-                '}';
+        return new ToStringBuilder(this)
+                .append("name", name)
+                .append("level", level)
+                .toString();
     }
 }

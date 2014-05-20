@@ -1,9 +1,6 @@
 package de.rwth.idsg.velocity.service;
 
-import de.rwth.idsg.velocity.domain.Customer;
-import de.rwth.idsg.velocity.domain.Pedelec;
-import de.rwth.idsg.velocity.domain.StationSlot;
-import de.rwth.idsg.velocity.domain.Transaction;
+import de.rwth.idsg.velocity.domain.*;
 import de.rwth.idsg.velocity.endpoint.StationEndpoint;
 import de.rwth.idsg.velocity.repository.PedelecRepository;
 import de.rwth.idsg.velocity.repository.StationSlotRepository;
@@ -23,6 +20,8 @@ import java.util.concurrent.TimeUnit;
 @Transactional
 public class RentalService {
 
+    private static final Logger log = LoggerFactory.getLogger(RentalService.class);
+
     @Inject
     private StationSlotRepository stationSlotRepository;
 
@@ -36,8 +35,6 @@ public class RentalService {
     private UserService userService;
 
     private static int STATION_TIMEOUT_SEC = 10;
-
-    private final Logger log = LoggerFactory.getLogger(RentalService.class);
 
     private ScheduledExecutorService scheduledExecutorService= Executors.newScheduledThreadPool(1);
 
@@ -85,7 +82,10 @@ public class RentalService {
     }
 
     private boolean checkComponents(StationSlot stationSlot, Pedelec pedelec, Customer currentUser) {
-        if (stationSlot.getState() && pedelec != null && pedelec.getState() && currentUser.getIsActivated()) {
+        if (stationSlot.getState()
+                && pedelec != null
+                && pedelec.getState().equals(PedelecState.AVAILABLE)
+                && currentUser.getIsActivated()) {
             return true;
         }
         return false;

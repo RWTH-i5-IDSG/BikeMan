@@ -9,6 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class StationSlotService {
 
-    private final Logger log = LoggerFactory.getLogger(StationSlotService.class);
+    private static final Logger log = LoggerFactory.getLogger(StationSlotService.class);
 
 }

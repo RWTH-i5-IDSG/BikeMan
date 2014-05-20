@@ -4,7 +4,8 @@ import com.codahale.metrics.annotation.Timed;
 import de.rwth.idsg.velocity.domain.Pedelec;
 import de.rwth.idsg.velocity.repository.PedelecRepository;
 import de.rwth.idsg.velocity.service.PedelecService;
-import de.rwth.idsg.velocity.web.rest.dto.PedelecDTO;
+import de.rwth.idsg.velocity.web.rest.dto.CreateEditPedelecDTO;
+import de.rwth.idsg.velocity.web.rest.dto.ViewPedelecDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -21,7 +23,7 @@ import java.util.List;
 @RequestMapping("/app")
 public class PedelecResource {
 
-    private final Logger log = LoggerFactory.getLogger(PedelecResource.class);
+    private static final Logger log = LoggerFactory.getLogger(PedelecResource.class);
 
     @Autowired
     private PedelecRepository pedelecRepository;
@@ -37,7 +39,7 @@ public class PedelecResource {
             produces = "application/json")
     @Timed
 //    public void create(@RequestBody Pedelec pedelec) {
-    public void create(@RequestBody PedelecDTO pedelec) {
+    public void create(@Valid @RequestBody CreateEditPedelecDTO pedelec) {
         log.debug("REST request to save Pedelec : {}", pedelec);
         pedelecService.createPedelec(pedelec);
     }
@@ -49,9 +51,11 @@ public class PedelecResource {
             method = RequestMethod.GET,
             produces = "application/json")
     @Timed
-    public List<Pedelec> getAll() {
-        log.debug("REST request to get all Pedelecs");
-        return pedelecRepository.findAll();
+    public List<ViewPedelecDTO> getAll() {
+        log.info("REST request to get all Pedelecs");
+        List<ViewPedelecDTO> list = pedelecRepository.viewPedelecs();
+        log.info("List: {}", list);
+        return list;
     }
 
     /**
