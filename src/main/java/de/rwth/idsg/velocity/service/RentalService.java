@@ -82,9 +82,9 @@ public class RentalService {
     }
 
     private boolean checkComponents(StationSlot stationSlot, Pedelec pedelec, Customer currentUser) {
-        if (stationSlot.getState()
+        if (stationSlot.getState().equals(OperationState.OPERATIVE)
                 && pedelec != null
-                && pedelec.getState().equals(PedelecState.AVAILABLE)
+                && pedelec.getState().equals(OperationState.OPERATIVE)
                 && currentUser.getIsActivated()) {
             return true;
         }

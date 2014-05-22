@@ -1,8 +1,8 @@
 package de.rwth.idsg.velocity.web.rest;
 
 import de.rwth.idsg.velocity.Application;
-import de.rwth.idsg.velocity.domain.Authority;
-import de.rwth.idsg.velocity.domain.User;
+import de.rwth.idsg.velocity.domain.login.Authority;
+import de.rwth.idsg.velocity.domain.login.User;
 import de.rwth.idsg.velocity.repository.UserRepository;
 import de.rwth.idsg.velocity.security.AuthoritiesConstants;
 import de.rwth.idsg.velocity.service.UserService;

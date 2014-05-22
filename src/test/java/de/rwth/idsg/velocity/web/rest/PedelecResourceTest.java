@@ -1,10 +1,10 @@
 package de.rwth.idsg.velocity.web.rest;
 
 import de.rwth.idsg.velocity.Application;
-import de.rwth.idsg.velocity.domain.PedelecState;
+import de.rwth.idsg.velocity.domain.OperationState;
 import de.rwth.idsg.velocity.repository.PedelecRepository;
 import de.rwth.idsg.velocity.service.PedelecService;
-import de.rwth.idsg.velocity.web.rest.dto.CreateEditPedelecDTO;
+import de.rwth.idsg.velocity.web.rest.dto.modify.CreateEditPedelecDTO;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
@@ -84,8 +84,8 @@ public class PedelecResourceTest {
     @Test
     public void pedelecDtoWithFields() throws Exception {
         CreateEditPedelecDTO ped = new CreateEditPedelecDTO();
-        ped.setPedelecId(UUID.randomUUID().toString());
-        ped.setState(PedelecState.AVAILABLE);
+        ped.setManufacturerId(UUID.randomUUID().toString());
+        ped.setState(OperationState.OPERATIVE);
 
         restPedelecMockMvc.perform(post("/app/rest/pedelecs")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)

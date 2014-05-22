@@ -1,6 +1,7 @@
 package de.rwth.idsg.velocity.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import de.rwth.idsg.velocity.domain.OperationState;
 import de.rwth.idsg.velocity.domain.Station;
 import de.rwth.idsg.velocity.domain.StationSlot;
 import de.rwth.idsg.velocity.repository.StationSlotRepository;
@@ -86,7 +87,7 @@ public class StationSlotResource {
             method = RequestMethod.POST,
             produces = "application/json")
     @Timed
-    public void changeRentState(@PathVariable long id, @RequestParam Boolean state) {
+    public void changeOperationState(@PathVariable long id, @RequestParam OperationState state) {
         StationSlot stationSlot = stationslotRepository.findOne(id);
         stationSlot.setState(state);
         stationslotRepository.save(stationSlot);

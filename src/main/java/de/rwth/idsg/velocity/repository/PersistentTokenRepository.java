@@ -1,7 +1,7 @@
 package de.rwth.idsg.velocity.repository;
 
-import de.rwth.idsg.velocity.domain.PersistentToken;
-import de.rwth.idsg.velocity.domain.User;
+import de.rwth.idsg.velocity.domain.login.PersistentToken;
+import de.rwth.idsg.velocity.domain.login.User;
 import org.joda.time.LocalDate;
 import org.springframework.data.jpa.repository.JpaRepository;
 

@@ -1,7 +1,7 @@
 package de.rwth.idsg.velocity.service;
 
 import de.rwth.idsg.velocity.config.audit.AuditEventConverter;
-import de.rwth.idsg.velocity.domain.PersistentAuditEvent;
+import de.rwth.idsg.velocity.domain.login.PersistentAuditEvent;
 import de.rwth.idsg.velocity.repository.PersistenceAuditEventRepository;
 import org.joda.time.LocalDateTime;
 import org.springframework.boot.actuate.audit.AuditEvent;

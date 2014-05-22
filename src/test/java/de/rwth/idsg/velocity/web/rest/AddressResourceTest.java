@@ -31,6 +31,8 @@ import de.rwth.idsg.velocity.Application;
 import de.rwth.idsg.velocity.domain.Address;
 import de.rwth.idsg.velocity.repository.AddressRepository;
 
+import java.util.Random;
+
 
 /**
  * Test class for the AddressResource REST controller.
@@ -72,7 +74,7 @@ public class AddressResourceTest {
         this.restAddressMockMvc = MockMvcBuilders.standaloneSetup(addressResource).build();
 
         address = new Address();
-        address.setId(DEFAULT_ID);
+        address.setAddressId(new Random().nextLong());
 //    	address.setSampleDateAttribute(DEFAULT_SAMPLE_DATE_ATTR);
 //    	address.setSampleTextAttribute(DEFAULT_SAMPLE_TEXT_ATTR);
     }

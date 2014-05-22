@@ -1,3 +1,3 @@
-login;firstname;lastname;address_id;birthday;card_id;customer_id;is_activated;mail_address
+login;first_name;last_name;address_id;birthday;card_id;customer_id;is_activated;mail_address
 admin;NULL;Administrator;NULL;NULL;NULL;NULL;NULL;NULL
 user;NULL;User;NULL;NULL;NULL;NULL;NULL;NULL

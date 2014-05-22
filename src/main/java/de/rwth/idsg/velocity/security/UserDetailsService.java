@@ -1,7 +1,7 @@
 package de.rwth.idsg.velocity.security;
 
-import de.rwth.idsg.velocity.domain.Authority;
-import de.rwth.idsg.velocity.domain.User;
+import de.rwth.idsg.velocity.domain.login.Authority;
+import de.rwth.idsg.velocity.domain.login.User;
 import de.rwth.idsg.velocity.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

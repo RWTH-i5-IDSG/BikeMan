@@ -1,4 +1,4 @@
-package de.rwth.idsg.velocity.domain;
+package de.rwth.idsg.velocity.domain.login;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;

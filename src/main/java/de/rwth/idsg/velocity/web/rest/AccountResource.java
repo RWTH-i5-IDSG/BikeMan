@@ -1,9 +1,9 @@
 package de.rwth.idsg.velocity.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import de.rwth.idsg.velocity.domain.Authority;
-import de.rwth.idsg.velocity.domain.PersistentToken;
-import de.rwth.idsg.velocity.domain.User;
+import de.rwth.idsg.velocity.domain.login.Authority;
+import de.rwth.idsg.velocity.domain.login.PersistentToken;
+import de.rwth.idsg.velocity.domain.login.User;
 import de.rwth.idsg.velocity.repository.PersistentTokenRepository;
 import de.rwth.idsg.velocity.repository.UserRepository;
 import de.rwth.idsg.velocity.security.SecurityUtils;
@@ -12,7 +12,6 @@ import de.rwth.idsg.velocity.web.rest.dto.UserDTO;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;

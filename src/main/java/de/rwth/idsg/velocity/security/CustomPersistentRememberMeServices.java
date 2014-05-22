@@ -1,7 +1,7 @@
 package de.rwth.idsg.velocity.security;
 
-import de.rwth.idsg.velocity.domain.PersistentToken;
-import de.rwth.idsg.velocity.domain.User;
+import de.rwth.idsg.velocity.domain.login.PersistentToken;
+import de.rwth.idsg.velocity.domain.login.User;
 import de.rwth.idsg.velocity.repository.PersistentTokenRepository;
 import de.rwth.idsg.velocity.repository.UserRepository;
 import org.joda.time.LocalDate;

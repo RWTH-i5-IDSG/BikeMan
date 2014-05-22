@@ -1,6 +1,10 @@
 package de.rwth.idsg.velocity.domain;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -8,113 +12,45 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Set;
 
-/**
- * A Pedelec.
- */
+
 @Entity
 @Table(name = "T_PEDELEC")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@EqualsAndHashCode(of = {"pedelecId", "manufacturerId"})
+@ToString(includeFieldNames = true)
 public class Pedelec implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE)
-    private long id;
-
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "pedelec_id")
-    private String pedelecId;
+    @Getter @Setter
+    private long pedelecId;
+
+    @Column(name = "manufacturer_id")
+    @Getter @Setter
+    private String manufacturerId;
 
     @Column(name = "state_of_charge")
+    @Getter @Setter
     private Float stateOfCharge;
+
+    @Column(name = "in_transaction")
+    @Getter @Setter
+    private Boolean inTransaction;
 
     @Column(name = "state")
     @Enumerated(EnumType.STRING)
-    private PedelecState state;
+    @Getter @Setter
+    private OperationState state;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "pedelec")
     @JsonManagedReference("pedelec_transactions")
+    @Getter @Setter
     private Set<Transaction> transactions;
 
     @OneToOne(mappedBy = "pedelec")
     @JsonManagedReference("pedelec_station_slot")
+    @Getter @Setter
     private StationSlot stationSlot;
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getPedelecId() {
-        return pedelecId;
-    }
-
-    public void setPedelecId(String pedelecId) {
-        this.pedelecId = pedelecId;
-    }
-
-    public Float getStateOfCharge() {
-        return stateOfCharge;
-    }
-
-    public void setStateOfCharge(Float stateOfCharge) {
-        this.stateOfCharge = stateOfCharge;
-    }
-
-    public PedelecState getState() {
-        return state;
-    }
-
-    public void setState(PedelecState state) {
-        this.state = state;
-    }
-
-    public Set<Transaction> getTransactions() {
-        return transactions;
-    }
-
-    public void setTransactions(Set<Transaction> transactions) {
-        this.transactions = transactions;
-    }
-
-    public StationSlot getStationSlot() {
-        return stationSlot;
-    }
-
-    public void setStationSlot(StationSlot stationSlot) {
-        this.stationSlot = stationSlot;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        Pedelec pedelec = (Pedelec) o;
-
-        if (id != pedelec.id) {
-            return false;
-        }
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        return (int) (id ^ (id >>> 32));
-    }
-
-    @Override
-    public String toString() {
-        return "Pedelec{" +
-                "id=" + id +
-//                ", sampleTextAttribute='" + sampleTextAttribute + '\'' +
-//                ", sampleDateAttribute=" + sampleDateAttribute +
-                '}';
-    }
 }

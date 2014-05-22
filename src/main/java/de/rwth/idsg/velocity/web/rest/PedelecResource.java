@@ -4,8 +4,8 @@ import com.codahale.metrics.annotation.Timed;
 import de.rwth.idsg.velocity.domain.Pedelec;
 import de.rwth.idsg.velocity.repository.PedelecRepository;
 import de.rwth.idsg.velocity.service.PedelecService;
-import de.rwth.idsg.velocity.web.rest.dto.CreateEditPedelecDTO;
-import de.rwth.idsg.velocity.web.rest.dto.ViewPedelecDTO;
+import de.rwth.idsg.velocity.web.rest.dto.modify.CreateEditPedelecDTO;
+import de.rwth.idsg.velocity.web.rest.dto.view.ViewPedelecDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,9 +65,9 @@ public class PedelecResource {
             method = RequestMethod.GET,
             produces = "application/json")
     @Timed
-    public Pedelec get(@PathVariable Long id, HttpServletResponse response) {
-        log.debug("REST request to get Pedelec : {}", id);
-        Pedelec pedelec = pedelecRepository.findOne(id);
+    public Pedelec get(@PathVariable Long pedelecId, HttpServletResponse response) {
+        log.debug("REST request to get Pedelec : {}", pedelecId);
+        Pedelec pedelec = pedelecRepository.findOne(pedelecId);
         if (pedelec == null) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
         }

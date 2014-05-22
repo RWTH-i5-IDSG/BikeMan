@@ -1,4 +1,4 @@
-package de.rwth.idsg.velocity.domain;
+package de.rwth.idsg.velocity.domain.login;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;

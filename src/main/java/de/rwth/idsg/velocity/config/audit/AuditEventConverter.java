@@ -1,6 +1,6 @@
 package de.rwth.idsg.velocity.config.audit;
 
-import de.rwth.idsg.velocity.domain.PersistentAuditEvent;
+import de.rwth.idsg.velocity.domain.login.PersistentAuditEvent;
 import org.springframework.boot.actuate.audit.AuditEvent;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;

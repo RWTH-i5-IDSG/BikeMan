@@ -1,6 +1,6 @@
 package de.rwth.idsg.velocity.repository;
 
-import de.rwth.idsg.velocity.domain.Authority;
+import de.rwth.idsg.velocity.domain.login.Authority;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**

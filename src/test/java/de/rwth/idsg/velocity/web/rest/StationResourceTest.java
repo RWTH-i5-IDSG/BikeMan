@@ -34,6 +34,7 @@ import de.rwth.idsg.velocity.repository.StationRepository;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Random;
 
 
 /**
@@ -84,7 +85,7 @@ public class StationResourceTest {
         this.restStationMockMvc = MockMvcBuilders.standaloneSetup(stationResource).build();
 
         station = new Station();
-        station.setId(DEFAULT_ID);
+        station.setStationId(new Random().nextLong());
         station.setLocationLatitude(DEFAULT_SAMPLE_NUMBER_ATTR);
         station.setLocationLongitude(DEFAULT_SAMPLE_NUMBER_ATTR);
         station.setName(DEFAULT_SAMPLE_TEXT_ATTR);
@@ -94,7 +95,7 @@ public class StationResourceTest {
         address.setStreetAndHousenumber(DEFAULT_SAMPLE_TEXT_ATTR);
         address.setCity(DEFAULT_SAMPLE_TEXT_ATTR);
         address.setCountry(DEFAULT_SAMPLE_TEXT_ATTR);
-        address.setId(DEFAULT_ID);
+        address.setAddressId(new Random().nextLong());
         address.setZip(DEFAULT_SAMPLE_TEXT_ATTR);
 
         station.setAddress(address);
