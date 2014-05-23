@@ -21,12 +21,13 @@ import java.io.Serializable;
 @Entity
 @Table(name = "T_TRANSACTION")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@TableGenerator(name="transaction_gen", initialValue=0, allocationSize=1)
 @EqualsAndHashCode(of = {"transactionId"})
 @ToString(includeFieldNames = true)
 public class Transaction implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.TABLE, generator = "transaction_gen")
     @Column(name = "transaction_id")
     @Getter @Setter
     private long transactionId;

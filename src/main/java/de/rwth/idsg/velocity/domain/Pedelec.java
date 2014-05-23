@@ -16,12 +16,13 @@ import java.util.Set;
 @Entity
 @Table(name = "T_PEDELEC")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@TableGenerator(name="pedelec_gen", initialValue=0, allocationSize=1)
 @EqualsAndHashCode(of = {"pedelecId", "manufacturerId"})
 @ToString(includeFieldNames = true)
 public class Pedelec implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.TABLE, generator = "pedelec_gen")
     @Column(name = "pedelec_id")
     @Getter @Setter
     private long pedelecId;

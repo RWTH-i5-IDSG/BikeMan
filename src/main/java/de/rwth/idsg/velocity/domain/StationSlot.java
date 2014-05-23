@@ -15,12 +15,13 @@ import java.io.Serializable;
 @Entity
 @Table(name = "T_STATION_SLOT")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@TableGenerator(name="slot_gen", initialValue=0, allocationSize=1)
 @EqualsAndHashCode(of = {"stationSlotId"})
 @ToString(includeFieldNames = true)
 public class StationSlot implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.TABLE, generator = "slot_gen")
     @Column(name = "station_slot_id")
     @Getter @Setter
     private long stationSlotId;

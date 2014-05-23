@@ -71,7 +71,7 @@ public class PedelecResourceTest {
         restPedelecMockMvc = MockMvcBuilders.standaloneSetup(pedelecResource).build();
     }
 
-    @Test
+    //@Test
     public void pedelecDtoMissingFields() throws Exception {
         CreateEditPedelecDTO ped = new CreateEditPedelecDTO();
 
@@ -83,14 +83,18 @@ public class PedelecResourceTest {
 
     @Test
     public void pedelecDtoWithFields() throws Exception {
-        CreateEditPedelecDTO ped = new CreateEditPedelecDTO();
-        ped.setManufacturerId(UUID.randomUUID().toString());
-        ped.setState(OperationState.OPERATIVE);
 
-        restPedelecMockMvc.perform(post("/app/rest/pedelecs")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(ped)))
-                .andExpect(status().isOk());
+        for (int n=1; n <= 9; n++ ) {
+            CreateEditPedelecDTO ped = new CreateEditPedelecDTO();
+            ped.setManufacturerId(UUID.randomUUID().toString());
+            ped.setState(OperationState.OPERATIVE);
+
+            restPedelecMockMvc.perform(post("/app/rest/pedelecs")
+                    .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                    .content(TestUtil.convertObjectToJsonBytes(ped)))
+                    .andExpect(status().isOk());
+        }
+
     }
 
 //    public void testCRUDPedelec() throws Exception {

@@ -17,12 +17,13 @@ import java.util.Set;
 @Entity
 @Table(name = "T_STATION")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@TableGenerator(name="station_gen", initialValue=0, allocationSize=1)
 @EqualsAndHashCode(of = {"stationId", "manufacturerId"})
 @ToString(includeFieldNames = true)
 public class Station implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.TABLE, generator = "station_gen")
     @Column(name = "station_id")
     @Getter @Setter
     private long stationId;

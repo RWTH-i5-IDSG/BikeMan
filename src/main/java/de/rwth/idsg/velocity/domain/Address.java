@@ -14,12 +14,13 @@ import java.io.Serializable;
 @Entity
 @Table(name = "T_ADDRESS")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@TableGenerator(name="address_gen", initialValue=0, allocationSize=1)
 @ToString(includeFieldNames = true)
 @EqualsAndHashCode(of = {"addressId"})
 public class Address implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.TABLE, generator = "address_gen")
     @Column(name = "address_id")
     @Getter @Setter
     private long addressId;
