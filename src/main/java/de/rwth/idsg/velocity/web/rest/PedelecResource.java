@@ -31,18 +31,6 @@ public class PedelecResource {
     @Inject
     private PedelecService pedelecService;
 
-    /**
-     * POST  /rest/pedelecs -> Create a new pedelec.
-     */
-    @RequestMapping(value = "/rest/pedelecs",
-            method = RequestMethod.POST,
-            produces = "application/json")
-    @Timed
-//    public void create(@RequestBody Pedelec pedelec) {
-    public void create(@Valid @RequestBody CreateEditPedelecDTO pedelec) {
-        log.debug("REST request to save Pedelec : {}", pedelec);
-        pedelecService.createPedelec(pedelec);
-    }
 
     /**
      * GET  /rest/pedelecs -> get all the pedelecs.
@@ -72,6 +60,32 @@ public class PedelecResource {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
         }
         return pedelec;
+    }
+
+    /**
+     * POST  /rest/pedelecs -> Create a new pedelec.
+     */
+    @RequestMapping(value = "/rest/pedelecs",
+            method = RequestMethod.POST,
+            produces = "application/json")
+    @Timed
+//    public void create(@RequestBody Pedelec pedelec) {
+    public void create(@Valid @RequestBody CreateEditPedelecDTO pedelec) {
+        log.debug("REST request to save Pedelec : {}", pedelec);
+        pedelecService.createPedelec(pedelec);
+    }
+
+    /**
+     * PUT  /rest/pedelecs/:id -> update the "id" pedelec.
+     */
+    @RequestMapping(value = "/rest/pedelecs/{id}",
+            method = RequestMethod.PUT,
+            produces = "application/json")
+    @Timed
+    public void update(@PathVariable Long pedelecId, @RequestBody CreateEditPedelecDTO pedelec) {
+        log.debug("REST request to update Pedelec : {}", pedelecId);
+
+        pedelecRepository.update(pedelec);
     }
 
     /**

@@ -14,28 +14,51 @@ public class ViewPedelecDTO {
     @Getter private String manufacturerId;
     @Getter private Float stateOfCharge;
     @Getter private OperationState state;
-    @Getter private ViewStationSlotDTO stationSlot;
+    @Getter
+    private Boolean inTransaction;
+    @Getter
+    private ViewStationDTO stationSlot;
+    @Getter
+    private ViewCustomerDTO customer;
 
     public ViewPedelecDTO(Long pedelecId, String manufacturerId, Float stateOfCharge,
-                          OperationState state, Long stationSlotId, Long stationId, Boolean stationSlotState) {
+                          OperationState state, Boolean inTransaction, Long stationId, String stationManufacturerId, Integer stationSlotPosition, Long customerId, String customerFullName) {
         this.pedelecId = pedelecId;
         this.manufacturerId = manufacturerId;
         this.stateOfCharge = stateOfCharge;
         this.state = state;
-        this.stationSlot = new ViewStationSlotDTO(stationSlotId, stationId, stationSlotState);
+        this.inTransaction = inTransaction;
+        this.stationSlot = new ViewStationDTO(stationId, stationManufacturerId, stationSlotPosition);
+        this.customer = new ViewCustomerDTO(customerId, customerFullName);
     }
 
     @ToString(callSuper = true, includeFieldNames = true)
-    class ViewStationSlotDTO {
+    class ViewStationDTO {
 
         @Getter private Long id;
-        @Getter private Long stationId;
-        @Getter private Boolean state;
+        @Getter
+        private String stationManufacturerId;
+        @Getter
+        private Integer stationSlotPosition;
 
-        ViewStationSlotDTO(Long id, Long stationId, Boolean state) {
+        ViewStationDTO(Long id, String stationManufacturerId, Integer stationSlotPosition) {
             this.id = id;
-            this.stationId = stationId;
-            this.state = state;
+            this.stationManufacturerId = stationManufacturerId;
+            this.stationSlotPosition = stationSlotPosition;
+        }
+    }
+
+    @ToString(callSuper = true, includeFieldNames = true)
+    class ViewCustomerDTO {
+
+        @Getter
+        private Long id;
+        @Getter
+        private String fullname;
+
+        ViewCustomerDTO(Long id, String fullname) {
+            this.id = id;
+            this.fullname = fullname;
         }
     }
 }
