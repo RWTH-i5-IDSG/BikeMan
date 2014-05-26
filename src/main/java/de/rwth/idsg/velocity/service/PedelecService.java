@@ -23,14 +23,14 @@ public class PedelecService {
     private PedelecRepository pedelecRepository;
 
     public void createPedelec(CreateEditPedelecDTO dto) {
-
-        Pedelec pedelec = new Pedelec();
-        pedelec.setState(dto.getState());
-        pedelec.setStateOfCharge(1.0f);
-        pedelec.setManufacturerId(dto.getManufacturerId());
-
-        pedelecRepository.save(pedelec);
-
-        log.debug("Created new Pedelec {}", pedelec);
+//
+//        Pedelec pedelec = new Pedelec();
+//        pedelec.setState(dto.getState());
+//        pedelec.setStateOfCharge(1.0f);
+//        pedelec.setManufacturerId(dto.getManufacturerId());
+//
+//        pedelecRepository.create(pedelec);
+//
+//        log.debug("Created new Pedelec {}", pedelec);
     }
 }

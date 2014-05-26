@@ -28,9 +28,6 @@ public class PedelecResource {
     @Autowired
     private PedelecRepository pedelecRepository;
 
-    @Inject
-    private PedelecService pedelecService;
-
 
     /**
      * GET  /rest/pedelecs -> get all the pedelecs.
@@ -41,7 +38,7 @@ public class PedelecResource {
     @Timed
     public List<ViewPedelecDTO> getAll() {
         log.info("REST request to get all Pedelecs");
-        List<ViewPedelecDTO> list = pedelecRepository.viewPedelecs();
+        List<ViewPedelecDTO> list = pedelecRepository.findAll();
         log.info("List: {}", list);
         return list;
     }
@@ -72,7 +69,7 @@ public class PedelecResource {
 //    public void create(@RequestBody Pedelec pedelec) {
     public void create(@Valid @RequestBody CreateEditPedelecDTO pedelec) {
         log.debug("REST request to save Pedelec : {}", pedelec);
-        pedelecService.createPedelec(pedelec);
+        pedelecRepository.create(pedelec);
     }
 
     /**
@@ -84,7 +81,6 @@ public class PedelecResource {
     @Timed
     public void update(@PathVariable Long pedelecId, @RequestBody CreateEditPedelecDTO pedelec) {
         log.debug("REST request to update Pedelec : {}", pedelecId);
-
         pedelecRepository.update(pedelec);
     }
 
