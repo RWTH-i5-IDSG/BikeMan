@@ -2,7 +2,7 @@ package de.rwth.idsg.velocity.web.rest.dto.view;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import de.rwth.idsg.velocity.domain.Customer;
-import de.rwth.idsg.velocity.domain.util.CustomLocalDateTimeSerializer;
+import de.rwth.idsg.velocity.web.rest.dto.util.CustomLocalDateTimeSerializer;
 import lombok.Getter;
 import lombok.ToString;
 import org.joda.time.LocalDateTime;

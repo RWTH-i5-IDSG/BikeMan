@@ -1,11 +1,6 @@
 package de.rwth.idsg.velocity.domain;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.joda.deser.LocalDateDeserializer;
 import de.rwth.idsg.velocity.domain.login.User;
-import de.rwth.idsg.velocity.domain.util.CustomLocalDateSerializer;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -47,8 +42,6 @@ public class Customer extends User implements Serializable {
     private Address address;
 
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDate")
-    @JsonDeserialize(using = LocalDateDeserializer.class)
-    @JsonSerialize(using = CustomLocalDateSerializer.class)
     @Column(name = "birthday")
     @Getter @Setter
     private LocalDate birthday;
@@ -70,7 +63,6 @@ public class Customer extends User implements Serializable {
     private Integer cardPin;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "customer", orphanRemoval = true)
-    @JsonManagedReference("customer_transactions")
     @Getter @Setter
     private Set<Transaction> transactions;
 

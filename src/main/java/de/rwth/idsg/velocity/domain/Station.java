@@ -1,6 +1,5 @@
 package de.rwth.idsg.velocity.domain;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -42,7 +41,6 @@ public class Station implements Serializable {
     private Address address;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "station", orphanRemoval = true)
-    @JsonManagedReference("station_station_slots")
     @Getter @Setter
     private Set<StationSlot> stationSlots;
 

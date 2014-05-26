@@ -1,6 +1,5 @@
 package de.rwth.idsg.velocity.domain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -40,13 +39,11 @@ public class StationSlot implements Serializable {
     private Boolean isOccupied;
 
     @OneToOne
-    @JsonBackReference("pedelec_station_slot")
     @JoinColumn(name = "pedelec_id")
     @Getter @Setter
     private Pedelec pedelec;
 
     @ManyToOne
-    @JsonBackReference("station_station_slots")
     @JoinColumn(name = "station_id")
     @Getter @Setter
     private Station station;

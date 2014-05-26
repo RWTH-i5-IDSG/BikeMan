@@ -1,6 +1,5 @@
 package de.rwth.idsg.velocity.domain;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -45,12 +44,10 @@ public class Pedelec implements Serializable {
     private OperationState state;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "pedelec")
-    @JsonManagedReference("pedelec_transactions")
     @Getter @Setter
     private Set<Transaction> transactions;
 
     @OneToOne(mappedBy = "pedelec")
-    @JsonManagedReference("pedelec_station_slot")
     @Getter @Setter
     private StationSlot stationSlot;
 

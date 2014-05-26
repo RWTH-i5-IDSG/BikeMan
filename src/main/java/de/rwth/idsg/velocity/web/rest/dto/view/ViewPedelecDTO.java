@@ -1,6 +1,8 @@
 package de.rwth.idsg.velocity.web.rest.dto.view;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import de.rwth.idsg.velocity.domain.OperationState;
+import de.rwth.idsg.velocity.web.rest.dto.util.CustomLocalDateTimeSerializer;
 import lombok.Getter;
 import lombok.ToString;
 import org.joda.time.LocalDateTime;
@@ -66,7 +68,10 @@ public class ViewPedelecDTO {
         @Getter private String customerName;
         @Getter private Long lastStationId;
         @Getter private Long lastStationSlotPosition;
-        @Getter private LocalDateTime startDateTime;
+
+        @Getter
+        @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+        private LocalDateTime startDateTime;
 
         ViewTransactionDTO(String id, String customerName, Long lastStationId, Long lastStationSlotPosition, LocalDateTime startDateTime) {
             this.id = id;

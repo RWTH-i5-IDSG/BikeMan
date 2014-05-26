@@ -1,24 +1,23 @@
-package de.rwth.idsg.velocity.domain.util;
+package de.rwth.idsg.velocity.web.rest.dto.util;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.io.IOException;
 
 /**
- * Custom Jackson serializer for displaying Joda Time dates.
+ * Created by swam on 04/05/14.
  */
-public class CustomLocalDateSerializer extends JsonSerializer<LocalDate> {
+public class CustomLocalDateTimeSerializer extends JsonSerializer<LocalDateTime> {
 
-    private static DateTimeFormatter formatter =
-            DateTimeFormat.forPattern("yyyy-MM-dd");
+    private static DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z");
 
     @Override
-    public void serialize(LocalDate value, JsonGenerator generator,
+    public void serialize(LocalDateTime value, JsonGenerator generator,
                           SerializerProvider serializerProvider)
             throws IOException {
 
