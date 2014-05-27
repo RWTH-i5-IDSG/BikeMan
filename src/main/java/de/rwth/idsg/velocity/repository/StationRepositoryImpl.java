@@ -58,7 +58,7 @@ public class StationRepositoryImpl implements StationRepository {
                         ),
                         builder.count(occ)
                 )
-        ).groupBy(root.get("stationId"));
+        ).groupBy(root.get("stationId"), add.get("addressId"));
         return em.createQuery(criteria).getResultList();
     }
 
