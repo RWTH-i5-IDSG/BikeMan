@@ -1,22 +1,23 @@
 package de.rwth.idsg.velocity.web.rest;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import javax.inject.Inject;
-
+import de.rwth.idsg.velocity.Application;
 import de.rwth.idsg.velocity.domain.Address;
-import org.joda.time.LocalDate;
+import de.rwth.idsg.velocity.domain.OperationState;
+import de.rwth.idsg.velocity.repository.StationRepository;
+import de.rwth.idsg.velocity.web.rest.dto.modify.CreateEditStationDTO;
+import de.rwth.idsg.velocity.web.rest.dto.view.ViewStationDTO;
+import org.apache.commons.lang.RandomStringUtils;
 import org.junit.Before;
+import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -28,13 +29,14 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import de.rwth.idsg.velocity.Application;
-import de.rwth.idsg.velocity.domain.Station;
-import de.rwth.idsg.velocity.repository.StationRepository;
-
+import javax.inject.Inject;
 import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.Random;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 /**
@@ -49,32 +51,21 @@ import java.util.Random;
         DirtiesContextTestExecutionListener.class,
         TransactionalTestExecutionListener.class})
 @ActiveProfiles("dev")
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class StationResourceTest {
 
-    private static final Long DEFAULT_ID = new Long(1L);
-
-    private static final LocalDate DEFAULT_SAMPLE_DATE_ATTR = new LocalDate(0L);
-
-    private static final LocalDate UPD_SAMPLE_DATE_ATTR = new LocalDate();
-
-    private static final String DEFAULT_SAMPLE_TEXT_ATTR = "sampleTextAttribute";
-
-    private static final String UPD_SAMPLE_TEXT_ATTR = "sampleTextAttributeUpt";
-
-    private static final BigDecimal DEFAULT_SAMPLE_NUMBER_ATTR = new BigDecimal(0.1234);
-
-    private static final BigDecimal UPD_SAMPLE_NUMBER_ATTR = new BigDecimal(0.4321);
-
-    private static final Boolean DEFAULT_SAMPLE_BOOLEAN_ATTR = true;
-
-    private static final Boolean UPD_SAMPLE_BOOLEAN_ATTR = false;
+    private String BASE_PATH = "/app/rest/stations";
+    private String ID_PATH = "/app/rest/stations/{id}";
+    private int REPEAT_COUNT = 10;
+    private Long STATION_ID = 5L;
 
     @Inject
     private StationRepository stationRepository;
 
-    private MockMvc restStationMockMvc;
+    @Captor
+    private ArgumentCaptor<ArrayList<ViewStationDTO>> captor;
 
-    private Station station;
+    private MockMvc restStationMockMvc;
 
     @Before
     public void setup() {
@@ -83,28 +74,65 @@ public class StationResourceTest {
         ReflectionTestUtils.setField(stationResource, "stationRepository", stationRepository);
 
         this.restStationMockMvc = MockMvcBuilders.standaloneSetup(stationResource).build();
-
-//        station = new Station();
-//        station.setStationId(new Random().nextLong());
-//        station.setLocationLatitude(DEFAULT_SAMPLE_NUMBER_ATTR);
-//        station.setLocationLongitude(DEFAULT_SAMPLE_NUMBER_ATTR);
-//        station.setName(DEFAULT_SAMPLE_TEXT_ATTR);
-//        station.setNote(DEFAULT_SAMPLE_TEXT_ATTR);
-//
-//        Address address = new Address();
-//        address.setStreetAndHousenumber(DEFAULT_SAMPLE_TEXT_ATTR);
-//        address.setCity(DEFAULT_SAMPLE_TEXT_ATTR);
-//        address.setCountry(DEFAULT_SAMPLE_TEXT_ATTR);
-//        address.setAddressId(new Random().nextLong());
-//        address.setZip(DEFAULT_SAMPLE_TEXT_ATTR);
-//
-//        station.setAddress(address);
-//        station.setState(DEFAULT_SAMPLE_BOOLEAN_ATTR);
-
     }
 
     @Test
-    public void testCRUDStation() throws Exception {
+    public void test1_createStation() throws Exception {
+        for (int n=1; n <= REPEAT_COUNT; n++ ) {
+            Address add = new Address();
+            add.setStreetAndHousenumber(RandomStringUtils.randomAlphanumeric(8));
+            add.setCity(RandomStringUtils.randomAlphabetic(8));
+            add.setCountry(RandomStringUtils.randomAlphabetic(8));
+            add.setZip(RandomStringUtils.randomAlphabetic(4));
+
+            CreateEditStationDTO dto = new CreateEditStationDTO();
+            dto.setManufacturerId(UUID.randomUUID().toString());
+            dto.setName(RandomStringUtils.randomAlphabetic(8));
+            dto.setLocationLatitude(new BigDecimal(Math.random()));
+            dto.setLocationLongitude(new BigDecimal(Math.random()));
+            dto.setName(RandomStringUtils.randomAlphabetic(15));
+            dto.setNote(RandomStringUtils.randomAlphabetic(30));
+            dto.setState(OperationState.OPERATIVE);
+            dto.setAddress(add);
+
+            restStationMockMvc.perform(post(BASE_PATH)
+                    .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                    .content(TestUtil.convertObjectToJsonBytes(dto)))
+                    .andExpect(status().isOk());
+        }
+    }
+
+
+    /*
+    * Adding stations to DB is not enough. Station slot table must also be filled with
+    * values. Otherwise, the result of the method will be an empty list.
+    */
+    @Test
+    public void test2_findAllStations() throws Exception {
+        restStationMockMvc.perform(get(BASE_PATH))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void test3_findOneStation() throws Exception {
+        restStationMockMvc.perform(get(ID_PATH, STATION_ID))
+                .andExpect(status().isOk());
+    }
+
+    @Ignore
+    public void test4_updateStation() throws Exception {
+        // TODO
+    }
+
+    @Test
+    public void test5_deleteStation() throws Exception {
+        restStationMockMvc.perform(delete(ID_PATH, STATION_ID)
+                .accept(TestUtil.APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk());
+    }
+
+//    @Test
+//    public void testCRUDStation() throws Exception {
 //
 //        // Create Station
 //        restStationMockMvc.perform(post("/app/rest/stations")
@@ -127,8 +155,7 @@ public class StationResourceTest {
 //        station.setNote(UPD_SAMPLE_TEXT_ATTR);
 //        station.setState(UPD_SAMPLE_BOOLEAN_ATTR);
 
-        restStationMockMvc.perform(get("/app/rest/stations"))
-                .andExpect(status().isOk());
+
 
 //        // Read updated Station
 //        restStationMockMvc.perform(get("/app/rest/stations/{id}", DEFAULT_ID))
@@ -156,6 +183,7 @@ public class StationResourceTest {
 //                .contentType(TestUtil.APPLICATION_JSON_UTF8)
 //                .content(TestUtil.convertObjectToJsonBytes(UPD_SAMPLE_BOOLEAN_ATTR)))
 //                .andExpect(status().isOk());
+//
+//    }
 
-    }
 }
