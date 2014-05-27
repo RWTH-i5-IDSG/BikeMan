@@ -31,8 +31,8 @@ authentication:
     oauth:
         clientid: velocityapp
         secret: mySecretOAuthSecret
-        # Token is valid 30 minutes
-        tokenValidityInSeconds: 1800
+        # Token is valid 3000 minutes
+        tokenValidityInSeconds: 180000
 
 swagger:
     apiDocsLocation: http://localhost:8080
