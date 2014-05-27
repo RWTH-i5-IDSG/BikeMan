@@ -5,33 +5,21 @@ velocityApp.controller('StationController', ['$scope', 'resolvedStation', 'Stati
 
         $scope.stations = resolvedStation;
 
-        $scope.create = function () {
 
-//            $scope.geocoder = new google.maps.Geocoder();
+//        $scope.update = function () {
+//            Station.update($scope.station,
+//                function () {
+//                    $scope.stations = Station.query();
+//                    $('editStationModal').hideModal();
+//                    $scope.clear;
+//                });
+//        }
 
-            console.log($scope.station);
-            Station.save($scope.station,
-                function () {
-                    $scope.stations = Station.query();
-                    $('#saveStationModal').modal('hide');
-                    $scope.clear();
-                });
-        };
-
-        $scope.update = function () {
-            Station.update($scope.station,
-                function () {
-                    $scope.stations = Station.query();
-                    $('editStationModal').hideModal();
-                    $scope.clear;
-                });
-        }
-
-        $scope.showUpdate = function (id) {
-            $scope.station = CreateEditStation.get({id: id});
-            console.log($scope.station);
-            $('#saveStationModal').modal('show');
-        };
+//        $scope.showUpdate = function (id) {
+//            $scope.station = CreateEditStation.get({id: id});
+//            console.log($scope.station);
+//            $('#saveStationModal').modal('show');
+//        };
 
         $scope.delete = function (id) {
             Station.delete({id: id},
@@ -53,5 +41,23 @@ velocityApp.controller('StationDetailController', ['$scope', 'resolvedStation', 
 
         $scope.station = resolvedStation;
 
+
+    }]);
+
+velocityApp.controller('StationCreateController', ['$scope', 'Station',
+    function ($scope, Station)  {
+
+        $scope.station = null;
+
+        $scope.create = function () {
+            Station.save($scope.station,
+                function () {
+                    $scope.clear();
+                });
+        };
+
+        $scope.clear = function () {
+            $scope.station = null;
+        };
 
     }]);

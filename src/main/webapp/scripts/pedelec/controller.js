@@ -31,3 +31,31 @@ velocityApp.controller('PedelecController', ['$scope', 'resolvedPedelec', 'Pedel
             $scope.pedelec = {"manufacturerId": null, "state": null};
         };
     }]);
+
+
+velocityApp.controller('PedelecDetailController', ['$scope', 'resolvedPedelec', 'Pedelec',
+    function ($scope, resolvedPedelec, Pedelec) {
+
+        $scope.pedelec = resolvedPedelec;
+
+
+    }]);
+
+velocityApp.controller('PedelecCreateController', ['$scope', 'Pedelec',
+    function ($scope, Pedelec)  {
+
+        $scope.pedelec = null;
+
+        $scope.create = function () {
+            Pedelec.save($scope.pedelec,
+                function () {
+                    $scope.clear();
+                });
+        };
+
+        $scope.clear = function () {
+            $scope.pedelec = null;
+        };
+
+    }]);
+

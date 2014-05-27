@@ -17,8 +17,8 @@ velocityApp
                         authorizedRoles: [USER_ROLES.all]
                     }
                 })
-                .state('.stationId', {
-                    url: '/:stationId',
+                .state('stationDetail', {
+                    url: 'stations/:stationId',
                     templateUrl: 'views/stationDetail.html',
                     controller: 'StationDetailController',
                     resolve:{
@@ -28,10 +28,14 @@ velocityApp
                     },
                     access: {
                         authorizedRoles: [USER_ROLES.all]
-                    },
-                    parent: 'stations'
+                    }
+                })
+                .state('stationCreate', {
+                    url: '/stations/create',
+                    templateUrl: 'views/stationCreate.html',
+                    controller: 'StationCreateController',
+                    access: {
+                        authorizedRoles: [USER_ROLES.all]
+                    }
                 })
         }]);
-
-// Station.get({id: idparam})
-//$route.current.params.Id
