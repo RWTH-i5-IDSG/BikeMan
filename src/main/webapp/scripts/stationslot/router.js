@@ -1,10 +1,11 @@
 'use strict';
 
 velocityApp
-    .config(['$routeProvider', '$httpProvider', '$translateProvider',
-        function ($routeProvider, $httpProvider, $translateProvider) {
-            $routeProvider
-                .when('/stationslot', {
+    .config(['$stateProvider', '$httpProvider', '$translateProvider',
+        function ($stateProvider, $httpProvider, $translateProvider) {
+            $stateProvider
+                .state('stationslot', {
+                    url: '/stationslot',
                     templateUrl: 'views/stationslots.html',
                     controller: 'StationSlotController',
                     resolve:{

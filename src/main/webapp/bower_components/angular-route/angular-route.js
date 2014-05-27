@@ -263,7 +263,7 @@ function $RouteProvider(){
      *
      * Requires the {@link ngRoute `ngRoute`} module to be installed.
      *
-     * You can define routes through {@link ngRoute.$routeProvider $routeProvider}'s API.
+     * You can define routes through {@link ngRoute.$stateProvider $routeProvider}'s API.
      *
      * The `$route` service is typically used in conjunction with the
      * {@link ngRoute.directive:ngView `ngView`} directive and the

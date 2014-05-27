@@ -1,10 +1,11 @@
 'use strict';
 
 velocityApp
-    .config(['$routeProvider', '$httpProvider', '$translateProvider',
-        function ($routeProvider, $httpProvider, $translateProvider) {
-            $routeProvider
-                .when('/transaction', {
+    .config(['$stateProvider', '$httpProvider', '$translateProvider',
+        function ($stateProvider, $httpProvider, $translateProvider) {
+            $stateProvider
+                .state('transaction', {
+                    url: '/transaction',
                     templateUrl: 'views/transactions.html',
                     controller: 'TransactionController',
                     resolve:{

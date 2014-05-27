@@ -22,7 +22,7 @@
                         <div class="form-group">
                             <label>ID</label>
                             <input type="text" class="form-control" name="id"
-                                   ng-model="pedelec.id" readonly>
+                                   ng-model="pedelec.pedelecId" readonly>
                         </div>
 
                         <div class="form-group">
@@ -35,8 +35,8 @@
                             <select type="text" class="form-control" name="state"
                                    ng-model="pedelec.state" required>
                                 <option value="" selected disabled>Choose...</option>
-                                <option value="AVAILABLE">AVAILABLE</option>
-                                <option value="NOT_AVAILABLE">NOT_AVAILABLE</option>
+                                <option value="OPERATIVE">OPERATIVE</option>
+                                <option value="INOPERATIVE">INOPERATIVE</option>
                             </select>
                         </div>
                     </div>

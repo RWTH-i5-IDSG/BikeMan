@@ -197,7 +197,7 @@ function shallowClearAndCopy(src, dst) {
  *
  *     On success, the promise is resolved with the same resource instance or collection object,
  *     updated with data from server. This makes it easy to use in
- *     {@link ngRoute.$routeProvider resolve section of $routeProvider.when()} to defer view
+ *     {@link ngRoute.$stateProvider resolve section of $routeProvider.when()} to defer view
  *     rendering until the resource(s) are loaded.
  *
  *     On failure, the promise is resolved with the {@link ng.$http http response} object, without

@@ -1,10 +1,11 @@
 'use strict';
 
 velocityApp
-    .config(['$routeProvider', '$httpProvider', '$translateProvider', 'USER_ROLES',
-        function ($routeProvider, $httpProvider, $translateProvider, USER_ROLES) {
-            $routeProvider
-                .when('/pedelec', {
+    .config(['$stateProvider', '$httpProvider', '$translateProvider', 'USER_ROLES',
+        function ($stateProvider, $httpProvider, $translateProvider, USER_ROLES) {
+            $stateProvider
+                .state('pedelec', {
+                    url: '/pedelec',
                     templateUrl: 'views/pedelecs.html',
                     controller: 'PedelecController',
                     resolve:{

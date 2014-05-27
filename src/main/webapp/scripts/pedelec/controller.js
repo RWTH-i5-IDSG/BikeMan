@@ -6,6 +6,7 @@ velocityApp.controller('PedelecController', ['$scope', 'resolvedPedelec', 'Pedel
         $scope.pedelecs = resolvedPedelec;
 
         $scope.create = function () {
+            console.log($scope.pedelec);
             Pedelec.save($scope.pedelec,
                 function () {
                     $scope.pedelecs = Pedelec.query();
@@ -27,6 +28,6 @@ velocityApp.controller('PedelecController', ['$scope', 'resolvedPedelec', 'Pedel
         };
 
         $scope.clear = function () {
-            $scope.pedelec = {pedelecId: null};
+            $scope.pedelec = {"manufacturerId": null, "state": null};
         };
     }]);

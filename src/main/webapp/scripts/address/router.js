@@ -1,10 +1,11 @@
 'use strict';
 
 velocityApp
-    .config(['$routeProvider', '$httpProvider', '$translateProvider',
-        function ($routeProvider, $httpProvider, $translateProvider) {
-            $routeProvider
-                .when('/address', {
+    .config(['$stateProvider', '$httpProvider', '$translateProvider',
+        function ($stateProvider, $httpProvider, $translateProvider) {
+            $stateProvider
+                .state('address', {
+                    url: '/address',
                     templateUrl: 'views/addresss.html',
                     controller: 'AddressController',
                     resolve:{

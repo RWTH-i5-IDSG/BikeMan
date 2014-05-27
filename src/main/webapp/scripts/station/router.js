@@ -1,10 +1,11 @@
 'use strict';
 
 velocityApp
-    .config(['$routeProvider', '$httpProvider', '$translateProvider', 'USER_ROLES',
-        function ($routeProvider, $httpProvider, $translateProvider, USER_ROLES) {
-            $routeProvider
-                .when('/station', {
+    .config(['$stateProvider', '$httpProvider', '$translateProvider', 'USER_ROLES',
+        function ($stateProvider, $httpProvider, $translateProvider, USER_ROLES) {
+            $stateProvider
+                .state('stations', {
+                    url: '/stations',
                     templateUrl: 'views/stations.html',
                     controller: 'StationController',
                     resolve:{
@@ -16,7 +17,8 @@ velocityApp
                         authorizedRoles: [USER_ROLES.all]
                     }
                 })
-                .when('/stations/:stationId', {
+                .state('.stationId', {
+                    url: '/:stationId',
                     templateUrl: 'views/stationDetail.html',
                     controller: 'StationDetailController',
                     resolve:{
@@ -26,7 +28,8 @@ velocityApp
                     },
                     access: {
                         authorizedRoles: [USER_ROLES.all]
-                    }
+                    },
+                    parent: 'stations'
                 })
         }]);
 

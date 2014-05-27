@@ -4,40 +4,62 @@
 var httpHeaders;
 
 var velocityApp = angular.module('velocityApp', ['http-auth-interceptor', 'tmh.dynamicLocale',
-    'ngResource', 'ngRoute', 'ngCookies', 'velocityAppUtils', 'pascalprecht.translate', 'truncate']);
+    'ngResource', 'ngCookies', 'velocityAppUtils', 'pascalprecht.translate', 'truncate', 'ui.router']);
 
 velocityApp
-    .config(['$routeProvider', '$httpProvider', '$translateProvider',  'tmhDynamicLocaleProvider', 'USER_ROLES',
-        function ($routeProvider, $httpProvider, $translateProvider, tmhDynamicLocaleProvider, USER_ROLES) {
-            $routeProvider
-                .when('/login', {
+    .config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$translateProvider',  'tmhDynamicLocaleProvider', 'USER_ROLES',
+        function ($stateProvider, $urlRouterProvider, $httpProvider, $translateProvider, tmhDynamicLocaleProvider, USER_ROLES) {
+//            $urlRouterProvider.otherwise('/login')
+//                    templateUrl: 'views/main.html',
+//                    controller: 'MainController',
+//                    access: {
+//                            authorizedRoles: [USER_ROLES.all]
+//                        authorizedRoles: '*'
+//                    }
+//                })
+            $stateProvider
+                .state('main', {
+                    url: '/main',
+                    templateUrl: 'views/main.html',
+                    controller: 'MainController',
+                    access: {
+                        authorizedRoles: [USER_ROLES.all]
+                    }
+                })
+                .state('login', {
+                    url: '/login',
                     templateUrl: 'views/login.html',
                     controller: 'LoginController',
                     access: {
                         authorizedRoles: [USER_ROLES.all]
                     }
+
                 })
-                .when('/error', {
+                .state('error', {
+                    url: '/error',
                     templateUrl: 'views/error.html',
                     access: {
                         authorizedRoles: [USER_ROLES.all]
                     }
                 })
-                .when('/settings', {
+                .state('settings', {
+                    url: '/settings',
                     templateUrl: 'views/settings.html',
                     controller: 'SettingsController',
                     access: {
                         authorizedRoles: [USER_ROLES.all]
                     }
                 })
-                .when('/password', {
+                .state('password', {
+                    url: '/password',
                     templateUrl: 'views/password.html',
                     controller: 'PasswordController',
                     access: {
                         authorizedRoles: [USER_ROLES.all]
                     }
                 })
-                .when('/sessions', {
+                .state('sessions', {
+                    url: '/sessions',
                     templateUrl: 'views/sessions.html',
                     controller: 'SessionsController',
                     resolve:{
@@ -49,14 +71,16 @@ velocityApp
                         authorizedRoles: [USER_ROLES.all]
                     }
                 })
-                .when('/metrics', {
+                .state('metrics', {
+                    url: '/metrics',
                     templateUrl: 'views/metrics.html',
                     controller: 'MetricsController',
                     access: {
                         authorizedRoles: [USER_ROLES.admin]
                     }
                 })
-                .when('/logs', {
+                .state('logs', {
+                    url: '/logs',
                     templateUrl: 'views/logs.html',
                     controller: 'LogsController',
                     resolve:{
@@ -68,33 +92,29 @@ velocityApp
                         authorizedRoles: [USER_ROLES.admin]
                     }
                 })
-                .when('/audits', {
+                .state('audits', {
+                    url: '/audits',
                     templateUrl: 'views/audits.html',
                     controller: 'AuditsController',
                     access: {
                         authorizedRoles: [USER_ROLES.admin]
                     }
                 })
-                .when('/logout', {
+                .state('logout', {
+                    url: '/logout',
                     templateUrl: 'views/main.html',
                     controller: 'LogoutController',
                     access: {
                         authorizedRoles: [USER_ROLES.all]
                     }
                 })
-                .when('/docs', {
+                .state('docs', {
+                    url: '/docs',
                     templateUrl: 'views/docs.html',
                     access: {
                         authorizedRoles: [USER_ROLES.admin]
                     }
                 })
-                .otherwise({
-                    templateUrl: 'views/main.html',
-                    controller: 'MainController',
-                    access: {
-                        authorizedRoles: [USER_ROLES.all]
-                    }
-                });
 
             // Initialize angular-translate
             $translateProvider.useStaticFilesLoader({
@@ -108,22 +128,26 @@ velocityApp
 
             tmhDynamicLocaleProvider.localeLocationPattern('bower_components/angular-i18n/angular-locale_{{locale}}.js')
             tmhDynamicLocaleProvider.useCookieStorage('NG_TRANSLATE_LANG_KEY');
-            
+
             httpHeaders = $httpProvider.defaults.headers;
+        }])
+        .run(['$rootScope', '$state',
+        function ($rootScope, $state) {
+            $state.transitionTo('main');
         }])
         .run(['$rootScope', '$location', '$http', 'AuthenticationSharedService', 'Session', 'USER_ROLES',
             function($rootScope, $location, $http, AuthenticationSharedService, Session, USER_ROLES) {
-                $rootScope.$on('$routeChangeStart', function (event, next) {
+                $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {
                     $rootScope.isAuthorized = AuthenticationSharedService.isAuthorized;
                     $rootScope.userRoles = USER_ROLES;
-                    AuthenticationSharedService.valid(next.access.authorizedRoles);
+                    AuthenticationSharedService.valid(toState.access.authorizedRoles);
                 });
 
                 // Call when the the client is confirmed
                 $rootScope.$on('event:auth-loginConfirmed', function(data) {
                     $rootScope.authenticated = true;
                     if ($location.path() === "/login") {
-                        $location.path('/').replace();
+                        $state.transitionTo('main');
                     }
                 });
 
