@@ -47,8 +47,8 @@ public class PedelecRepositoryImpl implements PedelecRepository {
                         rootStat.get("stationSlot").get("station").get("manufacturerId"),
                         rootStat.get("stationSlot").get("stationSlotId")
                 )
-        );
-        criteriaStat.where(builder.equal(rootStat.get("inTransaction"), false));
+        ).where(builder.equal(rootStat.get("inTransaction"), false));
+
         List<ViewPedelecDTO> list = em.createQuery(criteriaStat).getResultList();
 
         // Get the pedelecs in transaction
@@ -70,8 +70,7 @@ public class PedelecRepositoryImpl implements PedelecRepository {
                         trans.get("fromSlot").get("stationSlotId"),
                         trans.get("startDateTime")
                 )
-        );
-        criteriaTrans.where(builder.equal(rootTrans.get("inTransaction"), true));
+        ).where(builder.equal(rootTrans.get("inTransaction"), true));
 
         // Join the lists and return
         list.addAll(em.createQuery(criteriaTrans).getResultList());
@@ -79,50 +78,55 @@ public class PedelecRepositoryImpl implements PedelecRepository {
     }
 
     @Override
-    public Pedelec findOne(Long pedelecId) {
-        return em.createQuery("SELECT ped FROM Pedelec ped WHERE ped.pedelecId = :pedelecId", Pedelec.class)
-                .setParameter("pedelecId", pedelecId)
-                .getSingleResult();
+    public Pedelec findOne(long pedelecId) {
+        return em.find(Pedelec.class, pedelecId);
     }
 
     @Override
     public void create(CreateEditPedelecDTO dto) {
         Pedelec pedelec = new Pedelec();
-        pedelec.setState(dto.getState());
-        pedelec.setStateOfCharge(0.0f);
-        pedelec.setManufacturerId(dto.getManufacturerId());
-
+        setFields(pedelec, dto);
         em.persist(pedelec);
-
-        log.debug("Created new Pedelec {}", pedelec);
+        log.debug("Created new pedelec {}", pedelec);
     }
 
     @Override
     public void update(CreateEditPedelecDTO dto) {
-        int rowCount = em.createQuery("UPDATE Pedelec ped SET ped.manufacturerId = :manufacturerId, ped.state = :state WHERE ped.pedelecId = :pedelecId")
-                .setParameter("manufacturerId", dto.getManufacturerId())
-                .setParameter("state", dto.getState())
-                .setParameter("pedelecId", dto.getPedelecId())
-                .executeUpdate();
+        final Long pedelecId = dto.getPedelecId();
+        if (pedelecId == null) {
+            return;
+        }
 
-        logChanges(rowCount);
+        Pedelec pedelec = em.find(Pedelec.class, pedelecId);
+        if (pedelec == null) {
+            log.error("No pedelec with pedelecId: {} to update.", pedelecId);
+        } else {
+            setFields(pedelec, dto);
+            em.merge(pedelec);
+            log.debug("Updated pedelec {}", pedelec);
+        }
     }
 
     @Override
-    public void delete(Long pedelecId) {
-        int rowCount = em.createQuery("DELETE FROM Pedelec ped WHERE ped.pedelecId = :pedelecId")
-                .setParameter("pedelecId", pedelecId)
-                .executeUpdate();
+    public void delete(long pedelecId) {
+        Pedelec pedelec = em.find(Pedelec.class, pedelecId);
+        if (pedelec == null) {
+            log.error("No pedelec with pedelecId: {} to delete.", pedelecId);
+        } else {
+            em.remove(pedelec);
+            log.debug("Deleted pedelec {}", pedelec);
+        }
 
-        logChanges(rowCount);
     }
 
-    private void logChanges(int rowCount) {
-        if (rowCount == 1) {
-            log.debug("Affected rows: {}.", rowCount);
-        } else {
-            log.error("Affected rows: {}. Something is wrong.", rowCount);
-        }
+    /*
+    * This method sets the fields of the pedelec to the values in DTO.
+    *
+    * Important: The ID is not set!
+    */
+    private void setFields(Pedelec pedelec, CreateEditPedelecDTO dto) {
+        pedelec.setState(dto.getState());
+        pedelec.setManufacturerId(dto.getManufacturerId());
     }
 }
 

@@ -1,7 +1,7 @@
 package de.rwth.idsg.velocity.web.rest.dto.view;
 
-import de.rwth.idsg.velocity.domain.Address;
 import de.rwth.idsg.velocity.domain.OperationState;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -21,7 +21,7 @@ public class ViewStationDTO {
     @Getter
     private String name;
     @Getter
-    private Address address;
+    private ViewAddressDTO address;
     @Getter
     private BigDecimal locationLatitude;
     @Getter
@@ -31,17 +31,49 @@ public class ViewStationDTO {
     @Getter
     private OperationState state;
     @Getter
-    private String allocation;
+    private Long numFreeSlots;
+    @Getter
+    private Long numAllSlots;
 
-    public ViewStationDTO(Long stationId, String manufacturerId, String name, Address address, BigDecimal locationLatitude, BigDecimal locationLongitude, String note, OperationState state, String allocation) {
+    public ViewStationDTO(Long stationId, String manufacturerId, String name,
+                          String streetAndHousenumber, String zip, String city, String country,
+                          BigDecimal locationLatitude, BigDecimal locationLongitude, String note, OperationState state,
+                          Long numFreeSlots, Long numAllSlots) {
         this.stationId = stationId;
         this.manufacturerId = manufacturerId;
         this.name = name;
-        this.address = address;
+        this.address = new ViewAddressDTO(streetAndHousenumber, zip, city, country);
         this.locationLatitude = locationLatitude;
         this.locationLongitude = locationLongitude;
         this.note = note;
         this.state = state;
-        this.allocation = allocation;
+        this.numFreeSlots = numFreeSlots;
+        this.numAllSlots = numAllSlots;
+    }
+
+    public ViewStationDTO(Long stationId, String manufacturerId, String name,
+                          BigDecimal locationLatitude, BigDecimal locationLongitude, String note, OperationState state,
+                          Long numFreeSlots, Long numAllSlots) {
+        this.stationId = stationId;
+        this.manufacturerId = manufacturerId;
+        this.name = name;
+        this.locationLatitude = locationLatitude;
+        this.locationLongitude = locationLongitude;
+        this.note = note;
+        this.state = state;
+        this.numFreeSlots = numFreeSlots;
+        this.numAllSlots = numAllSlots;
+    }
+
+
+    @AllArgsConstructor
+    @ToString(includeFieldNames = true)
+    class ViewAddressDTO {
+
+        @Getter private String streetAndHousenumber;
+        @Getter private String zip;
+        @Getter private String city;
+        @Getter private String country;
+
     }
 }

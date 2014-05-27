@@ -5,6 +5,8 @@ import de.rwth.idsg.velocity.domain.Station;
 import de.rwth.idsg.velocity.repository.StationRepository;
 import de.rwth.idsg.velocity.service.StationService;
 import de.rwth.idsg.velocity.web.rest.dto.StationDTO;
+import de.rwth.idsg.velocity.web.rest.dto.modify.CreateEditStationDTO;
+import de.rwth.idsg.velocity.web.rest.dto.view.ViewStationDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -26,8 +29,6 @@ public class StationResource {
     @Autowired
     private StationRepository stationRepository;
 
-    @Inject
-    private StationService stationService;
 
     /**
      * POST  /rest/stations -> Create a new station.
@@ -37,9 +38,9 @@ public class StationResource {
             produces = "application/json")
     @Timed
 //    public void create(@RequestBody Station station) {
-    public void create(@RequestBody StationDTO station) {
-        log.debug("REST request to save Station : {}", station);
-        stationService.createStation(station);
+    public void create(@Valid @RequestBody CreateEditStationDTO dto) {
+        log.debug("REST request to save Station : {}", dto);
+        stationRepository.create(dto);
     }
 
     /**
@@ -49,9 +50,10 @@ public class StationResource {
             method = RequestMethod.GET,
             produces = "application/json")
     @Timed
-    public List<StationDTO> getAll() {
+    public List<ViewStationDTO> getAll() {
         log.info("REST request to get all Stations");
-        List<StationDTO> stations = stationRepository.listOfStations();
+        List<ViewStationDTO> stations = stationRepository.findAll();
+        log.info("List: {}", stations);
         return stations;
     }
 

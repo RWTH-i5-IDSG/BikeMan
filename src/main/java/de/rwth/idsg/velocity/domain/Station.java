@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -53,12 +54,14 @@ public class Station implements Serializable {
     private BigDecimal locationLongitude;
 
     @Lob
+    @Type(type = "org.hibernate.type.TextType")
     @Column(name = "note")
     @Getter @Setter
     private String note;
 
     @Column(name = "state")
+    @Enumerated(EnumType.STRING)
     @Getter @Setter
-    private Boolean state;
+    private OperationState state;
 
 }

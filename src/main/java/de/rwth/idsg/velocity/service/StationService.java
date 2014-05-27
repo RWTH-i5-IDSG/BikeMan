@@ -26,34 +26,34 @@ public class StationService {
 
     private static final Logger log = LoggerFactory.getLogger(StationService.class);
 
-    @Inject
-    private StationRepository stationRepository;
-
-    @Inject
-    private AddressRepository addressRepository;
+//    @Inject
+//    private StationRepository stationRepository;
+//
+//    @Inject
+//    private AddressRepository addressRepository;
 
     public void createStation(StationDTO station) {
-        Station newStation = new Station();
-
-        newStation.setName(station.getName());
-        newStation.setNote("");
-        newStation.setAddress(station.getAddress());
-        newStation.setLocationLatitude(station.getLocationLatitude());
-        newStation.setLocationLongitude(station.getLocationLongitude());
-
-        Set<StationSlot> stationSlots = new HashSet<>();
-        long count = station.getNumberOfSlots();
-        for (int i = 0; i < count; i++) {
-            StationSlot slot = new StationSlot();
-            slot.setStation(newStation);
-
-            stationSlots.add(slot);
-        }
-        newStation.setStationSlots(stationSlots);
-
-        stationRepository.save(newStation);
-
-        log.info("created new station: {}", newStation);
+//        Station newStation = new Station();
+//
+//        newStation.setName(station.getName());
+//        newStation.setNote("");
+//        newStation.setAddress(station.getAddress());
+//        newStation.setLocationLatitude(station.getLocationLatitude());
+//        newStation.setLocationLongitude(station.getLocationLongitude());
+//
+//        Set<StationSlot> stationSlots = new HashSet<>();
+//        long count = station.getNumberOfSlots();
+//        for (int i = 0; i < count; i++) {
+//            StationSlot slot = new StationSlot();
+//            slot.setStation(newStation);
+//
+//            stationSlots.add(slot);
+//        }
+//        newStation.setStationSlots(stationSlots);
+//
+//        stationRepository.create(newStation);
+//
+//        log.info("created new station: {}", newStation);
     }
 
 }

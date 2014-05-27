@@ -51,4 +51,11 @@ public class Pedelec implements Serializable {
     @Getter @Setter
     private StationSlot stationSlot;
 
+    @PrePersist
+    public void prePersist() {
+        if (stateOfCharge == null) {
+            stateOfCharge = 0.0f;
+        }
+    }
+
 }

@@ -12,8 +12,8 @@ import java.util.List;
 public interface PedelecRepository {
 
     List<ViewPedelecDTO> findAll();
-    Pedelec findOne(Long pedelecId);
-    void create(CreateEditPedelecDTO pedelec);
-    void update(CreateEditPedelecDTO pedelec);
-    void delete(Long pedelecId);
+    Pedelec findOne(long pedelecId);
+    void create(CreateEditPedelecDTO dto);
+    void update(CreateEditPedelecDTO dto);
+    void delete(long pedelecId);
 }

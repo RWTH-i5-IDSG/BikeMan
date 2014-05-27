@@ -3,6 +3,7 @@ package de.rwth.idsg.velocity.web.rest.dto.view;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import de.rwth.idsg.velocity.domain.OperationState;
 import de.rwth.idsg.velocity.web.rest.dto.util.CustomLocalDateTimeSerializer;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
 import org.joda.time.LocalDateTime;
@@ -43,26 +44,23 @@ public class ViewPedelecDTO {
         this.stateOfCharge = stateOfCharge;
         this.state = state;
         this.inTransaction = inTransaction;
-        this.transaction = new ViewTransactionDTO(customerId, customerFirstname + customerLastname,
+        this.transaction = new ViewTransactionDTO(customerId, customerFirstname + " " + customerLastname,
                 stationId, stationSlotPosition, startDateTime);
     }
 
+    @AllArgsConstructor
     @ToString(includeFieldNames = true)
-    class ViewStationDTO {
+    private class ViewStationDTO {
 
         @Getter private Long id;
         @Getter private String stationManufacturerId;
         @Getter private Long stationSlotPosition;
 
-        ViewStationDTO(Long id, String stationManufacturerId, Long stationSlotPosition) {
-            this.id = id;
-            this.stationManufacturerId = stationManufacturerId;
-            this.stationSlotPosition = stationSlotPosition;
-        }
     }
 
+    @AllArgsConstructor
     @ToString(includeFieldNames = true)
-    class ViewTransactionDTO {
+    private class ViewTransactionDTO {
 
         @Getter private String id;
         @Getter private String customerName;
@@ -72,13 +70,5 @@ public class ViewPedelecDTO {
         @Getter
         @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
         private LocalDateTime startDateTime;
-
-        ViewTransactionDTO(String id, String customerName, Long lastStationId, Long lastStationSlotPosition, LocalDateTime startDateTime) {
-            this.id = id;
-            this.customerName = customerName;
-            this.lastStationId = lastStationId;
-            this.lastStationSlotPosition = lastStationSlotPosition;
-            this.startDateTime = startDateTime;
-        }
     }
 }
