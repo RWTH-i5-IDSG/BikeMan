@@ -31,6 +31,7 @@ public class ViewPedelecDTO {
         this.stateOfCharge = stateOfCharge;
         this.state = state;
         this.inTransaction = inTransaction;
+
         this.station = new ViewStationDTO(stationId, stationManufacturerId, stationSlotPosition);
     }
 
@@ -44,7 +45,9 @@ public class ViewPedelecDTO {
         this.stateOfCharge = stateOfCharge;
         this.state = state;
         this.inTransaction = inTransaction;
-        this.transaction = new ViewTransactionDTO(customerId, customerFirstname + " " + customerLastname,
+
+        this.transaction = new ViewTransactionDTO(customerId,
+                customerFirstname + " " + customerLastname,
                 stationId, stationSlotPosition, startDateTime);
     }
 
@@ -55,7 +58,6 @@ public class ViewPedelecDTO {
         @Getter private Long id;
         @Getter private String stationManufacturerId;
         @Getter private Long stationSlotPosition;
-
     }
 
     @AllArgsConstructor

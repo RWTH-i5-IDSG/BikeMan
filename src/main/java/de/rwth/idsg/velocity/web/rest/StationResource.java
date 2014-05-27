@@ -3,8 +3,6 @@ package de.rwth.idsg.velocity.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import de.rwth.idsg.velocity.domain.Station;
 import de.rwth.idsg.velocity.repository.StationRepository;
-import de.rwth.idsg.velocity.service.StationService;
-import de.rwth.idsg.velocity.web.rest.dto.StationDTO;
 import de.rwth.idsg.velocity.web.rest.dto.modify.CreateEditStationDTO;
 import de.rwth.idsg.velocity.web.rest.dto.view.ViewStationDTO;
 import org.slf4j.Logger;
@@ -12,9 +10,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import java.util.List;
 
 /**
@@ -22,6 +21,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/app")
+@Produces(MediaType.APPLICATION_JSON)
 public class StationResource {
 
     private final Logger log = LoggerFactory.getLogger(StationResource.class);
@@ -29,41 +29,25 @@ public class StationResource {
     @Autowired
     private StationRepository stationRepository;
 
+    private static final String BASE_PATH = "/rest/stations";
+    private static final String ID_PATH = "/rest/stations/{id}";
 
-    /**
-     * POST  /rest/stations -> Create a new station.
-     */
-    @RequestMapping(value = "/rest/stations",
-            method = RequestMethod.POST,
-            produces = "application/json")
     @Timed
-//    public void create(@RequestBody Station station) {
+    @RequestMapping(value = BASE_PATH, method = RequestMethod.POST)
     public void create(@Valid @RequestBody CreateEditStationDTO dto) {
         log.debug("REST request to save Station : {}", dto);
         stationRepository.create(dto);
     }
 
-    /**
-     * GET  /rest/stations -> get all the stations.
-     */
-    @RequestMapping(value = "/rest/stations",
-            method = RequestMethod.GET,
-            produces = "application/json")
     @Timed
+    @RequestMapping(value = BASE_PATH, method = RequestMethod.GET)
     public List<ViewStationDTO> getAll() {
         log.info("REST request to get all Stations");
-        List<ViewStationDTO> stations = stationRepository.findAll();
-        log.info("List: {}", stations);
-        return stations;
+        return stationRepository.findAll();
     }
 
-    /**
-     * GET  /rest/stations/:id -> get the "id" station.
-     */
-    @RequestMapping(value = "/rest/stations/{id}",
-            method = RequestMethod.GET,
-            produces = "application/json")
     @Timed
+    @RequestMapping(value = ID_PATH, method = RequestMethod.GET)
     public Station get(@PathVariable Long id, HttpServletResponse response) {
         log.info("REST request to get Station : {}", id);
         Station station = stationRepository.findOne(id);
@@ -73,13 +57,8 @@ public class StationResource {
         return station;
     }
 
-    /**
-     * DELETE  /rest/stations/:id -> delete the "id" station.
-     */
-    @RequestMapping(value = "/rest/stations/{id}",
-            method = RequestMethod.DELETE,
-            produces = "application/json")
     @Timed
+    @RequestMapping(value = ID_PATH, method = RequestMethod.DELETE)
     public void delete(@PathVariable Long id, HttpServletResponse response) {
         log.debug("REST request to delete Station : {}", id);
         stationRepository.delete(id);

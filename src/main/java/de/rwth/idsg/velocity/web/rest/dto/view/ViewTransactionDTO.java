@@ -3,6 +3,7 @@ package de.rwth.idsg.velocity.web.rest.dto.view;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import de.rwth.idsg.velocity.domain.Customer;
 import de.rwth.idsg.velocity.web.rest.dto.util.CustomLocalDateTimeSerializer;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
 import org.joda.time.LocalDateTime;
@@ -14,8 +15,11 @@ import org.joda.time.LocalDateTime;
 @ToString(includeFieldNames = true)
 public class ViewTransactionDTO {
 
-    @Getter
-    private Long transactionId;
+    @Getter private Long transactionId;
+    @Getter private TransactionStationDTO fromStation;
+    @Getter private TransactionStationDTO toStation;
+    @Getter private Customer customer;
+    @Getter private TransactionPedelecDTO pedelec;
 
     @Getter
     @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
@@ -25,17 +29,6 @@ public class ViewTransactionDTO {
     @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
     private LocalDateTime toDateTime;
 
-    @Getter
-    private TransactionStationDTO fromStation;
-
-    @Getter
-    private TransactionStationDTO toStation;
-
-    @Getter
-    private Customer customer;
-
-    @Getter
-    private TransactionPedelecDTO pedelec;
 
     public ViewTransactionDTO(Long transactionId, LocalDateTime fromDateTime, LocalDateTime toDateTime,
                               Long fromStationId, String fromStationName, Integer fromStationSlotPosition,
@@ -52,31 +45,21 @@ public class ViewTransactionDTO {
         this.pedelec = new TransactionPedelecDTO(pedelecId, pedelecManufacturerId);
     }
 
+    @AllArgsConstructor
+    @ToString(includeFieldNames = true)
     class TransactionStationDTO {
-        @Getter
-        private Long stationId;
-        @Getter
-        private String name;
-        @Getter
-        private Integer slotPosition;
 
-        TransactionStationDTO(Long stationId, String name, Integer slotPosition) {
-            this.stationId = stationId;
-            this.name = name;
-            this.slotPosition = slotPosition;
-        }
+        @Getter private Long stationId;
+        @Getter private String name;
+        @Getter private Integer slotPosition;
     }
 
+    @AllArgsConstructor
+    @ToString(includeFieldNames = true)
     class TransactionPedelecDTO {
-        @Getter
-        private Long pedelecId;
-        @Getter
-        private String manufacturerId;
 
-        TransactionPedelecDTO(Long pedelecId, String manufacturerId) {
-            this.pedelecId = pedelecId;
-            this.manufacturerId = manufacturerId;
-        }
+        @Getter private Long pedelecId;
+        @Getter private String manufacturerId;
     }
 
 }
