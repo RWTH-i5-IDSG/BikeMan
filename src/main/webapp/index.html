@@ -136,13 +136,13 @@
                     <li>
                         <a href="#"><i class="fa fa-desktop fa-fw"></i> Management<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
-                            <li>
+                            <li ui-sref-active="selectedNavItem">
                                 <a ui-sref="#">User Management</a>
                             </li>
-                            <li>
+                            <li ui-sref-active="selectedNavItem">
                                 <a ui-sref="#">Fleetmanager Overview</a>
                             </li>
-                            <li>
+                            <li ui-sref-active="selectedNavItem">
                                 <a ui-sref="#">Add Fleetmanager</a>
                             </li>
                         </ul>
@@ -152,10 +152,10 @@
                         <a href="#"><i class="glyphicon glyphicon-record fa-fw"></i> Station Control<span
                                 class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
-                            <li>
+                            <li ui-sref-active="selectedNavItem">
                                 <a ui-sref="stations">Station Overview</a>
                             </li>
-                            <li>
+                            <li ui-sref-active="selectedNavItem">
                                 <a ui-sref="stationCreate">Create new Station</a>
                             </li>
                         </ul>
@@ -166,10 +166,10 @@
                         <a href="#"><i class="glyphicon glyphicon-send fa-fw"></i> Pedelec Control<span
                                 class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
-                            <li>
+                            <li ui-sref-active="selectedNavItem">
                                 <a ui-sref="pedelecs">Pedelec Overview</a>
                             </li>
-                            <li>
+                            <li ui-sref-active="selectedNavItem">
                                 <a ui-sref="pedelecCreate">Create new Pedelec</a>
                             </li>
                         </ul>
@@ -180,13 +180,13 @@
                         <a href="#"><i class="fa fa-book fa-fw"></i> Driver's Logbook<span
                                 class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
-                            <li>
+                            <li ui-sref-active="selectedNavItem">
                                 <a ui-sref="main">All Transactions</a>
                             </li>
-                            <li>
+                            <li ui-sref-active="selectedNavItem">
                                 <a ui-sref="main">Closed Transactions</a>
                             </li>
-                            <li>
+                            <li ui-sref-active="selectedNavItem">
                                 <a ui-sref="main">Open Transactions</a>
                             </li>
                         </ul>
@@ -203,7 +203,7 @@
 
     <div id="page-wrapper">
         <div class="row">
-            <div class="col-lg-12 voffset3">
+            <div class="col-lg-12">
                 <div class="" ui-view=""></div>
             </div>
             <!-- /.col-lg-12 -->

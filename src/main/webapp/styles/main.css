@@ -125,4 +125,8 @@ ul#strength {
     width: 20px;
 }
 
+.selectedNavItem {
+    background-color: #EEEEEE;
+}
+
 /* end Password strength bar style */

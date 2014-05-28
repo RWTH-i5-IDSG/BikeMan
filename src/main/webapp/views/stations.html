@@ -1,115 +1,64 @@
 <div>
-
-    <h2>Stations</h2>
-
-    <!--<button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#saveStationModal" ng-click="clear()">-->
-        <!--<span class="glyphicon glyphicon-flash"></span> Create a new Station-->
-    <!--</button>-->
-
-
-    <!--<div class="modal fade" id="editStationModal" tabindex="-1" role="dialog" aria-labelledby="myStationLabel"-->
-         <!--aria-hidden="true">-->
-        <!--<div class="modal-dialog">-->
-            <!--<div class="modal-content">-->
-                <!--<form name="form" role="form" novalidate-->
-                      <!--class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength"-->
-                      <!--ng-submit="update()">-->
-
-                    <!--<div class="modal-header">-->
-                        <!--<button type="button" class="close" data-dismiss="modal" aria-hidden="true"-->
-                                <!--ng-click="clear()">&times;</button>-->
-                        <!--<h4 class="modal-title" id="headerLabel" translate="stations.header">Edit a Station</h4>-->
-                    <!--</div>-->
-                    <!--<div class="modal-body">-->
-                        <!--<div class="form-group">-->
-                            <!--<label translate="stations.create.name">Name</label>-->
-                            <!--<input type="text" class="form-control" name="name"-->
-                                   <!--ng-model="station.name" ng-minlength=1 ng-maxlength=255 required>-->
-                        <!--</div>-->
-
-                        <!--<div class="form-group">-->
-                            <!--<label translate="stations.create.manufacturerId">Name</label>-->
-                            <!--<input type="text" class="form-control" name="manufacturerId"-->
-                                   <!--ng-model="station.manufacturerId" ng-minlength=1 ng-maxlength=255 required>-->
-                        <!--</div>-->
-
-                        <!--<div class="form-group">-->
-                            <!--<label translate="stations.create.streetAndHousenumber">Street</label>-->
-                            <!--<input type="text" class="form-control" name="addressStreet"-->
-                                   <!--ng-model="station.address.streetAndHousenumber" ng-minlength=1 ng-maxlength=255 required>-->
-                        <!--</div>-->
-
-                        <!--<div class="form-group">-->
-                            <!--<label translate="stations.create.zip">ZIP</label>-->
-                            <!--<input type="text" class="form-control" name="addressZip"-->
-                                   <!--ng-model="station.address.zip" ng-minlength=1 ng-maxlength=255 required>-->
-                        <!--</div>-->
-
-                        <!--<div class="form-group">-->
-                            <!--<label translate="stations.create.city">City</label>-->
-                            <!--<input type="text" class="form-control" name="addressCity"-->
-                                   <!--ng-model="station.address.city" ng-minlength=1 ng-maxlength=255 required>-->
-                        <!--</div>-->
-
-                        <!--<div class="form-group">-->
-                            <!--<label translate="stations.create.country">ZIP</label>-->
-                            <!--<input type="text" class="form-control" name="addressCountry"-->
-                                   <!--ng-model="station.address.country" ng-minlength=1 ng-maxlength=255 required>-->
-                        <!--</div>-->
-
-                        <!--<div class="form-group">-->
-                            <!--<label translate="stations.create.Coordinates">Coordinates</label>-->
-                            <!--<input type="text" class="form-control" name="locationLatitude"-->
-                                   <!--ng-model="station.locationLatitude" ng-minlength=1 ng-maxlength=255 required>-->
-                            <!--<input type="text" class="form-control" name="locationLongitude"-->
-                                   <!--ng-model="station.locationLongitude" ng-minlength=1 ng-maxlength=255 required>-->
-                        <!--</div>-->
-
-                        <!--&lt;!&ndash;<div class="form-group">&ndash;&gt;-->
-                            <!--&lt;!&ndash;<label translate="stations.create.numberOfSlots">Opening Hours</label>&ndash;&gt;-->
-                            <!--&lt;!&ndash;<input type="text" class="form-control" name="numberOfSlots"&ndash;&gt;-->
-                                   <!--&lt;!&ndash;ng-model="station.numberOfSlots" ng-minlength=1 ng-maxlength=255 required>&ndash;&gt;-->
-                        <!--&lt;!&ndash;</div>&ndash;&gt;-->
-
-                    <!--</div>-->
-                    <!--<div class="modal-footer">-->
-                        <!--<button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clear()" translate="stations.create.cancel">Cancel-->
-                        <!--</button>-->
-                        <!--<button type="submit" ng-disabled="form.$invalid" class="btn btn-primary" translate="stations.create.save">Save</button>-->
-                    <!--</div>-->
-                <!--</form>-->
-            <!--</div>-->
-        <!--</div>-->
-    <!--</div>-->
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">Stations</h1>
+        </div>
+    </div>
 
     <div class="table-responsive">
-        <table class="table table-striped">
+        <table class="table table-striped table-hover">
             <thead>
                 <tr>
                     <!--<th>ID</th>-->
                     <th>Name</th>
+                    <th>Manufacturer ID</th>
                     <th>Address</th>
-                    <th>Slots</th>
+                    <th>State</th>
+                    <th>Allocation</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="station in stations">
-                    <!--<td>{{station.id}}</td>-->
-                    <td><a ng-href="#/stations/{{station.stationId}}">{{station.name}}</a></td>
-                    <td><a ng-href="#/stations/{{station.stationId}}">{{station.address.streetAndHousenumber + ', ' + station.address.zip + ', ' + station.address.city + ', ' + station.address.country}}</a></td>
-                    <td>{{station.numberOfSlots}}</td>
+                <tr ng-repeat-start="station in stations" data-toggle="collapse" data-target="#{{station.stationId}}" ng-click="requestSlots(station.stationId)">
+                    <td>{{station.name}}</td>
+                    <td>{{station.manufacturerId}}</td>
+                    <td><small>{{station.address.streetAndHousenumber + ', ' + station.address.zip + ', ' + station.address.city + ', ' + station.address.country}}</small></td>
+                    <td>{{station.state}}</td>
+                    <td>{{station.numFreeSlots}} / {{station.numAllSlots}}</td>
                     <td>
                         <button type="submit"
                                 ng-click="showUpdate(station.id)"
                                 class="btn">
-                            <span class="glyphicon glyphicon-pencil"></span> Edit
+                            <span class="glyphicon glyphicon-pencil"></span>
                         </button>
                         <button type="submit"
                                 ng-click="delete(station.id)"
                                 class="btn btn-danger">
-                            <span class="glyphicon glyphicon-remove-circle"></span> Delete
+                            <span class="glyphicon glyphicon-remove-circle"></span>
                         </button>
                     </td>
+                </tr>
+                <tr ng-repeat-end>
+                    <td colspan="6" class="hiddenRow"><div class="accordian-body collapse" id="{{station.stationId}}">
+                        <table class="table table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Slot</th>
+                                    <th>Manufacturer ID</th>
+                                    <th>State</th>
+                                    <th>Occupied</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="slot in stationSlots">
+                                    <td>{{slot.slotPosition}}</td>
+                                    <td>{{slot.manufacturerId}}</td>
+                                    <td>{{slot.state}}</td>
+                                    <td>{{slot.isOccupied}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div> </td>
                 </tr>
             </tbody>
         </table>

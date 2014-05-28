@@ -1,10 +1,11 @@
 'use strict';
 
-velocityApp.controller('StationController', ['$scope', 'resolvedStation', 'Station', 'CreateEditStation',
-    function ($scope, resolvedStation, Station, CreateEditStation) {
+velocityApp.controller('StationController', ['$scope', 'resolvedStation', 'Station', 'CreateEditStation', 'StationSlot',
+    function ($scope, resolvedStation, Station, CreateEditStation, StationSlot) {
 
         $scope.stations = resolvedStation;
 
+        console.log($scope.stations);
 
 //        $scope.update = function () {
 //            Station.update($scope.station,
@@ -20,6 +21,10 @@ velocityApp.controller('StationController', ['$scope', 'resolvedStation', 'Stati
 //            console.log($scope.station);
 //            $('#saveStationModal').modal('show');
 //        };
+
+        $scope.requestSlots = function(id) {
+            $scope.stationSlots = StationSlot.query();
+        }
 
         $scope.delete = function (id) {
             Station.delete({id: id},

@@ -1,55 +1,7 @@
 <div>
-
-    <h2>Pedelecs</h2>
-
-    <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#savePedelecModal" ng-click="clear()">
-        <span class="glyphicon glyphicon-flash"></span> Create a new Pedelec
-    </button>
-    <div class="modal fade" id="savePedelecModal" tabindex="-1" role="dialog" aria-labelledby="myPedelecLabel"
-         aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form name="form" role="form" novalidate
-                      class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength"
-                      ng-submit="create()">
-
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
-                                ng-click="clear()">&times;</button>
-                        <h4 class="modal-title" id="myPedelecLabel">Create or edit a Pedelec</h4>
-                    </div>
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label>ID</label>
-                            <input type="text" class="form-control" name="id"
-                                   ng-model="pedelec.pedelecId" readonly>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Pedelec Identifier</label>
-                            <input type="text" class="form-control" name="test"
-                                   ng-model="pedelec.manufacturerId" ng-minlength=1 ng-maxlength=50 required>
-                        </div>
-                        <div class="form-group">
-                            <label>Pedelec State</label>
-                            <select type="text" class="form-control" name="state"
-                                   ng-model="pedelec.state" required>
-                                <option value="" selected disabled>Choose...</option>
-                                <option value="OPERATIVE">OPERATIVE</option>
-                                <option value="INOPERATIVE">INOPERATIVE</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clear()">
-                            <span class="glyphicon glyphicon-ban-circle"></span> Cancel
-                        </button>
-                        <button type="submit" ng-disabled="form.$invalid" class="btn btn-primary">
-                            <span class="glyphicon glyphicon-save"></span> Save
-                        </button>
-                    </div>
-                </form>
-            </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">Pedelecs</h1>
         </div>
     </div>
 
@@ -57,10 +9,10 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>ID</th>
+                    <th>Manufacturer ID</th>
                     <th>State of Charge</th>
                     <th>State</th>
-                    <th>Station</th>
+                    <th>Station (Slot) / Customer</th>
                     <th></th>
                 </tr>
             </thead>
