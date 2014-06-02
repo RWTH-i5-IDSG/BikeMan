@@ -48,7 +48,7 @@ public class PedelecRepositoryImpl implements PedelecRepository {
                         rootStat.get("inTransaction"),
                         station.get("stationId"),
                         station.get("manufacturerId"),
-                        stationSlot.get("stationSlotId")
+                        stationSlot.get("stationSlotPosition")
                 )
         ).where(builder.equal(rootStat.get("inTransaction"), false));
 
@@ -70,7 +70,7 @@ public class PedelecRepositoryImpl implements PedelecRepository {
                         trans.get("customer").get("firstname"),
                         trans.get("customer").get("lastname"),
                         trans.get("fromSlot").get("station").get("stationId"),
-                        trans.get("fromSlot").get("stationSlotId"),
+                        trans.get("fromSlot").get("stationSlotPosition"),
                         trans.get("startDateTime")
                 )
         ).where(builder.and(

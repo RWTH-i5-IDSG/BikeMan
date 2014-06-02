@@ -134,8 +134,8 @@ public class StationRepositoryImpl implements StationRepository {
         CriteriaQuery<ViewStationDTO> criteria = builder.createQuery(ViewStationDTO.class);
 
         Root<Station> root = criteria.from(Station.class);
-        Join<Station, StationSlot> slot = root.join("stationSlots");
-        Join<Station, Address> add = root.join("address");
+        Join<Station, StationSlot> slot = root.join("stationSlots", JoinType.LEFT);
+        Join<Station, Address> add = root.join("address", JoinType.LEFT);
         Path<Boolean> occ = slot.get("isOccupied");
 
         criteria.select(
@@ -158,11 +158,13 @@ public class StationRepositoryImpl implements StationRepository {
                         ),
                         builder.count(occ)
                 )
-        ).groupBy(root.get("stationId"), add.get("addressId"));
+        );
 
         if (stationId != null) {
             criteria.where(builder.equal(root.get("stationId"), stationId));
         }
+
+        criteria.groupBy(root.get("stationId"), add.get("addressId"));
 
         return criteria;
     }

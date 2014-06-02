@@ -25,7 +25,7 @@ public class ViewPedelecDTO {
     // Constructor for stationary pedelecs
     public ViewPedelecDTO(Long pedelecId, String manufacturerId, Float stateOfCharge,
                           OperationState state, Boolean inTransaction,
-                          Long stationId, String stationManufacturerId, Long stationSlotPosition) {
+                          Long stationId, String stationManufacturerId, Integer stationSlotPosition) {
         this.pedelecId = pedelecId;
         this.manufacturerId = manufacturerId;
         this.stateOfCharge = stateOfCharge;
@@ -39,7 +39,7 @@ public class ViewPedelecDTO {
     public ViewPedelecDTO(Long pedelecId, String manufacturerId, Float stateOfCharge,
                           OperationState state, Boolean inTransaction,
                           String customerId, String customerFirstname, String customerLastname,
-                          Long stationId, Long stationSlotPosition, LocalDateTime startDateTime) {
+                          Long stationId, Integer stationSlotPosition, LocalDateTime startDateTime) {
         this.pedelecId = pedelecId;
         this.manufacturerId = manufacturerId;
         this.stateOfCharge = stateOfCharge;
@@ -57,7 +57,7 @@ public class ViewPedelecDTO {
 
         @Getter private Long id;
         @Getter private String stationManufacturerId;
-        @Getter private Long stationSlotPosition;
+        @Getter private Integer stationSlotPosition;
     }
 
     @AllArgsConstructor
@@ -67,7 +67,7 @@ public class ViewPedelecDTO {
         @Getter private String id;
         @Getter private String customerName;
         @Getter private Long lastStationId;
-        @Getter private Long lastStationSlotPosition;
+        @Getter private Integer lastStationSlotPosition;
 
         @Getter
         @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
