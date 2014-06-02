@@ -11,6 +11,7 @@ import javax.inject.Inject;
 
 import org.joda.time.LocalDate;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
@@ -41,11 +42,11 @@ import de.rwth.idsg.velocity.repository.TransactionRepository;
 @SpringApplicationConfiguration(classes = Application.class)
 @WebAppConfiguration
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
-    DirtiesContextTestExecutionListener.class,
-    TransactionalTestExecutionListener.class })
+        DirtiesContextTestExecutionListener.class,
+        TransactionalTestExecutionListener.class })
 @ActiveProfiles("dev")
 public class TransactionResourceTest {
-    
+
     private static final Long DEFAULT_ID = new Long(1L);
 
     private static final LocalDate DEFAULT_SAMPLE_DATE_ATTR = new LocalDate(0L);
@@ -60,8 +61,6 @@ public class TransactionResourceTest {
     private TransactionRepository transactionRepository;
 
     private MockMvc restTransactionMockMvc;
-    
-    private Transaction transaction;
 
     @Before
     public void setup() {
@@ -70,56 +69,63 @@ public class TransactionResourceTest {
         ReflectionTestUtils.setField(transactionResource, "transactionRepository", transactionRepository);
 
         this.restTransactionMockMvc = MockMvcBuilders.standaloneSetup(transactionResource).build();
-
-        transaction = new Transaction();
-//        transaction.setId(DEFAULT_ID);
-//    	transaction.setSampleDateAttribute(DEFAULT_SAMPLE_DATE_ATTR);
-//    	transaction.setSampleTextAttribute(DEFAULT_SAMPLE_TEXT_ATTR);
     }
 
     @Test
-    public void testCRUDTransaction() throws Exception {
-
-    	// Create Transaction
-    	restTransactionMockMvc.perform(post("/app/rest/transactions")
-    			.contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(transaction)))
+    public void getAllTransactions() throws Exception {
+        restTransactionMockMvc.perform(get("/app/rest/transactions"))
                 .andExpect(status().isOk());
-
-    	// Read Transaction
-    	restTransactionMockMvc.perform(get("/app/rest/transactions/{id}", DEFAULT_ID))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id").value(DEFAULT_ID.intValue()))
-    			.andExpect(jsonPath("$.sampleDateAttribute").value(DEFAULT_SAMPLE_DATE_ATTR.toString()))
-    			.andExpect(jsonPath("$.sampleTextAttribute").value(DEFAULT_SAMPLE_TEXT_ATTR));
-
-    	// Update Transaction
-//    	transaction.setSampleDateAttribute(UPD_SAMPLE_DATE_ATTR);
-//    	transaction.setSampleTextAttribute(UPD_SAMPLE_TEXT_ATTR);
-  
-    	restTransactionMockMvc.perform(post("/app/rest/transactions")
-    			.contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(transaction)))
-                .andExpect(status().isOk());
-
-    	// Read updated Transaction
-    	restTransactionMockMvc.perform(get("/app/rest/transactions/{id}", DEFAULT_ID))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id").value(DEFAULT_ID.intValue()))
-    			.andExpect(jsonPath("$.sampleDateAttribute").value(UPD_SAMPLE_DATE_ATTR.toString()))
-    			.andExpect(jsonPath("$.sampleTextAttribute").value(UPD_SAMPLE_TEXT_ATTR));
-
-    	// Delete Transaction
-    	restTransactionMockMvc.perform(delete("/app/rest/transactions/{id}", DEFAULT_ID)
-                .accept(TestUtil.APPLICATION_JSON_UTF8))
-                .andExpect(status().isOk());
-
-    	// Read nonexisting Transaction
-    	restTransactionMockMvc.perform(get("/app/rest/transactions/{id}", DEFAULT_ID)
-                .accept(TestUtil.APPLICATION_JSON_UTF8))
-                .andExpect(status().isNotFound());
-
     }
+
+    @Test
+    public void getOpenTransactions() throws Exception {
+        restTransactionMockMvc.perform(get("/app/rest/transactions/open"))
+                .andExpect(status().isOk());
+    }
+
+//    @Test
+//    public void testCRUDTransaction() throws Exception {
+//
+//    	// Create Transaction
+//    	restTransactionMockMvc.perform(post("/app/rest/transactions")
+//    			.contentType(TestUtil.APPLICATION_JSON_UTF8)
+//                .content(TestUtil.convertObjectToJsonBytes(transaction)))
+//                .andExpect(status().isOk());
+//
+//    	// Read Transaction
+//    	restTransactionMockMvc.perform(get("/app/rest/transactions/{id}", DEFAULT_ID))
+//                .andExpect(status().isOk())
+//                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+//                .andExpect(jsonPath("$.id").value(DEFAULT_ID.intValue()))
+//    			.andExpect(jsonPath("$.sampleDateAttribute").value(DEFAULT_SAMPLE_DATE_ATTR.toString()))
+//    			.andExpect(jsonPath("$.sampleTextAttribute").value(DEFAULT_SAMPLE_TEXT_ATTR));
+//
+//    	// Update Transaction
+////    	transaction.setSampleDateAttribute(UPD_SAMPLE_DATE_ATTR);
+////    	transaction.setSampleTextAttribute(UPD_SAMPLE_TEXT_ATTR);
+//
+//    	restTransactionMockMvc.perform(post("/app/rest/transactions")
+//    			.contentType(TestUtil.APPLICATION_JSON_UTF8)
+//                .content(TestUtil.convertObjectToJsonBytes(transaction)))
+//                .andExpect(status().isOk());
+//
+//    	// Read updated Transaction
+//    	restTransactionMockMvc.perform(get("/app/rest/transactions/{id}", DEFAULT_ID))
+//                .andExpect(status().isOk())
+//                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+//                .andExpect(jsonPath("$.id").value(DEFAULT_ID.intValue()))
+//    			.andExpect(jsonPath("$.sampleDateAttribute").value(UPD_SAMPLE_DATE_ATTR.toString()))
+//    			.andExpect(jsonPath("$.sampleTextAttribute").value(UPD_SAMPLE_TEXT_ATTR));
+//
+//    	// Delete Transaction
+//    	restTransactionMockMvc.perform(delete("/app/rest/transactions/{id}", DEFAULT_ID)
+//                .accept(TestUtil.APPLICATION_JSON_UTF8))
+//                .andExpect(status().isOk());
+//
+//    	// Read nonexisting Transaction
+//    	restTransactionMockMvc.perform(get("/app/rest/transactions/{id}", DEFAULT_ID)
+//                .accept(TestUtil.APPLICATION_JSON_UTF8))
+//                .andExpect(status().isNotFound());
+//
+//    }
 }

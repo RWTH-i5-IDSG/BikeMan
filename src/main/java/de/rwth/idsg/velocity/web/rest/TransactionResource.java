@@ -1,14 +1,17 @@
 package de.rwth.idsg.velocity.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import de.rwth.idsg.velocity.domain.Transaction;
 import de.rwth.idsg.velocity.repository.TransactionRepository;
+import de.rwth.idsg.velocity.web.rest.dto.view.ViewTransactionDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import java.util.List;
 
 /**
@@ -16,6 +19,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/app")
+@Produces(MediaType.APPLICATION_JSON)
 public class TransactionResource {
 
     private final Logger log = LoggerFactory.getLogger(TransactionResource.class);
@@ -23,55 +27,25 @@ public class TransactionResource {
     @Inject
     private TransactionRepository transactionRepository;
 
-    /**
-     * POST  /rest/transactions -> Create a new transaction.
-     */
-    @RequestMapping(value = "/rest/transactions",
-            method = RequestMethod.POST,
-            produces = "application/json")
-    @Timed
-    public void create(@RequestBody Transaction transaction) {
-        log.debug("REST request to save Transaction : {}", transaction);
-        transactionRepository.save(transaction);
-    }
+    private static final String BASE_PATH = "/rest/transactions";
+    private static final String BASE_PATH_OPEN = "/rest/transactions/open";  // This is new (SG)
 
-    /**
-     * GET  /rest/transactions -> get all the transactions.
-     */
-    @RequestMapping(value = "/rest/transactions",
-            method = RequestMethod.GET,
-            produces = "application/json")
     @Timed
-    public List<Transaction> getAll() {
+    @RequestMapping(value = BASE_PATH, method = RequestMethod.GET)
+    public List<ViewTransactionDTO> getAll() {
         log.debug("REST request to get all Transactions");
-        return transactionRepository.findAll();
+        List<ViewTransactionDTO> list = transactionRepository.findAll();
+        log.debug("List with size {}: {}", list.size(), list);
+        return list;
     }
 
-    /**
-     * GET  /rest/transactions/:id -> get the "id" transaction.
-     */
-    @RequestMapping(value = "/rest/transactions/{id}",
-            method = RequestMethod.GET,
-            produces = "application/json")
     @Timed
-    public Transaction get(@PathVariable Long id, HttpServletResponse response) {
-        log.debug("REST request to get Transaction : {}", id);
-        Transaction transaction = transactionRepository.findOne(id);
-        if (transaction == null) {
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-        }
-        return transaction;
+    @RequestMapping(value = BASE_PATH_OPEN, method = RequestMethod.GET)
+    public List<ViewTransactionDTO> getOpen() {
+        log.debug("REST request to get open Transactions");
+        List<ViewTransactionDTO> list = transactionRepository.findOpen();
+        log.debug("List with size {}: {}", list.size(), list);
+        return list;
     }
 
-    /**
-     * DELETE  /rest/transactions/:id -> delete the "id" transaction.
-     */
-    @RequestMapping(value = "/rest/transactions/{id}",
-            method = RequestMethod.DELETE,
-            produces = "application/json")
-    @Timed
-    public void delete(@PathVariable Long id, HttpServletResponse response) {
-        log.debug("REST request to delete Transaction : {}", id);
-        transactionRepository.delete(id);
-    }
 }

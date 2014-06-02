@@ -56,6 +56,10 @@ public class Pedelec implements Serializable {
         if (stateOfCharge == null) {
             stateOfCharge = 0.0f;
         }
+
+        if (inTransaction == null) {
+            inTransaction = false;
+        }
     }
 
 }
