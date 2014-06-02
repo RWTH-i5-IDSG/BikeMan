@@ -1,6 +1,8 @@
 package de.rwth.idsg.velocity.repository;
 
 import de.rwth.idsg.velocity.domain.Pedelec;
+import de.rwth.idsg.velocity.domain.Station;
+import de.rwth.idsg.velocity.domain.StationSlot;
 import de.rwth.idsg.velocity.domain.Transaction;
 import de.rwth.idsg.velocity.web.rest.dto.modify.CreateEditPedelecDTO;
 import de.rwth.idsg.velocity.web.rest.dto.view.ViewPedelecDTO;
@@ -10,9 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
 import javax.transaction.Transactional;
 import java.util.List;
 
@@ -35,6 +35,9 @@ public class PedelecRepositoryImpl implements PedelecRepository {
         // Get the stationary pedelecs
         CriteriaQuery<ViewPedelecDTO> criteriaStat = builder.createQuery(ViewPedelecDTO.class);
         Root<Pedelec> rootStat = criteriaStat.from(Pedelec.class);
+        Join<Pedelec, StationSlot> stationSlot = rootStat.join("stationSlot", JoinType.LEFT);
+        Join<Pedelec, Station> station = stationSlot.join("station", JoinType.LEFT);
+
         criteriaStat.select(
                 builder.construct(
                         ViewPedelecDTO.class,
@@ -43,9 +46,9 @@ public class PedelecRepositoryImpl implements PedelecRepository {
                         rootStat.get("stateOfCharge"),
                         rootStat.get("state"),
                         rootStat.get("inTransaction"),
-                        rootStat.get("stationSlot").get("station").get("stationId"),
-                        rootStat.get("stationSlot").get("station").get("manufacturerId"),
-                        rootStat.get("stationSlot").get("stationSlotId")
+                        station.get("stationId"),
+                        station.get("manufacturerId"),
+                        stationSlot.get("stationSlotId")
                 )
         ).where(builder.equal(rootStat.get("inTransaction"), false));
 
@@ -70,7 +73,10 @@ public class PedelecRepositoryImpl implements PedelecRepository {
                         trans.get("fromSlot").get("stationSlotId"),
                         trans.get("startDateTime")
                 )
-        ).where(builder.equal(rootTrans.get("inTransaction"), true));
+        ).where(builder.and(
+                builder.equal(rootTrans.get("inTransaction"), true),
+                builder.isNull(trans.get("endDateTime"))
+        ));
 
         // Join the lists and return
         list.addAll(em.createQuery(criteriaTrans).getResultList());
