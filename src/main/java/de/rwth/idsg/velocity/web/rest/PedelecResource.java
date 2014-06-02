@@ -41,9 +41,9 @@ public class PedelecResource {
 
     @Timed
     @RequestMapping(value = ID_PATH, method = RequestMethod.GET)
-    public Pedelec get(@PathVariable Long pedelecId, HttpServletResponse response) {
-        log.debug("REST request to get Pedelec : {}", pedelecId);
-        Pedelec pedelec = pedelecRepository.findOne(pedelecId);
+    public Pedelec get(@PathVariable Long id, HttpServletResponse response) {
+        log.debug("REST request to get Pedelec : {}", id);
+        Pedelec pedelec = pedelecRepository.findOne(id);
         if (pedelec == null) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
         }
@@ -59,8 +59,8 @@ public class PedelecResource {
 
     @Timed
     @RequestMapping(value = ID_PATH, method = RequestMethod.PUT)
-    public void update(@PathVariable Long pedelecId, @Valid @RequestBody CreateEditPedelecDTO pedelec) {
-        log.debug("REST request to update Pedelec : {}", pedelecId);
+    public void update(@PathVariable Long id, @Valid @RequestBody CreateEditPedelecDTO pedelec) {
+        log.debug("REST request to update Pedelec : {}", id);
         pedelecRepository.update(pedelec);
     }
 
