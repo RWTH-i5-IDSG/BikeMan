@@ -25,6 +25,10 @@ public class StationSlot implements Serializable {
     @Getter @Setter
     private long stationSlotId;
 
+    @Column(name = "station_slot_position")
+    @Getter @Setter
+    private Integer stationSlotPosition;
+
     @Column(name = "manufacturer_id", updatable = false)
     @Getter @Setter
     private String manufacturerId;

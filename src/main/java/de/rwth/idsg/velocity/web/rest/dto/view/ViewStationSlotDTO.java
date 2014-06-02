@@ -28,7 +28,9 @@ public class ViewStationSlotDTO {
         this.state = state;
         this.isOccupied = isOccupied;
 
-        this.pedelec = new StationSlotPedelecDTO(pedelecId, pedelecManufacturerId);
+        if (isOccupied) {
+            this.pedelec = new StationSlotPedelecDTO(pedelecId, pedelecManufacturerId);
+        }
     }
 
     @AllArgsConstructor

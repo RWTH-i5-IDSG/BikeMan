@@ -3,9 +3,11 @@ package de.rwth.idsg.velocity.web.rest.dto.view;
 import de.rwth.idsg.velocity.domain.OperationState;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * Created by swam on 23/05/14.
@@ -24,6 +26,7 @@ public class ViewStationDTO {
     @Getter private OperationState state;
     @Getter private Long numFreeSlots;
     @Getter private Long numAllSlots;
+    @Getter @Setter private List<ViewStationSlotDTO> slots;
 
     public ViewStationDTO(Long stationId, String manufacturerId, String name,
                           String streetAndHousenumber, String zip, String city, String country,

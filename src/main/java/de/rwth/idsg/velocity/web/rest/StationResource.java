@@ -48,9 +48,9 @@ public class StationResource {
 
     @Timed
     @RequestMapping(value = ID_PATH, method = RequestMethod.GET)
-    public Station get(@PathVariable Long id, HttpServletResponse response) {
+    public ViewStationDTO get(@PathVariable Long id, HttpServletResponse response) {
         log.info("REST request to get Station : {}", id);
-        Station station = stationRepository.findOne(id);
+        ViewStationDTO station = stationRepository.findOne(id);
         if (station == null) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
         }

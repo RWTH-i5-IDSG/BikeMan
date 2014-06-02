@@ -14,7 +14,7 @@ public interface StationRepository {
 
     List<ViewStationDTO> findAll();
     List<ViewStationDTO> findByLocation(BigDecimal latitude, BigDecimal longitude);
-    Station findOne(long stationId);
+    ViewStationDTO findOne(long stationId);
     void create(CreateEditStationDTO dto);
     void update(CreateEditStationDTO dto);
     void delete(long stationId);
