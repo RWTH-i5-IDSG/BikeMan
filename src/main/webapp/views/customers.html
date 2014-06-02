@@ -1,83 +1,43 @@
 <div>
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">Transactions</h1>
+        </div>
+    </div>
 
-    <h2>Customers</h2>
+    <h5>Search customer with name or email address:</h5>
 
-    <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#saveCustomerModal" ng-click="clear()">
-        <span class="glyphicon glyphicon-flash"></span> Create a new Customer
-    </button>
-    <div class="modal fade" id="saveCustomerModal" tabindex="-1" role="dialog" aria-labelledby="myCustomerLabel"
-         aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form name="form" role="form" novalidate
-                      class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength"
-                      ng-submit="create()">
-
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
-                                ng-click="clear()">&times;</button>
-                        <h4 class="modal-title" id="myCustomerLabel">Create or edit a Customer</h4>
-                    </div>
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label>ID</label>
-                            <input type="text" class="form-control" name="id"
-                                   ng-model="customer.id" readonly>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Sample text attribute</label>
-                            <input type="text" class="form-control" name="test"
-                                   ng-model="customer.sampleTextAttribute" ng-minlength=1 ng-maxlength=50 required>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Sample date attribute</label>
-                            <input type="date" class="form-control" name="test"
-                                   ng-model="customer.sampleDateAttribute" required>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clear()">
-                            <span class="glyphicon glyphicon-ban-circle"></span> Cancel
-                        </button>
-                        <button type="submit" ng-disabled="form.$invalid" class="btn btn-primary">
-                            <span class="glyphicon glyphicon-save"></span> Save
-                        </button>
-                    </div>
-                </form>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="input-group custom-search-form">
+                <input type="text" class="form-control" placeholder="Search...">
+                                <span class="input-group-btn">
+                                <button class="btn btn-default" type="button">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </span>
             </div>
         </div>
     </div>
 
-    <div class="table-responsive">
+
+    <div class="table-responsive voffset5">
         <table class="table table-striped">
             <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Sample text</th>
-                    <th>Sample date</th>
-                    <th></th>
-                </tr>
+            <tr>
+                <th>Name</th>
+                <th>E-Mail</th>
+                <th>State</th>
+                <th></th>
+            </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="customer in customers">
-                    <td>{{customer.id}}</td>
-                    <td>{{customer.sampleTextAttribute}}</td>
-                    <td>{{customer.sampleDateAttribute}}</td>
-                    <td>
-                        <button type="submit"
-                                ng-click="update(customer.id)"
-                                class="btn">
-                            <span class="glyphicon glyphicon-pencil"></span> Edit
-                        </button>
-                        <button type="submit"
-                                ng-click="delete(customer.id)"
-                                class="btn btn-danger">
-                            <span class="glyphicon glyphicon-remove-circle"></span> Delete
-                        </button>
-                    </td>
-                </tr>
+            <tr ng-repeat="pedelec in pedelecs">
+                <td>{{customer.customerName}}</td>
+                <td>{{customer.email}}</td>
+                <td>{{customer.state}}</td>
+
+            </tr>
             </tbody>
         </table>
     </div>

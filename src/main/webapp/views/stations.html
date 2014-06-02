@@ -6,7 +6,7 @@
     </div>
 
     <div class="table-responsive">
-        <table class="table table-striped table-hover">
+        <table class="table table-striped">
             <thead>
                 <tr>
                     <!--<th>ID</th>-->
@@ -19,7 +19,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat-start="station in stations" data-toggle="collapse" data-target="#{{station.stationId}}" ng-click="requestSlots(station.stationId)">
+                <tr ng-repeat-start="station in stations" data-parent="#stations-table" data-toggle="collapse" ng-click="getStation(station.stationId)">
                     <td>{{station.name}}</td>
                     <td>{{station.manufacturerId}}</td>
                     <td><small>{{station.address.streetAndHousenumber + ', ' + station.address.zip + ', ' + station.address.city + ', ' + station.address.country}}</small></td>
@@ -40,7 +40,7 @@
                 </tr>
                 <tr ng-repeat-end>
                     <td colspan="6" class="hiddenRow"><div class="accordian-body collapse" id="{{station.stationId}}">
-                        <table class="table table-striped table-bordered">
+                        <table class="table table-bordered">
                             <thead>
                                 <tr>
                                     <th>Slot</th>
@@ -51,11 +51,11 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr ng-repeat="slot in stationSlots">
+                                <tr ng-repeat="slot in selectedStation.slots">
                                     <td>{{slot.slotPosition}}</td>
                                     <td>{{slot.manufacturerId}}</td>
                                     <td>{{slot.state}}</td>
-                                    <td>{{slot.isOccupied}}</td>
+                                    <td><span ng-if="slot.isOccupied">Pedelec: {{slot.pedelec.manufacturerId}}</span></td>
                                     <td>
                                         <button type="submit"
                                                 ng-click="showUpdate(station.id)"

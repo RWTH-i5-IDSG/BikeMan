@@ -22,8 +22,21 @@ velocityApp.controller('StationController', ['$scope', 'resolvedStation', 'Stati
 //            $('#saveStationModal').modal('show');
 //        };
 
-        $scope.requestSlots = function(id) {
-            $scope.stationSlots = StationSlot.query();
+        $scope.getStation = function(id) {
+            if ($scope.selectedStation != null) {
+                angular.forEach($scope.stations, function (value, index) {
+                    $('#' + value.stationId).collapse('hide');
+                });
+            }
+
+            if ($scope.selectedStation == null || $scope.selectedStation.stationId != id ) {
+                $scope.selectedStation = Station.get({id: id}, function () {
+                    $('#' + id).collapse('show');
+                });
+            } else {
+
+            }
+
         }
 
         $scope.delete = function (id) {

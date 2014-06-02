@@ -1,8 +1,8 @@
 'use strict';
 
 velocityApp
-    .config(['$stateProvider', '$httpProvider', '$translateProvider',
-        function ($stateProvider, $httpProvider, $translateProvider) {
+    .config(['$stateProvider', '$httpProvider', '$translateProvider', 'USER_ROLES',
+        function ($stateProvider, $httpProvider, $translateProvider, USER_ROLES) {
             $stateProvider
                 .state('customer', {
                     url: '/customer',
@@ -12,6 +12,9 @@ velocityApp
                         resolvedCustomer: ['Customer', function (Customer) {
                             return Customer.query();
                         }]
+                    },
+                    access: {
+                        authorizedRoles: [USER_ROLES.all]
                     }
                 })
         }]);
