@@ -1,6 +1,7 @@
 package de.rwth.idsg.velocity.repository;
 
 import de.rwth.idsg.velocity.domain.Transaction;
+import de.rwth.idsg.velocity.web.rest.dto.modify.CreateEditPedelecDTO;
 import de.rwth.idsg.velocity.web.rest.dto.view.ViewTransactionDTO;
 
 import java.util.List;
@@ -28,6 +29,18 @@ public interface TransactionRepository {
     *
     * Important: This is for internal use to close a transaction, and NOT for the Web UI
     */
-    Transaction findOpenByPedelecId();
+    Transaction findOpenByPedelecId(Long pedelecId);
+
+    /*
+    *
+    * Important: This is for internal use to start a transaction, and NOT for the Web UI
+    */
+    void start(Transaction transaction);
+
+    /*
+    *
+    * Important: This is for internal use to stop a transaction, and NOT for the Web UI
+    */
+    void stop(Transaction transaction);
 
 }

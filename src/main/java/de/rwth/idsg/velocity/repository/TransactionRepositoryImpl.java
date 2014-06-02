@@ -83,8 +83,17 @@ public class TransactionRepositoryImpl implements TransactionRepository {
     }
 
     @Override
-    public Transaction findOpenByPedelecId() {
-        // TODO
+    public Transaction findOpenByPedelecId(Long pedelecId) {
         return null;
+    }
+
+    @Override
+    public void start(Transaction transaction) {
+
+    }
+
+    @Override
+    public void stop(Transaction transaction) {
+
     }
 }

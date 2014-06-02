@@ -99,7 +99,7 @@ public class RentalService {
         transaction.setCustomer(currentUser);
         transaction.setStartDateTime(new LocalDateTime().now());
 
-        transactionRepository.save(transaction);
+        transactionRepository.start(transaction);
     }
 
 
@@ -112,14 +112,14 @@ public class RentalService {
         stationSlotRepository.save(stationSlot);
 
         // Get last transaction for pedelec with pedelec id
-        Transaction activeTransaction = transactionRepository.findLastTransactionByPedelecId(pedelec);
+        Transaction activeTransaction = transactionRepository.findOpenByPedelecId(pedelecId);
 
         // add end slot and end time to transaction
         activeTransaction.setEndDateTime(new LocalDateTime().now());
         activeTransaction.setToSlot(stationSlot);
 
         // return transaction
-        transactionRepository.save(activeTransaction);
+        transactionRepository.stop(activeTransaction);
 
         return false;
     }

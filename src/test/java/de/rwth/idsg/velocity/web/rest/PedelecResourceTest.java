@@ -68,7 +68,7 @@ public class PedelecResourceTest {
         restPedelecMockMvc = MockMvcBuilders.standaloneSetup(pedelecResource).build();
     }
 
-    //@Test
+    @Test
     public void pedelecDtoMissingFields() throws Exception {
         CreateEditPedelecDTO ped = new CreateEditPedelecDTO();
 
@@ -78,7 +78,7 @@ public class PedelecResourceTest {
                 .andExpect(status().isBadRequest());
     }
 
-    //@Test
+    @Test
     public void pedelecDtoWithFields() throws Exception {
 
         for (int n=1; n <= 9; n++ ) {
