@@ -47,6 +47,7 @@
                                     <th>Manufacturer ID</th>
                                     <th>State</th>
                                     <th>Occupied</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -55,6 +56,18 @@
                                     <td>{{slot.manufacturerId}}</td>
                                     <td>{{slot.state}}</td>
                                     <td>{{slot.isOccupied}}</td>
+                                    <td>
+                                        <button type="submit"
+                                                ng-click="showUpdate(station.id)"
+                                                class="btn">
+                                            <span class="glyphicon glyphicon-pencil"></span>
+                                        </button>
+                                        <button type="submit"
+                                                ng-click="delete(station.id)"
+                                                class="btn btn-danger">
+                                            <span class="glyphicon glyphicon-remove-circle"></span>
+                                        </button>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
