@@ -15,7 +15,7 @@ import java.io.Serializable;
 @Table(name = "T_STATION_SLOT",
         indexes = {
                 @Index(columnList="pedelec_id", unique = true),
-                @Index(columnList="station_id", unique = true) })
+                @Index(columnList="station_id", unique = false) })
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @TableGenerator(name="slot_gen", initialValue=0, allocationSize=1)
 @EqualsAndHashCode(of = {"stationSlotId"})

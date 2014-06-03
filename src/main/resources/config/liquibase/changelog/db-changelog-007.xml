@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet author="jhipster" id="1401809531148-6">
+        <dropUniqueConstraint catalogName="velocity" constraintName="uc_t_station_slot_station_id" schemaName="public" tableName="t_station_slot"/>
+        <createIndex indexName="idx_t_station_slot_station_id"
+                     schemaName="public"
+                     tableName="t_station_slot"
+                     unique="false">
+            <column name="station_id" type="INT8"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jhipster" id="1401809531148-7">
+        <dropUniqueConstraint catalogName="velocity" constraintName="uc_t_transaction_customer_id" schemaName="public" tableName="t_transaction"/>
+        <createIndex indexName="idx_t_transaction_customer_id"
+                     schemaName="public"
+                     tableName="t_transaction"
+                     unique="false">
+            <column name="customer_id" type="VARCHAR(255)"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jhipster" id="1401809531148-8">
+        <dropUniqueConstraint catalogName="velocity" constraintName="uc_t_transaction_from_slot_id" schemaName="public" tableName="t_transaction"/>
+        <createIndex indexName="idx_t_transaction_from_slot_id"
+                     schemaName="public"
+                     tableName="t_transaction"
+                     unique="false">
+            <column name="from_slot_id" type="INT8"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jhipster" id="1401809531148-9">
+        <dropUniqueConstraint catalogName="velocity" constraintName="uc_t_transaction_pedelec_id" schemaName="public" tableName="t_transaction"/>
+        <createIndex indexName="idx_t_transaction_pedelec_id"
+                     schemaName="public"
+                     tableName="t_transaction"
+                     unique="false">
+            <column name="pedelec_id" type="INT8"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jhipster" id="1401809531148-10">
+        <dropUniqueConstraint catalogName="velocity" constraintName="uc_t_transaction_to_slot_id" schemaName="public" tableName="t_transaction"/>
+        <createIndex indexName="idx_t_transaction_to_slot_id"
+                     schemaName="public"
+                     tableName="t_transaction"
+                     unique="false">
+            <column name="to_slot_id" type="INT8"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>
