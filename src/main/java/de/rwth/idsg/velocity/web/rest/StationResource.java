@@ -24,7 +24,7 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON)
 public class StationResource {
 
-    private final Logger log = LoggerFactory.getLogger(StationResource.class);
+    private static final Logger log = LoggerFactory.getLogger(StationResource.class);
 
     @Autowired
     private StationRepository stationRepository;

@@ -1,6 +1,6 @@
 package de.rwth.idsg.velocity.repository;
 
-import de.rwth.idsg.velocity.domain.Transaction;
+import de.rwth.idsg.velocity.domain.*;
 import de.rwth.idsg.velocity.web.rest.dto.view.ViewTransactionDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,9 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
 import javax.transaction.Transactional;
 import java.util.List;
 
@@ -33,23 +31,32 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         CriteriaQuery<ViewTransactionDTO> criteria = builder.createQuery(ViewTransactionDTO.class);
         Root<Transaction> root = criteria.from(Transaction.class);
 
+        Join<Transaction, Pedelec> pedelecJoin = root.join("pedelec", JoinType.LEFT);
+        Join<Transaction, Customer> customerJoin = root.join("customer", JoinType.LEFT);
+
+        Join<Transaction, StationSlot> fromSlotJoin = root.join("fromSlot", JoinType.LEFT);
+        Join<StationSlot, Station> fromStation = fromSlotJoin.join("station", JoinType.LEFT);
+
+        Join<Transaction, StationSlot> toSlotJoin = root.join("toSlot", JoinType.LEFT);
+        Join<StationSlot, Station> toStation = toSlotJoin.join("station", JoinType.LEFT);
+
         criteria.select(
                 builder.construct(
                         ViewTransactionDTO.class,
                         root.get("transactionId"),
                         root.get("startDateTime"),
                         root.get("endDateTime"),
-                        root.get("fromSlot").get("station").get("stationId"),
-                        root.get("fromSlot").get("station").get("name"),
-                        root.get("fromSlot").get("stationSlotId"),
-                        root.get("toSlot").get("station").get("stationId"),
-                        root.get("toSlot").get("station").get("name"),
-                        root.get("toSlot").get("stationSlotId"),
-                        root.get("customer").get("customerId"),
-                        root.get("customer").get("firstname"),
-                        root.get("customer").get("lastname"),
-                        root.get("pedelec").get("pedelecId"),
-                        root.get("pedelec").get("manufacturerId")
+                        fromStation.get("stationId"),
+                        fromStation.get("name"),
+                        fromSlotJoin.get("stationSlotId"),
+                        toStation.get("stationId"),
+                        toStation.get("name"),
+                        toSlotJoin.get("stationSlotId"),
+                        customerJoin.get("customerId"),
+                        customerJoin.get("firstname"),
+                        customerJoin.get("lastname"),
+                        pedelecJoin.get("pedelecId"),
+                        pedelecJoin.get("manufacturerId")
                 )
         );
 
@@ -63,19 +70,25 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         CriteriaQuery<ViewTransactionDTO> criteria = builder.createQuery(ViewTransactionDTO.class);
         Root<Transaction> root = criteria.from(Transaction.class);
 
+        Join<Transaction, Pedelec> pedelecJoin = root.join("pedelec", JoinType.LEFT);
+        Join<Transaction, Customer> customerJoin = root.join("customer", JoinType.LEFT);
+
+        Join<Transaction, StationSlot> fromSlotJoin = root.join("fromSlot", JoinType.LEFT);
+        Join<StationSlot, Station> fromStation = fromSlotJoin.join("station", JoinType.LEFT);
+
         criteria.select(
                 builder.construct(
                         ViewTransactionDTO.class,
                         root.get("transactionId"),
                         root.get("startDateTime"),
-                        root.get("fromSlot").get("station").get("stationId"),
-                        root.get("fromSlot").get("station").get("name"),
-                        root.get("fromSlot").get("stationSlotId"),
-                        root.get("customer").get("customerId"),
-                        root.get("customer").get("firstname"),
-                        root.get("customer").get("lastname"),
-                        root.get("pedelec").get("pedelecId"),
-                        root.get("pedelec").get("manufacturerId")
+                        fromStation.get("stationId"),
+                        fromStation.get("name"),
+                        fromSlotJoin.get("stationSlotId"),
+                        customerJoin.get("customerId"),
+                        customerJoin.get("firstname"),
+                        customerJoin.get("lastname"),
+                        pedelecJoin.get("pedelecId"),
+                        pedelecJoin.get("manufacturerId")
                 )
         ).where(builder.isNull(root.get("toSlot")));
 
