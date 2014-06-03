@@ -28,10 +28,10 @@ public class ViewTransactionDTO {
     @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
     private LocalDateTime endDateTime;
 
-    // Finished transactions
+    // All transactions
     public ViewTransactionDTO(Long transactionId, LocalDateTime startDateTime, LocalDateTime endDateTime,
-                              Long fromStationId, String fromStationName, Long fromStationSlotPosition,
-                              Long toStationId, String toStationName, Long toStationSlotPosition,
+                              Long fromStationId, String fromStationName, Integer fromStationSlotPosition,
+                              Long toStationId, String toStationName, Integer toStationSlotPosition,
                               String customerId, String customerFirstname, String customerLastname,
                               Long pedelecId, String pedelecManufacturerId) {
         this.transactionId = transactionId;
@@ -47,7 +47,7 @@ public class ViewTransactionDTO {
 
     // Open transactions
     public ViewTransactionDTO(Long transactionId, LocalDateTime startDateTime,
-                              Long fromStationId, String fromStationName, Long fromStationSlotPosition,
+                              Long fromStationId, String fromStationName, Integer fromStationSlotPosition,
                               String customerId, String customerFirstname, String customerLastname,
                               Long pedelecId, String pedelecManufacturerId) {
         this.transactionId = transactionId;
@@ -65,7 +65,7 @@ public class ViewTransactionDTO {
 
         @Getter private Long stationId;
         @Getter private String name;
-        @Getter private Long slotPosition;
+        @Getter private Integer slotPosition;
     }
 
     @AllArgsConstructor
