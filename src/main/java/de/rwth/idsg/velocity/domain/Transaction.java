@@ -14,7 +14,12 @@ import java.io.Serializable;
 
 
 @Entity
-@Table(name = "T_TRANSACTION")
+@Table(name = "T_TRANSACTION",
+        indexes = {
+                @Index(columnList="customer_id", unique = true),
+                @Index(columnList="pedelec_id", unique = true),
+                @Index(columnList="from_slot_id", unique = true),
+                @Index(columnList="to_slot_id", unique = true) })
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @TableGenerator(name="transaction_gen", initialValue=0, allocationSize=1)
 @EqualsAndHashCode(of = {"transactionId"})

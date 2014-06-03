@@ -15,7 +15,9 @@ import java.util.Set;
 
 
 @Entity
-@Table(name = "T_STATION")
+@Table(name = "T_STATION",
+        indexes = {
+                @Index(columnList="address_id", unique = true) })
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @TableGenerator(name="station_gen", initialValue=0, allocationSize=1)
 @EqualsAndHashCode(of = {"stationId", "manufacturerId"})

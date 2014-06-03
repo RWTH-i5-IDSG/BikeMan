@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet author="jhipster" id="1401799546431-9">
+        <addUniqueConstraint catalogName="" columnNames="address_id" constraintName="UC_T_CUSTOMER_ADDRESS_ID" deferrable="false" disabled="false" initiallyDeferred="false" schemaName="public" tableName="T_CUSTOMER"/>
+    </changeSet>
+    <changeSet author="jhipster" id="1401799546431-10">
+        <addUniqueConstraint catalogName="" columnNames="address_id" constraintName="UC_T_STATION_ADDRESS_ID" deferrable="false" disabled="false" initiallyDeferred="false" schemaName="public" tableName="T_STATION"/>
+    </changeSet>
+    <changeSet author="jhipster" id="1401799546431-11">
+        <addUniqueConstraint catalogName="" columnNames="pedelec_id" constraintName="UC_T_STATION_SLOT_PEDELEC_ID" deferrable="false" disabled="false" initiallyDeferred="false" schemaName="public" tableName="T_STATION_SLOT"/>
+    </changeSet>
+    <changeSet author="jhipster" id="1401799546431-12">
+        <addUniqueConstraint catalogName="" columnNames="station_id" constraintName="UC_T_STATION_SLOT_STATION_ID" deferrable="false" disabled="false" initiallyDeferred="false" schemaName="public" tableName="T_STATION_SLOT"/>
+    </changeSet>
+    <changeSet author="jhipster" id="1401799546431-13">
+        <addUniqueConstraint catalogName="" columnNames="customer_id" constraintName="UC_T_TRANSACTION_CUSTOMER_ID" deferrable="false" disabled="false" initiallyDeferred="false" schemaName="public" tableName="T_TRANSACTION"/>
+    </changeSet>
+    <changeSet author="jhipster" id="1401799546431-14">
+        <addUniqueConstraint catalogName="" columnNames="from_slot_id" constraintName="UC_T_TRANSACTION_FROM_SLOT_ID" deferrable="false" disabled="false" initiallyDeferred="false" schemaName="public" tableName="T_TRANSACTION"/>
+    </changeSet>
+    <changeSet author="jhipster" id="1401799546431-15">
+        <addUniqueConstraint catalogName="" columnNames="pedelec_id" constraintName="UC_T_TRANSACTION_PEDELEC_ID" deferrable="false" disabled="false" initiallyDeferred="false" schemaName="public" tableName="T_TRANSACTION"/>
+    </changeSet>
+    <changeSet author="jhipster" id="1401799546431-16">
+        <addUniqueConstraint catalogName="" columnNames="to_slot_id" constraintName="UC_T_TRANSACTION_TO_SLOT_ID" deferrable="false" disabled="false" initiallyDeferred="false" schemaName="public" tableName="T_TRANSACTION"/>
+    </changeSet>
+</databaseChangeLog>
