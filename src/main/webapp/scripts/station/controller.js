@@ -5,8 +5,6 @@ velocityApp.controller('StationController', ['$scope', 'resolvedStation', 'Stati
 
         $scope.stations = resolvedStation;
 
-        console.log($scope.stations);
-
 //        $scope.update = function () {
 //            Station.update($scope.station,
 //                function () {
@@ -22,21 +20,11 @@ velocityApp.controller('StationController', ['$scope', 'resolvedStation', 'Stati
 //            $('#saveStationModal').modal('show');
 //        };
 
-        $scope.getStation = function(id) {
-            if ($scope.selectedStation != null) {
-                angular.forEach($scope.stations, function (value, index) {
-                    $('#' + value.stationId).collapse('hide');
-                });
-            }
+        $scope.getStationDetails = function(station) {
 
-            if ($scope.selectedStation == null || $scope.selectedStation.stationId != id ) {
-                $scope.selectedStation = Station.get({id: id}, function () {
-                    $('#' + id).collapse('show');
-                });
-            } else {
-
-            }
-
+            Station.get({id: station.stationId}, function(requestedStation) {
+                station.slots = requestedStation.slots;
+            });
         }
 
         $scope.delete = function (id) {

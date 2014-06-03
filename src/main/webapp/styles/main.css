@@ -129,4 +129,10 @@ ul#strength {
     background-color: #EEEEEE;
 }
 
+.hiddenRow {padding: 0 !important;}
+
+.remove-margin {
+    margin: 0;
+}
+
 /* end Password strength bar style */

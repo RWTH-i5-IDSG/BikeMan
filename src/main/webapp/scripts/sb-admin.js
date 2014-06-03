@@ -1,7 +1,7 @@
 $(function () {
 
     $('#side-menu').metisMenu({
-        toggle:false
+        toggle:true
     });
 
 });
