@@ -12,6 +12,7 @@ import java.util.List;
 public interface PedelecRepository {
 
     List<ViewPedelecDTO> findAll();
+    ViewPedelecDTO findOneDTO(long pedelecId);
     Pedelec findOne(long pedelecId);
     void create(CreateEditPedelecDTO dto);
     void update(CreateEditPedelecDTO dto);
