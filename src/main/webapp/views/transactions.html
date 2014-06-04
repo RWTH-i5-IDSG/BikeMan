@@ -18,11 +18,11 @@
             </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="pedelec in pedelecs">
+            <tr ng-repeat="transaction in transactions">
                 <td>{{transaction.customer.customerName}}</td>
                 <td>{{transaction.pedelec.manufacturerId}}</td>
-                <td>{{transaction.startDateTime}}</td>
-                <td>{{transaction.endDateTime}}</td>
+                <td>{{transaction.startDateTime | date:'short'}}</td>
+                <td>{{transaction.endDateTime | date:'short'}}</td>
                 <td>{{transaction.fromStation.name}} ({{transaction.fromStation.slotPosition}})</td>
                 <td>{{transaction.toStation.name}} ({{transaction.toStation.slotPosition}})</td>
             </tr>

@@ -23,7 +23,7 @@ velocityApp
                     controller: 'TransactionController',
                     resolve:{
                         resolvedTransaction: ['Transaction', function (Transaction) {
-                            return Transaction.query();
+                            return Transaction.queryClosedTransactions();
                         }]
                     },
                     access: {
@@ -36,7 +36,7 @@ velocityApp
                     controller: 'TransactionController',
                     resolve:{
                         resolvedTransaction: ['Transaction', function (Transaction) {
-                            return Transaction.query();
+                            return Transaction.queryOpenTransactions();
                         }]
                     },
                     access: {
