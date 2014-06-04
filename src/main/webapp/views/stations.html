@@ -10,20 +10,26 @@
             <thead>
                 <tr>
                     <!--<th>ID</th>-->
+                    <th></th>
                     <th>Name</th>
                     <th>Manufacturer ID</th>
                     <th>Address</th>
                     <th>State</th>
                     <th>Allocation</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat-start="station in stations" data-parent="#stations-table" data-target="#{{station.stationId}}" data-toggle="collapse" ng-click="getStationDetails(station)">
+                <tr ng-repeat-start="station in stations" data-parent="#stations-table" data-toggle="collapse" data-target="#{{station.stationId}}" ng-click="getStationDetails(station)">
+                    <td><a class="dropdown-toggle" data-toggle="dropdown"  href="javascript:;">
+                        <span class="fa fa-angle-right"></span>
+                    </a></span></td>
                     <td>{{station.name}}</td>
                     <td>{{station.manufacturerId}}</td>
                     <td><small>{{station.address.streetAndHousenumber + ', ' + station.address.zip + ', ' + station.address.city + ', ' + station.address.country}}</small></td>
                     <td>{{station.state}}</td>
                     <td>{{station.numFreeSlots}} / {{station.numAllSlots}}</td>
+                    <td><a ui-sref="stationDetail({stationId:{{station.stationId}}})">Details</a></td>
                 </tr>
                 <tr ng-repeat-end>
                     <td colspan="6" class="hiddenRow"><div class="accordian-body collapse" id="{{station.stationId}}">
@@ -34,7 +40,8 @@
                                     <th>Manufacturer ID</th>
                                     <th>State</th>
                                     <th>Occupied</th>
-                                    <th><a ui-sref="stationDetail({stationId:{{station.stationId}}})">Details</a></th>
+                                    <th>Pedelec (Manufacturer ID)</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -42,7 +49,8 @@
                                     <td>{{slot.slotPosition}}</td>
                                     <td>{{slot.manufacturerId}}</td>
                                     <td>{{slot.state}}</td>
-                                    <td><span ng-if="slot.isOccupied">Pedelec: {{slot.pedelec.manufacturerId}}</span></td>
+                                    <td>{{slot.isOccupied | occupiedFilter}}</td>
+                                    <td>{{slot.pedelec | pedelecViewFilter}}</td>
                                     <td>
                                         <button type="submit"
                                                 ng-click="showUpdate(station.id)"

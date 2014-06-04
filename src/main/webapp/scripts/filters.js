@@ -20,3 +20,9 @@ angular.module('velocityApp')
             return !input ? '\u2713' : '\u2718';
         }
     })
+    .filter('pedelecViewFilter', function () {
+        return function(inputPedelec) {
+            if (null == inputPedelec) return '-'
+            else return inputPedelec.manufacturerId;
+        }
+    })

@@ -60,21 +60,21 @@
         <table class="table table-striped">
             <thead>
             <tr>
-                <!--<th colspan="{{station.slots.length}}">Slots</th>-->
-                <th>ID</th>
                 <th>Manufacturer ID</th>
                 <th>Available</th>
                 <th>State</th>
-                <th>Pedelec</th>
+                <th>Pedelec (Manufacturer ID)</th>
             </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="slot in station.slots">
-                    <td>{{slot.stationSlotId}}</td>
+                <tr ng-repeat="slot in station.slots | orderBy:'stationSlotId'">
                     <td>{{slot.manufacturerId}}</td>
                     <td>{{slot.isOccupied | occupiedFilter}}</td>
                     <td>{{slot.state}}</td>
-                    <td>{{slot.pedelec.pedelecId + ', ' + slot.pedelec.manufacturerId}}</td>
+                    <td ng-switch="slot.isOccupied">
+                        <a ng-switch-when="true" ui-sref="pedelecs({pedelecId: slot.pedelec.pedelecId})">{{slot.pedelec | pedelecViewFilter}}</a>
+                        <span ng-switch-when="false" ui-sref="pedelecs({pedelecId: slot.pedelec.pedelecId})">{{slot.pedelec | pedelecViewFilter}}</span>
+                    </td>
                 </tr>
             </tbody>
         </table>
