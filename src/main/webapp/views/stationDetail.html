@@ -3,8 +3,13 @@
     <h2>Station: {{station.name}}</h2>
 
     <div>
-        <button type="button" ng-click="toggleEdit()" class="btn btn-default">
+        <button type="button" ui-sref="stations" class="btn-sm btn-default" ng-disabled="isEditing">Back</button>
+    </div>
+    <div ng-switch="isEditing">
+        <button type="button" ng-switch-when="false" ng-click="toggleEdit()" class="btn btn-default">
             <span class="glyphicon glyphicon-pencil"></span>Edit Station</button>
+        <button type="button" ng-switch-when="true" ng-click="toggleEdit()" class="btn btn-warning">
+            <span class="glyphicon glyphicon-pencil"></span>Cancel</button>
         <button type="button" ng-click="saveStation()" class="btn btn-primary" ng-show="isEditing">
             <span class="glyphicon glyphicon-pencil"></span>Save Station</button>
     </div>
@@ -13,8 +18,7 @@
         <table class="table" ng-switch="isEditing">
             <tr>
                 <th>Manufacturer ID</th>
-                <td ng-switch-when="false">{{station.manufacturerId}}</td>
-                <td ng-switch-when="true"><input type="text" class="form-control" ng-model="station.manufacturerId"></td>
+                <td >{{station.manufacturerId}}</td>
             </tr>
             <tr>
                 <th>Name</th>
@@ -35,8 +39,8 @@
                 <th>Coordinates</th>
                 <td ng-switch-when="false">{{station.locationLatitude + ',' + station.locationLongitude}}</td>
                 <td ng-switch-when="true">
-                    Latitude: <input type="text" class="form-control" ng-model="station.locationLatitude">
-                    Longitude: <input type="text" class="form-control" ng-model="station.locationLongitude">
+                    Latitude: <input type="number" class="form-control" ng-model="station.locationLatitude">
+                    Longitude: <input type="number" class="form-control" ng-model="station.locationLongitude">
                 </td>
             </tr>
             <tr>

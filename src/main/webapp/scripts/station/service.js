@@ -11,7 +11,7 @@ velocityApp.factory('Station', ['$resource',
 
 velocityApp.factory('CreateEditStation', ['$resource',
     function ($resource) {
-        return $resource('app/rest/stations/CreateEditStations/:id', {}, {
+        return $resource('app/rest/stations/:id', {}, {
             'query': { method: 'GET', isArray: true},
             'get': { method: 'GET'},
             'update': { method: 'PUT' }

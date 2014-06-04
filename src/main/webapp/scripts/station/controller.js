@@ -50,6 +50,7 @@ velocityApp.controller('StationDetailController', ['$scope', 'resolvedStation', 
         $scope.isEditing = false;
 
         $scope.toggleEdit = function () {
+            $scope.station = Station.get({id: $scope.station.stationId});
             $scope.isEditing = !$scope.isEditing;
         }
 
