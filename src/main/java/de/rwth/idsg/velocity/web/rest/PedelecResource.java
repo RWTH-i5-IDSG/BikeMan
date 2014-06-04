@@ -43,7 +43,7 @@ public class PedelecResource {
     @RequestMapping(value = ID_PATH, method = RequestMethod.GET)
     public ViewPedelecDTO get(@PathVariable Long id, HttpServletResponse response) {
         log.debug("REST request to get Pedelec : {}", id);
-        ViewPedelecDTO pedelec = pedelecRepository.findOne(id);
+        ViewPedelecDTO pedelec = pedelecRepository.findOneDTO(id);
         if (pedelec == null) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
         }

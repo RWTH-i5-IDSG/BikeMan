@@ -84,6 +84,12 @@ public class PedelecRepositoryImpl implements PedelecRepository {
     }
 
     @Override
+    public ViewPedelecDTO findOneDTO(long pedelecId) {
+        // TODO
+        return null;
+    }
+
+    @Override
     public Pedelec findOne(long pedelecId) {
         return em.find(Pedelec.class, pedelecId);
     }
