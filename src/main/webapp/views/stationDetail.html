@@ -3,7 +3,7 @@
     <h2>Station: {{station.name}}</h2>
 
     <div>
-        <button type="button" ui-sref="stations" class="btn-sm btn-default" ng-disabled="isEditing">Back</button>
+        <button type="button" ui-sref="stations" class="btn btn-sm btn-default" ng-disabled="isEditing">Back</button>
     </div>
     <div ng-switch="isEditing">
         <button type="button" ng-switch-when="false" ng-click="toggleEdit()" class="btn btn-default">
@@ -46,7 +46,13 @@
             <tr>
                 <th>State</th>
                 <td ng-switch-when="false">{{station.state}}</td>
-                <td ng-switch-when="true"><input type="text" class="form-control" ng-model="station.state"></td>
+                <td ng-switch-when="true">
+                    <select type="text"
+                            ng-model="station.state">
+                        <option value="OPERATIVE">OPERATIVE</option>
+                        <option value="INOPERATIVE">INOPERATIVE</option>
+                    </select>
+                </td>
             </tr>
             <tr>
                 <th>Note</th>

@@ -17,7 +17,7 @@ angular.module('velocityApp')
     })
     .filter('occupiedFilter', function() {
         return function(input) {
-            return !input ? '\u2713' : '\u2718';
+            return input ? '\u2713' : '\u2718';
         }
     })
     .filter('pedelecViewFilter', function () {

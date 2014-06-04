@@ -14,6 +14,7 @@ velocityApp.factory('CreateEditStation', ['$resource',
         return $resource('app/rest/stations/:id', {}, {
             'query': { method: 'GET', isArray: true},
             'get': { method: 'GET'},
+            'create': { method: 'POST' },
             'update': { method: 'PUT' }
         });
     }]);

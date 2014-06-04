@@ -18,9 +18,9 @@ velocityApp
                     }
                 })
                 .state('pedelecDetail', {
-                    url: 'pedelecs/:pedelecId',
+                    url: '/pedelecs/:pedelecId',
                     templateUrl: 'views/pedelecDetail.html',
-                    controller: 'pedelecDetailController',
+                    controller: 'PedelecDetailController',
                     resolve:{
                         resolvedPedelec: function (Pedelec, $stateParams) {
                             return Pedelec.get({id: $stateParams.pedelecId});
@@ -31,7 +31,7 @@ velocityApp
                     }
                 })
                 .state('pedelecCreate', {
-                    url: '/pedelecs/create',
+                    url: '/pedelecs/create/',
                     templateUrl: 'views/pedelecCreate.html',
                     controller: 'PedelecCreateController',
                     access: {

@@ -18,7 +18,7 @@ velocityApp
                     }
                 })
                 .state('stationDetail', {
-                    url: 'stations/:stationId/',
+                    url: '/stations/:stationId',
                     templateUrl: 'views/stationDetail.html',
                     controller: 'StationDetailController',
                     resolve:{
@@ -31,7 +31,7 @@ velocityApp
                     }
                 })
                 .state('stationCreate', {
-                    url: '/stations/create',
+                    url: '/stations/create/',
                     templateUrl: 'views/stationCreate.html',
                     controller: 'StationCreateController',
                     access: {
