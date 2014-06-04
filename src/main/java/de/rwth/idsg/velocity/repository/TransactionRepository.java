@@ -25,6 +25,11 @@ public interface TransactionRepository {
     List<ViewTransactionDTO> findOpen();
 
     /*
+    * Find CLOSED transactions.
+    */
+    List<ViewTransactionDTO> findClosed();
+
+    /*
     * Find the OPEN (ONGOING) transaction for ONE pedelec.
     *
     * Important: This is for internal use to close a transaction, and NOT for the Web UI

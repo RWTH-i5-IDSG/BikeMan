@@ -1,6 +1,7 @@
 package de.rwth.idsg.velocity.repository;
 
 import de.rwth.idsg.velocity.domain.*;
+import de.rwth.idsg.velocity.web.rest.dto.view.ViewStationDTO;
 import de.rwth.idsg.velocity.web.rest.dto.view.ViewTransactionDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,40 +27,13 @@ public class TransactionRepositoryImpl implements TransactionRepository {
 
     @Override
     public List<ViewTransactionDTO> findAll() {
-        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery<ViewTransactionDTO> criteria = this.getTransactionQuery(false);
+        return em.createQuery(criteria).getResultList();
+    }
 
-        CriteriaQuery<ViewTransactionDTO> criteria = builder.createQuery(ViewTransactionDTO.class);
-        Root<Transaction> root = criteria.from(Transaction.class);
-
-        Join<Transaction, Pedelec> pedelecJoin = root.join("pedelec", JoinType.LEFT);
-        Join<Transaction, Customer> customerJoin = root.join("customer", JoinType.LEFT);
-
-        Join<Transaction, StationSlot> fromSlotJoin = root.join("fromSlot", JoinType.LEFT);
-        Join<StationSlot, Station> fromStation = fromSlotJoin.join("station", JoinType.LEFT);
-
-        Join<Transaction, StationSlot> toSlotJoin = root.join("toSlot", JoinType.LEFT);
-        Join<StationSlot, Station> toStation = toSlotJoin.join("station", JoinType.LEFT);
-
-        criteria.select(
-                builder.construct(
-                        ViewTransactionDTO.class,
-                        root.get("transactionId"),
-                        root.get("startDateTime"),
-                        root.get("endDateTime"),
-                        fromStation.get("stationId"),
-                        fromStation.get("name"),
-                        fromSlotJoin.get("stationSlotPosition"),
-                        toStation.get("stationId"),
-                        toStation.get("name"),
-                        toSlotJoin.get("stationSlotPosition"),
-                        customerJoin.get("customerId"),
-                        customerJoin.get("firstname"),
-                        customerJoin.get("lastname"),
-                        pedelecJoin.get("pedelecId"),
-                        pedelecJoin.get("manufacturerId")
-                )
-        );
-
+    @Override
+    public List<ViewTransactionDTO> findClosed() {
+        CriteriaQuery<ViewTransactionDTO> criteria = this.getTransactionQuery(true);
         return em.createQuery(criteria).getResultList();
     }
 
@@ -108,5 +82,46 @@ public class TransactionRepositoryImpl implements TransactionRepository {
     @Override
     public void stop(Transaction transaction) {
 
+    }
+
+    private CriteriaQuery<ViewTransactionDTO> getTransactionQuery(boolean onlyClosed) {
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery<ViewTransactionDTO> criteria = builder.createQuery(ViewTransactionDTO.class);
+        Root<Transaction> root = criteria.from(Transaction.class);
+
+        Join<Transaction, Pedelec> pedelecJoin = root.join("pedelec", JoinType.LEFT);
+        Join<Transaction, Customer> customerJoin = root.join("customer", JoinType.LEFT);
+
+        Join<Transaction, StationSlot> fromSlotJoin = root.join("fromSlot", JoinType.LEFT);
+        Join<StationSlot, Station> fromStation = fromSlotJoin.join("station", JoinType.LEFT);
+
+        Join<Transaction, StationSlot> toSlotJoin = root.join("toSlot", JoinType.LEFT);
+        Join<StationSlot, Station> toStation = toSlotJoin.join("station", JoinType.LEFT);
+
+        criteria.select(
+                builder.construct(
+                        ViewTransactionDTO.class,
+                        root.get("transactionId"),
+                        root.get("startDateTime"),
+                        root.get("endDateTime"),
+                        fromStation.get("stationId"),
+                        fromStation.get("name"),
+                        fromSlotJoin.get("stationSlotPosition"),
+                        toStation.get("stationId"),
+                        toStation.get("name"),
+                        toSlotJoin.get("stationSlotPosition"),
+                        customerJoin.get("customerId"),
+                        customerJoin.get("firstname"),
+                        customerJoin.get("lastname"),
+                        pedelecJoin.get("pedelecId"),
+                        pedelecJoin.get("manufacturerId")
+                )
+        );
+
+        if (onlyClosed) {
+            criteria.where(builder.isNotNull(root.get("toSlot")));
+        }
+
+        return criteria;
     }
 }

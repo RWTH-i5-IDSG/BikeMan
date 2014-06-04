@@ -83,6 +83,12 @@ public class TransactionResourceTest {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    public void getClosedTransactions() throws Exception {
+        restTransactionMockMvc.perform(get("/app/rest/transactions/closed"))
+                .andExpect(status().isOk());
+    }
+
 //    @Test
 //    public void testCRUDTransaction() throws Exception {
 //

@@ -29,6 +29,7 @@ public class TransactionResource {
 
     private static final String BASE_PATH = "/rest/transactions";
     private static final String BASE_PATH_OPEN = "/rest/transactions/open";  // This is new (SG)
+    private static final String BASE_PATH_CLOSED = "/rest/transactions/closed";  // This is new (SG)
 
     @Timed
     @RequestMapping(value = BASE_PATH, method = RequestMethod.GET)
@@ -40,10 +41,19 @@ public class TransactionResource {
     }
 
     @Timed
-    @RequestMapping(value = BASE_PATH_OPEN, method = RequestMethod.GET)
-    public List<ViewTransactionDTO> getOpen() {
+         @RequestMapping(value = BASE_PATH_OPEN, method = RequestMethod.GET)
+         public List<ViewTransactionDTO> getOpen() {
         log.debug("REST request to get open Transactions");
         List<ViewTransactionDTO> list = transactionRepository.findOpen();
+        log.debug("List with size {}: {}", list.size(), list);
+        return list;
+    }
+
+    @Timed
+    @RequestMapping(value = BASE_PATH_CLOSED, method = RequestMethod.GET)
+    public List<ViewTransactionDTO> getClosed() {
+        log.debug("REST request to get closed Transactions");
+        List<ViewTransactionDTO> list = transactionRepository.findClosed();
         log.debug("List with size {}: {}", list.size(), list);
         return list;
     }

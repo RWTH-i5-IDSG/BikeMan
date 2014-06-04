@@ -28,7 +28,7 @@ public class ViewTransactionDTO {
     @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
     private LocalDateTime endDateTime;
 
-    // All transactions
+    // All and closed transactions
     public ViewTransactionDTO(Long transactionId, LocalDateTime startDateTime, LocalDateTime endDateTime,
                               Long fromStationId, String fromStationName, Integer fromStationSlotPosition,
                               Long toStationId, String toStationName, Integer toStationSlotPosition,
