@@ -119,9 +119,17 @@ public class StationResourceTest {
                 .andExpect(status().isOk());
     }
 
-    @Ignore
+    @Test
     public void test4_updateStation() throws Exception {
-        // TODO
+        CreateEditStationDTO dto = new CreateEditStationDTO();
+        dto.setStationId(1L);
+        dto.setManufacturerId("c89df542-af5c-49ca-a99c-53be7dafe59e");
+        dto.setNote("blaaaaa");
+
+        restStationMockMvc.perform(put(BASE_PATH)
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(dto)))
+                .andExpect(status().isOk());
     }
 
     @Ignore

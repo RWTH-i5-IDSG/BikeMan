@@ -90,7 +90,7 @@ public class StationRepositoryImpl implements StationRepository {
             return;
         }
 
-        Station station = em.find(Station.class, stationId);
+        Station station = em.getReference(Station.class, stationId);
         if (station == null) {
             log.error("No station with stationId: {} to update.", stationId);
         } else {
@@ -119,11 +119,24 @@ public class StationRepositoryImpl implements StationRepository {
     private void setFields(Station station, CreateEditStationDTO dto) {
         station.setManufacturerId(dto.getManufacturerId());
         station.setName(dto.getName());
-        station.setAddress(dto.getAddress());
         station.setLocationLatitude(dto.getLocationLatitude());
         station.setLocationLongitude(dto.getLocationLongitude());
         station.setNote(dto.getNote());
         station.setState(dto.getState());
+
+        // for create (brand new address entity)
+        if (station.getAddress() == null) {
+            station.setAddress(dto.getAddress());
+
+        // for edit (keep the address ID)
+        } else {
+            Address add = station.getAddress();
+            Address dtoAdd = dto.getAddress();
+            add.setStreetAndHousenumber(dtoAdd.getStreetAndHousenumber());
+            add.setZip(dtoAdd.getZip());
+            add.setCity(dtoAdd.getCity());
+            add.setCountry(dtoAdd.getCountry());
+        }
     }
 
     /*
