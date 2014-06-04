@@ -40,6 +40,13 @@ public class StationResource {
     }
 
     @Timed
+    @RequestMapping(value = BASE_PATH, method = RequestMethod.PUT)
+    public void update(@Valid @RequestBody CreateEditStationDTO dto) {
+        log.debug("REST request to save Station : {}", dto);
+        stationRepository.update(dto);
+    }
+
+    @Timed
     @RequestMapping(value = BASE_PATH, method = RequestMethod.GET)
     public List<ViewStationDTO> getAll() {
         log.info("REST request to get all Stations");
