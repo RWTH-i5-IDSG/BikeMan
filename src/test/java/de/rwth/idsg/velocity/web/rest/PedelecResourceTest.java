@@ -81,7 +81,7 @@ public class PedelecResourceTest {
     @Test
     public void pedelecDtoWithFields() throws Exception {
 
-        for (int n=1; n <= 9; n++ ) {
+        for (int n=1; n <= 50; n++ ) {
             CreateEditPedelecDTO ped = new CreateEditPedelecDTO();
             ped.setManufacturerId(UUID.randomUUID().toString());
             ped.setState(OperationState.OPERATIVE);

@@ -26,6 +26,17 @@ velocityApp
                         authorizedRoles: [USER_ROLES.all]
                     }
                 })
+//                .state("main.layout", {
+//                    views: {
+//                        'login': {
+//                            templateUrl: 'views/login.html',
+//                            controller: 'LoginController'
+//                        },
+//                        'test': {
+//                            templateUrl: 'views/error.html'
+//                        }
+//                    }
+//                })
                 .state('login', {
                     url: '/login',
                     templateUrl: 'views/login.html',
@@ -147,7 +158,7 @@ velocityApp
                 $rootScope.$on('event:auth-loginConfirmed', function(data) {
                     $rootScope.authenticated = true;
                     if ($location.path() === "/login") {
-                        $state.transitionTo('main');
+                        $location.path('/main').replace();
                     }
                 });
 

@@ -42,10 +42,36 @@ velocityApp.controller('StationController', ['$scope', 'resolvedStation', 'Stati
     }]);
 
 
-velocityApp.controller('StationDetailController', ['$scope', 'resolvedStation', 'Station',
-    function ($scope, resolvedStation, Station) {
+velocityApp.controller('StationDetailController', ['$scope', 'resolvedStation', 'Station', 'CreateEditStation',
+    function ($scope, resolvedStation, Station, CreateEditStation) {
 
         $scope.station = resolvedStation;
+
+        $scope.isEditing = false;
+
+        $scope.toggleEdit = function () {
+            $scope.isEditing = !$scope.isEditing;
+        }
+
+        $scope.saveStation = function () {
+
+            $scope.saveStationDTO = {
+                "stationId": $scope.station.stationId,
+                "manufacturerId": $scope.station.manufacturerId,
+                "name": $scope.station.name,
+                "address": $scope.station.address,
+                "locationLatitude": $scope.station.locationLatitude,
+                "locationLongitude": $scope.station.locationLongitude,
+                "note": $scope.station.note,
+                "state": $scope.station.state
+            }
+
+            console.log($scope.saveStationDTO);
+
+            CreateEditStation.update($scope.saveStationDTO, function () {
+                $scope.isEditing = false;
+            });
+        }
 
 
     }]);

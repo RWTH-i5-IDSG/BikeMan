@@ -5,7 +5,7 @@
         "menu": {
             "home": "Home",
             "account": {
-                "main": "Account",
+                "main": "{{username}}",
                 "settings": "Settings",
                 "password": "Password",
                 "sessions": "Sessions",
@@ -46,6 +46,28 @@
         },
         "like": "If you like JHipster, don't forget to give us a star on",
         "github": "Github"
+    },
+    "stations": {
+        "create": {
+            "title": "",
+            "subtitle": "Enter station data below!",
+            "form": {
+                "name": "Name",
+                "manufacturerId": "Manufacturer ID",
+                "streetAndHousenumber": "Street Address",
+                "zip": "ZIP Code",
+                "city": "City",
+                "country": "Country",
+                "coordinates": {
+                    "title": "Coordinates",
+                    "locationLatitude": "Latitude",
+                    "locationLongitude": "Longitude"
+                },
+                "note": "Note"
+            },
+            "cancel": "Cancel",
+            "save": "Save"
+        }
     },
     "login": {
         "title": "Authentication",

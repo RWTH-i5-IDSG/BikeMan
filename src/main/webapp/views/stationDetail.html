@@ -1,21 +1,76 @@
 <div>
 
-    <h2>{{station.name}}</h2>
+    <h2>Station: {{station.name}}</h2>
 
-    <p>{{station.note}}</p>
+    <div>
+        <button type="button" ng-click="toggleEdit()" class="btn btn-default">
+            <span class="glyphicon glyphicon-pencil"></span>Edit Station</button>
+        <button type="button" ng-click="saveStation()" class="btn btn-primary" ng-show="isEditing">
+            <span class="glyphicon glyphicon-pencil"></span>Save Station</button>
+    </div>
 
-    <p>{{station.address.streetAndHousenumber + ', ' + station.address.zip + ', ' + station.address.city + ', ' + station.address.country}}</p>
+    <div class="table-responsive">
+        <table class="table" ng-switch="isEditing">
+            <tr>
+                <th>Manufacturer ID</th>
+                <td ng-switch-when="false">{{station.manufacturerId}}</td>
+                <td ng-switch-when="true"><input type="text" class="form-control" ng-model="station.manufacturerId"></td>
+            </tr>
+            <tr>
+                <th>Name</th>
+                <td ng-switch-when="false">{{station.name}}</td>
+                <td ng-switch-when="true"><input type="text" class="form-control" ng-model="station.name"></td>
+            </tr>
+            <tr>
+                <th>Address</th>
+                <td ng-switch-when="false">{{station.address.streetAndHousenumber + ', ' + station.address.zip + ', ' + station.address.city + ', ' + station.address.country}}</td>
+                <td ng-switch-when="true">
+                    Street Address: <input type="text" class="form-control" ng-model="station.address.streetAndHousenumber">
+                    ZIP: <input type="text" class="form-control" ng-model="station.address.zip">
+                    City: <input type="text" class="form-control" ng-model="station.address.city">
+                    Country: <input type="text" class="form-control" ng-model="station.address.country">
+                </td>
+            </tr>
+            <tr>
+                <th>Coordinates</th>
+                <td ng-switch-when="false">{{station.locationLatitude + ',' + station.locationLongitude}}</td>
+                <td ng-switch-when="true">
+                    Latitude: <input type="text" class="form-control" ng-model="station.locationLatitude">
+                    Longitude: <input type="text" class="form-control" ng-model="station.locationLongitude">
+                </td>
+            </tr>
+            <tr>
+                <th>State</th>
+                <td ng-switch-when="false">{{station.state}}</td>
+                <td ng-switch-when="true"><input type="text" class="form-control" ng-model="station.state"></td>
+            </tr>
+            <tr>
+                <th>Note</th>
+                <td ng-switch-when="false">{{station.note}}</td>
+                <td ng-switch-when="true"><input type="text" class="form-control" ng-model="station.note"></td>
+            </tr>
+        </table>
+    </div>
 
     <div class="table-responsive">
         <table class="table table-striped">
             <thead>
             <tr>
-                <th colspan="{{station.stationSlots.length}}">Slots</th>
+                <!--<th colspan="{{station.slots.length}}">Slots</th>-->
+                <th>ID</th>
+                <th>Manufacturer ID</th>
+                <th>Available</th>
+                <th>State</th>
+                <th>Pedelec</th>
             </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td ng-repeat="slot in station.stationSlots">{{slot.id}} <span class="glyphicon">&times;</span></td>
+                <tr ng-repeat="slot in station.slots">
+                    <td>{{slot.stationSlotId}}</td>
+                    <td>{{slot.manufacturerId}}</td>
+                    <td>{{slot.isOccupied | occupiedFilter}}</td>
+                    <td>{{slot.state}}</td>
+                    <td>{{slot.pedelec.pedelecId + ', ' + slot.pedelec.manufacturerId}}</td>
                 </tr>
             </tbody>
         </table>

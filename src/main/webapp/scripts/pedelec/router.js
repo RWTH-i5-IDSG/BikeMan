@@ -22,8 +22,8 @@ velocityApp
                     templateUrl: 'views/pedelecDetail.html',
                     controller: 'pedelecDetailController',
                     resolve:{
-                        resolvedPedelec: function (Pedelec, $route) {
-                            return Pedelec.get({id: $route.current.params.pedelecId});
+                        resolvedPedelec: function (Pedelec, $stateParams) {
+                            return Pedelec.get({id: $stateParams.pedelecId});
                         }
                     },
                     access: {
