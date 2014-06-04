@@ -1,9 +1,38 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title></title>
-</head>
-<body>
+<div>
 
-</body>
-</html>
+    <h2>Pedelec: {{pedelec.name}}</h2>
+
+    <div>
+        <button type="button" ui-sref="stations" class="btn btn-sm btn-default" ng-disabled="isEditing">Back</button>
+    </div>
+    <div ng-switch="isEditing">
+        <button type="button" ng-switch-when="false" ng-click="toggleEdit()" class="btn btn-default">
+            <span class="glyphicon glyphicon-pencil"></span>Edit Pedelec</button>
+        <button type="button" ng-switch-when="true" ng-click="toggleEdit()" class="btn btn-warning">
+            <span class="glyphicon glyphicon-pencil"></span>Cancel</button>
+        <button type="button" ng-click="saveStation()" class="btn btn-primary" ng-show="isEditing">
+            <span class="glyphicon glyphicon-pencil"></span>Save Pedelec</button>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table" ng-switch="isEditing">
+            <tr>
+                <th>Manufacturer ID</th>
+                <td >{{pedelec.manufacturerId}}</td>
+            </tr>
+
+            <tr>
+                <th>State</th>
+                <td ng-switch-when="false">{{pedelec.state}}</td>
+                <td ng-switch-when="true">
+                    <select type="text"
+                            ng-model="pedelec.state">
+                        <option value="OPERATIVE">OPERATIVE</option>
+                        <option value="INOPERATIVE">INOPERATIVE</option>
+                    </select>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+</div>

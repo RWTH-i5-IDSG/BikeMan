@@ -32,7 +32,7 @@
                     <td><a ui-sref="stationDetail({stationId:{{station.stationId}}})">Details</a></td>
                 </tr>
                 <tr ng-repeat-end>
-                    <td colspan="6" class="hiddenRow"><div class="accordian-body collapse" id="{{station.stationId}}">
+                    <td colspan="7" class="hiddenRow"><div class="accordian-body collapse" id="{{station.stationId}}">
                         <table class="table table-bordered remove-margin">
                             <thead>
                                 <tr>
@@ -49,7 +49,7 @@
                                     <td>{{slot.slotPosition}}</td>
                                     <td>{{slot.manufacturerId}}</td>
                                     <td>{{slot.state}}</td>
-                                    <td>{{slot.isOccupied | occupiedFilter}}</td>
+                                    <td class="text-center">{{slot.isOccupied | occupiedFilter}}</td>
                                     <td>{{slot.pedelec | pedelecViewFilter}}</td>
                                     <td>
                                         <button type="submit"

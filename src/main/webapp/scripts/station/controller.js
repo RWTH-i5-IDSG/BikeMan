@@ -67,8 +67,6 @@ velocityApp.controller('StationDetailController', ['$scope', 'resolvedStation', 
                 "state": $scope.station.state
             }
 
-            console.log($scope.saveStationDTO);
-
             CreateEditStation.update($scope.saveStationDTO, function () {
                 $scope.isEditing = false;
             });
@@ -77,13 +75,13 @@ velocityApp.controller('StationDetailController', ['$scope', 'resolvedStation', 
 
     }]);
 
-velocityApp.controller('StationCreateController', ['$scope', 'Station',
-    function ($scope, Station)  {
+velocityApp.controller('StationCreateController', ['$scope', 'CreateEditStation',
+    function ($scope, CreateEditStation)  {
 
         $scope.station = null;
 
         $scope.create = function () {
-            Station.save($scope.station,
+            CreateEditStation.save($scope.station,
                 function () {
                     $scope.clear();
                 });
