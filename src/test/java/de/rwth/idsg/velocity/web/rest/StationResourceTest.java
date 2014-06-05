@@ -56,7 +56,7 @@ public class StationResourceTest {
 
     private String BASE_PATH = "/app/rest/stations";
     private String ID_PATH = "/app/rest/stations/{id}";
-    private int REPEAT_COUNT = 10;
+    private int REPEAT_COUNT = 500;
     private Long STATION_ID = 4L;
 
     @Inject
@@ -76,7 +76,7 @@ public class StationResourceTest {
         this.restStationMockMvc = MockMvcBuilders.standaloneSetup(stationResource).build();
     }
 
-    @Ignore
+    @Test
     public void test1_createStation() throws Exception {
         for (int n=1; n <= REPEAT_COUNT; n++ ) {
             Address add = new Address();
@@ -113,13 +113,13 @@ public class StationResourceTest {
                 .andExpect(status().isOk());
     }
 
-    @Test
+    @Ignore
     public void test3_findOneStation() throws Exception {
         restStationMockMvc.perform(get(ID_PATH, STATION_ID))
                 .andExpect(status().isOk());
     }
 
-    @Test
+    @Ignore
     public void test4_updateStation() throws Exception {
         CreateEditStationDTO dto = new CreateEditStationDTO();
         dto.setStationId(1L);

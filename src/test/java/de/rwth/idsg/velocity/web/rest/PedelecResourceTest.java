@@ -7,6 +7,7 @@ import de.rwth.idsg.velocity.service.PedelecService;
 import de.rwth.idsg.velocity.web.rest.dto.modify.CreateEditPedelecDTO;
 import org.joda.time.LocalDate;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
@@ -23,7 +24,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import javax.inject.Inject;
-import java.util.UUID;
+import java.util.*;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -54,6 +55,8 @@ public class PedelecResourceTest {
 
     private static final String UPD_SAMPLE_TEXT_ATTR = "sampleTextAttributeUpt";
 
+    private int REPEAT_COUNT = 500;
+
     @Inject
     private PedelecRepository pedelecRepository;
 
@@ -68,7 +71,7 @@ public class PedelecResourceTest {
         restPedelecMockMvc = MockMvcBuilders.standaloneSetup(pedelecResource).build();
     }
 
-    @Test
+    @Ignore
     public void pedelecDtoMissingFields() throws Exception {
         CreateEditPedelecDTO ped = new CreateEditPedelecDTO();
 
@@ -81,10 +84,15 @@ public class PedelecResourceTest {
     @Test
     public void pedelecDtoWithFields() throws Exception {
 
-        for (int n=1; n <= 50; n++ ) {
+        List<OperationState> states = new ArrayList<>();
+        Collections.addAll(states, OperationState.values());
+
+        for (int n=1; n <= REPEAT_COUNT; n++ ) {
+            Collections.shuffle(states);
+
             CreateEditPedelecDTO ped = new CreateEditPedelecDTO();
             ped.setManufacturerId(UUID.randomUUID().toString());
-            ped.setState(OperationState.OPERATIVE);
+            ped.setState(states.get(0));
 
             restPedelecMockMvc.perform(post("/app/rest/pedelecs")
                     .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -93,7 +101,7 @@ public class PedelecResourceTest {
         }
     }
 
-    @Test
+    @Ignore
     public void getAllPedelecs() throws Exception {
 
     	restPedelecMockMvc.perform(get("/app/rest/pedelecs"))

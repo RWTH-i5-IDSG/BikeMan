@@ -131,7 +131,7 @@ public class PedelecRepositoryImpl implements PedelecRepository {
 
     }
 
-    /*
+    /**
     * This method sets the fields of the pedelec to the values in DTO.
     *
     * Important: The ID is not set!

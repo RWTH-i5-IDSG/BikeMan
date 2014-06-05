@@ -5,42 +5,52 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.Type;
+import org.hibernate.validator.constraints.NotBlank;
 import org.joda.time.LocalDate;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * Created by swam on 05/06/14.
  */
-
 @ToString(includeFieldNames = true)
 public class CreateEditCustomerDTO {
 
-    @Getter
-    @Setter
-    private Long customerId;
+    @NotBlank
+    @Getter @Setter
+    private String login;
 
-    @Getter
-    @Setter
+    @NotBlank
+    @Getter @Setter
+    private String customerId;
+
+    @NotBlank
+    @Getter @Setter
     private String cardId;
 
-    @Getter
-    @Setter
+    @NotBlank
+    @Getter @Setter
     private String firstname;
 
-    @Getter
-    @Setter
+    @NotBlank
+    @Getter @Setter
     private String lastname;
 
-    @Getter
-    @Setter
+    @NotNull
+    @Getter @Setter
     private Address address;
 
+    @NotNull
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDate")
-    @Getter
-    @Setter
+    @Getter @Setter
     private LocalDate birthday;
 
-    @Getter
-    @Setter
+    @NotBlank
+    @Getter @Setter
     private String mailAddress;
+
+    @NotNull
+    @Getter @Setter
+    private Boolean isActivated;
 
 }

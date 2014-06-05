@@ -111,7 +111,7 @@ public class StationRepositoryImpl implements StationRepository {
         }
     }
 
-    /*
+    /**
     * This method sets the fields of the station to the values in DTO.
     *
     * Important: The ID is not set!
@@ -139,7 +139,7 @@ public class StationRepositoryImpl implements StationRepository {
         }
     }
 
-    /*
+    /**
     * This method returns the query to get information of all the stations or only the specified station (by stationId)
     *
     */
