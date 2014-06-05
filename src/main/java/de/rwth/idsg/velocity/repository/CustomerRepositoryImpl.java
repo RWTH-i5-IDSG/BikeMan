@@ -22,6 +22,8 @@ public class CustomerRepositoryImpl implements CustomerRepository {
 
     private static final Logger log = LoggerFactory.getLogger(CustomerRepositoryImpl.class);
 
+    private enum Operation { CREATE, UPDATE };
+
     @PersistenceContext
     EntityManager em;
 
@@ -52,7 +54,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     @Override
     public void create(CreateEditCustomerDTO dto) {
         Customer customer = new Customer();
-        setFields(customer, dto);
+        setFields(customer, dto, Operation.CREATE);
         em.persist(customer);
         log.debug("Created new customer {}", customer);
     }
@@ -68,7 +70,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
         if (customer == null) {
             log.error("No customer with login: {} to update.", login);
         } else {
-            setFields(customer, dto);
+            setFields(customer, dto, Operation.UPDATE);
             em.merge(customer);
             log.debug("Updated customer {}", customer);
         }
@@ -88,29 +90,33 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     /**
      * This method sets the fields of the customer to the values in DTO.
      *
-     * Important: The LOGIN field is not set!
      */
-    private void setFields(Customer customer, CreateEditCustomerDTO dto) {
+    private void setFields(Customer customer, CreateEditCustomerDTO dto, Operation operation) {
+
+        // TODO: Should the login be changeable? Who sets the field? Clarify!
+        customer.setLogin(dto.getLogin());
+
         customer.setCustomerId(dto.getCustomerId());
-        customer.setCardId(dto.getCustomerId());
+        customer.setCardId(dto.getCardId());
         customer.setFirstname(dto.getFirstname());
         customer.setLastname(dto.getLastname());
         customer.setBirthday(dto.getBirthday());
         customer.setMailAddress(dto.getMailAddress());
         customer.setIsActivated(dto.getIsActivated());
 
-        // for create (brand new address entity)
-        if (customer.getAddress() == null) {
-            customer.setAddress(dto.getAddress());
+        switch (operation) {
+            case CREATE:
+                // for create (brand new address entity)
+                customer.setAddress(dto.getAddress());
 
-        // for edit (keep the address ID)
-        } else {
-            Address add = customer.getAddress();
-            Address dtoAdd = dto.getAddress();
-            add.setStreetAndHousenumber(dtoAdd.getStreetAndHousenumber());
-            add.setZip(dtoAdd.getZip());
-            add.setCity(dtoAdd.getCity());
-            add.setCountry(dtoAdd.getCountry());
+            case UPDATE:
+                // for edit (keep the address ID)
+                Address add = customer.getAddress();
+                Address dtoAdd = dto.getAddress();
+                add.setStreetAndHousenumber(dtoAdd.getStreetAndHousenumber());
+                add.setZip(dtoAdd.getZip());
+                add.setCity(dtoAdd.getCity());
+                add.setCountry(dtoAdd.getCountry());
         }
     }
 }

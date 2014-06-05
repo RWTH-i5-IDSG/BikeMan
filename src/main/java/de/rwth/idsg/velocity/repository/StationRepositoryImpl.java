@@ -27,6 +27,8 @@ public class StationRepositoryImpl implements StationRepository {
 
     private static final Logger log = LoggerFactory.getLogger(StationRepositoryImpl.class);
 
+    private enum Operation { CREATE, UPDATE };
+
     @PersistenceContext
     EntityManager em;
 
@@ -78,7 +80,7 @@ public class StationRepositoryImpl implements StationRepository {
     @Override
     public void create(CreateEditStationDTO dto) {
         Station station = new Station();
-        setFields(station, dto);
+        setFields(station, dto, Operation.CREATE);
         em.persist(station);
         log.debug("Created new station {}", station);
     }
@@ -94,7 +96,7 @@ public class StationRepositoryImpl implements StationRepository {
         if (station == null) {
             log.error("No station with stationId: {} to update.", stationId);
         } else {
-            setFields(station, dto);
+            setFields(station, dto, Operation.UPDATE);
             em.merge(station);
             log.debug("Updated station {}", station);
         }
@@ -116,7 +118,7 @@ public class StationRepositoryImpl implements StationRepository {
     *
     * Important: The ID is not set!
     */
-    private void setFields(Station station, CreateEditStationDTO dto) {
+    private void setFields(Station station, CreateEditStationDTO dto, Operation operation) {
         station.setManufacturerId(dto.getManufacturerId());
         station.setName(dto.getName());
         station.setLocationLatitude(dto.getLocationLatitude());
@@ -124,18 +126,19 @@ public class StationRepositoryImpl implements StationRepository {
         station.setNote(dto.getNote());
         station.setState(dto.getState());
 
-        // for create (brand new address entity)
-        if (station.getAddress() == null) {
-            station.setAddress(dto.getAddress());
+        switch (operation) {
+            case CREATE:
+                // for create (brand new address entity)
+                station.setAddress(dto.getAddress());
 
-        // for edit (keep the address ID)
-        } else {
-            Address add = station.getAddress();
-            Address dtoAdd = dto.getAddress();
-            add.setStreetAndHousenumber(dtoAdd.getStreetAndHousenumber());
-            add.setZip(dtoAdd.getZip());
-            add.setCity(dtoAdd.getCity());
-            add.setCountry(dtoAdd.getCountry());
+            case UPDATE:
+                // for edit (keep the address ID)
+                Address add = station.getAddress();
+                Address dtoAdd = dto.getAddress();
+                add.setStreetAndHousenumber(dtoAdd.getStreetAndHousenumber());
+                add.setZip(dtoAdd.getZip());
+                add.setCity(dtoAdd.getCity());
+                add.setCountry(dtoAdd.getCountry());
         }
     }
 
