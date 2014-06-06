@@ -10,6 +10,9 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 import java.util.List;
 
@@ -23,32 +26,41 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     private static final Logger log = LoggerFactory.getLogger(CustomerRepositoryImpl.class);
 
     private enum Operation { CREATE, UPDATE };
+    private enum FindType { ALL, BY_NAME, BY_EMAIL, BY_LOGIN };
 
     @PersistenceContext
     EntityManager em;
 
     @Override
     public List<ViewCustomerDTO> findAll() {
-        // TODO
-        return null;
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        return em.createQuery(
+                getQuery(builder, FindType.ALL, null, null, null, null)
+        ).getResultList();
     }
 
     @Override
-    public List<ViewCustomerDTO> findbyName(String firstName, String lastName) {
-        // TODO
-        return null;
+    public List<ViewCustomerDTO> findbyName(String firstname, String lastname) {
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        return em.createQuery(
+                getQuery(builder, FindType.BY_NAME, firstname, lastname, null, null)
+        ).getResultList();
     }
 
     @Override
-    public ViewCustomerDTO findbyEmail(String eMailAddress) {
-        // TODO
-        return null;
+    public ViewCustomerDTO findbyEmail(String mailAddress) {
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        return em.createQuery(
+                getQuery(builder, FindType.BY_EMAIL, null, null, mailAddress, null)
+        ).getSingleResult();
     }
 
     @Override
     public ViewCustomerDTO findbyLogin(String login) {
-        // TODO
-        return null;
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        return em.createQuery(
+                getQuery(builder, FindType.BY_LOGIN, null, null, null, login)
+        ).getSingleResult();
     }
 
     @Override
@@ -108,6 +120,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
             case CREATE:
                 // for create (brand new address entity)
                 customer.setAddress(dto.getAddress());
+                break;
 
             case UPDATE:
                 // for edit (keep the address ID)
@@ -117,6 +130,61 @@ public class CustomerRepositoryImpl implements CustomerRepository {
                 add.setZip(dtoAdd.getZip());
                 add.setCity(dtoAdd.getCity());
                 add.setCountry(dtoAdd.getCountry());
+                break;
         }
+    }
+
+    /**
+     * This method returns the query to get information of customers for various lookup cases
+     *
+     */
+    private CriteriaQuery<ViewCustomerDTO> getQuery(CriteriaBuilder builder, FindType findType,
+                                                        String firstname, String lastname,
+                                                        String mailAddress,
+                                                        String login) {
+        CriteriaQuery<ViewCustomerDTO> criteria = builder.createQuery(ViewCustomerDTO.class);
+        Root<Customer> root = criteria.from(Customer.class);
+
+        criteria.select(
+                builder.construct(
+                        ViewCustomerDTO.class,
+                        root.get("login"),
+                        root.get("customerId"),
+                        root.get("firstname"),
+                        root.get("lastname"),
+                        root.get("mailAddress"),
+                        root.get("isActivated"),
+                        root.get("birthday"),
+                        root.get("cardId")
+                )
+        );
+
+        switch (findType) {
+            case ALL:
+                break;
+
+            case BY_NAME:
+                criteria.where(
+                        builder.and(
+                                builder.equal(root.get("firstname"), firstname),
+                                builder.equal(root.get("lastname"), lastname)
+                        )
+                );
+                break;
+
+            case BY_EMAIL:
+                criteria.where(
+                        builder.equal(root.get("mailAddress"), mailAddress)
+                );
+                break;
+
+            case BY_LOGIN:
+                criteria.where(
+                        builder.equal(root.get("login"), login)
+                );
+                break;
+        }
+
+        return criteria;
     }
 }

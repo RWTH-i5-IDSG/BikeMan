@@ -130,6 +130,7 @@ public class StationRepositoryImpl implements StationRepository {
             case CREATE:
                 // for create (brand new address entity)
                 station.setAddress(dto.getAddress());
+                break;
 
             case UPDATE:
                 // for edit (keep the address ID)
@@ -139,6 +140,7 @@ public class StationRepositoryImpl implements StationRepository {
                 add.setZip(dtoAdd.getZip());
                 add.setCity(dtoAdd.getCity());
                 add.setCountry(dtoAdd.getCountry());
+                break;
         }
     }
 

@@ -30,7 +30,8 @@ public class CustomerResource {
 
     private static final String BASE_PATH = "/rest/customers";
     private static final String FULL_NAME_PATH = "/rest/customers/name/{firstname}+{lastname}";
-    private static final String EMAIL_PATH = "/rest/customers/email/{email}";
+    // Regular expression for Spring MVC to interpret domain extensions as part of the path variable
+    private static final String EMAIL_PATH = "/rest/customers/email/{email:.+}";
     private static final String LOGIN_PATH = "/rest/customers/login/{login}";
 
     @Timed

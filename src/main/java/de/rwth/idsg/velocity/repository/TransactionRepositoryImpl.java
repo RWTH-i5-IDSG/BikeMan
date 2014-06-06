@@ -22,19 +22,23 @@ public class TransactionRepositoryImpl implements TransactionRepository {
 
     private static final Logger log = LoggerFactory.getLogger(TransactionRepositoryImpl.class);
 
+    private enum FindType { ALL, CLOSED };
+
     @PersistenceContext
     EntityManager em;
 
     @Override
     public List<ViewTransactionDTO> findAll() {
-        CriteriaQuery<ViewTransactionDTO> criteria = this.getTransactionQuery(false);
-        return em.createQuery(criteria).getResultList();
+        return em.createQuery(
+                getTransactionQuery(FindType.ALL)
+        ).getResultList();
     }
 
     @Override
     public List<ViewTransactionDTO> findClosed() {
-        CriteriaQuery<ViewTransactionDTO> criteria = this.getTransactionQuery(true);
-        return em.createQuery(criteria).getResultList();
+        return em.createQuery(
+                getTransactionQuery(FindType.CLOSED)
+        ).getResultList();
     }
 
     @Override
@@ -84,7 +88,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
 
     }
 
-    private CriteriaQuery<ViewTransactionDTO> getTransactionQuery(boolean onlyClosed) {
+    private CriteriaQuery<ViewTransactionDTO> getTransactionQuery(FindType findType) {
         CriteriaBuilder builder = em.getCriteriaBuilder();
         CriteriaQuery<ViewTransactionDTO> criteria = builder.createQuery(ViewTransactionDTO.class);
         Root<Transaction> root = criteria.from(Transaction.class);
@@ -118,8 +122,13 @@ public class TransactionRepositoryImpl implements TransactionRepository {
                 )
         );
 
-        if (onlyClosed) {
-            criteria.where(builder.isNotNull(root.get("toSlot")));
+        switch (findType) {
+            case ALL:
+                break;
+
+            case CLOSED:
+                criteria.where(builder.isNotNull(root.get("toSlot")));
+                break;
         }
 
         return criteria;
