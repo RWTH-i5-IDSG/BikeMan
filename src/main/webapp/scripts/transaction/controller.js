@@ -29,4 +29,5 @@ velocityApp.controller('TransactionController', ['$scope', 'resolvedTransaction'
         $scope.clear = function () {
             $scope.transaction = {id: null, sampleTextAttribute: null, sampleDateAttribute: null};
         };
+
     }]);

@@ -1,18 +1,38 @@
 <div>
     <div class="row">
         <div class="col-lg-12">
-            <h1 class="page-header">Transactions</h1>
+            <h1 class="page-header">Customers</h1>
         </div>
     </div>
-
-    <h5>Search customer with name or email address:</h5>
 
     <div class="row">
         <div class="col-md-4">
             <div class="input-group custom-search-form">
-                <input type="text" class="form-control" placeholder="Search...">
+                <input ng-model="search.email" type="text" class="form-control" placeholder="Search: max@mustermann.de" sg-enter="searchByEmail(search.email)">
                                 <span class="input-group-btn">
-                                <button class="btn btn-default" type="button">
+                                <button class="btn btn-default" type="button" ng-click="searchByEmail(search.email)">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </span>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="input-group custom-search-form">
+                <input ng-model="search.name" type="text" class="form-control" placeholder="Search: Max Mustermann" sg-enter="searchByName(search.name)">
+                                <span class="input-group-btn">
+                                <button class="btn btn-default" type="button" ng-click="searchByName(search.name)">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </span>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="input-group custom-search-form">
+                <input ng-model="search.login" type="text" class="form-control" placeholder="Search: maxi2005" sg-enter="searchByLogin(search.login)">
+                                <span class="input-group-btn">
+                                <button class="btn btn-default" type="button" ng-click="searchByLogin(search.login)">
                                     <i class="fa fa-search"></i>
                                 </button>
                             </span>
@@ -20,23 +40,35 @@
         </div>
     </div>
 
+    <row>
+        <div class="col-md-offset-10 col-md-2">
+            <button class="btn btn-warning btn-block voffset3" type="button" ng-click="resetCustomers()">Reset</button>
+        </div>
+    </row>
 
-    <div class="table-responsive voffset5">
+
+    <div class="table-responsive voffset6">
         <table class="table table-striped">
             <thead>
             <tr>
+                <th>Customer-ID</th>
                 <th>Name</th>
                 <th>E-Mail</th>
-                <th>State</th>
+                <th>Login</th>
+                <th>Activated</th>
+                <th>Birthday</th>
                 <th></th>
             </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="pedelec in pedelecs">
-                <td>{{customer.customerName}}</td>
-                <td>{{customer.email}}</td>
-                <td>{{customer.state}}</td>
-
+            <tr ng-repeat="customer in customers">
+                <td>{{customer.customerId}}</td>
+                <td>{{customer.fullName}}</td>
+                <td>{{customer.mailAddress}}</td>
+                <td>{{customer.login}}</td>
+                <td class="text-center">{{customer.isActivated | occupiedFilter}}</td>
+                <td>{{customer.birthday | date:'shortDate'}}</td>
+                <td></td>
             </tr>
             </tbody>
         </table>

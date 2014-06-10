@@ -101,4 +101,16 @@ angular.module('velocityApp')
                 });
             }
         }
+    }).directive('sgEnter', function() {
+        return function(scope, element, attrs) {
+            element.bind("keydown keypress", function(event) {
+                if(event.which === 13) {
+                    scope.$apply(function(){
+                        scope.$eval(attrs.sgEnter, {'event': event});
+                    });
+
+                    event.preventDefault();
+                }
+            });
+        };
     });
