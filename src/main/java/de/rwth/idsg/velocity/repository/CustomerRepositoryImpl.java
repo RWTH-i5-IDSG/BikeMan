@@ -10,9 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
 import javax.transaction.Transactional;
 import java.util.List;
 
@@ -163,24 +161,39 @@ public class CustomerRepositoryImpl implements CustomerRepository {
             case ALL:
                 break;
 
+            // Case insensitive search
             case BY_NAME:
+                Path<String> firstPath = root.get("firstname");
+                Expression<String> firstLower = builder.lower(firstPath);
+
+                Path<String> lastPath = root.get("lastname");
+                Expression<String> lastLower = builder.lower(lastPath);
+
                 criteria.where(
                         builder.and(
-                                builder.equal(root.get("firstname"), firstname),
-                                builder.equal(root.get("lastname"), lastname)
+                                builder.equal(firstLower, firstname.toLowerCase()),
+                                builder.equal(lastLower, lastname.toLowerCase())
                         )
                 );
                 break;
 
+            // Case insensitive search
             case BY_EMAIL:
+                Path<String> mailPath = root.get("mailAddress");
+                Expression<String> mailLower = builder.lower(mailPath);
+
                 criteria.where(
-                        builder.equal(root.get("mailAddress"), mailAddress)
+                        builder.equal(mailLower, mailAddress.toLowerCase())
                 );
                 break;
 
+            // Case insensitive search
             case BY_LOGIN:
+                Path<String> loginPath = root.get("login");
+                Expression<String> loginLower = builder.lower(loginPath);
+
                 criteria.where(
-                        builder.equal(root.get("login"), login)
+                        builder.equal(loginLower, login.toLowerCase())
                 );
                 break;
         }
