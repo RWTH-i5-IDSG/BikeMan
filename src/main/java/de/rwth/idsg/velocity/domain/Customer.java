@@ -68,4 +68,11 @@ public class Customer extends User implements Serializable {
     @Getter @Setter
     private Set<Transaction> transactions;
 
+    @PrePersist
+    public void prePersist() {
+        if (inTransaction == null) {
+            inTransaction = false;
+        }
+    }
+
 }
