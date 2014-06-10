@@ -1,5 +1,7 @@
 package de.rwth.idsg.velocity.web.rest.dto.view;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import de.rwth.idsg.velocity.web.rest.dto.util.CustomLocalDateSerializer;
 import lombok.Getter;
 import lombok.ToString;
 import org.joda.time.LocalDate;
@@ -15,8 +17,11 @@ public class ViewCustomerDTO {
     @Getter private String fullName;
     @Getter private String mailAddress;
     @Getter private Boolean isActivated;
-    @Getter private LocalDate birthday;
     @Getter private String cardId;
+
+    @JsonSerialize(using = CustomLocalDateSerializer.class)
+    @Getter
+    private LocalDate birthday;
 
     public ViewCustomerDTO(String login, String customerId, String firstname, String lastname,
                            String mailAddress, Boolean isActivated,
