@@ -20,7 +20,7 @@ public class ViewCustomerDTO {
     @Getter private String fullName;
     @Getter private Boolean isActivated;
     @Getter private String cardId;
-    @Getter private ViewAddressDTO addressDTO;
+    @Getter private ViewAddressDTO address;
 
 
     @JsonSerialize(using = CustomLocalDateSerializer.class)
@@ -50,7 +50,7 @@ public class ViewCustomerDTO {
         this.isActivated = isActivated;
         this.birthday = birthday;
         this.cardId = cardId;
-        this.addressDTO = new ViewAddressDTO(streetAndHousenumber, zip, city, country);
+        this.address = new ViewAddressDTO(streetAndHousenumber, zip, city, country);
     }
 
     @AllArgsConstructor

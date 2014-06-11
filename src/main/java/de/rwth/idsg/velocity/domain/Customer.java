@@ -17,7 +17,8 @@ import java.util.Set;
 @DiscriminatorValue("customer")
 @Table(name="T_CUSTOMER",
         indexes = {
-                @Index(columnList="address_id", unique = true) })
+                @Index(columnList="address_id", unique = true),
+                @Index(columnList="customer_id", unique = true)})
 @EqualsAndHashCode(of = {"customerId"}, callSuper = false)
 @ToString(includeFieldNames = true)
 public class Customer extends User implements Serializable {
