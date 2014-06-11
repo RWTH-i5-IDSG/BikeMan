@@ -24,7 +24,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     private static final Logger log = LoggerFactory.getLogger(CustomerRepositoryImpl.class);
 
     private enum Operation { CREATE, UPDATE };
-    private enum FindType { ALL, BY_NAME, BY_EMAIL, BY_LOGIN };
+    private enum FindType { ALL, BY_NAME, BY_LOGIN };
 
     @PersistenceContext
     EntityManager em;
@@ -43,14 +43,6 @@ public class CustomerRepositoryImpl implements CustomerRepository {
         return em.createQuery(
                 getQuery(builder, FindType.BY_NAME, firstname, lastname, null, null)
         ).getResultList();
-    }
-
-    @Override
-    public ViewCustomerDTO findbyEmail(String mailAddress) {
-        CriteriaBuilder builder = em.getCriteriaBuilder();
-        return em.createQuery(
-                getQuery(builder, FindType.BY_EMAIL, null, null, mailAddress, null)
-        ).getSingleResult();
     }
 
     @Override
@@ -111,7 +103,6 @@ public class CustomerRepositoryImpl implements CustomerRepository {
         customer.setFirstname(dto.getFirstname());
         customer.setLastname(dto.getLastname());
         customer.setBirthday(dto.getBirthday());
-        customer.setMailAddress(dto.getMailAddress());
         customer.setIsActivated(dto.getIsActivated());
 
         switch (operation) {
@@ -150,7 +141,6 @@ public class CustomerRepositoryImpl implements CustomerRepository {
                         root.get("customerId"),
                         root.get("firstname"),
                         root.get("lastname"),
-                        root.get("mailAddress"),
                         root.get("isActivated"),
                         root.get("birthday"),
                         root.get("cardId")
@@ -174,16 +164,6 @@ public class CustomerRepositoryImpl implements CustomerRepository {
                                 builder.equal(firstLower, firstname.toLowerCase()),
                                 builder.equal(lastLower, lastname.toLowerCase())
                         )
-                );
-                break;
-
-            // Case insensitive search
-            case BY_EMAIL:
-                Path<String> mailPath = root.get("mailAddress");
-                Expression<String> mailLower = builder.lower(mailPath);
-
-                criteria.where(
-                        builder.equal(mailLower, mailAddress.toLowerCase())
                 );
                 break;
 

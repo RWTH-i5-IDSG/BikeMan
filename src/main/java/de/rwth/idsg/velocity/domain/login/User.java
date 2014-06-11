@@ -1,6 +1,10 @@
 package de.rwth.idsg.velocity.domain.login;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.validator.constraints.Email;
@@ -18,105 +22,43 @@ import java.util.Set;
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "user_type")
 @Table(name = "T_USER")
+@TableGenerator(name="user_gen", initialValue=0, allocationSize=1)
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@ToString(includeFieldNames = true)
+@EqualsAndHashCode(of = {"userId"})
 public class User implements Serializable {
 
-    @NotNull
-    @Size(min = 0, max = 50)
     @Id
+    @GeneratedValue(strategy = GenerationType.TABLE, generator = "user_gen")
+    @Column(name = "user_id")
+    @Getter @Setter
+    private long userId;
+
+    @NotNull
+    @Email
+    @Size(min = 0, max = 100)
+    @Getter @Setter
     private String login;
 
     @JsonIgnore
     @Size(min = 0, max = 100)
+    @Getter @Setter
     private String password;
-
-    @Email
-    @Size(min = 0, max = 100)
-    private String email;
 
     @JsonIgnore
     @ManyToMany
     @JoinTable(
             name = "T_USER_AUTHORITY",
-            joinColumns = {@JoinColumn(name = "login", referencedColumnName = "login")},
+            joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "user_id")},
             inverseJoinColumns = {@JoinColumn(name = "name", referencedColumnName = "name")})
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @Getter @Setter
     private Set<Authority> authorities;
 
     @JsonIgnore
     @OneToMany(mappedBy = "user")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @Getter @Setter
     private Set<PersistentToken> persistentTokens;
 
-    public String getLogin() {
-        return login;
-    }
-
-    public void setLogin(String login) {
-        this.login = login;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public Set<Authority> getAuthorities() {
-        return authorities;
-    }
-
-    public void setAuthorities(Set<Authority> authorities) {
-        this.authorities = authorities;
-    }
-    
-    public Set<PersistentToken> getPersistentTokens() {
-        return persistentTokens;
-    }
-
-    public void setPersistentTokens(Set<PersistentToken> persistentTokens) {
-        this.persistentTokens = persistentTokens;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        User user = (User) o;
-
-        if (!login.equals(user.login)) {
-            return false;
-        }
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        return login.hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "login='" + login + '\'' +
-                ", password='" + password + '\'' +
-                ", email='" + email + '\'' +
-                "}";
-    }
 }

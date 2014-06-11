@@ -21,12 +21,7 @@ public interface CustomerRepository {
     List<ViewCustomerDTO> findbyName(String firstName, String lastName);
 
     /**
-     * E-Mail address of each customer is unique
-     */
-    ViewCustomerDTO findbyEmail(String eMailAddress);
-
-    /**
-     * Login field of each customer is unique
+     * Login (aka email) field of each customer is unique
      */
     ViewCustomerDTO findbyLogin(String login);
 

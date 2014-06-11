@@ -45,10 +45,6 @@ public class CreateEditCustomerDTO {
     @Getter @Setter
     private LocalDate birthday;
 
-    @NotBlank
-    @Getter @Setter
-    private String mailAddress;
-
     @NotNull
     @Getter @Setter
     private Boolean isActivated;

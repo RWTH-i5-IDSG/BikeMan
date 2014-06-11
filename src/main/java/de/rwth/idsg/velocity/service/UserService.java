@@ -34,15 +34,15 @@ public class UserService {
     @Inject
     private PersistentTokenRepository persistentTokenRepository;
 
-    public void updateUserInformation(String email) {
-        User currentUser = userRepository.findOne(SecurityUtils.getCurrentLogin());
-        currentUser.setEmail(email);
+    public void updateUserInformation(String login) {
+        User currentUser = userRepository.findByLogin(SecurityUtils.getCurrentLogin());
+        currentUser.setLogin(login);
         userRepository.save(currentUser);
         log.debug("Changed Information for User: {}", currentUser);
     }
 
     public void changePassword(String password) {
-        User currentUser = userRepository.findOne(SecurityUtils.getCurrentLogin());
+        User currentUser = userRepository.findByLogin(SecurityUtils.getCurrentLogin());
         String encryptedPassword = passwordEncoder.encode(password);
         currentUser.setPassword(encryptedPassword);
         userRepository.save(currentUser);
@@ -51,7 +51,7 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public User getUserWithAuthorities() {
-        User currentUser = userRepository.findOne(SecurityUtils.getCurrentLogin());
+        User currentUser = userRepository.findByLogin(SecurityUtils.getCurrentLogin());
         currentUser.getAuthorities().size(); // eagerly load the association
         return currentUser;
     }

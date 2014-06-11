@@ -93,10 +93,9 @@ public class AccountResourceTest {
         authorities.add(authority);
 
         User user = new User();
-        user.setLogin("test");
 //        user.setFirstName("john");
 //        user.setLastName("doe");
-        user.setEmail("john.doe@jhipter.com");
+        user.setLogin("john.doe@jhipter.com");
         user.setAuthorities(authorities);
         when(userService.getUserWithAuthorities()).thenReturn(user);
 
