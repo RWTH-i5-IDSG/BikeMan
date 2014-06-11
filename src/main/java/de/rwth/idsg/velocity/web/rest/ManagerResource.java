@@ -3,6 +3,7 @@ package de.rwth.idsg.velocity.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import de.rwth.idsg.velocity.domain.Manager;
 import de.rwth.idsg.velocity.domain.Pedelec;
+import de.rwth.idsg.velocity.repository.ManagerRepository;
 import de.rwth.idsg.velocity.repository.PedelecRepository;
 import de.rwth.idsg.velocity.web.rest.dto.modify.CreateEditPedelecDTO;
 import de.rwth.idsg.velocity.web.rest.dto.modify.CreateManagerDTO;
@@ -30,7 +31,7 @@ public class ManagerResource {
     private static final Logger log = LoggerFactory.getLogger(PedelecResource.class);
 
     @Autowired
-    private PedelecRepository managerRepository;
+    private ManagerRepository managerRepository;
 
     private static final String BASE_PATH = "/rest/managers";
     private static final String ID_PATH = "/rest/managers/{id}";
