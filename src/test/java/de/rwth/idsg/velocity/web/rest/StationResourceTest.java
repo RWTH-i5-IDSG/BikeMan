@@ -32,6 +32,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -78,7 +79,12 @@ public class StationResourceTest {
 
     @Test
     public void test1_createStation() throws Exception {
+        List<OperationState> states = new ArrayList<>();
+        Collections.addAll(states, OperationState.values());
+
         for (int n=1; n <= REPEAT_COUNT; n++ ) {
+            Collections.shuffle(states);
+
             Address add = new Address();
             add.setStreetAndHousenumber(RandomStringUtils.randomAlphanumeric(8));
             add.setCity(RandomStringUtils.randomAlphabetic(8));
@@ -92,7 +98,7 @@ public class StationResourceTest {
             dto.setLocationLongitude(new BigDecimal(Math.random()));
             dto.setName(RandomStringUtils.randomAlphabetic(15));
             dto.setNote(RandomStringUtils.randomAlphabetic(30));
-            dto.setState(OperationState.OPERATIVE);
+            dto.setState(states.get(0));
             dto.setAddress(add);
 
             restStationMockMvc.perform(post(BASE_PATH)

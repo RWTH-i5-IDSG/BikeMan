@@ -33,7 +33,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     public List<ViewCustomerDTO> findAll() {
         CriteriaBuilder builder = em.getCriteriaBuilder();
         return em.createQuery(
-                getQuery(builder, FindType.ALL, null, null, null, null)
+                getQuery(builder, FindType.ALL, null, null, null)
         ).getResultList();
     }
 
@@ -41,7 +41,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     public List<ViewCustomerDTO> findbyName(String firstname, String lastname) {
         CriteriaBuilder builder = em.getCriteriaBuilder();
         return em.createQuery(
-                getQuery(builder, FindType.BY_NAME, firstname, lastname, null, null)
+                getQuery(builder, FindType.BY_NAME, firstname, lastname, null)
         ).getResultList();
     }
 
@@ -49,7 +49,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     public ViewCustomerDTO findbyLogin(String login) {
         CriteriaBuilder builder = em.getCriteriaBuilder();
         return em.createQuery(
-                getQuery(builder, FindType.BY_LOGIN, null, null, null, login)
+                getQuery(builder, FindType.BY_LOGIN, null, null, login)
         ).getSingleResult();
     }
 
@@ -129,7 +129,6 @@ public class CustomerRepositoryImpl implements CustomerRepository {
      */
     private CriteriaQuery<ViewCustomerDTO> getQuery(CriteriaBuilder builder, FindType findType,
                                                         String firstname, String lastname,
-                                                        String mailAddress,
                                                         String login) {
         CriteriaQuery<ViewCustomerDTO> criteria = builder.createQuery(ViewCustomerDTO.class);
         Root<Customer> root = criteria.from(Customer.class);

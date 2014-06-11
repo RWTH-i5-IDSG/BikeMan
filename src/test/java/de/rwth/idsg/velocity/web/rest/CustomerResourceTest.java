@@ -79,19 +79,13 @@ public class CustomerResourceTest {
 
     @Test
     public void test2_getByName() throws Exception {
-        restCustomerMockMvc.perform(get("/app/rest/customers/name/Wollo+Kluth"))
+        restCustomerMockMvc.perform(get("/app/rest/customers/name/Sevket+Gokay"))
                 .andExpect(status().isOk());
     }
 
     @Test
-    public void test3_getByEmail() throws Exception {
-        restCustomerMockMvc.perform(get("/app/rest/customers/email/hu@mail.com"))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    public void test4_getByLogin() throws Exception {
-        restCustomerMockMvc.perform(get("/app/rest/customers/login/admin"))
+    public void test3_getByLogin() throws Exception {
+        restCustomerMockMvc.perform(get("/app/rest/customers/login/admin@bla.com"))
                 .andExpect(status().isOk());
     }
 

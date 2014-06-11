@@ -33,7 +33,7 @@ public class CustomerResource {
 
     // Restriction: Customers login with an e-mail address
     // Regular expression for Spring MVC to interpret domain extensions as part of the path variable
-    private static final String LOGIN_PATH = "/rest/customers/login/{login:+}";
+    private static final String LOGIN_PATH = "/rest/customers/login/{login:.+}";
 
     @Timed
     @RequestMapping(value = BASE_PATH, method = RequestMethod.GET)

@@ -26,6 +26,18 @@ public class ViewCustomerDTO {
     @Getter
     private LocalDate birthday;
 
+    // Customer overview
+    public ViewCustomerDTO(String login, String customerId, String firstname, String lastname, Boolean isActivated,
+                           LocalDate birthday, String cardId) {
+        this.login = login;
+        this.customerId = customerId;
+        this.fullName = firstname + " " + lastname;
+        this.isActivated = isActivated;
+        this.birthday = birthday;
+        this.cardId = cardId;
+    }
+
+    // Customer details
     public ViewCustomerDTO(String login, String customerId, String firstname, String lastname, Boolean isActivated,
                            LocalDate birthday, String cardId, String streetAndHousenumber, String zip, String city, String country) {
         this.login = login;
