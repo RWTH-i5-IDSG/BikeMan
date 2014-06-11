@@ -71,7 +71,7 @@ public class AccountResource {
 		    roles.add(authority.getName());
 		}
 
-        return new UserDTO(user.getLogin(), user.getEmail(), roles);
+        return new UserDTO(user.getLogin(), roles);
     }
 
     /**
@@ -82,7 +82,7 @@ public class AccountResource {
             produces = "application/json")
     @Timed
     public void saveAccount(@RequestBody UserDTO userDTO) throws IOException {
-        userService.updateUserInformation(userDTO.getEmail());
+        userService.updateUserInformation(userDTO.getLogin());
     }
 
     /**

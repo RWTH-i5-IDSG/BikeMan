@@ -16,7 +16,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = "T_TRANSACTION",
         indexes = {
-                @Index(columnList="customer_id", unique = false),
+                @Index(columnList="user_id", unique = false),
                 @Index(columnList="pedelec_id", unique = false),
                 @Index(columnList="from_slot_id", unique = false),
                 @Index(columnList="to_slot_id", unique = false) })
@@ -33,7 +33,7 @@ public class Transaction implements Serializable {
     private long transactionId;
 
     @ManyToOne
-    @JoinColumn(name = "customer_id")
+    @JoinColumn(name = "user_id")
     @Getter @Setter
     private Customer customer;
 

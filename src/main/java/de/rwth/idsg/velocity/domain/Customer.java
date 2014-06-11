@@ -48,10 +48,6 @@ public class Customer extends User implements Serializable {
     @Getter @Setter
     private LocalDate birthday;
 
-    @Column(name = "mail_address")
-    @Getter @Setter
-    private String mailAddress;
-
     @Column(name = "is_activated")
     @Getter @Setter
     private Boolean isActivated;

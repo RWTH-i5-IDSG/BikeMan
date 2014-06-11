@@ -30,9 +30,10 @@ public class CustomerResource {
 
     private static final String BASE_PATH = "/rest/customers";
     private static final String FULL_NAME_PATH = "/rest/customers/name/{firstname}+{lastname}";
+
+    // Restriction: Customers login with an e-mail address
     // Regular expression for Spring MVC to interpret domain extensions as part of the path variable
-    private static final String EMAIL_PATH = "/rest/customers/email/{email:.+}";
-    private static final String LOGIN_PATH = "/rest/customers/login/{login}";
+    private static final String LOGIN_PATH = "/rest/customers/login/{login:+}";
 
     @Timed
     @RequestMapping(value = BASE_PATH, method = RequestMethod.GET)
@@ -50,17 +51,6 @@ public class CustomerResource {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
         }
         return list;
-    }
-
-    @Timed
-    @RequestMapping(value = EMAIL_PATH, method = RequestMethod.GET)
-    public ViewCustomerDTO getByEmail(@PathVariable String email, HttpServletResponse response) {
-        log.debug("REST request to get Customer with email: {}", email);
-        ViewCustomerDTO customer = customerRepository.findbyEmail(email);
-        if (customer == null) {
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-        }
-        return customer;
     }
 
     @Timed
