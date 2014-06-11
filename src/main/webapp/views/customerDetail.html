@@ -1,0 +1,67 @@
+<div>
+
+    <h2>Customer: {{customer.firstname}} {{customer.lastname}}</h2>
+
+    <div>
+        <button type="button" ui-sref="customers" class="btn btn-sm btn-default" ng-disabled="isEditing">Back</button>
+    </div>
+    <div ng-switch="isEditing">
+        <button type="button" ng-switch-when="false" ng-click="toggleEdit()" class="btn btn-default">
+            <span class="glyphicon glyphicon-pencil"></span>Edit Customer</button>
+        <button type="button" ng-switch-when="true" ng-click="toggleEdit()" class="btn btn-warning">
+            <span class="glyphicon glyphicon-pencil"></span>Cancel</button>
+        <button type="button" ng-click="saveCustomer()" class="btn btn-primary" ng-show="isEditing">
+            <span class="glyphicon glyphicon-pencil"></span>Save Customer</button>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table" ng-switch="isEditing">
+            <tr>
+                <th>Login</th>
+                <td ng-switch-when="false">{{customer.login}}</td>
+                <td ng-switch-when="true"><input type="text" class="form-control" ng-model="customer.login"></td>
+            </tr>
+            <tr>
+                <th>Name</th>
+                <td ng-switch-when="false">{{customer.firstname}} <br>{{customer.lastname}}</td>
+                <td ng-switch-when="true">
+                    <input type="text" class="form-control" ng-model="customer.firstname">
+                    <input type="text" class="form-control" ng-model="customer.lastname">
+                </td>
+            </tr>
+            <tr>
+                <th>Address</th>
+                <td ng-switch-when="false">{{customer.address.streetAndHousenumber + ', ' + customer.address.zip + ', ' + customer.address.city + ', ' + customer.address.country}}</td>
+                <td ng-switch-when="true">
+                    Street Address: <input type="text" class="form-control" ng-model="customer.address.streetAndHousenumber">
+                    ZIP: <input type="text" class="form-control" ng-model="customer.address.zip">
+                    City: <input type="text" class="form-control" ng-model="customer.address.city">
+                    Country: <input type="text" class="form-control" ng-model="customer.address.country">
+            </tr>
+            <tr>
+                <th>Card ID</th>
+                <td ng-switch-when="false">{{customer.cardId}}</td>
+                <td ng-switch-when="true"><input type="text" class="form-control" ng-model="customer.cardId"></td>
+            </tr>
+            <tr>
+                <th>Birthday</th>
+                <td ng-switch-when="false">{{customer.birthday | date: 'shortDate'}}</td>
+                <td ng-switch-when="true"><input type="text" class="form-control" ng-model="customer.birthday"></td>
+            </tr>
+            <tr>
+                <th>Activated</th>
+                <td ng-switch-when="false">{{customer.isActivated | occupiedFilter}}</td>
+                <td ng-switch-when="true"><input type="checkbox" ng-model="customer.isActivated"></td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="table-responsive">
+        <h4>Transactions for customer {{customer.firstname}} {{ customer.lastname }}</h4>
+
+        <table>
+            <tr>TODO: INSERT TRANSACTIONS HERE?!!?</tr>
+        </table>
+    </div>
+
+</div>

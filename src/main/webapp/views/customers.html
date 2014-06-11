@@ -52,11 +52,11 @@
             <tbody>
             <tr ng-repeat="customer in customers">
                 <td>{{customer.customerId}}</td>
-                <td>{{customer.fullName}}</td>
+                <td>{{customer.firstname}} {{customer.lastname}}</td>
                 <td>{{customer.login}}</td>
                 <td class="text-center">{{customer.isActivated | occupiedFilter}}</td>
                 <td>{{customer.birthday | date:'shortDate'}}</td>
-                <td></td>
+                <td><a ui-sref="customerDetail({login:'{{customer.login}}'})">Details</a></td>
             </tr>
             </tbody>
         </table>

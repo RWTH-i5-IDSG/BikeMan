@@ -157,9 +157,9 @@ velocityApp
                 // Call when the the client is confirmed
                 $rootScope.$on('event:auth-loginConfirmed', function(data) {
                     $rootScope.authenticated = true;
-                    if ($location.path() === "/login") {
+//                    if ($location.path() === "/login") {
                         $location.path('/main').replace();
-                    }
+//                    }
                 });
 
                 // Call when the 401 response is returned by the server

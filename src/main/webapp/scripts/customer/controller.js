@@ -30,17 +30,6 @@ velocityApp.controller('CustomerController', ['$scope', 'resolvedCustomer', 'Cus
             $scope.customer = {id: null, sampleTextAttribute: null, sampleDateAttribute: null};
         };
 
-
-        $scope.searchByEmail = function (email) {
-
-            if (!email || !email.length) {
-                $scope.customers = Customer.query();
-            }
-            else {
-                $scope.customers = [Customer.searchByEmail({email: email})];
-            }
-        };
-
         $scope.searchByLogin = function (login) {
             if (!login || !login.length) {
                 $scope.customers = Customer.query();
@@ -73,6 +62,38 @@ velocityApp.controller('CustomerController', ['$scope', 'resolvedCustomer', 'Cus
             $scope.search = null;
 
             $scope.customers = Customer.query();
+        }
+
+    }]);
+
+velocityApp.controller('CustomerDetailController', ['$scope', 'resolvedCustomer', 'Customer',
+    function($scope, resolvedCustomer, Customer, CreateEditCustomer) {
+
+        $scope.customer = resolvedCustomer;
+
+        $scope.isEditing = false;
+
+        $scope.toggleEdit = function () {
+            $scope.customer = Customer.searchByLogin({login: $scope.customer.login});
+            $scope.isEditing = !$scope.isEditing;
+        }
+
+        $scope.saveCustomer = function () {
+            $scope.saveCustomerDTO = {
+                "userId": $scope.customer.userId,
+                "login": $scope.customer.login,
+                "customerId": $scope.customer.customerId,
+                "firstname": $scope.customer.firstname,
+                "lastname": $scope.customer.lastname,
+                "address": $scope.customer.address,
+                "birthday": $scope.customer.birthday,
+                "cardId": $scope.customer.cardId,
+                "isActivated": true
+            }
+
+            Customer.update($scope.saveCustomerDTO, function() {
+                $scope.isEditing = false;
+            })
         }
 
     }]);

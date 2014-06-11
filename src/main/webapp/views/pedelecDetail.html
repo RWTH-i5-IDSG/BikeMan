@@ -3,7 +3,7 @@
     <h2>Pedelec: {{pedelec.name}}</h2>
 
     <div>
-        <button type="button" ui-sref="stations" class="btn btn-sm btn-default" ng-disabled="isEditing">Back</button>
+        <button type="button" ui-sref="pedelec" class="btn btn-sm btn-default" ng-disabled="isEditing">Back</button>
     </div>
     <div ng-switch="isEditing">
         <button type="button" ng-switch-when="false" ng-click="toggleEdit()" class="btn btn-default">
