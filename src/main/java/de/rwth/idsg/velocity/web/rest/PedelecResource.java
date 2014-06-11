@@ -58,10 +58,10 @@ public class PedelecResource {
     }
 
     @Timed
-    @RequestMapping(value = ID_PATH, method = RequestMethod.PUT)
-    public void update(@PathVariable Long id, @Valid @RequestBody CreateEditPedelecDTO pedelec) {
-        log.debug("REST request to update Pedelec : {}", id);
-        pedelecRepository.update(pedelec);
+    @RequestMapping(value = BASE_PATH, method = RequestMethod.PUT)
+    public void update(@Valid @RequestBody CreateEditPedelecDTO dto) {
+        log.debug("REST request to update Pedelec : {}", dto);
+        pedelecRepository.update(dto);
     }
 
     @Timed

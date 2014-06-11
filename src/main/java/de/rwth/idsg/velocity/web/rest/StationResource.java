@@ -42,7 +42,7 @@ public class StationResource {
     @Timed
     @RequestMapping(value = BASE_PATH, method = RequestMethod.PUT)
     public void update(@Valid @RequestBody CreateEditStationDTO dto) {
-        log.debug("REST request to save Station : {}", dto);
+        log.debug("REST request to update Station : {}", dto);
         stationRepository.update(dto);
     }
 

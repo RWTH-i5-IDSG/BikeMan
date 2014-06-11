@@ -1,9 +1,6 @@
 package de.rwth.idsg.velocity.repository;
 
-import de.rwth.idsg.velocity.domain.Pedelec;
-import de.rwth.idsg.velocity.domain.Station;
-import de.rwth.idsg.velocity.domain.StationSlot;
-import de.rwth.idsg.velocity.domain.Transaction;
+import de.rwth.idsg.velocity.domain.*;
 import de.rwth.idsg.velocity.web.rest.dto.modify.CreateEditPedelecDTO;
 import de.rwth.idsg.velocity.web.rest.dto.view.ViewPedelecDTO;
 import org.slf4j.Logger;
@@ -25,68 +22,25 @@ public class PedelecRepositoryImpl implements PedelecRepository {
 
     private static final Logger log = LoggerFactory.getLogger(PedelecRepositoryImpl.class);
 
+    private enum FindType { ALL, BY_ID,};
+
     @PersistenceContext
     EntityManager em;
 
     @Override
     public List<ViewPedelecDTO> findAll() {
         CriteriaBuilder builder = em.getCriteriaBuilder();
-
-        // Get the stationary pedelecs
-        CriteriaQuery<ViewPedelecDTO> criteriaStat = builder.createQuery(ViewPedelecDTO.class);
-        Root<Pedelec> rootStat = criteriaStat.from(Pedelec.class);
-        Join<Pedelec, StationSlot> stationSlot = rootStat.join("stationSlot", JoinType.LEFT);
-        Join<Pedelec, Station> station = stationSlot.join("station", JoinType.LEFT);
-
-        criteriaStat.select(
-                builder.construct(
-                        ViewPedelecDTO.class,
-                        rootStat.get("pedelecId"),
-                        rootStat.get("manufacturerId"),
-                        rootStat.get("stateOfCharge"),
-                        rootStat.get("state"),
-                        rootStat.get("inTransaction"),
-                        station.get("stationId"),
-                        station.get("manufacturerId"),
-                        stationSlot.get("stationSlotPosition")
-                )
-        ).where(builder.equal(rootStat.get("inTransaction"), false));
-
-        List<ViewPedelecDTO> list = em.createQuery(criteriaStat).getResultList();
-
-        // Get the pedelecs in transaction
-        CriteriaQuery<ViewPedelecDTO> criteriaTrans = builder.createQuery(ViewPedelecDTO.class);
-        Root<Pedelec> rootTrans = criteriaTrans.from(Pedelec.class);
-        Root<Transaction> trans = criteriaTrans.from(Transaction.class);
-        criteriaTrans.select(
-                builder.construct(
-                        ViewPedelecDTO.class,
-                        rootTrans.get("pedelecId"),
-                        rootTrans.get("manufacturerId"),
-                        rootTrans.get("stateOfCharge"),
-                        rootTrans.get("state"),
-                        rootTrans.get("inTransaction"),
-                        trans.get("customer").get("customerId"),
-                        trans.get("customer").get("firstname"),
-                        trans.get("customer").get("lastname"),
-                        trans.get("fromSlot").get("station").get("stationId"),
-                        trans.get("fromSlot").get("stationSlotPosition"),
-                        trans.get("startDateTime")
-                )
-        ).where(builder.and(
-                builder.equal(rootTrans.get("inTransaction"), true),
-                builder.isNull(trans.get("endDateTime"))
-        ));
-
-        // Join the lists and return
-        list.addAll(em.createQuery(criteriaTrans).getResultList());
-        return list;
+        return em.createQuery(
+                getQuery(builder, FindType.ALL, null)
+        ).getResultList();
     }
 
     @Override
-    public ViewPedelecDTO findOneDTO(long pedelecId) {
-        // TODO
-        return null;
+    public ViewPedelecDTO findOneDTO(Long pedelecId) {
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        return em.createQuery(
+                getQuery(builder, FindType.BY_ID, pedelecId)
+        ).getSingleResult();
     }
 
     @Override
@@ -139,6 +93,54 @@ public class PedelecRepositoryImpl implements PedelecRepository {
     private void setFields(Pedelec pedelec, CreateEditPedelecDTO dto) {
         pedelec.setState(dto.getState());
         pedelec.setManufacturerId(dto.getManufacturerId());
+    }
+
+    /**
+     * This method returns the query to get information of pedelecs for various lookup cases
+     *
+     */
+    private CriteriaQuery<ViewPedelecDTO> getQuery(CriteriaBuilder builder, FindType findType, Long pedelecId) {
+
+        CriteriaQuery<ViewPedelecDTO> criteria = builder.createQuery(ViewPedelecDTO.class);
+        Root<Pedelec> rootPedelec = criteria.from(Pedelec.class);
+        Join<Pedelec, StationSlot> stationSlot = rootPedelec.join("stationSlot", JoinType.LEFT);
+        Join<StationSlot, Station> station = stationSlot.join("station", JoinType.LEFT);
+
+        Join<Pedelec, Transaction> trans = rootPedelec.join("transactions", JoinType.LEFT);
+        Join<Transaction, Customer> transCustomerJoin = trans.join("customer", JoinType.LEFT);
+        Join<Transaction, StationSlot> transStationSlotJoin = trans.join("fromSlot", JoinType.LEFT);
+        Join<StationSlot, Station> transStationJoin = transStationSlotJoin.join("station", JoinType.LEFT);
+
+        criteria.select(
+                builder.construct(
+                        ViewPedelecDTO.class,
+                        rootPedelec.get("pedelecId"),
+                        rootPedelec.get("manufacturerId"),
+                        rootPedelec.get("stateOfCharge"),
+                        rootPedelec.get("state"),
+                        rootPedelec.get("inTransaction"),
+                        station.get("stationId"),
+                        station.get("manufacturerId"),
+                        stationSlot.get("stationSlotPosition"),
+                        transCustomerJoin.get("customerId"),
+                        transCustomerJoin.get("firstname"),
+                        transCustomerJoin.get("lastname"),
+                        transStationJoin.get("stationId"),
+                        transStationSlotJoin.get("stationSlotPosition"),
+                        trans.get("startDateTime")
+                )
+        );
+
+        switch (findType) {
+            case ALL:
+                break;
+
+            case BY_ID:
+                criteria.where(builder.equal(rootPedelec.get("pedelecId"), pedelecId));
+                break;
+        }
+
+        return criteria;
     }
 }
 

@@ -22,33 +22,28 @@ public class ViewPedelecDTO {
     @Getter private ViewStationDTO station;
     @Getter private ViewTransactionDTO transaction;
 
-    // Constructor for stationary pedelecs
     public ViewPedelecDTO(Long pedelecId, String manufacturerId, Float stateOfCharge,
                           OperationState state, Boolean inTransaction,
-                          Long stationId, String stationManufacturerId, Integer stationSlotPosition) {
+                          Long stationaryStationId, String stationManufacturerId, Integer stationarySlotPosition,
+                          String customerId, String customerFirstname, String customerLastname, Long lastStationId,
+                          Integer lastSlotPosition, LocalDateTime startDateTime) {
         this.pedelecId = pedelecId;
         this.manufacturerId = manufacturerId;
         this.stateOfCharge = stateOfCharge;
         this.state = state;
         this.inTransaction = inTransaction;
 
-        this.station = new ViewStationDTO(stationId, stationManufacturerId, stationSlotPosition);
-    }
+        //// For the following: Reverse if clause checks to prevent unnecessary negation otherwise ////
 
-    // Constructor for pedelecs in transaction
-    public ViewPedelecDTO(Long pedelecId, String manufacturerId, Float stateOfCharge,
-                          OperationState state, Boolean inTransaction,
-                          String customerId, String customerFirstname, String customerLastname,
-                          Long stationId, Integer stationSlotPosition, LocalDateTime startDateTime) {
-        this.pedelecId = pedelecId;
-        this.manufacturerId = manufacturerId;
-        this.stateOfCharge = stateOfCharge;
-        this.state = state;
-        this.inTransaction = inTransaction;
+        if (customerId == null) {
+            this.station = new ViewStationDTO(stationaryStationId, stationManufacturerId, stationarySlotPosition);
+        }
 
-        this.transaction = new ViewTransactionDTO(customerId,
-                customerFirstname, customerLastname,
-                stationId, stationSlotPosition, startDateTime);
+        if (stationaryStationId == null) {
+            this.transaction = new ViewTransactionDTO(customerId,
+                    customerFirstname, customerLastname,
+                    lastStationId, lastSlotPosition, startDateTime);
+        }
     }
 
     @AllArgsConstructor
@@ -64,7 +59,7 @@ public class ViewPedelecDTO {
     @ToString(includeFieldNames = true)
     private class ViewTransactionDTO {
 
-        @Getter private String id;
+        @Getter private String customerId;
         @Getter private String firstname;
         @Getter private String lastname;
         @Getter private Long lastStationId;
