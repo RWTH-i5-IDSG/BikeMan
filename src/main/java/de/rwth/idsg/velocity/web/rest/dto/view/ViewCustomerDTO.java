@@ -26,13 +26,8 @@ public class ViewCustomerDTO {
     @Getter
     private LocalDate birthday;
 
-    public ViewCustomerDTO(String login, String customerId, String firstname, String lastname,
-<<<<<<< HEAD
-                           String mailAddress, Boolean isActivated,
+    public ViewCustomerDTO(String login, String customerId, String firstname, String lastname, Boolean isActivated,
                            LocalDate birthday, String cardId, String streetAndHousenumber, String zip, String city, String country) {
-=======
-                           Boolean isActivated, LocalDate birthday, String cardId) {
->>>>>>> b4e8b8fefdc23a0ad61c907e404b71140d120e35
         this.login = login;
         this.customerId = customerId;
         this.fullName = firstname + " " + lastname;

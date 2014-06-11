@@ -36,6 +36,10 @@ public class ManagerResource {
     private static final String BASE_PATH = "/rest/managers";
     private static final String ID_PATH = "/rest/managers/{id}";
 
+    // Restriction: Customers login with an e-mail address
+    // Regular expression for Spring MVC to interpret domain extensions as part of the path variable
+    private static final String LOGIN_PATH = "/rest/managers/{login:+}";
+
     @Timed
     @RequestMapping(value = BASE_PATH, method = RequestMethod.GET)
     public List<ViewManagerDTO> getAll() {
@@ -58,9 +62,9 @@ public class ManagerResource {
     }
 
     @Timed
-    @RequestMapping(value = ID_PATH, method = RequestMethod.DELETE)
-    public void delete(@PathVariable Long id, HttpServletResponse response) {
-        log.debug("REST request to delete Manager : {}", id);
-        managerRepository.delete(id);
+    @RequestMapping(value = LOGIN_PATH, method = RequestMethod.DELETE)
+    public void delete(@PathVariable String login, HttpServletResponse response) {
+        log.debug("REST request to delete Manager : {}", login);
+        managerRepository.delete(login);
     }
 }

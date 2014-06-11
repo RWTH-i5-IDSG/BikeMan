@@ -1,7 +1,6 @@
 package de.rwth.idsg.velocity.repository;
 
 import de.rwth.idsg.velocity.domain.Manager;
-import de.rwth.idsg.velocity.web.rest.dto.modify.CreateEditCustomerDTO;
 import de.rwth.idsg.velocity.web.rest.dto.modify.CreateManagerDTO;
 import de.rwth.idsg.velocity.web.rest.dto.view.ViewManagerDTO;
 
