@@ -38,6 +38,6 @@ public interface CustomerRepository {
     /**
      * self-explanatory
      */
-    void delete(String login);
+    void delete(long userId);
 
 }

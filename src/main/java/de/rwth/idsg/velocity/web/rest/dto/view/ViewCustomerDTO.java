@@ -14,6 +14,7 @@ import org.joda.time.LocalDate;
 @ToString(includeFieldNames = true)
 public class ViewCustomerDTO {
 
+    @Getter private Long userId;
     @Getter private String login;
     @Getter private String customerId;
     @Getter private String fullName;
@@ -27,8 +28,9 @@ public class ViewCustomerDTO {
     private LocalDate birthday;
 
     // Customer overview
-    public ViewCustomerDTO(String login, String customerId, String firstname, String lastname, Boolean isActivated,
-                           LocalDate birthday, String cardId) {
+    public ViewCustomerDTO(Long userId, String login, String customerId, String firstname, String lastname,
+                           Boolean isActivated, LocalDate birthday, String cardId) {
+        this.userId = userId;
         this.login = login;
         this.customerId = customerId;
         this.fullName = firstname + " " + lastname;
@@ -38,8 +40,10 @@ public class ViewCustomerDTO {
     }
 
     // Customer details
-    public ViewCustomerDTO(String login, String customerId, String firstname, String lastname, Boolean isActivated,
-                           LocalDate birthday, String cardId, String streetAndHousenumber, String zip, String city, String country) {
+    public ViewCustomerDTO(Long userId, String login, String customerId, String firstname, String lastname,
+                           Boolean isActivated, LocalDate birthday, String cardId,
+                           String streetAndHousenumber, String zip, String city, String country) {
+        this.userId = userId;
         this.login = login;
         this.customerId = customerId;
         this.fullName = firstname + " " + lastname;

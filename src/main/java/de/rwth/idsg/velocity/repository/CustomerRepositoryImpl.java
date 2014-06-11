@@ -63,14 +63,14 @@ public class CustomerRepositoryImpl implements CustomerRepository {
 
     @Override
     public void update(CreateEditCustomerDTO dto) {
-        final String login = dto.getLogin();
-        if (login == null) {
+        final Long userId = dto.getUserId();
+        if (userId == null) {
             return;
         }
 
-        Customer customer = em.find(Customer.class, login);
+        Customer customer = em.find(Customer.class, userId);
         if (customer == null) {
-            log.error("No customer with login: {} to update.", login);
+            log.error("No customer with userId: {} to update.", userId);
         } else {
             setFields(customer, dto, Operation.UPDATE);
             em.merge(customer);
@@ -79,10 +79,10 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     }
 
     @Override
-    public void delete(String login) {
-        Customer customer = em.find(Customer.class, login);
+    public void delete(long userId) {
+        Customer customer = em.find(Customer.class, userId);
         if (customer == null) {
-            log.error("No customer with login: {} to delete.", login);
+            log.error("No customer with userId: {} to delete.", userId);
         } else {
             em.remove(customer);
             log.debug("Deleted customer {}", customer);
@@ -136,6 +136,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
         criteria.select(
                 builder.construct(
                         ViewCustomerDTO.class,
+                        root.get("userId"),
                         root.get("login"),
                         root.get("customerId"),
                         root.get("firstname"),

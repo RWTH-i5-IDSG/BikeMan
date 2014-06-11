@@ -1,10 +1,11 @@
 package de.rwth.idsg.velocity.web.rest.dto.modify;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.datatype.joda.deser.LocalDateDeserializer;
 import de.rwth.idsg.velocity.domain.Address;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.NotBlank;
 import org.joda.time.LocalDate;
 
@@ -15,6 +16,9 @@ import javax.validation.constraints.NotNull;
  */
 @ToString(includeFieldNames = true)
 public class CreateEditCustomerDTO {
+
+    @Getter @Setter
+    private Long userId;
 
     @NotBlank
     @Getter @Setter
@@ -41,7 +45,7 @@ public class CreateEditCustomerDTO {
     private Address address;
 
     @NotNull
-    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDate")
+    @JsonDeserialize(using = LocalDateDeserializer.class)
     @Getter @Setter
     private LocalDate birthday;
 

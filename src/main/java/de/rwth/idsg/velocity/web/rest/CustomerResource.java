@@ -29,6 +29,7 @@ public class CustomerResource {
     private CustomerRepository customerRepository;
 
     private static final String BASE_PATH = "/rest/customers";
+    private static final String ID_PATH = "/rest/customers/{id}";
     private static final String FULL_NAME_PATH = "/rest/customers/name/{firstname}+{lastname}";
 
     // Restriction: Customers login with an e-mail address
@@ -79,9 +80,9 @@ public class CustomerResource {
     }
 
     @Timed
-    @RequestMapping(value = LOGIN_PATH, method = RequestMethod.DELETE)
-    public void delete(@PathVariable String login, HttpServletResponse response) {
-        log.debug("REST request to delete Customer : {}", login);
-        customerRepository.delete(login);
+    @RequestMapping(value = ID_PATH, method = RequestMethod.DELETE)
+    public void delete(@PathVariable Long id, HttpServletResponse response) {
+        log.debug("REST request to delete Customer : {}", id);
+        customerRepository.delete(id);
     }
 }
