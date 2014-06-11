@@ -1,7 +1,9 @@
 package de.rwth.idsg.velocity.web.rest.dto.view;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import de.rwth.idsg.velocity.domain.Address;
 import de.rwth.idsg.velocity.web.rest.dto.util.CustomLocalDateSerializer;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
 import org.joda.time.LocalDate;
@@ -18,6 +20,8 @@ public class ViewCustomerDTO {
     @Getter private String mailAddress;
     @Getter private Boolean isActivated;
     @Getter private String cardId;
+    @Getter private ViewAddressDTO addressDTO;
+
 
     @JsonSerialize(using = CustomLocalDateSerializer.class)
     @Getter
@@ -25,7 +29,7 @@ public class ViewCustomerDTO {
 
     public ViewCustomerDTO(String login, String customerId, String firstname, String lastname,
                            String mailAddress, Boolean isActivated,
-                           LocalDate birthday, String cardId) {
+                           LocalDate birthday, String cardId, String streetAndHousenumber, String zip, String city, String country) {
         this.login = login;
         this.customerId = customerId;
         this.fullName = firstname + " " + lastname;
@@ -33,6 +37,17 @@ public class ViewCustomerDTO {
         this.isActivated = isActivated;
         this.birthday = birthday;
         this.cardId = cardId;
+        this.addressDTO = new ViewAddressDTO(streetAndHousenumber, zip, city, country);
+    }
+
+    @AllArgsConstructor
+    @ToString(includeFieldNames = true)
+    class ViewAddressDTO {
+
+        @Getter private String streetAndHousenumber;
+        @Getter private String zip;
+        @Getter private String city;
+        @Getter private String country;
     }
 
 }
