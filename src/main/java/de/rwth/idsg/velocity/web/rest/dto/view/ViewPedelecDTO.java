@@ -47,7 +47,7 @@ public class ViewPedelecDTO {
         this.inTransaction = inTransaction;
 
         this.transaction = new ViewTransactionDTO(customerId,
-                customerFirstname + " " + customerLastname,
+                customerFirstname, customerLastname,
                 stationId, stationSlotPosition, startDateTime);
     }
 
@@ -65,7 +65,8 @@ public class ViewPedelecDTO {
     private class ViewTransactionDTO {
 
         @Getter private String id;
-        @Getter private String customerName;
+        @Getter private String firstname;
+        @Getter private String lastname;
         @Getter private Long lastStationId;
         @Getter private Integer lastStationSlotPosition;
 

@@ -17,7 +17,8 @@ public class ViewCustomerDTO {
     @Getter private Long userId;
     @Getter private String login;
     @Getter private String customerId;
-    @Getter private String fullName;
+    @Getter private String firstname;
+    @Getter private String lastname;
     @Getter private Boolean isActivated;
     @Getter private String cardId;
     @Getter private ViewAddressDTO address;
@@ -33,7 +34,8 @@ public class ViewCustomerDTO {
         this.userId = userId;
         this.login = login;
         this.customerId = customerId;
-        this.fullName = firstname + " " + lastname;
+        this.firstname = firstname;
+        this.lastname = lastname;
         this.isActivated = isActivated;
         this.birthday = birthday;
         this.cardId = cardId;
@@ -46,7 +48,8 @@ public class ViewCustomerDTO {
         this.userId = userId;
         this.login = login;
         this.customerId = customerId;
-        this.fullName = firstname + " " + lastname;
+        this.firstname = firstname;
+        this.lastname = lastname;
         this.isActivated = isActivated;
         this.birthday = birthday;
         this.cardId = cardId;

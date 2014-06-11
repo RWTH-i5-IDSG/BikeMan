@@ -37,7 +37,7 @@ public class ViewTransactionDTO {
         this.transactionId = transactionId;
         this.startDateTime = startDateTime;
         this.endDateTime = endDateTime;
-        this.customer = new CustomerDTO(customerId, customerFirstname + " " + customerLastname);
+        this.customer = new CustomerDTO(customerId, customerFirstname, customerLastname);
 
         this.fromStation = new TransactionStationDTO(fromStationId, fromStationName, fromStationSlotPosition);
         this.toStation = new TransactionStationDTO(toStationId, toStationName, toStationSlotPosition);
@@ -52,7 +52,7 @@ public class ViewTransactionDTO {
                               Long pedelecId, String pedelecManufacturerId) {
         this.transactionId = transactionId;
         this.startDateTime = startDateTime;
-        this.customer = new CustomerDTO(customerId, customerFirstname + " " + customerLastname);
+        this.customer = new CustomerDTO(customerId, customerFirstname, customerLastname);
 
         this.fromStation = new TransactionStationDTO(fromStationId, fromStationName, fromStationSlotPosition);
 
@@ -81,7 +81,8 @@ public class ViewTransactionDTO {
     class CustomerDTO {
 
         @Getter private String customerId;
-        @Getter private String customerName;
+        @Getter private String firstname;
+        @Getter private String lastname;
     }
 
 }
