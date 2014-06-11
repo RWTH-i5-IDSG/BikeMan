@@ -80,7 +80,10 @@ velocityApp.controller('StationCreateController', ['$scope', 'CreateEditStation'
 
         $scope.station = null;
 
+        // create station
         $scope.create = function () {
+            // stations have state OPERATIVE by default
+            $scope.station.state = "OPERATIVE";
             CreateEditStation.save($scope.station,
                 function () {
                     $scope.clear();

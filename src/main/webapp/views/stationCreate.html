@@ -60,6 +60,16 @@
                     </div>
 
                     <div class="form-group">
+                        <label translate="stations.create.form.state">Station State</label>
+                        <select type="text" class="form-control" name="state"
+                                ng-model="station.state" required>
+                            <option value="" selected disabled>Choose...</option>
+                            <option value="OPERATIVE">OPERATIVE</option>
+                            <option value="INOPERATIVE">INOPERATIVE</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
                         <label translate="stations.create.form.note">Note</label>
                         <input type="text" class="form-control" name="note"
                                ng-model="station.note" ng-minlength=1 ng-maxlength=255 required>

@@ -63,6 +63,7 @@
                     "locationLatitude": "Latitude",
                     "locationLongitude": "Longitude"
                 },
+                "state": "Station State",
                 "note": "Note"
             },
             "cancel": "Cancel",

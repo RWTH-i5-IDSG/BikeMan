@@ -5,19 +5,19 @@ velocityApp.controller('CustomerController', ['$scope', 'resolvedCustomer', 'Cus
 
         $scope.customers = resolvedCustomer;
 
-        $scope.create = function () {
-            Customer.save($scope.customer,
-                function () {
-                    $scope.customers = Customer.query();
-                    $('#saveCustomerModal').modal('hide');
-                    $scope.clear();
-                });
-        };
-
-        $scope.update = function (id) {
-            $scope.customer = Customer.get({id: id});
-            $('#saveCustomerModal').modal('show');
-        };
+//        $scope.create = function () {
+//            Customer.save($scope.customer,
+//                function () {
+//                    $scope.customers = Customer.query();
+//                    $('#saveCustomerModal').modal('hide');
+//                    $scope.clear();
+//                });
+//        };
+//
+//        $scope.update = function (id) {
+//            $scope.customer = Customer.get({id: id});
+//            $('#saveCustomerModal').modal('show');
+//        };
 
         $scope.delete = function (id) {
             Customer.delete({id: id},
@@ -26,9 +26,9 @@ velocityApp.controller('CustomerController', ['$scope', 'resolvedCustomer', 'Cus
                 });
         };
 
-        $scope.clear = function () {
-            $scope.customer = {id: null, sampleTextAttribute: null, sampleDateAttribute: null};
-        };
+//        $scope.clear = function () {
+//            $scope.customer = {id: null, sampleTextAttribute: null, sampleDateAttribute: null};
+//        };
 
         $scope.searchByLogin = function (login) {
             if (!login || !login.length) {
@@ -62,6 +62,14 @@ velocityApp.controller('CustomerController', ['$scope', 'resolvedCustomer', 'Cus
             $scope.search = null;
 
             $scope.customers = Customer.query();
+        }
+
+        $scope.toggleActivation = function (login) {
+            $scope.customer = Customer.searchByLogin({login:login}, function () {
+                $scope.customer.isActivated = !$scope.customer.isActivated;
+
+                Customer.save($scope.customer);
+            });
         }
 
     }]);
