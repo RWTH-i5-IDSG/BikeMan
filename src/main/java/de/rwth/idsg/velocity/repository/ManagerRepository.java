@@ -30,5 +30,5 @@ public interface ManagerRepository {
     /**
      * self-explanatory
      */
-    void delete(Long id);
+    void delete(String login);
 }

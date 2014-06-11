@@ -34,7 +34,7 @@ public class ManagerRepositoryImpl implements ManagerRepository {
     }
 
     @Override
-    public void delete(Long id) {
+    public void delete(String login) {
 
     }
 }
