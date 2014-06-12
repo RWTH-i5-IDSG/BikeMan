@@ -38,51 +38,85 @@ public class CustomerResource {
 
     @Timed
     @RequestMapping(value = BASE_PATH, method = RequestMethod.GET)
-    public List<ViewCustomerDTO> getAll() {
+    public List<ViewCustomerDTO> getAll(HttpServletResponse response) {
         log.debug("REST request to get all customers");
-        return customerRepository.findAll();
+        List<ViewCustomerDTO> answer = null;
+        try {
+            answer = customerRepository.findAll();
+        } catch (Exception e) {
+            log.error("Error occurred.", e);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
+        return answer;
     }
 
     @Timed
     @RequestMapping(value = FULL_NAME_PATH, method = RequestMethod.GET)
     public List<ViewCustomerDTO> getByName(@PathVariable String firstname, @PathVariable String lastname, HttpServletResponse response) {
         log.debug("REST request to get Customer with name: {} {}", firstname, lastname);
-        List<ViewCustomerDTO> list = customerRepository.findbyName(firstname,lastname);
-        if (list.isEmpty()) {
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        List<ViewCustomerDTO> answer = null;
+        try {
+            answer = customerRepository.findbyName(firstname,lastname);
+            if (answer.isEmpty()) {
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            }
+        } catch (Exception e) {
+            log.error("Error occurred.", e);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
-        return list;
+        return answer;
     }
 
     @Timed
     @RequestMapping(value = LOGIN_PATH, method = RequestMethod.GET)
     public ViewCustomerDTO getByLogin(@PathVariable String login, HttpServletResponse response) {
         log.debug("REST request to get Customer with login: {}", login);
-        ViewCustomerDTO customer = customerRepository.findbyLogin(login);
-        if (customer == null) {
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        ViewCustomerDTO answer = null;
+        try {
+            answer = customerRepository.findbyLogin(login);
+            if (answer == null) {
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            }
+        } catch (Exception e) {
+            log.error("Error occurred.", e);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
-        return customer;
+        return answer;
     }
 
     @Timed
     @RequestMapping(value = BASE_PATH, method = RequestMethod.POST)
-    public void create(@Valid @RequestBody CreateEditCustomerDTO dto) {
+    public void create(@Valid @RequestBody CreateEditCustomerDTO dto, HttpServletResponse response) {
         log.debug("REST request to create Customer : {}", dto);
-        customerRepository.create(dto);
+        try {
+            customerRepository.create(dto);
+        } catch (Exception e) {
+            log.error("Error occurred.", e);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
     }
 
     @Timed
     @RequestMapping(value = BASE_PATH, method = RequestMethod.PUT)
-    public void update(@Valid @RequestBody CreateEditCustomerDTO dto) {
+    public void update(@Valid @RequestBody CreateEditCustomerDTO dto, HttpServletResponse response) {
         log.debug("REST request to update Customer : {}", dto);
-        customerRepository.update(dto);
+        try {
+            customerRepository.update(dto);
+        } catch (Exception e) {
+            log.error("Error occurred.", e);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
     }
 
     @Timed
     @RequestMapping(value = ID_PATH, method = RequestMethod.DELETE)
     public void delete(@PathVariable Long id, HttpServletResponse response) {
         log.debug("REST request to delete Customer : {}", id);
-        customerRepository.delete(id);
+        try {
+            customerRepository.delete(id);
+        } catch (Exception e) {
+            log.error("Error occurred.", e);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
     }
 }
