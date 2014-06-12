@@ -130,14 +130,20 @@ public class PedelecRepositoryImpl implements PedelecRepository {
         );
 
         // Join with transaction table will get all the transactions for a pedelec.
-        // Therefore: Only get the open transaction (endDateTime is null)
+        // Therefore: Only get the open transaction (toSlot & endDateTime are null)
 
         if (pedelecId == null) {
-            criteria.where(builder.isNull(trans.get("endDateTime")));
+            criteria.where(
+                    builder.and(
+                            builder.isNull(trans.get("toSlot")),
+                            builder.isNull(trans.get("endDateTime"))
+                    )
+            );
         } else {
             criteria.where(
                     builder.and(
                             builder.equal(rootPedelec.get("pedelecId"), pedelecId),
+                            builder.isNull(trans.get("toSlot")),
                             builder.isNull(trans.get("endDateTime"))
                     )
             );

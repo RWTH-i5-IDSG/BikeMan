@@ -1,7 +1,6 @@
 package de.rwth.idsg.velocity.repository;
 
 import de.rwth.idsg.velocity.domain.*;
-import de.rwth.idsg.velocity.web.rest.dto.view.ViewStationDTO;
 import de.rwth.idsg.velocity.web.rest.dto.view.ViewTransactionDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,8 +67,12 @@ public class TransactionRepositoryImpl implements TransactionRepository {
                         pedelecJoin.get("pedelecId"),
                         pedelecJoin.get("manufacturerId")
                 )
-        ).where(builder.isNull(root.get("toSlot")));
-
+        ).where(
+                builder.and(
+                        builder.isNull(root.get("toSlot")),
+                        builder.isNull(root.get("endDateTime"))
+                )
+        );
         return em.createQuery(criteria).getResultList();
     }
 
@@ -127,7 +130,12 @@ public class TransactionRepositoryImpl implements TransactionRepository {
                 break;
 
             case CLOSED:
-                criteria.where(builder.isNotNull(root.get("toSlot")));
+                criteria.where(
+                        builder.and(
+                                builder.isNotNull(root.get("toSlot")),
+                                builder.isNotNull(root.get("endDateTime"))
+                        )
+                );
                 break;
         }
 

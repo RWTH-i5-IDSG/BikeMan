@@ -28,20 +28,6 @@ public class ViewCustomerDTO {
     @Getter
     private LocalDate birthday;
 
-    // Customer overview
-    public ViewCustomerDTO(Long userId, String login, String customerId, String firstname, String lastname,
-                           Boolean isActivated, LocalDate birthday, String cardId) {
-        this.userId = userId;
-        this.login = login;
-        this.customerId = customerId;
-        this.firstname = firstname;
-        this.lastname = lastname;
-        this.isActivated = isActivated;
-        this.birthday = birthday;
-        this.cardId = cardId;
-    }
-
-    // Customer details
     public ViewCustomerDTO(Long userId, String login, String customerId, String firstname, String lastname,
                            Boolean isActivated, LocalDate birthday, String cardId,
                            String streetAndHousenumber, String zip, String city, String country) {
@@ -53,7 +39,10 @@ public class ViewCustomerDTO {
         this.isActivated = isActivated;
         this.birthday = birthday;
         this.cardId = cardId;
-        this.address = new ViewAddressDTO(streetAndHousenumber, zip, city, country);
+
+        if (streetAndHousenumber != null) {
+            this.address = new ViewAddressDTO(streetAndHousenumber, zip, city, country);
+        }
     }
 
     @AllArgsConstructor

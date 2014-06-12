@@ -2,6 +2,8 @@ package de.rwth.idsg.velocity.repository;
 
 import de.rwth.idsg.velocity.domain.Address;
 import de.rwth.idsg.velocity.domain.Customer;
+import de.rwth.idsg.velocity.domain.Pedelec;
+import de.rwth.idsg.velocity.domain.Transaction;
 import de.rwth.idsg.velocity.web.rest.dto.modify.CreateEditCustomerDTO;
 import de.rwth.idsg.velocity.web.rest.dto.view.ViewCustomerDTO;
 import org.slf4j.Logger;
@@ -132,6 +134,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
                                                         String login) {
         CriteriaQuery<ViewCustomerDTO> criteria = builder.createQuery(ViewCustomerDTO.class);
         Root<Customer> root = criteria.from(Customer.class);
+        Join<Customer, Address> addressJoin = root.join("address", JoinType.LEFT);
 
         criteria.select(
                 builder.construct(
@@ -143,7 +146,11 @@ public class CustomerRepositoryImpl implements CustomerRepository {
                         root.get("lastname"),
                         root.get("isActivated"),
                         root.get("birthday"),
-                        root.get("cardId")
+                        root.get("cardId"),
+                        addressJoin.get("streetAndHousenumber"),
+                        addressJoin.get("zip"),
+                        addressJoin.get("city"),
+                        addressJoin.get("country")
                 )
         );
 
