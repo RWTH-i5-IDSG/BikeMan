@@ -59,17 +59,24 @@ velocityApp.controller('PedelecDetailController', ['$scope', 'resolvedPedelec', 
             });
         }
 
+
+
     }]);
 
-velocityApp.controller('PedelecCreateController', ['$scope', 'Pedelec',
-    function ($scope, Pedelec)  {
+velocityApp.controller('PedelecCreateController', ['$scope', 'Pedelec', '$timeout',
+    function ($scope, Pedelec, $timeout)  {
 
         $scope.pedelec = null;
+        $scope.createSuccess = false;
 
         $scope.create = function () {
             Pedelec.save($scope.pedelec,
                 function () {
-                    $scope.clear();
+                    $scope.createSuccess = true;
+                    $timeout(function () {
+                        $scope.createSuccess = false;
+                        $scope.clear();
+                    }, 3000);
                 });
         };
 

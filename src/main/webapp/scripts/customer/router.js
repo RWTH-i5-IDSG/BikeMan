@@ -23,7 +23,6 @@ velocityApp
                     controller: 'CustomerDetailController',
                     resolve:{
                         resolvedCustomer: function (Customer, $stateParams) {
-                            console.log("searching for a customer");
                             return Customer.searchByLogin({login: $stateParams.login});
                         }
                     },

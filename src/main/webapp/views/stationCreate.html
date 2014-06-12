@@ -4,82 +4,87 @@
             <h1 class="page-header">Create Station</h1>
         </div>
     </div>
-            <form name="form" role="form" novalidate
-                  class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength"
-                  ng-submit="create()">
+    <div class="row">
+        <div class="alert alert-success" ng-show="createSuccess">
+            Successfully created station {{station.name}}!
+        </div>
+    </div>
+    <form name="form" role="form" novalidate
+          class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength"
+          ng-submit="create()">
 
-                <div class="panel-body">
-                    <div class="form-group">
-                        <label translate="stations.create.form.name">Name</label>
-                        <input type="text" class="form-control" name="name"
-                               ng-model="station.name" ng-minlength=1 ng-maxlength=255 required>
-                    </div>
+        <div class="panel-body">
+            <div class="form-group">
+                <label translate="stations.create.form.name">Name</label>
+                <input type="text" class="form-control" name="name"
+                       ng-model="station.name" ng-minlength=1 ng-maxlength=255 required>
+            </div>
 
-                    <div class="form-group">
-                        <label translate="stations.create.form.manufacturerId">Manufacturer ID</label>
-                        <input type="text" class="form-control" name="manufacturerId"
-                               ng-model="station.manufacturerId" ng-minlength=1 ng-maxlength=255 required>
-                    </div>
+            <div class="form-group">
+                <label translate="stations.create.form.manufacturerId">Manufacturer ID</label>
+                <input type="text" class="form-control" name="manufacturerId"
+                       ng-model="station.manufacturerId" ng-minlength=1 ng-maxlength=255 required>
+            </div>
 
-                    <div class="form-group">
-                        <label translate="stations.create.form.streetAndHousenumber">Street</label>
-                        <input type="text" class="form-control" name="addressStreet"
-                               ng-model="station.address.streetAndHousenumber" ng-minlength=1 ng-maxlength=255 required>
-                    </div>
+            <div class="form-group">
+                <label translate="stations.create.form.streetAndHousenumber">Street</label>
+                <input type="text" class="form-control" name="addressStreet"
+                       ng-model="station.address.streetAndHousenumber" ng-minlength=1 ng-maxlength=255 required>
+            </div>
 
-                    <div class="form-group">
-                        <label translate="stations.create.form.zip">ZIP</label>
-                        <input type="text" class="form-control" name="addressZip"
-                               ng-model="station.address.zip" ng-minlength=1 ng-maxlength=255 required>
-                    </div>
+            <div class="form-group">
+                <label translate="stations.create.form.zip">ZIP</label>
+                <input type="text" class="form-control" name="addressZip"
+                       ng-model="station.address.zip" ng-minlength=1 ng-maxlength=255 required>
+            </div>
 
-                    <div class="form-group">
-                        <label translate="stations.create.form.city">City</label>
-                        <input type="text" class="form-control" name="addressCity"
-                               ng-model="station.address.city" ng-minlength=1 ng-maxlength=255 required>
-                    </div>
+            <div class="form-group">
+                <label translate="stations.create.form.city">City</label>
+                <input type="text" class="form-control" name="addressCity"
+                       ng-model="station.address.city" ng-minlength=1 ng-maxlength=255 required>
+            </div>
 
-                    <div class="form-group">
-                        <label translate="stations.create.form.country">Country</label>
-                        <input type="text" class="form-control" name="addressCountry"
-                               ng-model="station.address.country" ng-minlength=1 ng-maxlength=255 required>
-                    </div>
+            <div class="form-group">
+                <label translate="stations.create.form.country">Country</label>
+                <input type="text" class="form-control" name="addressCountry"
+                       ng-model="station.address.country" ng-minlength=1 ng-maxlength=255 required>
+            </div>
 
-                    <div class="form-group">
-                        <label translate="stations.create.form.coordinates.title">Coordinates</label>
-                        <div>
-                            <span translate="stations.create.form.coordinates.locationLatitude">Latitude:</span>
-                            <input type="text" class="form-control" name="locationLatitude"
-                               ng-model="station.locationLatitude" ng-minlength=1 ng-maxlength=255 required>
-                        </div>
-                        <div>
-                            <span translate="stations.create.form.coordinates.locationLongitude">Longitude</span>
-                            <input type="text" class="form-control" name="locationLongitude"
-                               ng-model="station.locationLongitude" ng-minlength=1 ng-maxlength=255 required>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label translate="stations.create.form.state">Station State</label>
-                        <select type="text" class="form-control" name="state"
-                                ng-model="station.state" required>
-                            <option value="" selected disabled>Choose...</option>
-                            <option value="OPERATIVE">OPERATIVE</option>
-                            <option value="INOPERATIVE">INOPERATIVE</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label translate="stations.create.form.note">Note</label>
-                        <input type="text" class="form-control" name="note"
-                               ng-model="station.note" ng-minlength=1 ng-maxlength=255 required>
-                    </div>
-
+            <div class="form-group">
+                <label translate="stations.create.form.coordinates.title">Coordinates</label>
+                <div>
+                    <span translate="stations.create.form.coordinates.locationLatitude">Latitude:</span>
+                    <input type="text" class="form-control" name="locationLatitude"
+                           ng-model="station.locationLatitude" ng-minlength=1 ng-maxlength=255 required>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" ng-click="clear()" translate="stations.create.cancel">Clear
-                    </button>
-                    <button type="submit" ng-disabled="form.$invalid" class="btn btn-primary" translate="stations.create.save">Save</button>
+                <div>
+                    <span translate="stations.create.form.coordinates.locationLongitude">Longitude</span>
+                    <input type="text" class="form-control" name="locationLongitude"
+                           ng-model="station.locationLongitude" ng-minlength=1 ng-maxlength=255 required>
                 </div>
-            </form>
+            </div>
+
+            <div class="form-group">
+                <label translate="stations.create.form.state">Station State</label>
+                <select type="text" class="form-control" name="state"
+                        ng-model="station.state" required>
+                    <option value="" selected disabled>Choose...</option>
+                    <option value="OPERATIVE">OPERATIVE</option>
+                    <option value="INOPERATIVE">INOPERATIVE</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label translate="stations.create.form.note">Note</label>
+                <input type="text" class="form-control" name="note"
+                       ng-model="station.note" ng-minlength=1 ng-maxlength=255 required>
+            </div>
+
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" ng-click="clear()" translate="stations.create.cancel">Clear
+            </button>
+            <button type="submit" ng-disabled="form.$invalid" class="btn btn-primary" translate="stations.create.save">Save</button>
+        </div>
+    </form>
 </div>

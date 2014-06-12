@@ -28,14 +28,10 @@
                             </span>
             </div>
         </div>
-    </div>
-
-    <row>
-        <div class="col-md-offset-10 col-md-2">
-            <button class="btn btn-warning btn-block voffset3" type="button" ng-click="resetCustomers()">Reset</button>
+        <div class=" col-md-2">
+            <button class="btn btn-warning btn-block" type="button" ng-click="resetCustomers()">Reset</button>
         </div>
-    </row>
-
+    </div>
 
     <div class="table-responsive voffset6">
         <table class="table table-striped">
@@ -54,7 +50,8 @@
                 <td>{{customer.customerId}}</td>
                 <td>{{customer.firstname}} {{customer.lastname}}</td>
                 <td>{{customer.login}}</td>
-                <td class="text-center"><a ng-click="toggleActivation(customer.login)">{{customer.isActivated | occupiedFilter}}</a></td>
+                <!--toggleActivation(customer.customerId)-->
+                <td class="text-center"><button class="btn btn-sm" type="button" ng-click="toggleActivation(customer.customerId, customer.isActivated)">{{customer.isActivated | occupiedFilter}}</button></td>
                 <td>{{customer.birthday | date:'shortDate'}}</td>
                 <td><a ui-sref="customerDetail({login:'{{customer.login}}'})">Details</a></td>
             </tr>

@@ -27,13 +27,6 @@ velocityApp.controller('StationController', ['$scope', 'resolvedStation', 'Stati
             });
         }
 
-        $scope.delete = function (id) {
-            Station.delete({id: id},
-                function () {
-                    $scope.stations = Station.query();
-                });
-        };
-
         // numberOfSlots: null,
         $scope.clear = function () {
 //            $scope.station = {manufacturerId: null, address: null, name: null, locationLatitude: null, locationLongitude: null, note: null, state: 'OPERATIVE'}
@@ -75,10 +68,12 @@ velocityApp.controller('StationDetailController', ['$scope', 'resolvedStation', 
 
     }]);
 
-velocityApp.controller('StationCreateController', ['$scope', 'CreateEditStation',
-    function ($scope, CreateEditStation)  {
+velocityApp.controller('StationCreateController', ['$scope', 'CreateEditStation', '$timeout',
+    function ($scope, CreateEditStation, $timeout)  {
 
         $scope.station = null;
+
+        $scope.createSuccess = false;
 
         // create station
         $scope.create = function () {
@@ -86,7 +81,11 @@ velocityApp.controller('StationCreateController', ['$scope', 'CreateEditStation'
             $scope.station.state = "OPERATIVE";
             CreateEditStation.save($scope.station,
                 function () {
-                    $scope.clear();
+                    $scope.createSuccess = true;
+                    $timeout(function () {
+                        $scope.createSuccess = false;
+                        $scope.clear();
+                    }, 3000);
                 });
         };
 

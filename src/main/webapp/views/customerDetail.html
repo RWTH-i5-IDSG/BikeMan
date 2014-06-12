@@ -2,10 +2,8 @@
 
     <h2>Customer: {{customer.firstname}} {{customer.lastname}}</h2>
 
-    <div>
-        <button type="button" ui-sref="customers" class="btn btn-sm btn-default" ng-disabled="isEditing">Back</button>
-    </div>
     <div ng-switch="isEditing">
+        <button type="button" ui-sref="customers" class="btn btn-default" ng-disabled="isEditing"><span class="glyphicon glyphicon-arrow-left"></span>Back</button>
         <button type="button" ng-switch-when="false" ng-click="toggleEdit()" class="btn btn-default">
             <span class="glyphicon glyphicon-pencil"></span>Edit Customer</button>
         <button type="button" ng-switch-when="true" ng-click="toggleEdit()" class="btn btn-warning">

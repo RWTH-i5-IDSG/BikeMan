@@ -5,30 +5,12 @@ velocityApp.controller('CustomerController', ['$scope', 'resolvedCustomer', 'Cus
 
         $scope.customers = resolvedCustomer;
 
-//        $scope.create = function () {
-//            Customer.save($scope.customer,
-//                function () {
-//                    $scope.customers = Customer.query();
-//                    $('#saveCustomerModal').modal('hide');
-//                    $scope.clear();
-//                });
-//        };
-//
-//        $scope.update = function (id) {
-//            $scope.customer = Customer.get({id: id});
-//            $('#saveCustomerModal').modal('show');
-//        };
-
         $scope.delete = function (id) {
             Customer.delete({id: id},
                 function () {
                     $scope.customers = Customer.query();
                 });
         };
-
-//        $scope.clear = function () {
-//            $scope.customer = {id: null, sampleTextAttribute: null, sampleDateAttribute: null};
-//        };
 
         $scope.searchByLogin = function (login) {
             if (!login || !login.length) {
@@ -60,22 +42,24 @@ velocityApp.controller('CustomerController', ['$scope', 'resolvedCustomer', 'Cus
 
         $scope.resetCustomers = function () {
             $scope.search = null;
-
             $scope.customers = Customer.query();
-        }
+        };
 
-        $scope.toggleActivation = function (login) {
-            $scope.customer = Customer.searchByLogin({login:login}, function () {
-                $scope.customer.isActivated = !$scope.customer.isActivated;
-
-                Customer.save($scope.customer);
-            });
-        }
-
+        $scope.toggleActivation = function (customerId, isActivated) {
+            if (isActivated) {
+                Customer.deactivate({id: customerId}, function () {
+                    $scope.customers = Customer.query();
+                });
+            } else {
+                Customer.activate({id: customerId}, function () {
+                    $scope.customers = Customer.query();
+                });
+            }
+        };
     }]);
 
 velocityApp.controller('CustomerDetailController', ['$scope', 'resolvedCustomer', 'Customer',
-    function($scope, resolvedCustomer, Customer, CreateEditCustomer) {
+    function($scope, resolvedCustomer, Customer) {
 
         $scope.customer = resolvedCustomer;
 
