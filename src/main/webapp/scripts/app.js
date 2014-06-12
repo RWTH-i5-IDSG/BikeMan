@@ -159,6 +159,7 @@ velocityApp
 
                     }, function(errorResponse) {
                         var alertType = 'alert-danger';
+                        console.log(errorResponse);
                         switch (errorResponse.status) {
                             case 401:
                                 showMessage('Wrong usename or password', 'errorMessage', errorInterval, alertType);
@@ -167,10 +168,10 @@ velocityApp
                                 showMessage('You don\'t have the right to do this', 'errorMessage', errorInterval, alertType);
                                 break;
                             case 500:
-                                showMessage('Server internal error ' + errorResponse.status + ': ' + errorResponse.message, 'errorMessage', errorInterval, alertType);
+                                showMessage('Server internal error ' + errorResponse.status + ': ' + errorResponse.data.message, 'errorMessage', errorInterval, alertType);
                                 break;
                             default:
-                                showMessage('Error ' + errorResponse.status + ': ' + errorResponse.message, 'errorMessage', errorInterval, alertType);
+                                showMessage('Error ' + errorResponse.status + ': ' + errorResponse.data.message, 'errorMessage', errorInterval, alertType);
                         }
                         return $q.reject(errorResponse);
                     });
