@@ -12,7 +12,8 @@
                     <th>Manufacturer ID</th>
                     <th>State of Charge</th>
                     <th>State</th>
-                    <th>Station (Slot) / Customer</th>
+                    <th>Station (Slot)</th>
+                    <th>Customer</th>
                     <th></th>
                 </tr>
             </thead>
@@ -21,7 +22,8 @@
                     <td>{{pedelec.manufacturerId}}</td>
                     <td>{{pedelec.stateOfCharge}}</td>
                     <td>{{pedelec.state}}</td>
-                    <td>{{pedelec.stationSlot}}</td>
+                    <td>{{pedelec.station.stationManufacturerId}} ({{pedelec.station.stationSlotPosition}})</td>
+                    <td>{{pedelec.transaction.firstname + " " + pedelec.transaction.lastname}}</td>
                     <td>
                         <a ui-sref="pedelecDetail({pedelecId:{{pedelec.pedelecId}}})">Details</a>
                         <!--<button type="submit"-->
