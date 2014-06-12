@@ -22,8 +22,6 @@ public class PedelecRepositoryImpl implements PedelecRepository {
 
     private static final Logger log = LoggerFactory.getLogger(PedelecRepositoryImpl.class);
 
-    private enum FindType { ALL, BY_ID,};
-
     @PersistenceContext
     EntityManager em;
 
@@ -31,7 +29,7 @@ public class PedelecRepositoryImpl implements PedelecRepository {
     public List<ViewPedelecDTO> findAll() {
         CriteriaBuilder builder = em.getCriteriaBuilder();
         return em.createQuery(
-                getQuery(builder, FindType.ALL, null)
+                getQuery(builder, null)
         ).getResultList();
     }
 
@@ -39,7 +37,7 @@ public class PedelecRepositoryImpl implements PedelecRepository {
     public ViewPedelecDTO findOneDTO(Long pedelecId) {
         CriteriaBuilder builder = em.getCriteriaBuilder();
         return em.createQuery(
-                getQuery(builder, FindType.BY_ID, pedelecId)
+                getQuery(builder, pedelecId)
         ).getSingleResult();
     }
 
@@ -99,7 +97,7 @@ public class PedelecRepositoryImpl implements PedelecRepository {
      * This method returns the query to get information of pedelecs for various lookup cases
      *
      */
-    private CriteriaQuery<ViewPedelecDTO> getQuery(CriteriaBuilder builder, FindType findType, Long pedelecId) {
+    private CriteriaQuery<ViewPedelecDTO> getQuery(CriteriaBuilder builder, Long pedelecId) {
 
         CriteriaQuery<ViewPedelecDTO> criteria = builder.createQuery(ViewPedelecDTO.class);
         Root<Pedelec> rootPedelec = criteria.from(Pedelec.class);
@@ -131,13 +129,18 @@ public class PedelecRepositoryImpl implements PedelecRepository {
                 )
         );
 
-        switch (findType) {
-            case ALL:
-                break;
+        // Join with transaction table will get all the transactions for a pedelec.
+        // Therefore: Only get the open transaction (endDateTime is null)
 
-            case BY_ID:
-                criteria.where(builder.equal(rootPedelec.get("pedelecId"), pedelecId));
-                break;
+        if (pedelecId == null) {
+            criteria.where(builder.isNull(trans.get("endDateTime")));
+        } else {
+            criteria.where(
+                    builder.and(
+                            builder.equal(rootPedelec.get("pedelecId"), pedelecId),
+                            builder.isNull(trans.get("endDateTime"))
+                    )
+            );
         }
 
         return criteria;
