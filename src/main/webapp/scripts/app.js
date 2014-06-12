@@ -7,8 +7,8 @@ var velocityApp = angular.module('velocityApp', ['http-auth-interceptor', 'tmh.d
     'ngResource', 'ngCookies', 'velocityAppUtils', 'pascalprecht.translate', 'truncate', 'ui.router']);
 
 velocityApp
-    .config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$translateProvider',  'tmhDynamicLocaleProvider', 'USER_ROLES',
-        function ($stateProvider, $urlRouterProvider, $httpProvider, $translateProvider, tmhDynamicLocaleProvider, USER_ROLES) {
+    .config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$translateProvider',  'tmhDynamicLocaleProvider', 'USER_ROLES', '$compileProvider',
+        function ($stateProvider, $urlRouterProvider, $httpProvider, $translateProvider, tmhDynamicLocaleProvider, USER_ROLES, $compileProvider) {
 //            $urlRouterProvider.otherwise('/login')
 //                    templateUrl: 'views/main.html',
 //                    controller: 'MainController',
@@ -126,6 +126,65 @@ velocityApp
                         authorizedRoles: [USER_ROLES.admin]
                     }
                 })
+
+
+            // GLOBAL MESSAGES
+            // http://blog.tomaka17.com/2012/12/random-tricks-when-using-angularjs/
+            var elementsList = $();
+            var showMessage = function(content, cl, time, type) {
+                $('<div class="voffset3"><button type="button" class="close" data-dismiss="alert">&times;</button></div>')
+                    .addClass('message')
+                    .addClass(cl)
+                    .addClass('alert')
+                    .addClass(type)
+                    .hide()
+                    .fadeIn('fast')
+                    .delay(time)
+                    .fadeOut('fast', function() { $(this).remove(); })
+                    .appendTo(elementsList)
+                    .text(content);
+            };
+
+            $httpProvider.responseInterceptors.push(function($timeout, $q) {
+                return function(promise) {
+                    var errorInterval = 3000;
+                    var successInterval = 1000;
+
+                    return promise.then(function(successResponse) {
+                        if (successResponse.config.method.toUpperCase() != 'GET') {
+                            var alertType = 'alert-success';
+                            showMessage('Successful', 'successMessage', successInterval, alertType);
+                        }
+                        return successResponse;
+
+                    }, function(errorResponse) {
+                        var alertType = 'alert-danger';
+                        switch (errorResponse.status) {
+                            case 401:
+                                showMessage('Wrong usename or password', 'errorMessage', errorInterval, alertType);
+                                break;
+                            case 403:
+                                showMessage('You don\'t have the right to do this', 'errorMessage', errorInterval, alertType);
+                                break;
+                            case 500:
+                                showMessage('Server internal error ' + errorResponse.status + ': ' + errorResponse.message, 'errorMessage', errorInterval, alertType);
+                                break;
+                            default:
+                                showMessage('Error ' + errorResponse.status + ': ' + errorResponse.message, 'errorMessage', errorInterval, alertType);
+                        }
+                        return $q.reject(errorResponse);
+                    });
+                };
+            });
+
+            $compileProvider.directive('appMessages', function() {
+                var directiveDefinitionObject = {
+                    link: function(scope, element, attrs) { elementsList.push($(element)); }
+                };
+                return directiveDefinitionObject;
+            });
+
+            // END Global Messages
 
             // Initialize angular-translate
             $translateProvider.useStaticFilesLoader({
