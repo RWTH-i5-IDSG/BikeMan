@@ -30,6 +30,8 @@ public class CustomerResource {
 
     private static final String BASE_PATH = "/rest/customers";
     private static final String ID_PATH = "/rest/customers/{id}";
+    private static final String ID_PATH_ACTIVATE = "/rest/customers/{id}/activate";
+    private static final String ID_PATH_DEACTIVATE = "/rest/customers/{id}/deactivate";
     private static final String FULL_NAME_PATH = "/rest/customers/name/{firstname}+{lastname}";
 
     // Restriction: Customers login with an e-mail address
@@ -82,6 +84,30 @@ public class CustomerResource {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
         return answer;
+    }
+
+    @Timed
+    @RequestMapping(value = ID_PATH_ACTIVATE, method = RequestMethod.PUT)
+    public void activate(@PathVariable Long id, HttpServletResponse response) {
+        log.debug("REST request to activate Customer with id: {}", id);
+        try {
+            customerRepository.activate(id);
+        } catch (Exception e) {
+            log.error("Error occurred.", e);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Timed
+    @RequestMapping(value = ID_PATH_DEACTIVATE, method = RequestMethod.PUT)
+    public void deactivate(@PathVariable Long id, HttpServletResponse response) {
+        log.debug("REST request to deactivate Customer with id: {}", id);
+        try {
+            customerRepository.deactivate(id);
+        } catch (Exception e) {
+            log.error("Error occurred.", e);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
     }
 
     @Timed

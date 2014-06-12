@@ -25,19 +25,14 @@ public interface CustomerRepository {
      */
     ViewCustomerDTO findbyLogin(String login);
 
-    /**
-     * self-explanatory
-     */
+    void activate(long userId);
+
+    void deactivate(long userId);
+
     void create(CreateEditCustomerDTO dto);
 
-    /**
-     * self-explanatory
-     */
     void update(CreateEditCustomerDTO dto);
 
-    /**
-     * self-explanatory
-     */
     void delete(long userId);
 
 }

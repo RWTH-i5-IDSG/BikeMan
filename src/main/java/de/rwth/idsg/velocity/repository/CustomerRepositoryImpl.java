@@ -56,6 +56,30 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     }
 
     @Override
+    public void activate(long userId) {
+        Customer customer = em.find(Customer.class, userId);
+        if (customer == null) {
+            log.error("No customer with userId: {} to activate.", userId);
+        } else {
+            customer.setIsActivated(true);
+            em.merge(customer);
+            log.debug("Activated customer {}", customer);
+        }
+    }
+
+    @Override
+    public void deactivate(long userId) {
+        Customer customer = em.find(Customer.class, userId);
+        if (customer == null) {
+            log.error("No customer with userId: {} to deactivate.", userId);
+        } else {
+            customer.setIsActivated(false);
+            em.merge(customer);
+            log.debug("Deactivated customer {}", customer);
+        }
+    }
+
+    @Override
     public void create(CreateEditCustomerDTO dto) {
         Customer customer = new Customer();
         setFields(customer, dto, Operation.CREATE);
