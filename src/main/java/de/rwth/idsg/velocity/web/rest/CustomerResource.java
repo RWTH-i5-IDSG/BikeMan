@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -41,108 +42,76 @@ public class CustomerResource {
     @Timed
     @RequestMapping(value = BASE_PATH, method = RequestMethod.GET)
     public List<ViewCustomerDTO> getAll(HttpServletResponse response) {
+
         log.debug("REST request to get all customers");
-        List<ViewCustomerDTO> answer = null;
-        try {
-            answer = customerRepository.findAll();
-        } catch (Exception e) {
-            log.error("Error occurred.", e);
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        }
-        return answer;
+        return customerRepository.findAll();
     }
 
     @Timed
     @RequestMapping(value = FULL_NAME_PATH, method = RequestMethod.GET)
-    public List<ViewCustomerDTO> getByName(@PathVariable String firstname, @PathVariable String lastname, HttpServletResponse response) {
+    public List<ViewCustomerDTO> getByName(@PathVariable String firstname, @PathVariable String lastname) throws BackendException {
+
         log.debug("REST request to get Customer with name: {} {}", firstname, lastname);
-        List<ViewCustomerDTO> answer = null;
-        try {
-            answer = customerRepository.findbyName(firstname,lastname);
-            if (answer.isEmpty()) {
-                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            }
-        } catch (Exception e) {
-            log.error("Error occurred.", e);
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        }
-        return answer;
+        return customerRepository.findbyName(firstname,lastname);
     }
 
     @Timed
     @RequestMapping(value = LOGIN_PATH, method = RequestMethod.GET)
-    public ViewCustomerDTO getByLogin(@PathVariable String login, HttpServletResponse response) {
+    public ViewCustomerDTO getByLogin(@PathVariable String login) throws BackendException {
+
         log.debug("REST request to get Customer with login: {}", login);
-        ViewCustomerDTO answer = null;
-        try {
-            answer = customerRepository.findbyLogin(login);
-            if (answer == null) {
-                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            }
-        } catch (Exception e) {
-            log.error("Error occurred.", e);
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        }
-        return answer;
+        return customerRepository.findbyLogin(login);
     }
 
     @Timed
     @RequestMapping(value = ID_PATH_ACTIVATE, method = RequestMethod.PUT)
-    public void activate(@PathVariable Long id, HttpServletResponse response) {
+    public void activate(@PathVariable Long id) throws BackendException {
+
         log.debug("REST request to activate Customer with id: {}", id);
-        try {
-            customerRepository.activate(id);
-        } catch (Exception e) {
-            log.error("Error occurred.", e);
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        }
+        customerRepository.activate(id);
     }
 
     @Timed
     @RequestMapping(value = ID_PATH_DEACTIVATE, method = RequestMethod.PUT)
-    public void deactivate(@PathVariable Long id, HttpServletResponse response) {
+    public void deactivate(@PathVariable Long id) throws BackendException {
+
         log.debug("REST request to deactivate Customer with id: {}", id);
-        try {
-            customerRepository.deactivate(id);
-        } catch (Exception e) {
-            log.error("Error occurred.", e);
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        }
+        customerRepository.deactivate(id);
     }
 
     @Timed
     @RequestMapping(value = BASE_PATH, method = RequestMethod.POST)
-    public void create(@Valid @RequestBody CreateEditCustomerDTO dto, HttpServletResponse response) {
+    public void create(@Valid @RequestBody CreateEditCustomerDTO dto) throws BackendException {
+
         log.debug("REST request to create Customer : {}", dto);
-        try {
-            customerRepository.create(dto);
-        } catch (Exception e) {
-            log.error("Error occurred.", e);
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        }
+        customerRepository.create(dto);
     }
 
     @Timed
     @RequestMapping(value = BASE_PATH, method = RequestMethod.PUT)
-    public void update(@Valid @RequestBody CreateEditCustomerDTO dto, HttpServletResponse response) {
+    public void update(@Valid @RequestBody CreateEditCustomerDTO dto) throws BackendException {
+
         log.debug("REST request to update Customer : {}", dto);
-        try {
-            customerRepository.update(dto);
-        } catch (Exception e) {
-            log.error("Error occurred.", e);
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        }
+        customerRepository.update(dto);
     }
 
     @Timed
     @RequestMapping(value = ID_PATH, method = RequestMethod.DELETE)
-    public void delete(@PathVariable Long id, HttpServletResponse response) {
+    public void delete(@PathVariable Long id) throws BackendException {
+
         log.debug("REST request to delete Customer : {}", id);
-        try {
-            customerRepository.delete(id);
-        } catch (Exception e) {
-            log.error("Error occurred.", e);
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        }
+        customerRepository.delete(id);
+    }
+
+    ///// Methods to catch exceptions /////
+
+    @ExceptionHandler(BackendException.class)
+    public void backendConflict(HttpServletResponse response, BackendException e) throws IOException {
+        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+    }
+
+    @ExceptionHandler(Exception.class)
+    public void conflict(HttpServletResponse response, Exception e) {
+        response.setStatus(HttpServletResponse.SC_NOT_FOUND);
     }
 }

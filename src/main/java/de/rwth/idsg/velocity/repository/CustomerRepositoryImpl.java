@@ -2,15 +2,16 @@ package de.rwth.idsg.velocity.repository;
 
 import de.rwth.idsg.velocity.domain.Address;
 import de.rwth.idsg.velocity.domain.Customer;
-import de.rwth.idsg.velocity.domain.Pedelec;
-import de.rwth.idsg.velocity.domain.Transaction;
+import de.rwth.idsg.velocity.web.rest.BackendException;
 import de.rwth.idsg.velocity.web.rest.dto.modify.CreateEditCustomerDTO;
 import de.rwth.idsg.velocity.web.rest.dto.view.ViewCustomerDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.*;
 import javax.transaction.Transactional;
@@ -40,55 +41,90 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     }
 
     @Override
-    public List<ViewCustomerDTO> findbyName(String firstname, String lastname) {
+    public List<ViewCustomerDTO> findbyName(String firstname, String lastname) throws BackendException {
         CriteriaBuilder builder = em.getCriteriaBuilder();
-        return em.createQuery(
+        List<ViewCustomerDTO> list = em.createQuery(
                 getQuery(builder, FindType.BY_NAME, firstname, lastname, null)
         ).getResultList();
+
+        if (list.isEmpty()) {
+            throw new BackendException("No customer found with name " + firstname + " " +lastname);
+        } else {
+            return list;
+        }
     }
 
     @Override
-    public ViewCustomerDTO findbyLogin(String login) {
+    public ViewCustomerDTO findbyLogin(String login) throws BackendException {
         CriteriaBuilder builder = em.getCriteriaBuilder();
-        return em.createQuery(
-                getQuery(builder, FindType.BY_LOGIN, null, null, login)
-        ).getSingleResult();
-    }
 
-    @Override
-    public void activate(long userId) {
-        Customer customer = em.find(Customer.class, userId);
-        if (customer == null) {
-            log.error("No customer with userId: {} to activate.", userId);
-        } else {
-            customer.setIsActivated(true);
-            em.merge(customer);
-            log.debug("Activated customer {}", customer);
+        try {
+            return em.createQuery(
+                    getQuery(builder, FindType.BY_LOGIN, null, null, login)
+            ).getSingleResult();
+
+        } catch (NoResultException e) {
+            throw new BackendException("No customer found with login " + login);
         }
     }
 
     @Override
-    public void deactivate(long userId) {
+    public void activate(long userId) throws BackendException {
         Customer customer = em.find(Customer.class, userId);
+
         if (customer == null) {
-            log.error("No customer with userId: {} to deactivate.", userId);
+            throw new BackendException("No customer with userId " + userId + " to activate.");
+
         } else {
-            customer.setIsActivated(false);
-            em.merge(customer);
-            log.debug("Deactivated customer {}", customer);
+            try {
+                customer.setIsActivated(true);
+                em.merge(customer);
+                log.debug("Activated customer {}", customer);
+
+            } catch (Exception e) {
+                throw new BackendException("Failed to activate customer with userId " + userId);
+            }
         }
     }
 
     @Override
-    public void create(CreateEditCustomerDTO dto) {
+    public void deactivate(long userId) throws BackendException {
+        Customer customer = em.find(Customer.class, userId);
+
+        if (customer == null) {
+            throw new BackendException("No customer with userId " + userId + " to deactivate.");
+
+        } else {
+            try {
+                customer.setIsActivated(false);
+                em.merge(customer);
+                log.debug("Deactivated customer {}", customer);
+
+            } catch (Exception e) {
+                throw new BackendException("Failed to deactivate customer with userId " + userId);
+            }
+        }
+    }
+
+    @Override
+    public void create(CreateEditCustomerDTO dto) throws BackendException {
         Customer customer = new Customer();
         setFields(customer, dto, Operation.CREATE);
-        em.persist(customer);
-        log.debug("Created new customer {}", customer);
+
+        try {
+            em.persist(customer);
+            log.debug("Created new customer {}", customer);
+
+        } catch (EntityExistsException e) {
+            throw new BackendException("This customer exists already.");
+
+        } catch (Exception e) {
+            throw new BackendException("Failed to create a new customer.");
+        }
     }
 
     @Override
-    public void update(CreateEditCustomerDTO dto) {
+    public void update(CreateEditCustomerDTO dto) throws BackendException {
         final Long userId = dto.getUserId();
         if (userId == null) {
             return;
@@ -96,22 +132,34 @@ public class CustomerRepositoryImpl implements CustomerRepository {
 
         Customer customer = em.find(Customer.class, userId);
         if (customer == null) {
-            log.error("No customer with userId: {} to update.", userId);
+            throw new BackendException("No customer with userId " + userId + " to update.");
+
         } else {
-            setFields(customer, dto, Operation.UPDATE);
-            em.merge(customer);
-            log.debug("Updated customer {}", customer);
+            try {
+                setFields(customer, dto, Operation.UPDATE);
+                em.merge(customer);
+                log.debug("Updated customer {}", customer);
+
+            } catch (Exception e) {
+                throw new BackendException("Failed to update customer with userId " + userId);
+            }
         }
     }
 
     @Override
-    public void delete(long userId) {
+    public void delete(long userId) throws BackendException {
         Customer customer = em.find(Customer.class, userId);
         if (customer == null) {
-            log.error("No customer with userId: {} to delete.", userId);
+            throw new BackendException("No customer with userId " + userId + " to delete.");
+
         } else {
-            em.remove(customer);
-            log.debug("Deleted customer {}", customer);
+            try {
+                em.remove(customer);
+                log.debug("Deleted customer {}", customer);
+
+            } catch (Exception e) {
+                throw new BackendException("Failed to delete customer with userId " + userId);
+            }
         }
     }
 

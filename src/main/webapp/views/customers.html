@@ -51,7 +51,7 @@
                 <td>{{customer.firstname}} {{customer.lastname}}</td>
                 <td>{{customer.login}}</td>
                 <!--toggleActivation(customer.customerId)-->
-                <td class="text-center"><button class="btn btn-sm" type="button" ng-click="toggleActivation(customer.customerId, customer.isActivated)">{{customer.isActivated | occupiedFilter}}</button></td>
+                <td class="text-center"><button class="btn btn-sm" type="button" ng-click="toggleActivation(customer.userId, customer.isActivated)">{{customer.isActivated | occupiedFilter}}</button></td>
                 <td>{{customer.birthday | date:'shortDate'}}</td>
                 <td><a ui-sref="customerDetail({login:'{{customer.login}}'})">Details</a></td>
             </tr>
