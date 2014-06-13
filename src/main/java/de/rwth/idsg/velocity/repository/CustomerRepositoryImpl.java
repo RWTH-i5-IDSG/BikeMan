@@ -48,7 +48,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
         ).getResultList();
 
         if (list.isEmpty()) {
-            throw new BackendException("No customer found with name " + firstname + " " +lastname);
+            throw new BackendException("No customer found with name " + firstname + " " + lastname);
         } else {
             return list;
         }
@@ -57,7 +57,6 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     @Override
     public ViewCustomerDTO findbyLogin(String login) throws BackendException {
         CriteriaBuilder builder = em.getCriteriaBuilder();
-
         try {
             return em.createQuery(
                     getQuery(builder, FindType.BY_LOGIN, null, null, login)
@@ -70,39 +69,27 @@ public class CustomerRepositoryImpl implements CustomerRepository {
 
     @Override
     public void activate(long userId) throws BackendException {
-        Customer customer = em.find(Customer.class, userId);
+        Customer customer = getCustomerEntity(userId);
+        try {
+            customer.setIsActivated(true);
+            em.merge(customer);
+            log.debug("Activated customer {}", customer);
 
-        if (customer == null) {
-            throw new BackendException("No customer with userId " + userId + " to activate.");
-
-        } else {
-            try {
-                customer.setIsActivated(true);
-                em.merge(customer);
-                log.debug("Activated customer {}", customer);
-
-            } catch (Exception e) {
-                throw new BackendException("Failed to activate customer with userId " + userId);
-            }
+        } catch (Exception e) {
+            throw new BackendException("Failed to activate customer with userId " + userId);
         }
     }
 
     @Override
     public void deactivate(long userId) throws BackendException {
-        Customer customer = em.find(Customer.class, userId);
+        Customer customer = getCustomerEntity(userId);
+        try {
+            customer.setIsActivated(false);
+            em.merge(customer);
+            log.debug("Deactivated customer {}", customer);
 
-        if (customer == null) {
-            throw new BackendException("No customer with userId " + userId + " to deactivate.");
-
-        } else {
-            try {
-                customer.setIsActivated(false);
-                em.merge(customer);
-                log.debug("Deactivated customer {}", customer);
-
-            } catch (Exception e) {
-                throw new BackendException("Failed to deactivate customer with userId " + userId);
-            }
+        } catch (Exception e) {
+            throw new BackendException("Failed to deactivate customer with userId " + userId);
         }
     }
 
@@ -130,36 +117,39 @@ public class CustomerRepositoryImpl implements CustomerRepository {
             return;
         }
 
-        Customer customer = em.find(Customer.class, userId);
-        if (customer == null) {
-            throw new BackendException("No customer with userId " + userId + " to update.");
+        Customer customer = getCustomerEntity(userId);
+        try {
+            setFields(customer, dto, Operation.UPDATE);
+            em.merge(customer);
+            log.debug("Updated customer {}", customer);
 
-        } else {
-            try {
-                setFields(customer, dto, Operation.UPDATE);
-                em.merge(customer);
-                log.debug("Updated customer {}", customer);
-
-            } catch (Exception e) {
-                throw new BackendException("Failed to update customer with userId " + userId);
-            }
+        } catch (Exception e) {
+            throw new BackendException("Failed to update customer with userId " + userId);
         }
     }
 
     @Override
     public void delete(long userId) throws BackendException {
+        Customer customer = getCustomerEntity(userId);
+        try {
+            em.remove(customer);
+            log.debug("Deleted customer {}", customer);
+
+        } catch (Exception e) {
+            throw new BackendException("Failed to delete customer with userId " + userId);
+        }
+    }
+
+    /**
+     * Returns a customer, or throws exception when no customer exists.
+     *
+     */
+    private Customer getCustomerEntity(long userId) throws BackendException {
         Customer customer = em.find(Customer.class, userId);
         if (customer == null) {
-            throw new BackendException("No customer with userId " + userId + " to delete.");
-
+            throw new BackendException("No customer with userId " + userId);
         } else {
-            try {
-                em.remove(customer);
-                log.debug("Deleted customer {}", customer);
-
-            } catch (Exception e) {
-                throw new BackendException("Failed to delete customer with userId " + userId);
-            }
+            return customer;
         }
     }
 
@@ -202,8 +192,8 @@ public class CustomerRepositoryImpl implements CustomerRepository {
      *
      */
     private CriteriaQuery<ViewCustomerDTO> getQuery(CriteriaBuilder builder, FindType findType,
-                                                        String firstname, String lastname,
-                                                        String login) {
+                                                    String firstname, String lastname,
+                                                    String login) {
         CriteriaQuery<ViewCustomerDTO> criteria = builder.createQuery(ViewCustomerDTO.class);
         Root<Customer> root = criteria.from(Customer.class);
         Join<Customer, Address> addressJoin = root.join("address", JoinType.LEFT);
