@@ -12,5 +12,6 @@ import lombok.ToString;
 @ToString(includeFieldNames = true)
 public class ViewManagerDTO {
 
+    @Getter private Long userId;
     @Getter private String login;
 }

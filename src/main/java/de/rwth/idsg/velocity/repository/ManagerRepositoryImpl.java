@@ -40,6 +40,7 @@ public class ManagerRepositoryImpl implements ManagerRepository {
         criteria.select(
                 builder.construct(
                         ViewManagerDTO.class,
+                        root.get("userId"),
                         root.get("login")
                 )
         );
@@ -73,7 +74,7 @@ public class ManagerRepositoryImpl implements ManagerRepository {
 
         Manager manager = getManagerEntity(userId);
         setFields(manager, dto);
-        
+
         try {
             em.merge(manager);
             log.debug("Updated manager {}", manager);
