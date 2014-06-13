@@ -1,7 +1,6 @@
 package de.rwth.idsg.velocity.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import de.rwth.idsg.velocity.domain.Manager;
 import de.rwth.idsg.velocity.repository.ManagerRepository;
 import de.rwth.idsg.velocity.web.rest.dto.modify.CreateEditManagerDTO;
 import de.rwth.idsg.velocity.web.rest.dto.view.ViewManagerDTO;
@@ -14,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -32,35 +32,44 @@ public class ManagerResource {
     private static final String BASE_PATH = "/rest/managers";
     private static final String ID_PATH = "/rest/managers/{id}";
 
-    // Restriction: Customers login with an e-mail address
-    // Regular expression for Spring MVC to interpret domain extensions as part of the path variable
-    private static final String LOGIN_PATH = "/rest/managers/{login:+}";
-
     @Timed
     @RequestMapping(value = BASE_PATH, method = RequestMethod.GET)
     public List<ViewManagerDTO> getAll() {
-        log.info("REST request to get all Pedelecs");
+        log.info("REST request to get all Manager");
         return managerRepository.findAll();
     }
 
     @Timed
     @RequestMapping(value = BASE_PATH, method = RequestMethod.POST)
-    public void create(@Valid @RequestBody CreateEditManagerDTO manager) {
+    public void create(@Valid @RequestBody CreateEditManagerDTO manager) throws BackendException {
         log.debug("REST request to save manager : {}", manager);
         managerRepository.create(manager);
     }
 
     @Timed
-    @RequestMapping(value = ID_PATH, method = RequestMethod.PUT)
-    public void update(@PathVariable Long id, @Valid @RequestBody Manager manager) {
-        log.debug("REST request to update Manager : {}", id);
+    @RequestMapping(value = BASE_PATH, method = RequestMethod.PUT)
+    public void update(@Valid @RequestBody CreateEditManagerDTO manager) throws BackendException {
+        log.debug("REST request to update Manager");
         managerRepository.update(manager);
     }
 
     @Timed
-    @RequestMapping(value = LOGIN_PATH, method = RequestMethod.DELETE)
-    public void delete(@PathVariable String login, HttpServletResponse response) {
-        log.debug("REST request to delete Manager : {}", login);
-        managerRepository.delete(login);
+    @RequestMapping(value = ID_PATH, method = RequestMethod.DELETE)
+    public void delete(@PathVariable Long id, HttpServletResponse response) throws BackendException {
+        log.debug("REST request to delete Manager : {}", id);
+        managerRepository.delete(id);
+    }
+
+
+    ///// Methods to catch exceptions /////
+
+    @ExceptionHandler(BackendException.class)
+    public void backendConflict(HttpServletResponse response, BackendException e) throws IOException {
+        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+    }
+
+    @ExceptionHandler(Exception.class)
+    public void conflict(HttpServletResponse response, Exception e) {
+        response.setStatus(HttpServletResponse.SC_NOT_FOUND);
     }
 }
