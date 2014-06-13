@@ -9,7 +9,11 @@ import org.hibernate.validator.constraints.NotBlank;
  * Created by sgokay on 22.05.14.
  */
 @ToString(includeFieldNames = true)
-public class CreateManagerDTO {
+public class CreateEditManagerDTO {
+
+    @Getter
+    @Setter
+    private Long userId;
 
     @NotBlank
     @Getter

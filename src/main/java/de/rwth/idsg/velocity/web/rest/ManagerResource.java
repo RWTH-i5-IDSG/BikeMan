@@ -2,13 +2,9 @@ package de.rwth.idsg.velocity.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import de.rwth.idsg.velocity.domain.Manager;
-import de.rwth.idsg.velocity.domain.Pedelec;
 import de.rwth.idsg.velocity.repository.ManagerRepository;
-import de.rwth.idsg.velocity.repository.PedelecRepository;
-import de.rwth.idsg.velocity.web.rest.dto.modify.CreateEditPedelecDTO;
-import de.rwth.idsg.velocity.web.rest.dto.modify.CreateManagerDTO;
+import de.rwth.idsg.velocity.web.rest.dto.modify.CreateEditManagerDTO;
 import de.rwth.idsg.velocity.web.rest.dto.view.ViewManagerDTO;
-import de.rwth.idsg.velocity.web.rest.dto.view.ViewPedelecDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +45,7 @@ public class ManagerResource {
 
     @Timed
     @RequestMapping(value = BASE_PATH, method = RequestMethod.POST)
-    public void create(@Valid @RequestBody CreateManagerDTO manager) {
+    public void create(@Valid @RequestBody CreateEditManagerDTO manager) {
         log.debug("REST request to save manager : {}", manager);
         managerRepository.create(manager);
     }

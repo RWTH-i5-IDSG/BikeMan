@@ -1,7 +1,7 @@
 package de.rwth.idsg.velocity.repository;
 
-import de.rwth.idsg.velocity.domain.Manager;
-import de.rwth.idsg.velocity.web.rest.dto.modify.CreateManagerDTO;
+import de.rwth.idsg.velocity.web.rest.BackendException;
+import de.rwth.idsg.velocity.web.rest.dto.modify.CreateEditManagerDTO;
 import de.rwth.idsg.velocity.web.rest.dto.view.ViewManagerDTO;
 
 import java.util.List;
@@ -19,15 +19,15 @@ public interface ManagerRepository {
     /**
      * self-explanatory
      */
-    void create(CreateManagerDTO dto);
+    void create(CreateEditManagerDTO dto) throws BackendException;
 
     /**
      * self-explanatory
      */
-    void update(Manager entity);
+    void update(CreateEditManagerDTO dto) throws BackendException;
 
     /**
      * self-explanatory
      */
-    void delete(String login);
+    void delete(long userId) throws BackendException;
 }

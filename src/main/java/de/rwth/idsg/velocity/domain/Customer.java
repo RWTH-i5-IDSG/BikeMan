@@ -39,7 +39,7 @@ public class Customer extends User implements Serializable {
     @Getter @Setter
     private String lastname;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "address_id")
     @Getter @Setter
     private Address address;
@@ -61,7 +61,7 @@ public class Customer extends User implements Serializable {
     @Getter @Setter
     private Integer cardPin;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "customer", orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "customer", orphanRemoval = true)
     @Getter @Setter
     private Set<Transaction> transactions;
 

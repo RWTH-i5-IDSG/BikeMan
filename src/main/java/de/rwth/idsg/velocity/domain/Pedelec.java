@@ -43,7 +43,7 @@ public class Pedelec implements Serializable {
     @Getter @Setter
     private OperationState state;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "pedelec")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "pedelec")
     @Getter @Setter
     private Set<Transaction> transactions;
 
