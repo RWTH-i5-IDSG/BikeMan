@@ -1,5 +1,7 @@
 package de.rwth.idsg.velocity.domain.login;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
@@ -22,61 +24,27 @@ public class PersistentAuditEvent  {
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
     @Column(name = "event_id")
+    @Getter @Setter
     private long id;
 
     @NotNull
+    @Getter @Setter
     private String principal;
 
     @Column(name = "event_date")
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
+    @Getter @Setter
     private LocalDateTime auditEventDate;
     
     @Column(name = "event_type")
+    @Getter @Setter
     private String auditEventType;
 
     @ElementCollection
     @MapKeyColumn(name="name")
     @Column(name="value")
     @CollectionTable(name="T_PERSISTENT_AUDIT_EVENT_DATA", joinColumns=@JoinColumn(name="event_id"))
+    @Getter @Setter
     private Map<String, String> data = new HashMap<>();
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getPrincipal() {
-        return principal;
-    }
-
-    public void setPrincipal(String principal) {
-        this.principal = principal;
-    }
-
-    public LocalDateTime getAuditEventDate() {
-        return auditEventDate;
-    }
-
-    public void setAuditEventDate(LocalDateTime auditEventDate) {
-        this.auditEventDate = auditEventDate;
-    }
-
-    public String getAuditEventType() {
-        return auditEventType;
-    }
-
-    public void setAuditEventType(String auditEventType) {
-        this.auditEventType = auditEventType;
-    }
-
-    public Map<String, String> getData() {
-        return data;
-    }
-
-    public void setData(Map<String, String> data) {
-        this.data = data;
-    }
 }

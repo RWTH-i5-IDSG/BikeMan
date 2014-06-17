@@ -2,6 +2,10 @@ package de.rwth.idsg.velocity.domain.login;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
@@ -23,6 +27,8 @@ import java.io.Serializable;
 @Entity
 @Table(name = "T_PERSISTENT_TOKEN")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@ToString(includeFieldNames = true)
+@EqualsAndHashCode(of = {"series"})
 public class PersistentToken implements Serializable {
 
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormat.forPattern("d MMMM yyyy");
@@ -30,21 +36,25 @@ public class PersistentToken implements Serializable {
     private static final int MAX_USER_AGENT_LEN = 255;
 
     @Id
+    @Getter @Setter
     private String series;
 
     @JsonIgnore
     @NotNull
     @Column(name = "token_value")
+    @Getter @Setter
     private String tokenValue;
 
     @JsonIgnore
     @Column(name = "token_date")
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDate")
+    @Getter @Setter
     private LocalDate tokenDate;
 
     //an IPV6 address max length is 39 characters
     @Size(min = 0, max = 39)
     @Column(name = "ip_address")
+    @Getter @Setter
     private String ipAddress;
 
     @Column(name = "user_agent")
@@ -53,43 +63,12 @@ public class PersistentToken implements Serializable {
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @Getter @Setter
     private User user;
-
-    public String getSeries() {
-        return series;
-    }
-
-    public void setSeries(String series) {
-        this.series = series;
-    }
-
-    public String getTokenValue() {
-        return tokenValue;
-    }
-
-    public void setTokenValue(String tokenValue) {
-        this.tokenValue = tokenValue;
-    }
-
-    public LocalDate getTokenDate() {
-        return tokenDate;
-    }
-
-    public void setTokenDate(LocalDate tokenDate) {
-        this.tokenDate = tokenDate;
-    }
 
     @JsonGetter
     public String getFormattedTokenDate() {
         return DATE_TIME_FORMATTER.print(this.tokenDate);
-    }
-
-    public String getIpAddress() {
-        return ipAddress;
-    }
-
-    public void setIpAddress(String ipAddress) {
-        this.ipAddress = ipAddress;
     }
 
     public String getUserAgent() {
@@ -104,45 +83,4 @@ public class PersistentToken implements Serializable {
         }
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        PersistentToken that = (PersistentToken) o;
-
-        if (!series.equals(that.series)) {
-            return false;
-        }
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        return series.hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return "PersistentToken{" +
-                "series='" + series + '\'' +
-                ", tokenValue='" + tokenValue + '\'' +
-                ", tokenDate=" + tokenDate +
-                ", ipAddress='" + ipAddress + '\'' +
-                ", userAgent='" + userAgent + '\'' +
-                "}";
-    }
 }

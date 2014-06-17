@@ -2,6 +2,8 @@ package de.rwth.idsg.velocity.repository;
 
 import de.rwth.idsg.velocity.domain.Address;
 import de.rwth.idsg.velocity.domain.Customer;
+import de.rwth.idsg.velocity.domain.login.Authority;
+import de.rwth.idsg.velocity.security.AuthoritiesConstants;
 import de.rwth.idsg.velocity.web.rest.BackendException;
 import de.rwth.idsg.velocity.web.rest.dto.modify.CreateEditCustomerDTO;
 import de.rwth.idsg.velocity.web.rest.dto.view.ViewCustomerDTO;
@@ -15,6 +17,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.*;
 import javax.transaction.Transactional;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -173,6 +176,10 @@ public class CustomerRepositoryImpl implements CustomerRepository {
             case CREATE:
                 // for create (brand new address entity)
                 customer.setAddress(dto.getAddress());
+
+                HashSet<Authority> authorities = new HashSet<>();
+                authorities.add(new Authority(AuthoritiesConstants.CUSTOMER));
+                customer.setAuthorities(authorities);
                 break;
 
             case UPDATE:

@@ -1,13 +1,17 @@
 package de.rwth.idsg.velocity.repository;
 
 import de.rwth.idsg.velocity.domain.Manager;
+import de.rwth.idsg.velocity.domain.login.Authority;
+import de.rwth.idsg.velocity.security.AuthoritiesConstants;
 import de.rwth.idsg.velocity.web.rest.BackendException;
 import de.rwth.idsg.velocity.web.rest.dto.modify.CreateEditManagerDTO;
 import de.rwth.idsg.velocity.web.rest.dto.view.ViewManagerDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
+import javax.inject.Inject;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -15,6 +19,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -27,8 +32,13 @@ public class ManagerRepositoryImpl implements ManagerRepository {
 
     private static final Logger log = LoggerFactory.getLogger(ManagerRepositoryImpl.class);
 
+    private enum Operation { CREATE, UPDATE };
+
     @PersistenceContext
     EntityManager em;
+
+    @Inject
+    PasswordEncoder passwordEncoder;
 
     @Override
     public List<ViewManagerDTO> findAll() {
@@ -51,7 +61,7 @@ public class ManagerRepositoryImpl implements ManagerRepository {
     @Override
     public void create(CreateEditManagerDTO dto) throws BackendException {
         Manager manager = new Manager();
-        setFields(manager, dto);
+        setFields(manager, dto, Operation.CREATE);
 
         try {
             em.persist(manager);
@@ -73,7 +83,7 @@ public class ManagerRepositoryImpl implements ManagerRepository {
         }
 
         Manager manager = getManagerEntity(userId);
-        setFields(manager, dto);
+        setFields(manager, dto, Operation.UPDATE);
 
         try {
             em.merge(manager);
@@ -115,8 +125,21 @@ public class ManagerRepositoryImpl implements ManagerRepository {
      * Important: The ID is not set!
      *
      */
-    private void setFields(Manager manager, CreateEditManagerDTO dto) {
+    private void setFields(Manager manager, CreateEditManagerDTO dto, Operation operation) {
         manager.setLogin(dto.getLogin());
-        manager.setPassword(dto.getPassword());
+
+        String encryptedPassword = passwordEncoder.encode(dto.getPassword());
+        manager.setPassword(encryptedPassword);
+
+        switch (operation) {
+            case CREATE:
+                HashSet<Authority> authorities = new HashSet<>();
+                authorities.add(new Authority(AuthoritiesConstants.MANAGER));
+                manager.setAuthorities(authorities);
+                break;
+
+            case UPDATE:
+                break;
+        }
     }
 }

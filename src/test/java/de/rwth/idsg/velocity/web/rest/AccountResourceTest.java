@@ -88,8 +88,7 @@ public class AccountResourceTest {
     @Test
     public void testGetExistingAccount() throws Exception {
         Set<Authority> authorities = new HashSet<>();
-        Authority authority = new Authority();
-        authority.setName(AuthoritiesConstants.ADMIN);
+        Authority authority = new Authority(AuthoritiesConstants.ADMIN);
         authorities.add(authority);
 
         User user = new User();
