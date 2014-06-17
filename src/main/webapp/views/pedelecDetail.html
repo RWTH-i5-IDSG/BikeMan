@@ -1,6 +1,6 @@
 <div>
 
-    <h2>Pedelec: {{pedelec.name}}</h2>
+    <h2>Pedelec: {{pedelec.manufacturerId}}</h2>
 
     <div ng-switch="isEditing">
         <button type="button" ui-sref="pedelecs" class="btn btn-default" ng-disabled="isEditing"><span class="glyphicon glyphicon-arrow-left"></span>Back</button>
@@ -8,17 +8,26 @@
             <span class="glyphicon glyphicon-pencil"></span>Edit Pedelec</button>
         <button type="button" ng-switch-when="true" ng-click="toggleEdit()" class="btn btn-warning">
             <span class="glyphicon glyphicon-pencil"></span>Cancel</button>
-        <button type="button" ng-click="saveStation()" class="btn btn-primary" ng-show="isEditing">
+        <button type="button" ng-click="savePedelec()" class="btn btn-primary" ng-show="isEditing">
             <span class="glyphicon glyphicon-pencil"></span>Save Pedelec</button>
     </div>
 
-    <div class="table-responsive">
+    <div class="table-responsive voffset3">
         <table class="table" ng-switch="isEditing">
             <tr>
                 <th>Manufacturer ID</th>
                 <td >{{pedelec.manufacturerId}}</td>
             </tr>
-
+            <tr>
+                <th>State Of Charge</th>
+                <td >
+                    <div class="progress remove-margin">
+                        <div class="progress-bar" role="progressbar" aria-valuenow="{{pedelec.stateOfCharge*100}}" aria-valuemin="0" aria-valuemax="100" style="width: {{pedelec.stateOfCharge*100}}%;">
+                            {{pedelec.stateOfCharge*100 | number : 0}}%
+                        </div>
+                    </div>
+                </td>
+            </tr>
             <tr>
                 <th>State</th>
                 <td ng-switch-when="false">{{pedelec.state}}</td>
@@ -30,6 +39,16 @@
                     </select>
                 </td>
             </tr>
+            <tr>
+                <th>Station (Slot)</th>
+                <td >{{pedelec.station.stationManufacturerId}} <span class="badge">{{pedelec.station.stationSlotPosition}}</span></td>
+            </tr>
+            <tr>
+            <tr>
+                <th>Pedelec</th>
+                <td >{{pedelec.transaction.firstname + " " + pedelec.transaction.lastname}}</td>
+            </tr>
+            <tr>
         </table>
     </div>
 

@@ -5,6 +5,24 @@
         </div>
     </div>
 
+    <div class="modal fade" id="deleteModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Delete Fleetmanager</h4>
+                </div>
+                <div class="modal-body">
+                    Are you sure to delete <b>{{managerToDelete.login}}?</b>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger"  data-dismiss="modal" ng-click="delete(managerToDelete.userId)">Delete</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
     <div class="table-responsive">
         <table class="table table-striped">
             <thead>
@@ -16,7 +34,9 @@
             <tbody>
             <tr ng-repeat="fleetmanager in fleetmanagers">
                 <td>{{fleetmanager.login}}</td>
-                <td></td>
+                <td>
+                    <button class="btn btn-danger btn-sm" type="button" ng-click="deleteModal(fleetmanager)" data-toggle="modal" data-target="#deleteModal"><span class="glyphicon glyphicon-remove"></span> Delete</button>
+                </td>
             </tr>
             </tbody>
         </table>

@@ -41,20 +41,19 @@ velocityApp.controller('PedelecDetailController', ['$scope', 'resolvedPedelec', 
         $scope.isEditing = false;
 
         $scope.toggleEdit = function () {
-            $scope.pedelec = pedelec.get({id: $scope.pedelec.pedelecId});
+            $scope.pedelec = Pedelec.get({id: $scope.pedelec.pedelecId});
             $scope.isEditing = !$scope.isEditing;
         }
 
-        $scope.saveStation = function () {
+        $scope.savePedelec = function () {
 
-            $scope.saveStationDTO = {
-                "pedelecId": $scope.pedelec.pedelecId,
-                "manufacturerId": $scope.pedelec.manufacturerId,
-                "state": $scope.pedelec.state
-            }
+            var savePedelecDTO = {
+                pedelecId: $scope.pedelec.pedelecId,
+                manufacturerId: $scope.pedelec.manufacturerId,
+                state: $scope.pedelec.state
+            };
 
-
-            Pedelec.update($scope.savePedelecDTO, function () {
+            Pedelec.update(savePedelecDTO, function () {
                 $scope.isEditing = false;
             });
         }

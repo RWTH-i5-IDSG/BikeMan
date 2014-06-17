@@ -167,11 +167,9 @@ velocityApp
                             case 403:
                                 showMessage('You don\'t have the right to do this', 'errorMessage', errorInterval, alertType);
                                 break;
-                            case 500:
-                                showMessage('Server internal error ' + errorResponse.status + ': ' + errorResponse.data.message, 'errorMessage', errorInterval, alertType);
-                                break;
                             default:
-                                showMessage('Error ' + errorResponse.status + ': ' + errorResponse.data.message, 'errorMessage', errorInterval, alertType);
+//                                showMessage('Error ' + errorResponse.status + ': ' + errorResponse.data.message, 'errorMessage', errorInterval, alertType);
+                                showMessage('Something went wrong :( Reason: ' + errorResponse.data.message, 'errorMessage', errorInterval, alertType);
                         }
                         return $q.reject(errorResponse);
                     });

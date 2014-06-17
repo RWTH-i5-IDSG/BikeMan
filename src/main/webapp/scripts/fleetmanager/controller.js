@@ -27,10 +27,14 @@ velocityApp.controller('FleetmanagerController', ['$scope', 'resolvedFleetmanage
             $scope.fleetmanager = null;
         };
 
+        $scope.deleteModal = function (fleetmanager) {
+            $scope.managerToDelete = fleetmanager;
+        };
+
     }]);
 
-velocityApp.controller('FleetmanagerCreateController', ['$scope', 'Fleetmanager', '$timeout',
-    function ($scope, Fleetmanager, $timeout)  {
+velocityApp.controller('FleetmanagerCreateController', ['$scope', 'Fleetmanager', '$timeout', '$state',
+    function ($scope, Fleetmanager, $timeout, $state)  {
 
         $scope.fleetmanager = null;
         $scope.createSuccess = false;
@@ -38,11 +42,14 @@ velocityApp.controller('FleetmanagerCreateController', ['$scope', 'Fleetmanager'
         $scope.create = function () {
             Fleetmanager.save($scope.fleetmanager,
                 function () {
-                    $scope.createSuccess = true;
-                    $timeout(function () {
-                        $scope.createSuccess = false;
-                        $scope.clear();
-                    }, 3000);
+
+                    $state.go('fleetmanagers');
+
+//                    $scope.createSuccess = true;
+//                    $timeout(function () {
+//                        $scope.createSuccess = false;
+//                        $scope.clear();
+//                    }, 3000);
                 });
         };
 
