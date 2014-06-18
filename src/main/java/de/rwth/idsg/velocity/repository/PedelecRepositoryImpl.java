@@ -1,12 +1,14 @@
 package de.rwth.idsg.velocity.repository;
 
 import de.rwth.idsg.velocity.domain.*;
+import de.rwth.idsg.velocity.web.rest.BackendException;
 import de.rwth.idsg.velocity.web.rest.dto.modify.CreateEditPedelecDTO;
 import de.rwth.idsg.velocity.web.rest.dto.view.ViewPedelecDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.*;
@@ -34,53 +36,80 @@ public class PedelecRepositoryImpl implements PedelecRepository {
     }
 
     @Override
-    public ViewPedelecDTO findOneDTO(Long pedelecId) {
+    public ViewPedelecDTO findOneDTO(Long pedelecId) throws BackendException {
         CriteriaBuilder builder = em.getCriteriaBuilder();
-        return em.createQuery(
-                getQuery(builder, pedelecId)
-        ).getSingleResult();
+
+        try {
+            return em.createQuery(getQuery(builder, pedelecId)).getSingleResult();
+        } catch (Exception e) {
+            throw new BackendException("Failed to load Pedelec with pedelecId" + pedelecId);
+        }
     }
 
     @Override
-    public Pedelec findOne(long pedelecId) {
-        return em.find(Pedelec.class, pedelecId);
+    public Pedelec findOne(long pedelecId) throws BackendException {
+        return getPedelecEntity(pedelecId);
     }
 
     @Override
-    public void create(CreateEditPedelecDTO dto) {
+    public void create(CreateEditPedelecDTO dto) throws BackendException {
         Pedelec pedelec = new Pedelec();
         setFields(pedelec, dto);
-        em.persist(pedelec);
-        log.debug("Created new pedelec {}", pedelec);
+        try {
+            em.persist(pedelec);
+            log.debug("Created new pedelec {}", pedelec);
+
+        } catch (EntityExistsException e) {
+            throw new BackendException("This pedelec exists already.");
+
+        } catch (Exception e) {
+            throw new BackendException("Failed to create a new pedelec.");
+        }
     }
 
     @Override
-    public void update(CreateEditPedelecDTO dto) {
+    public void update(CreateEditPedelecDTO dto) throws BackendException {
         final Long pedelecId = dto.getPedelecId();
         if (pedelecId == null) {
             return;
         }
 
-        Pedelec pedelec = em.find(Pedelec.class, pedelecId);
-        if (pedelec == null) {
-            log.error("No pedelec with pedelecId: {} to update.", pedelecId);
-        } else {
-            setFields(pedelec, dto);
+        Pedelec pedelec = getPedelecEntity(pedelecId);
+        setFields(pedelec, dto);
+
+        try {
             em.merge(pedelec);
-            log.debug("Updated pedelec {}", pedelec);
+            log.debug("Updated manager {}", pedelec);
+
+        } catch (Exception e) {
+            throw new BackendException("Failed to update pedelec with pedelecId " + pedelecId);
         }
     }
 
     @Override
-    public void delete(long pedelecId) {
-        Pedelec pedelec = em.find(Pedelec.class, pedelecId);
-        if (pedelec == null) {
-            log.error("No pedelec with pedelecId: {} to delete.", pedelecId);
-        } else {
+    public void delete(long pedelecId) throws BackendException {
+        Pedelec pedelec = getPedelecEntity(pedelecId);
+
+        try {
             em.remove(pedelec);
             log.debug("Deleted pedelec {}", pedelec);
-        }
 
+        } catch (Exception e) {
+            throw new BackendException("Failed to delete pedelec with pedelec " + pedelecId);
+        }
+    }
+
+    /**
+     * Returns a pedelec, or throws exception when no pedelec exists.
+     *
+     */
+    private Pedelec getPedelecEntity(long pedelecId) throws BackendException {
+        Pedelec pedelec = em.find(Pedelec.class, pedelecId);
+        if (pedelec == null) {
+            throw new BackendException("No pedelec with pedelecId " + pedelecId);
+        } else {
+            return pedelec;
+        }
     }
 
     /**

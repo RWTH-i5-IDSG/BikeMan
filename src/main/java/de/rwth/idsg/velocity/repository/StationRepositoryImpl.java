@@ -1,9 +1,7 @@
 package de.rwth.idsg.velocity.repository;
 
-import de.rwth.idsg.velocity.domain.Address;
-import de.rwth.idsg.velocity.domain.Pedelec;
-import de.rwth.idsg.velocity.domain.Station;
-import de.rwth.idsg.velocity.domain.StationSlot;
+import de.rwth.idsg.velocity.domain.*;
+import de.rwth.idsg.velocity.web.rest.BackendException;
 import de.rwth.idsg.velocity.web.rest.dto.modify.CreateEditStationDTO;
 import de.rwth.idsg.velocity.web.rest.dto.view.ViewStationDTO;
 import de.rwth.idsg.velocity.web.rest.dto.view.ViewStationSlotDTO;
@@ -11,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.*;
@@ -40,18 +39,28 @@ public class StationRepositoryImpl implements StationRepository {
     }
 
     @Override
-    public List<ViewStationDTO> findByLocation(BigDecimal latitude, BigDecimal longitude) {
+    public List<ViewStationDTO> findByLocation(BigDecimal latitude, BigDecimal longitude)  throws BackendException {
         // TODO
+
         return null;
     }
 
     @Override
-    public ViewStationDTO findOne(long stationId) {
+    public ViewStationDTO findOne(long stationId) throws BackendException {
+
         CriteriaBuilder builder = em.getCriteriaBuilder();
 
         // get station info
+
         CriteriaQuery<ViewStationDTO> criteria = this.getStationQuery(builder, stationId);
-        ViewStationDTO stat = em.createQuery(criteria).getSingleResult();
+
+        ViewStationDTO stat = null;
+
+        try {
+            stat = em.createQuery(criteria).getSingleResult();
+        } catch (Exception e) {
+            throw new BackendException("Failed to find station.");
+        }
 
         // get slots for the station
         CriteriaQuery<ViewStationSlotDTO> slotCriteria = builder.createQuery(ViewStationSlotDTO.class);
@@ -71,45 +80,73 @@ public class StationRepositoryImpl implements StationRepository {
                 )
         ).where(builder.equal(rootSlot.get("station").get("stationId"), stationId));
 
-        List<ViewStationSlotDTO> list = em.createQuery(slotCriteria).getResultList();
-        stat.setSlots(list);
+        try {
+            List<ViewStationSlotDTO> list = em.createQuery(slotCriteria).getResultList();
+            stat.setSlots(list);
+        } catch (Exception e) {
+            throw new BackendException("Failted to get slots for the station");
+        }
 
         return stat;
     }
 
     @Override
-    public void create(CreateEditStationDTO dto) {
+    public void create(CreateEditStationDTO dto) throws BackendException {
         Station station = new Station();
         setFields(station, dto, Operation.CREATE);
-        em.persist(station);
-        log.debug("Created new station {}", station);
+
+        try {
+            em.persist(station);
+            log.debug("Created new manager {}", station);
+
+        } catch (EntityExistsException e) {
+            throw new BackendException("This station exists already.");
+
+        } catch (Exception e) {
+            throw new BackendException("Failed to create a new station.");
+        }
     }
 
     @Override
-    public void update(CreateEditStationDTO dto) {
+    public void update(CreateEditStationDTO dto) throws BackendException {
         final Long stationId = dto.getStationId();
         if (stationId == null) {
             return;
         }
 
-        Station station = em.getReference(Station.class, stationId);
-        if (station == null) {
-            log.error("No station with stationId: {} to update.", stationId);
-        } else {
-            setFields(station, dto, Operation.UPDATE);
+        Station station = getStationEntity(stationId);
+        setFields(station,dto, Operation.UPDATE);
+
+        try {
             em.merge(station);
             log.debug("Updated station {}", station);
+
+        } catch (Exception e) {
+            throw new BackendException("Failed to update station with stationId " + stationId);
         }
     }
 
     @Override
-    public void delete(long stationId) {
-        Station station = em.find(Station.class, stationId);
-        if (station == null) {
-            log.error("No station with stationId: {} to delete.", stationId);
-        } else {
+    public void delete(long stationId) throws BackendException {
+        Station station = getStationEntity(stationId);
+        try {
             em.remove(station);
             log.debug("Deleted station {}", station);
+        } catch (Exception e) {
+            throw new BackendException("Failed to delete station with stationId " + stationId);
+        }
+    }
+
+    /**
+     * Returns a station, or throws exception when no station exists.
+     *
+     */
+    private Station getStationEntity(long stationId) throws BackendException {
+        Station station = em.find(Station.class, stationId);
+        if (station == null) {
+            throw new BackendException("No station with stationId " + stationId);
+        } else {
+            return station;
         }
     }
 

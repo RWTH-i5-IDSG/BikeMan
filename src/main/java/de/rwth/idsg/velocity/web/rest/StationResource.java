@@ -1,7 +1,6 @@
 package de.rwth.idsg.velocity.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import de.rwth.idsg.velocity.domain.Station;
 import de.rwth.idsg.velocity.repository.StationRepository;
 import de.rwth.idsg.velocity.web.rest.dto.modify.CreateEditStationDTO;
 import de.rwth.idsg.velocity.web.rest.dto.view.ViewStationDTO;
@@ -14,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -34,14 +34,14 @@ public class StationResource {
 
     @Timed
     @RequestMapping(value = BASE_PATH, method = RequestMethod.POST)
-    public void create(@Valid @RequestBody CreateEditStationDTO dto) {
+    public void create(@Valid @RequestBody CreateEditStationDTO dto) throws BackendException {
         log.debug("REST request to save Station : {}", dto);
         stationRepository.create(dto);
     }
 
     @Timed
     @RequestMapping(value = BASE_PATH, method = RequestMethod.PUT)
-    public void update(@Valid @RequestBody CreateEditStationDTO dto) {
+    public void update(@Valid @RequestBody CreateEditStationDTO dto) throws BackendException {
         log.debug("REST request to update Station : {}", dto);
         stationRepository.update(dto);
     }
@@ -55,19 +55,27 @@ public class StationResource {
 
     @Timed
     @RequestMapping(value = ID_PATH, method = RequestMethod.GET)
-    public ViewStationDTO get(@PathVariable Long id, HttpServletResponse response) {
+    public ViewStationDTO get(@PathVariable Long id) throws BackendException {
         log.info("REST request to get Station : {}", id);
-        ViewStationDTO station = stationRepository.findOne(id);
-        if (station == null) {
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-        }
-        return station;
+        return stationRepository.findOne(id);
     }
 
     @Timed
     @RequestMapping(value = ID_PATH, method = RequestMethod.DELETE)
-    public void delete(@PathVariable Long id, HttpServletResponse response) {
+    public void delete(@PathVariable Long id) throws BackendException {
         log.debug("REST request to delete Station : {}", id);
         stationRepository.delete(id);
+    }
+
+    ///// Methods to catch exceptions /////
+
+    @ExceptionHandler(BackendException.class)
+    public void backendConflict(HttpServletResponse response, BackendException e) throws IOException {
+        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+    }
+
+    @ExceptionHandler(Exception.class)
+    public void conflict(HttpServletResponse response, Exception e) {
+        response.setStatus(HttpServletResponse.SC_NOT_FOUND);
     }
 }

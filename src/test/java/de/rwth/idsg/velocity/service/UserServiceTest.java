@@ -6,6 +6,7 @@ import de.rwth.idsg.velocity.domain.login.User;
 import de.rwth.idsg.velocity.repository.PersistentTokenRepository;
 import de.rwth.idsg.velocity.repository.UserRepository;
 import org.joda.time.LocalDate;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.SpringApplicationConfiguration;
@@ -23,7 +24,7 @@ import static org.assertj.core.api.Assertions.*;
  *
  * @see UserService
  */
-@RunWith(SpringJUnit4ClassRunner.class)
+//@RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Application.class)
 @WebAppConfiguration
 @DirtiesContext(classMode= DirtiesContext.ClassMode.AFTER_CLASS)

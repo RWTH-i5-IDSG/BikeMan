@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -41,33 +42,41 @@ public class PedelecResource {
 
     @Timed
     @RequestMapping(value = ID_PATH, method = RequestMethod.GET)
-    public ViewPedelecDTO get(@PathVariable Long id, HttpServletResponse response) {
+    public ViewPedelecDTO get(@PathVariable Long id) throws BackendException{
         log.debug("REST request to get Pedelec : {}", id);
-        ViewPedelecDTO pedelec = pedelecRepository.findOneDTO(id);
-        if (pedelec == null) {
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-        }
-        return pedelec;
+        return pedelecRepository.findOneDTO(id);
     }
 
     @Timed
     @RequestMapping(value = BASE_PATH, method = RequestMethod.POST)
-    public void create(@Valid @RequestBody CreateEditPedelecDTO pedelec) {
+    public void create(@Valid @RequestBody CreateEditPedelecDTO pedelec) throws BackendException {
         log.debug("REST request to save Pedelec : {}", pedelec);
         pedelecRepository.create(pedelec);
     }
 
     @Timed
     @RequestMapping(value = BASE_PATH, method = RequestMethod.PUT)
-    public void update(@Valid @RequestBody CreateEditPedelecDTO dto) {
+    public void update(@Valid @RequestBody CreateEditPedelecDTO dto) throws BackendException {
         log.debug("REST request to update Pedelec : {}", dto);
         pedelecRepository.update(dto);
     }
 
     @Timed
     @RequestMapping(value = ID_PATH, method = RequestMethod.DELETE)
-    public void delete(@PathVariable Long id, HttpServletResponse response) {
+    public void delete(@PathVariable Long id) throws BackendException {
         log.debug("REST request to delete Pedelec : {}", id);
         pedelecRepository.delete(id);
+    }
+
+    ///// Methods to catch exceptions /////
+
+    @ExceptionHandler(BackendException.class)
+    public void backendConflict(HttpServletResponse response, BackendException e) throws IOException {
+        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+    }
+
+    @ExceptionHandler(Exception.class)
+    public void conflict(HttpServletResponse response, Exception e) {
+        response.setStatus(HttpServletResponse.SC_NOT_FOUND);
     }
 }

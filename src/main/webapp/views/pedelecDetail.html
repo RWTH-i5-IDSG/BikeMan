@@ -52,4 +52,58 @@
         </table>
     </div>
 
+    <h3 ng-if="pedelec.inTransaction">Current Transaction:</h3>
+
+    <div ng-if="pedelec.inTransaction" class="table-responsive voffset3">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Customer</th>
+                <th>Pedelec</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+                <th>From Location</th>
+                <th>To Location</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>{{transaction.customer.lastname}}, {{transaction.customer.firstname}}</td>
+                <td>{{transaction.pedelec.manufacturerId}}</td>
+                <td>{{transaction.startDateTime | date:'short'}}</td>
+                <td>{{transaction.endDateTime | date:'short'}}</td>
+                <td>{{transaction.fromStation.name}} ({{transaction.fromStation.slotPosition}})</td>
+                <td>{{transaction.toStation.name}} ({{transaction.toStation.slotPosition}})</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h3>Last Transactions:</h3>
+
+    <div class="table-responsive voffset3">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Customer</th>
+                <th>Pedelec</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+                <th>From Location</th>
+                <th>To Location</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="transaction in transactions">
+                <td>{{transaction.customer.lastname}}, {{transaction.customer.firstname}}</td>
+                <td>{{transaction.pedelec.manufacturerId}}</td>
+                <td>{{transaction.startDateTime | date:'short'}}</td>
+                <td>{{transaction.endDateTime | date:'short'}}</td>
+                <td>{{transaction.fromStation.name}} ({{transaction.fromStation.slotPosition}})</td>
+                <td>{{transaction.toStation.name}} ({{transaction.toStation.slotPosition}})</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
 </div>

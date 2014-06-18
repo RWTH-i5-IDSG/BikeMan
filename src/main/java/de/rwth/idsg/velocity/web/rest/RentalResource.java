@@ -57,7 +57,7 @@ public class RentalResource {
             method = RequestMethod.POST,
             produces = "application/json")
     @Timed
-    public void returnPedelec(@RequestBody ReturnPedelecDTO returnPedelecDTO) {
+    public void returnPedelec(@RequestBody ReturnPedelecDTO returnPedelecDTO) throws BackendException {
 
         rentalService.returnPedelec(returnPedelecDTO.getPedelecId(), returnPedelecDTO.getStationSlotId());
     }

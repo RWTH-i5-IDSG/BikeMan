@@ -60,7 +60,6 @@ public class ManagerResource {
         managerRepository.delete(id);
     }
 
-
     ///// Methods to catch exceptions /////
 
     @ExceptionHandler(BackendException.class)
