@@ -5,10 +5,7 @@ import de.rwth.idsg.velocity.repository.TransactionRepository;
 import de.rwth.idsg.velocity.web.rest.dto.view.ViewTransactionDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
@@ -31,14 +28,22 @@ public class TransactionResource {
     private TransactionRepository transactionRepository;
 
     private static final String BASE_PATH = "/rest/transactions";
-    private static final String BASE_PATH_OPEN = "/rest/transactions/open";  // This is new (SG)
-    private static final String BASE_PATH_CLOSED = "/rest/transactions/closed";  // This is new (SG)
+    private static final String BASE_PATH_OPEN = "/rest/transactions/open";
+    private static final String BASE_PATH_CLOSED = "/rest/transactions/closed";
+    private static final String PEDELEC_ID_SIZE_PATH = "/rest/transactions/{pedelecId}/{resultSize}";
 
     @Timed
     @RequestMapping(value = BASE_PATH, method = RequestMethod.GET)
     public List<ViewTransactionDTO> getAll() throws BackendException {
         log.debug("REST request to get all Transactions");
         return transactionRepository.findAll();
+    }
+
+    @Timed
+    @RequestMapping(value = PEDELEC_ID_SIZE_PATH, method = RequestMethod.GET)
+    public List<ViewTransactionDTO> getByPedelecId(@PathVariable Long pedelecId, @PathVariable Integer resultSize) throws BackendException {
+        log.debug("REST request to get last {} transactions for pedelec with pedelecId {}", resultSize, pedelecId);
+        return transactionRepository.findByPedelecId(pedelecId, resultSize);
     }
 
     @Timed

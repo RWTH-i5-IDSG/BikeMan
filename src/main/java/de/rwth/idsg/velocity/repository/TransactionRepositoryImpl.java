@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import javax.transaction.Transactional;
 import java.util.List;
@@ -22,7 +23,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
 
     private static final Logger log = LoggerFactory.getLogger(TransactionRepositoryImpl.class);
 
-    private enum FindType { ALL, CLOSED };
+    private enum FindType { ALL, CLOSED, BY_PEDELEC_ID };
 
     @PersistenceContext
     EntityManager em;
@@ -31,7 +32,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
     public List<ViewTransactionDTO> findAll() throws BackendException {
         try {
             return em.createQuery(
-                    getTransactionQuery(FindType.ALL)
+                    getTransactionQuery(FindType.ALL, null)
             ).getResultList();
         } catch (Exception e) {
             throw new BackendException("Failed during database operation.");
@@ -42,8 +43,22 @@ public class TransactionRepositoryImpl implements TransactionRepository {
     public List<ViewTransactionDTO> findClosed() throws BackendException {
         try {
             return em.createQuery(
-                    getTransactionQuery(FindType.CLOSED)
+                    getTransactionQuery(FindType.CLOSED, null)
             ).getResultList();
+        } catch (Exception e) {
+            throw new BackendException("Failed during database operation.");
+        }
+    }
+
+    @Override
+    public List<ViewTransactionDTO> findByPedelecId(Long pedelecId, Integer resultSize) throws BackendException {
+        try {
+            TypedQuery<ViewTransactionDTO> tq = em.createQuery(
+                    getTransactionQuery(FindType.BY_PEDELEC_ID, pedelecId)
+            );
+
+            tq.setMaxResults(resultSize);
+            return tq.getResultList();
         } catch (Exception e) {
             throw new BackendException("Failed during database operation.");
         }
@@ -106,7 +121,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         // TODO
     }
 
-    private CriteriaQuery<ViewTransactionDTO> getTransactionQuery(FindType findType) {
+    private CriteriaQuery<ViewTransactionDTO> getTransactionQuery(FindType findType, Long pedelecId) {
         CriteriaBuilder builder = em.getCriteriaBuilder();
         CriteriaQuery<ViewTransactionDTO> criteria = builder.createQuery(ViewTransactionDTO.class);
         Root<Transaction> root = criteria.from(Transaction.class);
@@ -150,6 +165,12 @@ public class TransactionRepositoryImpl implements TransactionRepository {
                                 builder.isNotNull(root.get("toSlot")),
                                 builder.isNotNull(root.get("endDateTime"))
                         )
+                );
+                break;
+
+            case BY_PEDELEC_ID:
+                criteria.where(
+                        builder.equal(pedelecJoin.get("pedelecId"), pedelecId)
                 );
                 break;
         }
