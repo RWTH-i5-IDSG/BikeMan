@@ -33,10 +33,14 @@ velocityApp.controller('PedelecController', ['$scope', 'resolvedPedelec', 'Pedel
     }]);
 
 
-velocityApp.controller('PedelecDetailController', ['$scope', 'resolvedPedelec', 'Pedelec',
-    function ($scope, resolvedPedelec, Pedelec) {
+velocityApp.controller('PedelecDetailController', ['$scope', 'resolvedPedelec', 'Pedelec', 'Transaction', '$stateParams',
+    function ($scope, resolvedPedelec, Pedelec, Transaction, $stateParams) {
 
         $scope.pedelec = resolvedPedelec;
+
+        $scope.resultSize = 5;
+
+        $scope.pedelec.transactions = Transaction.queryTransactionsOfPedelecWithSize({pedelecId : $stateParams.pedelecId, resultSize : $scope.resultSize});
 
         $scope.isEditing = false;
 
