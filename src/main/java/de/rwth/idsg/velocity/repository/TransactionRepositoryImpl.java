@@ -1,6 +1,7 @@
 package de.rwth.idsg.velocity.repository;
 
 import de.rwth.idsg.velocity.domain.*;
+import de.rwth.idsg.velocity.web.rest.BackendException;
 import de.rwth.idsg.velocity.web.rest.dto.view.ViewTransactionDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,21 +28,29 @@ public class TransactionRepositoryImpl implements TransactionRepository {
     EntityManager em;
 
     @Override
-    public List<ViewTransactionDTO> findAll() {
-        return em.createQuery(
-                getTransactionQuery(FindType.ALL)
-        ).getResultList();
+    public List<ViewTransactionDTO> findAll() throws BackendException {
+        try {
+            return em.createQuery(
+                    getTransactionQuery(FindType.ALL)
+            ).getResultList();
+        } catch (Exception e) {
+            throw new BackendException("Failed during database operation.");
+        }
     }
 
     @Override
-    public List<ViewTransactionDTO> findClosed() {
-        return em.createQuery(
-                getTransactionQuery(FindType.CLOSED)
-        ).getResultList();
+    public List<ViewTransactionDTO> findClosed() throws BackendException {
+        try {
+            return em.createQuery(
+                    getTransactionQuery(FindType.CLOSED)
+            ).getResultList();
+        } catch (Exception e) {
+            throw new BackendException("Failed during database operation.");
+        }
     }
 
     @Override
-    public List<ViewTransactionDTO> findOpen() {
+    public List<ViewTransactionDTO> findOpen() throws BackendException {
         CriteriaBuilder builder = em.getCriteriaBuilder();
 
         CriteriaQuery<ViewTransactionDTO> criteria = builder.createQuery(ViewTransactionDTO.class);
@@ -73,22 +82,28 @@ public class TransactionRepositoryImpl implements TransactionRepository {
                         builder.isNull(root.get("endDateTime"))
                 )
         );
-        return em.createQuery(criteria).getResultList();
+
+        try {
+            return em.createQuery(criteria).getResultList();
+        } catch (Exception e) {
+            throw new BackendException("Failed during database operation.");
+        }
     }
 
     @Override
     public Transaction findOpenByPedelecId(Long pedelecId) {
+        // TODO
         return null;
     }
 
     @Override
     public void start(Transaction transaction) {
-
+        // TODO
     }
 
     @Override
     public void stop(Transaction transaction) {
-
+        // TODO
     }
 
     private CriteriaQuery<ViewTransactionDTO> getTransactionQuery(FindType findType) {

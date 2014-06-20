@@ -32,10 +32,15 @@ public class StationRepositoryImpl implements StationRepository {
     EntityManager em;
 
     @Override
-    public List<ViewStationDTO> findAll() {
-        CriteriaBuilder builder = em.getCriteriaBuilder();
-        CriteriaQuery<ViewStationDTO> criteria = this.getStationQuery(builder, null);
-        return em.createQuery(criteria).getResultList();
+    public List<ViewStationDTO> findAll() throws BackendException  {
+        try {
+            CriteriaBuilder builder = em.getCriteriaBuilder();
+            CriteriaQuery<ViewStationDTO> criteria = this.getStationQuery(builder, null);
+            return em.createQuery(criteria).getResultList();
+
+        } catch (Exception e) {
+            throw new BackendException("Failed during database operation.");
+        }
     }
 
     @Override
@@ -47,19 +52,15 @@ public class StationRepositoryImpl implements StationRepository {
 
     @Override
     public ViewStationDTO findOne(long stationId) throws BackendException {
-
         CriteriaBuilder builder = em.getCriteriaBuilder();
 
         // get station info
-
         CriteriaQuery<ViewStationDTO> criteria = this.getStationQuery(builder, stationId);
-
-        ViewStationDTO stat = null;
-
+        ViewStationDTO stat;
         try {
             stat = em.createQuery(criteria).getSingleResult();
         } catch (Exception e) {
-            throw new BackendException("Failed to find station.");
+            throw new BackendException("Failed to find station with stationId " + stationId);
         }
 
         // get slots for the station
@@ -84,7 +85,7 @@ public class StationRepositoryImpl implements StationRepository {
             List<ViewStationSlotDTO> list = em.createQuery(slotCriteria).getResultList();
             stat.setSlots(list);
         } catch (Exception e) {
-            throw new BackendException("Failted to get slots for the station");
+            throw new BackendException("Failed to get slots for the station");
         }
 
         return stat;

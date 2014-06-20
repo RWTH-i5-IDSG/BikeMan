@@ -41,21 +41,26 @@ public class ManagerRepositoryImpl implements ManagerRepository {
     PasswordEncoder passwordEncoder;
 
     @Override
-    public List<ViewManagerDTO> findAll() {
-        CriteriaBuilder builder = em.getCriteriaBuilder();
+    public List<ViewManagerDTO> findAll() throws BackendException {
+        try {
+            CriteriaBuilder builder = em.getCriteriaBuilder();
 
-        CriteriaQuery<ViewManagerDTO> criteria = builder.createQuery(ViewManagerDTO.class);
-        Root<Manager> root = criteria.from(Manager.class);
+            CriteriaQuery<ViewManagerDTO> criteria = builder.createQuery(ViewManagerDTO.class);
+            Root<Manager> root = criteria.from(Manager.class);
 
-        criteria.select(
-                builder.construct(
-                        ViewManagerDTO.class,
-                        root.get("userId"),
-                        root.get("login")
-                )
-        );
+            criteria.select(
+                    builder.construct(
+                            ViewManagerDTO.class,
+                            root.get("userId"),
+                            root.get("login")
+                    )
+            );
 
-        return em.createQuery(criteria).getResultList();
+            return em.createQuery(criteria).getResultList();
+
+        } catch (Exception e) {
+            throw new BackendException("Failed during database operation.");
+        }
     }
 
     @Override

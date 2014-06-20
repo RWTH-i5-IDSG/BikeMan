@@ -48,7 +48,7 @@ public class StationResource {
 
     @Timed
     @RequestMapping(value = BASE_PATH, method = RequestMethod.GET)
-    public List<ViewStationDTO> getAll() {
+    public List<ViewStationDTO> getAll() throws BackendException {
         log.info("REST request to get all Stations");
         return stationRepository.findAll();
     }
