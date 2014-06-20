@@ -11,23 +11,11 @@ import java.util.List;
  */
 public interface ManagerRepository {
 
-    /**
-     * self-explanatory
-     */
-    List<ViewManagerDTO> findAll();
+    List<ViewManagerDTO> findAll() throws BackendException;
 
-    /**
-     * self-explanatory
-     */
     void create(CreateEditManagerDTO dto) throws BackendException;
 
-    /**
-     * self-explanatory
-     */
     void update(CreateEditManagerDTO dto) throws BackendException;
 
-    /**
-     * self-explanatory
-     */
     void delete(long userId) throws BackendException;
 }

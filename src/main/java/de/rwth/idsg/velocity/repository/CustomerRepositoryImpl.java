@@ -36,19 +36,30 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     EntityManager em;
 
     @Override
-    public List<ViewCustomerDTO> findAll() {
-        CriteriaBuilder builder = em.getCriteriaBuilder();
-        return em.createQuery(
-                getQuery(builder, FindType.ALL, null, null, null)
-        ).getResultList();
+    public List<ViewCustomerDTO> findAll() throws BackendException {
+        try {
+            CriteriaBuilder builder = em.getCriteriaBuilder();
+            return em.createQuery(
+                    getQuery(builder, FindType.ALL, null, null, null)
+            ).getResultList();
+
+        } catch (Exception e) {
+            throw new BackendException("Failed during database operation.");
+        }
     }
 
     @Override
     public List<ViewCustomerDTO> findbyName(String firstname, String lastname) throws BackendException {
-        CriteriaBuilder builder = em.getCriteriaBuilder();
-        List<ViewCustomerDTO> list = em.createQuery(
-                getQuery(builder, FindType.BY_NAME, firstname, lastname, null)
-        ).getResultList();
+        List<ViewCustomerDTO> list = null;
+        try {
+            CriteriaBuilder builder = em.getCriteriaBuilder();
+            list = em.createQuery(
+                    getQuery(builder, FindType.BY_NAME, firstname, lastname, null)
+            ).getResultList();
+
+        } catch (Exception e) {
+            throw new BackendException("Failed during database operation.");
+        }
 
         if (list.isEmpty()) {
             throw new BackendException("No customer found with name " + firstname + " " + lastname);
@@ -59,14 +70,17 @@ public class CustomerRepositoryImpl implements CustomerRepository {
 
     @Override
     public ViewCustomerDTO findbyLogin(String login) throws BackendException {
-        CriteriaBuilder builder = em.getCriteriaBuilder();
         try {
+            CriteriaBuilder builder = em.getCriteriaBuilder();
             return em.createQuery(
                     getQuery(builder, FindType.BY_LOGIN, null, null, login)
             ).getSingleResult();
 
         } catch (NoResultException e) {
             throw new BackendException("No customer found with login " + login);
+
+        } catch (Exception e) {
+            throw new BackendException("Failed during database operation.");
         }
     }
 

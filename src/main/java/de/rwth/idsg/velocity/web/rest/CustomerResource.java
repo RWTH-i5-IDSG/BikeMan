@@ -41,8 +41,7 @@ public class CustomerResource {
 
     @Timed
     @RequestMapping(value = BASE_PATH, method = RequestMethod.GET)
-    public List<ViewCustomerDTO> getAll(HttpServletResponse response) {
-
+    public List<ViewCustomerDTO> getAll() throws BackendException {
         log.debug("REST request to get all customers");
         return customerRepository.findAll();
     }
@@ -50,7 +49,6 @@ public class CustomerResource {
     @Timed
     @RequestMapping(value = FULL_NAME_PATH, method = RequestMethod.GET)
     public List<ViewCustomerDTO> getByName(@PathVariable String firstname, @PathVariable String lastname) throws BackendException {
-
         log.debug("REST request to get Customer with name: {} {}", firstname, lastname);
         return customerRepository.findbyName(firstname,lastname);
     }
@@ -58,7 +56,6 @@ public class CustomerResource {
     @Timed
     @RequestMapping(value = LOGIN_PATH, method = RequestMethod.GET)
     public ViewCustomerDTO getByLogin(@PathVariable String login) throws BackendException {
-
         log.debug("REST request to get Customer with login: {}", login);
         return customerRepository.findbyLogin(login);
     }
@@ -66,7 +63,6 @@ public class CustomerResource {
     @Timed
     @RequestMapping(value = ID_PATH_ACTIVATE, method = RequestMethod.PUT)
     public void activate(@PathVariable Long id) throws BackendException {
-
         log.debug("REST request to activate Customer with id: {}", id);
         customerRepository.activate(id);
     }
@@ -74,7 +70,6 @@ public class CustomerResource {
     @Timed
     @RequestMapping(value = ID_PATH_DEACTIVATE, method = RequestMethod.PUT)
     public void deactivate(@PathVariable Long id) throws BackendException {
-
         log.debug("REST request to deactivate Customer with id: {}", id);
         customerRepository.deactivate(id);
     }
@@ -82,7 +77,6 @@ public class CustomerResource {
     @Timed
     @RequestMapping(value = BASE_PATH, method = RequestMethod.POST)
     public void create(@Valid @RequestBody CreateEditCustomerDTO dto) throws BackendException {
-
         log.debug("REST request to create Customer : {}", dto);
         customerRepository.create(dto);
     }
@@ -90,7 +84,6 @@ public class CustomerResource {
     @Timed
     @RequestMapping(value = BASE_PATH, method = RequestMethod.PUT)
     public void update(@Valid @RequestBody CreateEditCustomerDTO dto) throws BackendException {
-
         log.debug("REST request to update Customer : {}", dto);
         customerRepository.update(dto);
     }
@@ -98,7 +91,6 @@ public class CustomerResource {
     @Timed
     @RequestMapping(value = ID_PATH, method = RequestMethod.DELETE)
     public void delete(@PathVariable Long id) throws BackendException {
-
         log.debug("REST request to delete Customer : {}", id);
         customerRepository.delete(id);
     }

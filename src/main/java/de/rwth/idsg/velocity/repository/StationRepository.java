@@ -13,7 +13,7 @@ import java.util.List;
  */
 public interface StationRepository {
 
-    List<ViewStationDTO> findAll();
+    List<ViewStationDTO> findAll() throws BackendException;
     List<ViewStationDTO> findByLocation(BigDecimal latitude, BigDecimal longitude) throws BackendException;
     ViewStationDTO findOne(long stationId) throws BackendException;
     void create(CreateEditStationDTO dto) throws BackendException;

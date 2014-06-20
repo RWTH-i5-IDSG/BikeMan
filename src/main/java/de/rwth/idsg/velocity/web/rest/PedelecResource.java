@@ -35,14 +35,14 @@ public class PedelecResource {
 
     @Timed
     @RequestMapping(value = BASE_PATH, method = RequestMethod.GET)
-    public List<ViewPedelecDTO> getAll() {
+    public List<ViewPedelecDTO> getAll() throws BackendException {
         log.info("REST request to get all Pedelecs");
         return pedelecRepository.findAll();
     }
 
     @Timed
     @RequestMapping(value = ID_PATH, method = RequestMethod.GET)
-    public ViewPedelecDTO get(@PathVariable Long id) throws BackendException{
+    public ViewPedelecDTO get(@PathVariable Long id) throws BackendException {
         log.debug("REST request to get Pedelec : {}", id);
         return pedelecRepository.findOneDTO(id);
     }

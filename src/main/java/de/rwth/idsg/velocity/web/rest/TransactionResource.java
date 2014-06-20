@@ -5,13 +5,13 @@ import de.rwth.idsg.velocity.repository.TransactionRepository;
 import de.rwth.idsg.velocity.web.rest.dto.view.ViewTransactionDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -28,34 +28,48 @@ public class TransactionResource {
     private TransactionRepository transactionRepository;
 
     private static final String BASE_PATH = "/rest/transactions";
-    private static final String BASE_PATH_OPEN = "/rest/transactions/open";  // This is new (SG)
-    private static final String BASE_PATH_CLOSED = "/rest/transactions/closed";  // This is new (SG)
+    private static final String BASE_PATH_OPEN = "/rest/transactions/open";
+    private static final String BASE_PATH_CLOSED = "/rest/transactions/closed";
+    private static final String PEDELEC_ID_SIZE_PATH = "/rest/transactions/{pedelecId}/{resultSize}";
 
     @Timed
     @RequestMapping(value = BASE_PATH, method = RequestMethod.GET)
-    public List<ViewTransactionDTO> getAll() {
+    public List<ViewTransactionDTO> getAll() throws BackendException {
         log.debug("REST request to get all Transactions");
-        List<ViewTransactionDTO> list = transactionRepository.findAll();
-        log.debug("List with size {}: {}", list.size(), list);
-        return list;
+        return transactionRepository.findAll();
     }
 
     @Timed
-         @RequestMapping(value = BASE_PATH_OPEN, method = RequestMethod.GET)
-         public List<ViewTransactionDTO> getOpen() {
+    @RequestMapping(value = PEDELEC_ID_SIZE_PATH, method = RequestMethod.GET)
+    public List<ViewTransactionDTO> getByPedelecId(@PathVariable Long pedelecId, @PathVariable Integer resultSize) throws BackendException {
+        log.debug("REST request to get last {} transactions for pedelec with pedelecId {}", resultSize, pedelecId);
+        return transactionRepository.findByPedelecId(pedelecId, resultSize);
+    }
+
+    @Timed
+    @RequestMapping(value = BASE_PATH_OPEN, method = RequestMethod.GET)
+    public List<ViewTransactionDTO> getOpen() throws BackendException {
         log.debug("REST request to get open Transactions");
-        List<ViewTransactionDTO> list = transactionRepository.findOpen();
-        log.debug("List with size {}: {}", list.size(), list);
-        return list;
+        return transactionRepository.findOpen();
     }
 
     @Timed
     @RequestMapping(value = BASE_PATH_CLOSED, method = RequestMethod.GET)
-    public List<ViewTransactionDTO> getClosed() {
+    public List<ViewTransactionDTO> getClosed() throws BackendException {
         log.debug("REST request to get closed Transactions");
-        List<ViewTransactionDTO> list = transactionRepository.findClosed();
-        log.debug("List with size {}: {}", list.size(), list);
-        return list;
+        return transactionRepository.findClosed();
+    }
+
+    ///// Methods to catch exceptions /////
+
+    @ExceptionHandler(BackendException.class)
+    public void backendConflict(HttpServletResponse response, BackendException e) throws IOException {
+        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+    }
+
+    @ExceptionHandler(Exception.class)
+    public void conflict(HttpServletResponse response, Exception e) {
+        response.setStatus(HttpServletResponse.SC_NOT_FOUND);
     }
 
 }

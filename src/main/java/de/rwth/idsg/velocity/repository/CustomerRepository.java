@@ -14,7 +14,7 @@ public interface CustomerRepository {
     /**
      * self-explanatory
      */
-    List<ViewCustomerDTO> findAll();
+    List<ViewCustomerDTO> findAll() throws BackendException;
 
     /**
     * Two customers could have the same full name, hence the list as return

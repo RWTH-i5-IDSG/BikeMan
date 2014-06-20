@@ -1,7 +1,7 @@
 package de.rwth.idsg.velocity.repository;
 
 import de.rwth.idsg.velocity.domain.Transaction;
-import de.rwth.idsg.velocity.web.rest.dto.modify.CreateEditPedelecDTO;
+import de.rwth.idsg.velocity.web.rest.BackendException;
 import de.rwth.idsg.velocity.web.rest.dto.view.ViewTransactionDTO;
 
 import java.util.List;
@@ -17,17 +17,25 @@ public interface TransactionRepository {
     /*
     * Find ALL transactions.
     */
-    List<ViewTransactionDTO> findAll();
+    List<ViewTransactionDTO> findAll() throws BackendException;
 
     /*
     * Find OPEN (ONGOING) transactions.
     */
-    List<ViewTransactionDTO> findOpen();
+    List<ViewTransactionDTO> findOpen() throws BackendException;
 
     /*
     * Find CLOSED transactions.
     */
-    List<ViewTransactionDTO> findClosed();
+    List<ViewTransactionDTO> findClosed() throws BackendException;
+
+    /*
+    * Find OPEN and CLOSED transactions for ONE pedelec.
+    *
+    * @param resultSize   Limits the max number or results that are returned.
+    *
+    */
+    List<ViewTransactionDTO> findByPedelecId(Long pedelecId, Integer resultSize) throws BackendException;
 
     /*
     * Find the OPEN (ONGOING) transaction for ONE pedelec.

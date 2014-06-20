@@ -12,7 +12,7 @@ import java.util.List;
  */
 public interface PedelecRepository {
 
-    List<ViewPedelecDTO> findAll();
+    List<ViewPedelecDTO> findAll() throws BackendException;
     ViewPedelecDTO findOneDTO(Long pedelecId) throws BackendException;
     Pedelec findOne(long pedelecId) throws BackendException;
     void create(CreateEditPedelecDTO dto) throws BackendException;

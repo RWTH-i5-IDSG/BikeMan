@@ -28,21 +28,26 @@ public class PedelecRepositoryImpl implements PedelecRepository {
     EntityManager em;
 
     @Override
-    public List<ViewPedelecDTO> findAll() {
-        CriteriaBuilder builder = em.getCriteriaBuilder();
-        return em.createQuery(
-                getQuery(builder, null)
-        ).getResultList();
+    public List<ViewPedelecDTO> findAll() throws BackendException {
+        try {
+            CriteriaBuilder builder = em.getCriteriaBuilder();
+            return em.createQuery(
+                    getQuery(builder, null)
+            ).getResultList();
+
+        } catch (Exception e) {
+            throw new BackendException("Failed during database operation.");
+        }
     }
 
     @Override
     public ViewPedelecDTO findOneDTO(Long pedelecId) throws BackendException {
-        CriteriaBuilder builder = em.getCriteriaBuilder();
-
         try {
+            CriteriaBuilder builder = em.getCriteriaBuilder();
             return em.createQuery(getQuery(builder, pedelecId)).getSingleResult();
+
         } catch (Exception e) {
-            throw new BackendException("Failed to load Pedelec with pedelecId" + pedelecId);
+            throw new BackendException("Failed to find pedelec with pedelecId" + pedelecId);
         }
     }
 
@@ -79,7 +84,7 @@ public class PedelecRepositoryImpl implements PedelecRepository {
 
         try {
             em.merge(pedelec);
-            log.debug("Updated manager {}", pedelec);
+            log.debug("Updated pedelec {}", pedelec);
 
         } catch (Exception e) {
             throw new BackendException("Failed to update pedelec with pedelecId " + pedelecId);

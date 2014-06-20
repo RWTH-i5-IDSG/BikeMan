@@ -34,7 +34,7 @@ public class ManagerResource {
 
     @Timed
     @RequestMapping(value = BASE_PATH, method = RequestMethod.GET)
-    public List<ViewManagerDTO> getAll() {
+    public List<ViewManagerDTO> getAll() throws BackendException {
         log.info("REST request to get all Manager");
         return managerRepository.findAll();
     }
@@ -55,7 +55,7 @@ public class ManagerResource {
 
     @Timed
     @RequestMapping(value = ID_PATH, method = RequestMethod.DELETE)
-    public void delete(@PathVariable Long id, HttpServletResponse response) throws BackendException {
+    public void delete(@PathVariable Long id) throws BackendException {
         log.debug("REST request to delete Manager : {}", id);
         managerRepository.delete(id);
     }
