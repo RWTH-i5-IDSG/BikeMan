@@ -171,6 +171,8 @@ public class TransactionRepositoryImpl implements TransactionRepository {
             case BY_PEDELEC_ID:
                 criteria.where(
                         builder.equal(pedelecJoin.get("pedelecId"), pedelecId)
+                ).orderBy(
+                        builder.desc(root.get("startDateTime"))
                 );
                 break;
         }

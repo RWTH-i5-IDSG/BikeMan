@@ -47,7 +47,8 @@ public class PedelecRepositoryImpl implements PedelecRepository {
             return em.createQuery(getQuery(builder, pedelecId)).getSingleResult();
 
         } catch (Exception e) {
-            throw new BackendException("Failed to find pedelec with pedelecId" + pedelecId);
+            log.error("Exception ocurred: {}", e);
+            throw new BackendException("Failed to find pedelec with pedelecId " + pedelecId);
         }
     }
 
