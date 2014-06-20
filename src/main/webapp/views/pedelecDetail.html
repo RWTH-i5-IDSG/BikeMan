@@ -94,7 +94,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="transaction in transactions">
+            <tr ng-repeat="transaction in pedelec.transactions">
                 <td>{{transaction.customer.lastname}}, {{transaction.customer.firstname}}</td>
                 <td>{{transaction.pedelec.manufacturerId}}</td>
                 <td>{{transaction.startDateTime | date:'short'}}</td>
