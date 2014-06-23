@@ -22,28 +22,43 @@ public class ViewPedelecDTO {
     @Getter private ViewStationDTO station;
     @Getter private ViewTransactionDTO transaction;
 
+    // Basic
+    public ViewPedelecDTO(Long pedelecId, String manufacturerId, Float stateOfCharge,
+                          OperationState state, Boolean inTransaction) {
+        this.pedelecId = pedelecId;
+        this.manufacturerId = manufacturerId;
+        this.stateOfCharge = stateOfCharge;
+        this.state = state;
+        this.inTransaction = inTransaction;
+    }
+
+    // Constructor for stationary pedelecs
     public ViewPedelecDTO(Long pedelecId, String manufacturerId, Float stateOfCharge,
                           OperationState state, Boolean inTransaction,
-                          Long stationaryStationId, String stationManufacturerId, Integer stationarySlotPosition,
-                          String customerId, String customerFirstname, String customerLastname, Long lastStationId,
-                          Integer lastSlotPosition, LocalDateTime startDateTime) {
+                          Long stationId, String stationManufacturerId, Integer stationSlotPosition) {
         this.pedelecId = pedelecId;
         this.manufacturerId = manufacturerId;
         this.stateOfCharge = stateOfCharge;
         this.state = state;
         this.inTransaction = inTransaction;
 
-        //// For the following: Reverse if clause checks to prevent unnecessary negation otherwise ////
+        this.station = new ViewStationDTO(stationId, stationManufacturerId, stationSlotPosition);
+    }
 
-        if (customerId == null) {
-            this.station = new ViewStationDTO(stationaryStationId, stationManufacturerId, stationarySlotPosition);
-        }
+    // Constructor for pedelecs in transaction
+    public ViewPedelecDTO(Long pedelecId, String manufacturerId, Float stateOfCharge,
+                          OperationState state, Boolean inTransaction,
+                          String customerId, String customerFirstname, String customerLastname,
+                          Long stationId, Integer stationSlotPosition, LocalDateTime startDateTime) {
+        this.pedelecId = pedelecId;
+        this.manufacturerId = manufacturerId;
+        this.stateOfCharge = stateOfCharge;
+        this.state = state;
+        this.inTransaction = inTransaction;
 
-        if (stationaryStationId == null) {
-            this.transaction = new ViewTransactionDTO(customerId,
-                    customerFirstname, customerLastname,
-                    lastStationId, lastSlotPosition, startDateTime);
-        }
+        this.transaction = new ViewTransactionDTO(customerId,
+                customerFirstname, customerLastname,
+                stationId, stationSlotPosition, startDateTime);
     }
 
     @AllArgsConstructor

@@ -29,22 +29,84 @@ public class PedelecRepositoryImpl implements PedelecRepository {
 
     @Override
     public List<ViewPedelecDTO> findAll() throws BackendException {
-        try {
-            CriteriaBuilder builder = em.getCriteriaBuilder();
-            return em.createQuery(
-                    getQuery(builder, null)
-            ).getResultList();
+        CriteriaBuilder builder = em.getCriteriaBuilder();
 
-        } catch (Exception e) {
-            throw new BackendException("Failed during database operation.");
-        }
+        // Get the pedelecs in transaction
+        CriteriaQuery<ViewPedelecDTO> criteriaTrans = builder.createQuery(ViewPedelecDTO.class);
+        Root<Pedelec> rootTrans = criteriaTrans.from(Pedelec.class);
+        Join<Pedelec, Transaction> trans = rootTrans.join("transactions", JoinType.LEFT);
+        Join<Transaction, Customer> transCustomerJoin = trans.join("customer", JoinType.LEFT);
+        Join<Transaction, StationSlot> transStationSlotJoin = trans.join("fromSlot", JoinType.LEFT);
+        Join<StationSlot, Station> transStationJoin = transStationSlotJoin.join("station", JoinType.LEFT);
+
+        criteriaTrans.select(
+                builder.construct(
+                        ViewPedelecDTO.class,
+                        rootTrans.get("pedelecId"),
+                        rootTrans.get("manufacturerId"),
+                        rootTrans.get("stateOfCharge"),
+                        rootTrans.get("state"),
+                        rootTrans.get("inTransaction"),
+                        transCustomerJoin.get("customerId"),
+                        transCustomerJoin.get("firstname"),
+                        transCustomerJoin.get("lastname"),
+                        transStationJoin.get("stationId"),
+                        transStationSlotJoin.get("stationSlotPosition"),
+                        trans.get("startDateTime")
+                )
+        ).where(builder.and(
+                builder.equal(rootTrans.get("inTransaction"), true),
+                builder.isNull(trans.get("endDateTime")),
+                builder.isNull(trans.get("toSlot"))
+        ));
+
+        List<ViewPedelecDTO> list = em.createQuery(criteriaTrans).getResultList();
+
+        // Get the stationary pedelecs
+        CriteriaQuery<ViewPedelecDTO> criteriaStat = builder.createQuery(ViewPedelecDTO.class);
+        Root<Pedelec> rootStat = criteriaStat.from(Pedelec.class);
+        Join<Pedelec, StationSlot> stationSlot = rootStat.join("stationSlot", JoinType.LEFT);
+        Join<Pedelec, Station> station = stationSlot.join("station", JoinType.LEFT);
+
+        criteriaStat.select(
+                builder.construct(
+                        ViewPedelecDTO.class,
+                        rootStat.get("pedelecId"),
+                        rootStat.get("manufacturerId"),
+                        rootStat.get("stateOfCharge"),
+                        rootStat.get("state"),
+                        rootStat.get("inTransaction"),
+                        station.get("stationId"),
+                        station.get("manufacturerId"),
+                        stationSlot.get("stationSlotPosition")
+                )
+        ).where(builder.equal(rootStat.get("inTransaction"), false));
+
+        // Join the lists and return
+        list.addAll(em.createQuery(criteriaStat).getResultList());
+        return list;
     }
 
     @Override
     public ViewPedelecDTO findOneDTO(Long pedelecId) throws BackendException {
+        CriteriaBuilder builder = em.getCriteriaBuilder();
         try {
-            CriteriaBuilder builder = em.getCriteriaBuilder();
-            return em.createQuery(getQuery(builder, pedelecId)).getSingleResult();
+            // Get the pedelecs in transaction
+            CriteriaQuery<ViewPedelecDTO> criteria = builder.createQuery(ViewPedelecDTO.class);
+            Root<Pedelec> root = criteria.from(Pedelec.class);
+
+            criteria.select(
+                    builder.construct(
+                            ViewPedelecDTO.class,
+                            root.get("pedelecId"),
+                            root.get("manufacturerId"),
+                            root.get("stateOfCharge"),
+                            root.get("state"),
+                            root.get("inTransaction")
+                    )
+            ).where(builder.equal(root.get("pedelecId"), pedelecId));
+
+            return em.createQuery(criteria).getSingleResult();
 
         } catch (Exception e) {
             log.error("Exception ocurred: {}", e);
@@ -119,72 +181,13 @@ public class PedelecRepositoryImpl implements PedelecRepository {
     }
 
     /**
-    * This method sets the fields of the pedelec to the values in DTO.
-    *
-    * Important: The ID is not set!
-    */
+     * This method sets the fields of the pedelec to the values in DTO.
+     *
+     * Important: The ID is not set!
+     */
     private void setFields(Pedelec pedelec, CreateEditPedelecDTO dto) {
         pedelec.setState(dto.getState());
         pedelec.setManufacturerId(dto.getManufacturerId());
-    }
-
-    /**
-     * This method returns the query to get information of pedelecs for various lookup cases
-     *
-     */
-    private CriteriaQuery<ViewPedelecDTO> getQuery(CriteriaBuilder builder, Long pedelecId) {
-
-        CriteriaQuery<ViewPedelecDTO> criteria = builder.createQuery(ViewPedelecDTO.class);
-        Root<Pedelec> rootPedelec = criteria.from(Pedelec.class);
-        Join<Pedelec, StationSlot> stationSlot = rootPedelec.join("stationSlot", JoinType.LEFT);
-        Join<StationSlot, Station> station = stationSlot.join("station", JoinType.LEFT);
-
-        Join<Pedelec, Transaction> trans = rootPedelec.join("transactions", JoinType.LEFT);
-        Join<Transaction, Customer> transCustomerJoin = trans.join("customer", JoinType.LEFT);
-        Join<Transaction, StationSlot> transStationSlotJoin = trans.join("fromSlot", JoinType.LEFT);
-        Join<StationSlot, Station> transStationJoin = transStationSlotJoin.join("station", JoinType.LEFT);
-
-        criteria.select(
-                builder.construct(
-                        ViewPedelecDTO.class,
-                        rootPedelec.get("pedelecId"),
-                        rootPedelec.get("manufacturerId"),
-                        rootPedelec.get("stateOfCharge"),
-                        rootPedelec.get("state"),
-                        rootPedelec.get("inTransaction"),
-                        station.get("stationId"),
-                        station.get("manufacturerId"),
-                        stationSlot.get("stationSlotPosition"),
-                        transCustomerJoin.get("customerId"),
-                        transCustomerJoin.get("firstname"),
-                        transCustomerJoin.get("lastname"),
-                        transStationJoin.get("stationId"),
-                        transStationSlotJoin.get("stationSlotPosition"),
-                        trans.get("startDateTime")
-                )
-        );
-
-        // Join with transaction table will get all the transactions for a pedelec.
-        // Therefore: Only get the open transaction (toSlot & endDateTime are null)
-
-        if (pedelecId == null) {
-            criteria.where(
-                    builder.and(
-                            builder.isNull(trans.get("toSlot")),
-                            builder.isNull(trans.get("endDateTime"))
-                    )
-            );
-        } else {
-            criteria.where(
-                    builder.and(
-                            builder.equal(rootPedelec.get("pedelecId"), pedelecId),
-                            builder.isNull(trans.get("toSlot")),
-                            builder.isNull(trans.get("endDateTime"))
-                    )
-            );
-        }
-
-        return criteria;
     }
 }
 
