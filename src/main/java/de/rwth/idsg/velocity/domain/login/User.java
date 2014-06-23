@@ -21,7 +21,9 @@ import java.util.Set;
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "user_type")
-@Table(name = "T_USER")
+@Table(name="T_USER",
+        indexes = {
+                @Index(columnList="login", unique = true)})
 @TableGenerator(name="user_gen", initialValue=0, allocationSize=1)
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @ToString(includeFieldNames = true)

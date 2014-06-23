@@ -108,7 +108,7 @@ public class AccountResource {
             produces = "application/json")
     @Timed
     public List<PersistentToken> getCurrentSessions(HttpServletResponse response) {
-        User user = userRepository.findOne(SecurityUtils.getCurrentLogin());
+        User user = userRepository.findByLogin(SecurityUtils.getCurrentLogin());
         if (user == null) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }

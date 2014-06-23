@@ -6,4 +6,7 @@
     <changeSet author="jhipster" id="1402497091113-4">
         <dropNotNullConstraint catalogName="" columnDataType="varchar(255)" columnName="login" schemaName="public" tableName="T_USER"/>
     </changeSet>
+    <changeSet author="jhipster" id="1402497091113-5">
+        <addUniqueConstraint catalogName="" columnNames="login" constraintName="UC_T_USER_LOGIN" deferrable="false" disabled="false" initiallyDeferred="false" schemaName="public" tableName="T_USER"/>
+    </changeSet>
 </databaseChangeLog>
