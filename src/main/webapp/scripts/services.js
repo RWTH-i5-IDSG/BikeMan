@@ -100,7 +100,8 @@ velocityApp.factory('Session', [
 velocityApp.constant('USER_ROLES', {
         all: '*',
         admin: 'ROLE_ADMIN',
-        user: 'ROLE_USER'
+        manager: 'ROLE_MANAGER',
+        customer: 'ROLE_CUSTOMER'
     });
 
 velocityApp.factory('AuthenticationSharedService', ['$rootScope', '$http', 'authService', 'Session', 'Account', 'Base64Service', 'AccessToken', 

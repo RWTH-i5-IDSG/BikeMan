@@ -40,7 +40,7 @@ velocityApp.controller('PedelecDetailController', ['$scope', 'resolvedPedelec', 
 
         $scope.resultSize = 5;
 
-        $scope.pedelec.transactions = Transaction.queryTransactionsOfPedelecWithSize({pedelecId : $stateParams.pedelecId, resultSize : $scope.resultSize});
+        $scope.transactions = Transaction.queryTransactionsOfPedelecWithSize({pedelecId : $stateParams.pedelecId, resultSize : $scope.resultSize});
 
         $scope.isEditing = false;
 

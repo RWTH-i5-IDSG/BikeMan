@@ -6,6 +6,7 @@ import de.rwth.idsg.velocity.domain.login.PersistentToken;
 import de.rwth.idsg.velocity.domain.login.User;
 import de.rwth.idsg.velocity.repository.PersistentTokenRepository;
 import de.rwth.idsg.velocity.repository.UserRepository;
+import de.rwth.idsg.velocity.security.AuthoritiesConstants;
 import de.rwth.idsg.velocity.security.SecurityUtils;
 import de.rwth.idsg.velocity.service.UserService;
 import de.rwth.idsg.velocity.web.rest.dto.UserDTO;
@@ -14,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -103,6 +105,7 @@ public class AccountResource {
     /**
      * GET  /rest/account/sessions -> get the current open sessions.
      */
+    @RolesAllowed(AuthoritiesConstants.ADMIN)
     @RequestMapping(value = "/rest/account/sessions",
             method = RequestMethod.GET,
             produces = "application/json")
