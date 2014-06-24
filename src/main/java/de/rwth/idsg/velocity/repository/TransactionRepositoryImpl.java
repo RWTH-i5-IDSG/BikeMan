@@ -172,7 +172,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
                 criteria.where(
                         builder.equal(pedelecJoin.get("pedelecId"), pedelecId)
                 ).orderBy(
-                        builder.desc(root.get("startDateTime"))
+                        builder.desc(root.get("endDateTime"))
                 );
                 break;
         }
