@@ -153,6 +153,8 @@ public class TransactionRepositoryImpl implements TransactionRepository {
                         pedelecJoin.get("pedelecId"),
                         pedelecJoin.get("manufacturerId")
                 )
+        ).orderBy(
+                builder.desc(root.get("endDateTime"))
         );
 
         switch (findType) {
@@ -171,8 +173,6 @@ public class TransactionRepositoryImpl implements TransactionRepository {
             case BY_PEDELEC_ID:
                 criteria.where(
                         builder.equal(pedelecJoin.get("pedelecId"), pedelecId)
-                ).orderBy(
-                        builder.desc(root.get("endDateTime"))
                 );
                 break;
         }
