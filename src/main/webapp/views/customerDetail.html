@@ -3,16 +3,16 @@
     <h2>Customer: {{customer.firstname}} {{customer.lastname}}</h2>
 
     <div ng-switch="isEditing">
-        <button type="button" ui-sref="customers" class="btn btn-default" ng-disabled="isEditing"><span class="glyphicon glyphicon-arrow-left"></span>Back</button>
+        <button type="button" ui-sref="customers" class="btn btn-default" ng-disabled="isEditing"><span class="glyphicon glyphicon-arrow-left"></span> Back</button>
         <button type="button" ng-switch-when="false" ng-click="toggleEdit()" class="btn btn-default">
-            <span class="glyphicon glyphicon-pencil"></span>Edit Customer</button>
+            <span class="glyphicon glyphicon-pencil"></span> Edit Customer</button>
         <button type="button" ng-switch-when="true" ng-click="toggleEdit()" class="btn btn-warning">
-            <span class="glyphicon glyphicon-pencil"></span>Cancel</button>
+            <span class="glyphicon glyphicon-pencil"></span> Cancel</button>
         <button type="button" ng-click="saveCustomer()" class="btn btn-primary" ng-show="isEditing">
-            <span class="glyphicon glyphicon-pencil"></span>Save Customer</button>
+            <span class="glyphicon glyphicon-pencil"></span> Save Customer</button>
     </div>
 
-    <div class="table-responsive">
+    <div class="table-responsive voffset3">
         <table class="table" ng-switch="isEditing">
             <tr>
                 <th>Login</th>

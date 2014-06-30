@@ -3,16 +3,16 @@
     <h2>Station: {{station.name}}</h2>
 
     <div ng-switch="isEditing">
-        <button type="button" ui-sref="stations" class="btn btn-default" ng-disabled="isEditing"><span class="glyphicon glyphicon-arrow-left"></span>Back</button>
+        <button type="button" ui-sref="stations" class="btn btn-default" ng-disabled="isEditing"><span class="glyphicon glyphicon-arrow-left"></span> Back</button>
         <button type="button" ng-switch-when="false" ng-click="toggleEdit()" class="btn btn-default">
-            <span class="glyphicon glyphicon-pencil"></span>Edit Station</button>
+            <span class="glyphicon glyphicon-pencil"></span> Edit Station</button>
         <button type="button" ng-switch-when="true" ng-click="toggleEdit()" class="btn btn-warning">
-            <span class="glyphicon glyphicon-pencil"></span>Cancel</button>
+            <span class="glyphicon glyphicon-pencil"></span> Cancel</button>
         <button type="button" ng-click="saveStation()" class="btn btn-primary" ng-show="isEditing">
-            <span class="glyphicon glyphicon-pencil"></span>Save Station</button>
+            <span class="glyphicon glyphicon-pencil"></span> Save Station</button>
     </div>
 
-    <div class="table-responsive">
+    <div class="table-responsive voffset3">
         <table class="table" ng-switch="isEditing">
             <tr>
                 <th>Manufacturer ID</th>
