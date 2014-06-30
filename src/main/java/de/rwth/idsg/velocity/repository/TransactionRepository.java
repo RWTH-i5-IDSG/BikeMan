@@ -43,7 +43,7 @@ public interface TransactionRepository {
     * @param resultSize   Limits the max number or results that are returned.
     *
     */
-    List<ViewTransactionDTO> findByUserId(Long userId, Integer resultSize) throws BackendException;
+    List<ViewTransactionDTO> findByLogin(String login, Integer resultSize) throws BackendException;
 
     /*
     * Find the OPEN (ONGOING) transaction for ONE pedelec.

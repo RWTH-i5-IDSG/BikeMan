@@ -23,7 +23,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
 
     private static final Logger log = LoggerFactory.getLogger(TransactionRepositoryImpl.class);
 
-    private enum FindType { ALL, CLOSED, BY_PEDELEC_ID, BY_USER_ID };
+    private enum FindType { ALL, CLOSED, BY_PEDELEC_ID, BY_LOGIN };
 
     @PersistenceContext
     EntityManager em;
@@ -65,10 +65,10 @@ public class TransactionRepositoryImpl implements TransactionRepository {
     }
 
     @Override
-    public List<ViewTransactionDTO> findByUserId(Long userId, Integer resultSize) throws BackendException {
+    public List<ViewTransactionDTO> findByLogin(String login, Integer resultSize) throws BackendException {
         try {
             TypedQuery<ViewTransactionDTO> tq = em.createQuery(
-                    getTransactionQuery(FindType.BY_USER_ID, null, userId)
+                    getTransactionQuery(FindType.BY_LOGIN, null, login)
             );
 
             tq.setMaxResults(resultSize);
@@ -135,7 +135,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         // TODO
     }
 
-    private CriteriaQuery<ViewTransactionDTO> getTransactionQuery(FindType findType, Long pedelecId, Long userId) {
+    private CriteriaQuery<ViewTransactionDTO> getTransactionQuery(FindType findType, Long pedelecId, String login) {
         CriteriaBuilder builder = em.getCriteriaBuilder();
         CriteriaQuery<ViewTransactionDTO> criteria = builder.createQuery(ViewTransactionDTO.class);
         Root<Transaction> root = criteria.from(Transaction.class);
@@ -190,9 +190,9 @@ public class TransactionRepositoryImpl implements TransactionRepository {
                 );
                 break;
 
-            case BY_USER_ID:
+            case BY_LOGIN:
                 criteria.where(
-                        builder.equal(customerJoin.get("userId"), userId)
+                        builder.equal(customerJoin.get("login"), login)
                 );
                 break;
         }
