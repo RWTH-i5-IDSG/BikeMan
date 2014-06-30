@@ -78,8 +78,8 @@
                     <td>{{slot.isOccupied | occupiedFilter}}</td>
                     <td>{{slot.state}}</td>
                     <td ng-switch="slot.isOccupied">
-                        <a ng-switch-when="true" ui-sref="pedelecs({pedelecId: slot.pedelec.pedelecId})">{{slot.pedelec | pedelecViewFilter}}</a>
-                        <span ng-switch-when="false" ui-sref="pedelecs({pedelecId: slot.pedelec.pedelecId})">{{slot.pedelec | pedelecViewFilter}}</span>
+                        <a ng-switch-when="true" ui-sref="pedelecDetail({pedelecId: slot.pedelec.pedelecId})">{{slot.pedelec | pedelecViewFilter}}</a>
+                        <span ng-switch-when="false" ui-sref="pedelecDetail({pedelecId: slot.pedelec.pedelecId})">{{slot.pedelec | pedelecViewFilter}}</span>
                     </td>
                 </tr>
             </tbody>
