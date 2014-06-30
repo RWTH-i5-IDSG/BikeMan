@@ -76,9 +76,9 @@ velocityApp.controller('PedelecCreateController', ['$scope', 'Pedelec', '$timeou
             Pedelec.save($scope.pedelec,
                 function () {
                     $scope.createSuccess = true;
+                    $scope.clear();
                     $timeout(function () {
                         $scope.createSuccess = false;
-                        $scope.clear();
                     }, 3000);
                 });
         };

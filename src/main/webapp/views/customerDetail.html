@@ -21,7 +21,7 @@
             </tr>
             <tr>
                 <th>Name</th>
-                <td ng-switch-when="false">{{customer.firstname}} <br>{{customer.lastname}}</td>
+                <td ng-switch-when="false">{{customer.firstname}} {{customer.lastname}}</td>
                 <td ng-switch-when="true">
                     <input type="text" class="form-control" ng-model="customer.firstname">
                     <input type="text" class="form-control" ng-model="customer.lastname">
@@ -35,6 +35,10 @@
                     ZIP: <input type="text" class="form-control" ng-model="customer.address.zip">
                     City: <input type="text" class="form-control" ng-model="customer.address.city">
                     Country: <input type="text" class="form-control" ng-model="customer.address.country">
+            </tr>
+            <tr>
+                <th>Customer ID</th>
+                <td>{{customer.customerId}}</td>
             </tr>
             <tr>
                 <th>Card ID</th>
@@ -54,11 +58,33 @@
         </table>
     </div>
 
-    <div class="table-responsive">
-        <h4>Transactions for customer {{customer.firstname}} {{ customer.lastname }}</h4>
+    <h3>Transactions:</h3>
 
-        <table>
-            <tr>TODO: INSERT TRANSACTIONS HERE?!!?</tr>
+    <div class="table-responsive voffset3">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <!--<th>Customer</th>-->
+                <th>Pedelec</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+                <th>From Location</th>
+                <th>To Location</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-class='{warning:$first && pedelec.inTransaction}'  ng-repeat="transaction in transactions">
+                <!--<td>{{transaction.customer.lastname}}, {{transaction.customer.firstname}}</td>-->
+                <td>{{transaction.pedelec.manufacturerId}}</td>
+                <td>{{transaction.startDateTime | date:'short'}}</td>
+                <td><span ng-show="!transaction.toStation.stationId == null || !$first">{{transaction.endDateTime | date:'short'}}</span></td>
+                <td>{{transaction.fromStation.name}} ({{transaction.fromStation.slotPosition}})</td>
+                <td>
+                    <span ng-show="!transaction.toStation.stationId == null || !$first">{{transaction.toStation.name}} ({{transaction.toStation.slotPosition}})
+                    </span>
+                </td>
+            </tr>
+            </tbody>
         </table>
     </div>
 

@@ -73,6 +73,8 @@
     "login": {
         "title": "Authentication",
         "form": {
+            "email": "Email",
+            "email.placeholder": "Your email",
             "username": "Login",
             "username.placeholder": "Your login",
             "password": "Password",

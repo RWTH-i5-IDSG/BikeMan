@@ -7,6 +7,7 @@ velocityApp.factory('Transaction', ['$resource',
             'queryOpenTransactions':{ method: 'GET', isArray: true, url: 'app/rest/transactions/open'},
             'queryClosedTransactions':{ method: 'GET', isArray: true, url: 'app/rest/transactions/closed'},
             'get': { method: 'GET'},
-            'queryTransactionsOfPedelecWithSize' : { method: 'GET', isArray: true, url: "app/rest/transactions/pedelec/:pedelecId"}
+            'queryTransactionsOfPedelecWithSize' : { method: 'GET', isArray: true, url: "app/rest/transactions/pedelec/:pedelecId"},
+            'queryTransactionsOfCustomerWithSize': { method: 'GET', isArray: true, url: "app/rest/transactions/customer/:login"}
         });
     }]);

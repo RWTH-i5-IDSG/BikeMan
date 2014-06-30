@@ -82,9 +82,9 @@ velocityApp.controller('StationCreateController', ['$scope', 'CreateEditStation'
             CreateEditStation.save($scope.station,
                 function () {
                     $scope.createSuccess = true;
+                    $scope.clear();
                     $timeout(function () {
                         $scope.createSuccess = false;
-                        $scope.clear();
                     }, 3000);
                 });
         };

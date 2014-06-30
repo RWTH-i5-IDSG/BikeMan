@@ -24,7 +24,7 @@
                 <td>{{transaction.startDateTime | date:'short'}}</td>
                 <td>{{transaction.endDateTime | date:'short'}}</td>
                 <td>{{transaction.fromStation.name}} ({{transaction.fromStation.slotPosition}})</td>
-                <td>{{transaction.toStation.name}} ({{transaction.toStation.slotPosition}})</td>
+                <td><span ng-hide="transaction.toStation.name == null">{{transaction.toStation.name}} ({{transaction.toStation.slotPosition}})</span></td>
             </tr>
             </tbody>
         </table>

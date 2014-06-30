@@ -58,10 +58,15 @@ velocityApp.controller('CustomerController', ['$scope', 'resolvedCustomer', 'Cus
         };
     }]);
 
-velocityApp.controller('CustomerDetailController', ['$scope', 'resolvedCustomer', 'Customer',
-    function($scope, resolvedCustomer, Customer) {
+velocityApp.controller('CustomerDetailController', ['$scope', 'resolvedCustomer', 'Customer', 'Transaction', '$stateParams',
+    function($scope, resolvedCustomer, Customer, Transaction, $stateParams) {
 
         $scope.customer = resolvedCustomer;
+
+        // TODO resultSize?!
+        $scope.resultSize = 5;
+
+        $scope.transactions = Transaction.queryTransactionsOfCustomerWithSize({login : $stateParams.login, resultSize : $scope.resultSize});
 
         $scope.isEditing = false;
 
