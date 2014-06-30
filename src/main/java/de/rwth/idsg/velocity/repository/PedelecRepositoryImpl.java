@@ -109,7 +109,7 @@ public class PedelecRepositoryImpl implements PedelecRepository {
             return em.createQuery(criteria).getSingleResult();
 
         } catch (Exception e) {
-            log.error("Exception ocurred: {}", e);
+            log.error("Exception happened: {}", e);
             throw new BackendException("Failed to find pedelec with pedelecId " + pedelecId);
         }
     }
@@ -128,9 +128,11 @@ public class PedelecRepositoryImpl implements PedelecRepository {
             log.debug("Created new pedelec {}", pedelec);
 
         } catch (EntityExistsException e) {
+            log.error("Exception happened: {}", e);
             throw new BackendException("This pedelec exists already.");
 
         } catch (Exception e) {
+            log.error("Exception happened: {}", e);
             throw new BackendException("Failed to create a new pedelec.");
         }
     }
@@ -150,6 +152,7 @@ public class PedelecRepositoryImpl implements PedelecRepository {
             log.debug("Updated pedelec {}", pedelec);
 
         } catch (Exception e) {
+            log.error("Exception happened: {}", e);
             throw new BackendException("Failed to update pedelec with pedelecId " + pedelecId);
         }
     }
@@ -163,6 +166,7 @@ public class PedelecRepositoryImpl implements PedelecRepository {
             log.debug("Deleted pedelec {}", pedelec);
 
         } catch (Exception e) {
+            log.error("Exception happened: {}", e);
             throw new BackendException("Failed to delete pedelec with pedelec " + pedelecId);
         }
     }
