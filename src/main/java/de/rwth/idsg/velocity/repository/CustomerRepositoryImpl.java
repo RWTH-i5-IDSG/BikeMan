@@ -44,6 +44,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
             ).getResultList();
 
         } catch (Exception e) {
+            log.error("Exception happened: {}", e);
             throw new BackendException("Failed during database operation.");
         }
     }
@@ -58,6 +59,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
             ).getResultList();
 
         } catch (Exception e) {
+            log.error("Exception happened: {}", e);
             throw new BackendException("Failed during database operation.");
         }
 
@@ -77,9 +79,11 @@ public class CustomerRepositoryImpl implements CustomerRepository {
             ).getSingleResult();
 
         } catch (NoResultException e) {
+            log.error("Exception happened: {}", e);
             throw new BackendException("No customer found with login " + login);
 
         } catch (Exception e) {
+            log.error("Exception happened: {}", e);
             throw new BackendException("Failed during database operation.");
         }
     }
@@ -93,6 +97,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
             log.debug("Activated customer {}", customer);
 
         } catch (Exception e) {
+            log.error("Exception happened: {}", e);
             throw new BackendException("Failed to activate customer with userId " + userId);
         }
     }
@@ -106,6 +111,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
             log.debug("Deactivated customer {}", customer);
 
         } catch (Exception e) {
+            log.error("Exception happened: {}", e);
             throw new BackendException("Failed to deactivate customer with userId " + userId);
         }
     }
@@ -120,9 +126,11 @@ public class CustomerRepositoryImpl implements CustomerRepository {
             log.debug("Created new customer {}", customer);
 
         } catch (EntityExistsException e) {
+            log.error("Exception happened: {}", e);
             throw new BackendException("This customer exists already.");
 
         } catch (Exception e) {
+            log.error("Exception happened: {}", e);
             throw new BackendException("Failed to create a new customer.");
         }
     }
@@ -141,6 +149,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
             log.debug("Updated customer {}", customer);
 
         } catch (Exception e) {
+            log.error("Exception happened: {}", e);
             throw new BackendException("Failed to update customer with userId " + userId);
         }
     }
@@ -153,6 +162,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
             log.debug("Deleted customer {}", customer);
 
         } catch (Exception e) {
+            log.error("Exception happened: {}", e);
             throw new BackendException("Failed to delete customer with userId " + userId);
         }
     }

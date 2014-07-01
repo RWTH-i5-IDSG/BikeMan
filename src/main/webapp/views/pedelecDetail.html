@@ -3,13 +3,13 @@
     <h2>Pedelec: {{pedelec.manufacturerId}}</h2>
 
     <div ng-switch="isEditing">
-        <button type="button" ui-sref="pedelecs" class="btn btn-default" ng-disabled="isEditing"><span class="glyphicon glyphicon-arrow-left"></span>Back</button>
+        <button type="button" ui-sref="pedelecs" class="btn btn-default" ng-disabled="isEditing"><span class="glyphicon glyphicon-arrow-left"></span> Back</button>
         <button type="button" ng-switch-when="false" ng-click="toggleEdit()" class="btn btn-default">
-            <span class="glyphicon glyphicon-pencil"></span>Edit Pedelec</button>
+            <span class="glyphicon glyphicon-pencil"></span> Edit Pedelec</button>
         <button type="button" ng-switch-when="true" ng-click="toggleEdit()" class="btn btn-warning">
-            <span class="glyphicon glyphicon-pencil"></span>Cancel</button>
+            <span class="glyphicon glyphicon-pencil"></span> Cancel</button>
         <button type="button" ng-click="savePedelec()" class="btn btn-primary" ng-show="isEditing">
-            <span class="glyphicon glyphicon-pencil"></span>Save Pedelec</button>
+            <span class="glyphicon glyphicon-pencil"></span> Save Pedelec</button>
     </div>
 
     <div class="table-responsive voffset3">
@@ -39,10 +39,27 @@
                     </select>
                 </td>
             </tr>
+            <tr>
+                <th>In Transaction</th>
+                <td>{{pedelec.inTransaction | occupiedFilter}}</td>
+            </tr>
         </table>
     </div>
 
     <h3>Transactions:</h3>
+
+    <div class="form-inline">
+        <span>
+            Number of transactions to display:
+        </span>
+
+        <select type="text"
+                ng-model="resultSize"
+                ng-options="value for value in resultSizeValues"
+                class="form-control"
+                ng-change="updateTransactions()">
+        </select>
+    </div>
 
     <div class="table-responsive voffset3">
         <table class="table table-striped">

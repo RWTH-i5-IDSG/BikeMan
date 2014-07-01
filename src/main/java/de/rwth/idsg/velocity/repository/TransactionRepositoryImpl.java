@@ -23,7 +23,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
 
     private static final Logger log = LoggerFactory.getLogger(TransactionRepositoryImpl.class);
 
-    private enum FindType { ALL, CLOSED, BY_PEDELEC_ID };
+    private enum FindType { ALL, CLOSED, BY_PEDELEC_ID, BY_LOGIN };
 
     @PersistenceContext
     EntityManager em;
@@ -32,9 +32,10 @@ public class TransactionRepositoryImpl implements TransactionRepository {
     public List<ViewTransactionDTO> findAll() throws BackendException {
         try {
             return em.createQuery(
-                    getTransactionQuery(FindType.ALL, null)
+                    getTransactionQuery(FindType.ALL, null, null)
             ).getResultList();
         } catch (Exception e) {
+            log.error("Exception happened: {}", e);
             throw new BackendException("Failed during database operation.");
         }
     }
@@ -43,9 +44,10 @@ public class TransactionRepositoryImpl implements TransactionRepository {
     public List<ViewTransactionDTO> findClosed() throws BackendException {
         try {
             return em.createQuery(
-                    getTransactionQuery(FindType.CLOSED, null)
+                    getTransactionQuery(FindType.CLOSED, null, null)
             ).getResultList();
         } catch (Exception e) {
+            log.error("Exception happened: {}", e);
             throw new BackendException("Failed during database operation.");
         }
     }
@@ -54,12 +56,32 @@ public class TransactionRepositoryImpl implements TransactionRepository {
     public List<ViewTransactionDTO> findByPedelecId(Long pedelecId, Integer resultSize) throws BackendException {
         try {
             TypedQuery<ViewTransactionDTO> tq = em.createQuery(
-                    getTransactionQuery(FindType.BY_PEDELEC_ID, pedelecId)
+                    getTransactionQuery(FindType.BY_PEDELEC_ID, pedelecId, null)
             );
 
-            tq.setMaxResults(resultSize);
+            if (resultSize != null) {
+                tq.setMaxResults(resultSize);
+            }
             return tq.getResultList();
         } catch (Exception e) {
+            log.error("Exception happened: {}", e);
+            throw new BackendException("Failed during database operation.");
+        }
+    }
+
+    @Override
+    public List<ViewTransactionDTO> findByLogin(String login, Integer resultSize) throws BackendException {
+        try {
+            TypedQuery<ViewTransactionDTO> tq = em.createQuery(
+                    getTransactionQuery(FindType.BY_LOGIN, null, login)
+            );
+
+            if (resultSize != null) {
+                tq.setMaxResults(resultSize);
+            }
+            return tq.getResultList();
+        } catch (Exception e) {
+            log.error("Exception happened: {}", e);
             throw new BackendException("Failed during database operation.");
         }
     }
@@ -121,7 +143,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         // TODO
     }
 
-    private CriteriaQuery<ViewTransactionDTO> getTransactionQuery(FindType findType, Long pedelecId) {
+    private CriteriaQuery<ViewTransactionDTO> getTransactionQuery(FindType findType, Long pedelecId, String login) {
         CriteriaBuilder builder = em.getCriteriaBuilder();
         CriteriaQuery<ViewTransactionDTO> criteria = builder.createQuery(ViewTransactionDTO.class);
         Root<Transaction> root = criteria.from(Transaction.class);
@@ -173,6 +195,12 @@ public class TransactionRepositoryImpl implements TransactionRepository {
             case BY_PEDELEC_ID:
                 criteria.where(
                         builder.equal(pedelecJoin.get("pedelecId"), pedelecId)
+                );
+                break;
+
+            case BY_LOGIN:
+                criteria.where(
+                        builder.equal(customerJoin.get("login"), login)
                 );
                 break;
         }

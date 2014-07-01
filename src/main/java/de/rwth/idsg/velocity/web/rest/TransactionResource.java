@@ -31,6 +31,7 @@ public class TransactionResource {
     private static final String BASE_PATH_OPEN = "/rest/transactions/open";
     private static final String BASE_PATH_CLOSED = "/rest/transactions/closed";
     private static final String PEDELEC_ID_PATH = "/rest/transactions/pedelec/{pedelecId}";
+    private static final String CUSTOMER_LOGIN_PATH = "/rest/transactions/customer/{login:.+}";
 
     @Timed
     @RequestMapping(value = BASE_PATH, method = RequestMethod.GET)
@@ -41,9 +42,16 @@ public class TransactionResource {
 
     @Timed
     @RequestMapping(value = PEDELEC_ID_PATH, method = RequestMethod.GET)
-    public List<ViewTransactionDTO> getByPedelecId(@PathVariable Long pedelecId, @RequestParam Integer resultSize) throws BackendException {
+    public List<ViewTransactionDTO> getByPedelecId(@PathVariable Long pedelecId, @RequestParam(required = false) Integer resultSize) throws BackendException {
         log.debug("REST request to get last {} transactions for pedelec with pedelecId {}", resultSize, pedelecId);
         return transactionRepository.findByPedelecId(pedelecId, resultSize);
+    }
+
+    @Timed
+    @RequestMapping(value = CUSTOMER_LOGIN_PATH, method = RequestMethod.GET)
+    public List<ViewTransactionDTO> getByLogin(@PathVariable String login, @RequestParam(required = false) Integer resultSize) throws BackendException {
+        log.debug("REST request to get last {} transactions for user with login {}", resultSize, login);
+        return transactionRepository.findByLogin(login, resultSize);
     }
 
     @Timed

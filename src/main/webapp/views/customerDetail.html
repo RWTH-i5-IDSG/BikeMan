@@ -3,16 +3,16 @@
     <h2>Customer: {{customer.firstname}} {{customer.lastname}}</h2>
 
     <div ng-switch="isEditing">
-        <button type="button" ui-sref="customers" class="btn btn-default" ng-disabled="isEditing"><span class="glyphicon glyphicon-arrow-left"></span>Back</button>
+        <button type="button" ui-sref="customers" class="btn btn-default" ng-disabled="isEditing"><span class="glyphicon glyphicon-arrow-left"></span> Back</button>
         <button type="button" ng-switch-when="false" ng-click="toggleEdit()" class="btn btn-default">
-            <span class="glyphicon glyphicon-pencil"></span>Edit Customer</button>
+            <span class="glyphicon glyphicon-pencil"></span> Edit Customer</button>
         <button type="button" ng-switch-when="true" ng-click="toggleEdit()" class="btn btn-warning">
-            <span class="glyphicon glyphicon-pencil"></span>Cancel</button>
+            <span class="glyphicon glyphicon-pencil"></span> Cancel</button>
         <button type="button" ng-click="saveCustomer()" class="btn btn-primary" ng-show="isEditing">
-            <span class="glyphicon glyphicon-pencil"></span>Save Customer</button>
+            <span class="glyphicon glyphicon-pencil"></span> Save Customer</button>
     </div>
 
-    <div class="table-responsive">
+    <div class="table-responsive voffset3">
         <table class="table" ng-switch="isEditing">
             <tr>
                 <th>Login</th>
@@ -21,7 +21,7 @@
             </tr>
             <tr>
                 <th>Name</th>
-                <td ng-switch-when="false">{{customer.firstname}} <br>{{customer.lastname}}</td>
+                <td ng-switch-when="false">{{customer.firstname}} {{customer.lastname}}</td>
                 <td ng-switch-when="true">
                     <input type="text" class="form-control" ng-model="customer.firstname">
                     <input type="text" class="form-control" ng-model="customer.lastname">
@@ -35,6 +35,10 @@
                     ZIP: <input type="text" class="form-control" ng-model="customer.address.zip">
                     City: <input type="text" class="form-control" ng-model="customer.address.city">
                     Country: <input type="text" class="form-control" ng-model="customer.address.country">
+            </tr>
+            <tr>
+                <th>Customer ID</th>
+                <td>{{customer.customerId}}</td>
             </tr>
             <tr>
                 <th>Card ID</th>
@@ -54,11 +58,44 @@
         </table>
     </div>
 
-    <div class="table-responsive">
-        <h4>Transactions for customer {{customer.firstname}} {{ customer.lastname }}</h4>
+    <h3>Transactions:</h3>
 
-        <table>
-            <tr>TODO: INSERT TRANSACTIONS HERE?!!?</tr>
+    <div class="form-inline">
+        <span>
+            Number of transactions to display:
+        </span>
+
+        <select type="text"
+                ng-model="resultSize"
+                ng-options="value for value in resultSizeValues"
+                class="form-control"
+                ng-change="updateTransactions()">
+        </select>
+    </div>
+
+    <div class="table-responsive voffset3">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Pedelec</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+                <th>From Location</th>
+                <th>To Location</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-class='{warning:transaction.toStation.stationId == null}'  ng-repeat="transaction in transactions">
+                <td>{{transaction.pedelec.manufacturerId}}</td>
+                <td>{{transaction.startDateTime | date:'short'}}</td>
+                <td><span ng-hide="transaction.toStation.stationId == null">{{transaction.endDateTime | date:'short'}}</span></td>
+                <td>{{transaction.fromStation.name}} ({{transaction.fromStation.slotPosition}})</td>
+                <td>
+                    <span ng-hide="transaction.toStation.stationId == null">{{transaction.toStation.name}} ({{transaction.toStation.slotPosition}})
+                    </span>
+                </td>
+            </tr>
+            </tbody>
         </table>
     </div>
 

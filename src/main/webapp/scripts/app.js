@@ -161,15 +161,22 @@ velocityApp
                         var alertType = 'alert-danger';
                         console.log(errorResponse);
                         switch (errorResponse.status) {
+                            // remove this because 401 is used for checking user auth
                             case 401:
-                                showMessage('Wrong usename or password', 'errorMessage', errorInterval, alertType);
+                                // do nothing for now
+//                                showMessage('Wrong usename or password', 'errorMessage', errorInterval, alertType);
                                 break;
                             case 403:
                                 showMessage('You don\'t have the right to do this', 'errorMessage', errorInterval, alertType);
                                 break;
+                            case 404:
+                                showMessage('Not Found', 'errorMessage', errorInterval, alertType);
+                                break;
                             default:
 //                                showMessage('Error ' + errorResponse.status + ': ' + errorResponse.data.message, 'errorMessage', errorInterval, alertType);
-                                showMessage('Something went wrong :( Reason: ' + errorResponse.data.message, 'errorMessage', errorInterval, alertType);
+                                console.log(errorResponse);
+                                var alertText =
+                                showMessage('Something went wrong :( Reason: ' + errorResponse.data.message + ' ' + errorResponse.data.error_description, 'errorMessage', errorInterval, alertType);
                         }
                         return $q.reject(errorResponse);
                     });
@@ -210,14 +217,17 @@ velocityApp
                     $rootScope.isAuthorized = AuthenticationSharedService.isAuthorized;
                     $rootScope.userRoles = USER_ROLES;
                     AuthenticationSharedService.valid(toState.access.authorizedRoles);
+
+                    if ($rootScope.authenticated && toState.name == "login")
+                        $location.path("main").replace();
                 });
 
                 // Call when the the client is confirmed
                 $rootScope.$on('event:auth-loginConfirmed', function(data) {
                     $rootScope.authenticated = true;
-//                    if ($location.path() === "/login") {
+                    if ($location.path() === "/login") {
                         $location.path('/main').replace();
-//                    }
+                    }
                 });
 
                 // Call when the 401 response is returned by the server
