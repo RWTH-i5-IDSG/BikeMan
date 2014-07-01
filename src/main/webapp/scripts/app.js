@@ -9,14 +9,7 @@ var velocityApp = angular.module('velocityApp', ['http-auth-interceptor', 'tmh.d
 velocityApp
     .config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$translateProvider',  'tmhDynamicLocaleProvider', 'USER_ROLES', '$compileProvider',
         function ($stateProvider, $urlRouterProvider, $httpProvider, $translateProvider, tmhDynamicLocaleProvider, USER_ROLES, $compileProvider) {
-//            $urlRouterProvider.otherwise('/login')
-//                    templateUrl: 'views/main.html',
-//                    controller: 'MainController',
-//                    access: {
-//                            authorizedRoles: [USER_ROLES.all]
-//                        authorizedRoles: '*'
-//                    }
-//                })
+            $urlRouterProvider.otherwise('/login')
             $stateProvider
                 .state('main', {
                     url: '/main',
@@ -26,17 +19,6 @@ velocityApp
                         authorizedRoles: [USER_ROLES.all]
                     }
                 })
-//                .state("main.layout", {
-//                    views: {
-//                        'login': {
-//                            templateUrl: 'views/login.html',
-//                            controller: 'LoginController'
-//                        },
-//                        'test': {
-//                            templateUrl: 'views/error.html'
-//                        }
-//                    }
-//                })
                 .state('login', {
                     url: '/login',
                     templateUrl: 'views/login.html',
@@ -211,38 +193,36 @@ velocityApp
         function ($rootScope, $state) {
             $state.transitionTo('main');
         }])
-        .run(['$rootScope', '$location', '$http', 'AuthenticationSharedService', 'Session', 'USER_ROLES',
-            function($rootScope, $location, $http, AuthenticationSharedService, Session, USER_ROLES) {
+        .run(['$rootScope', '$location', '$http', 'AuthenticationSharedService', 'Session', 'USER_ROLES', '$state',
+            function($rootScope, $location, $http, AuthenticationSharedService, Session, USER_ROLES, $state) {
                 $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {
                     $rootScope.isAuthorized = AuthenticationSharedService.isAuthorized;
                     $rootScope.userRoles = USER_ROLES;
                     AuthenticationSharedService.valid(toState.access.authorizedRoles);
 
-                    if ($rootScope.authenticated && toState.name == "login")
-                        $location.path("main").replace();
+                    if ($rootScope.authenticated && toState.name == "login") {
+                        $state.go("main");
+                    }
                 });
 
                 // Call when the the client is confirmed
                 $rootScope.$on('event:auth-loginConfirmed', function(data) {
                     $rootScope.authenticated = true;
-                    if ($location.path() === "/login") {
-                        $location.path('/main').replace();
-                    }
+                    $state.go("main");
                 });
 
                 // Call when the 401 response is returned by the server
                 $rootScope.$on('event:auth-loginRequired', function(rejection) {
                     Session.invalidate();
                     $rootScope.authenticated = false;
-                    if ($location.path() !== "/" && $location.path() !== "") {
-                        $location.path('/login').replace();
-                    }
+                    $state.go("login");
                 });
 
                 // Call when the 403 response is returned by the server
                 $rootScope.$on('event:auth-notAuthorized', function(rejection) {
                     $rootScope.errorMessage = 'errors.403';
-                    $location.path('/error').replace();
+//                    $location.path('/error').replace();
+                    $state.go("error");
                 });
 
                 // Call when the user logs out
