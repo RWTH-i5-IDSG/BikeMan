@@ -57,7 +57,7 @@
                     <button ng-if="!customer.isActivated" class="btn btn-sm btn-default" type="button" ng-click="toggleActivation(customer.userId, customer.isActivated)"><span class="glyphicon glyphicon-remove"/> Deactivated</button>
 
                 </td>
-                <td>{{customer.birthday | date:'shortDate'}}</td>
+                <td>{{customer.birthday | date:'mediumDate'}}</td>
                 <td><a ui-sref="customerDetail({login:'{{customer.login}}'})">Details</a></td>
             </tr>
             </tbody>

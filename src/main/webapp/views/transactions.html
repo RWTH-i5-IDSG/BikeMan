@@ -21,8 +21,8 @@
             <tr ng-repeat="transaction in transactions">
                 <td>{{transaction.customer.lastname}}, {{transaction.customer.firstname}}</td>
                 <td>{{transaction.pedelec.manufacturerId}}</td>
-                <td>{{transaction.startDateTime | date:'short'}}</td>
-                <td>{{transaction.endDateTime | date:'short'}}</td>
+                <td>{{transaction.startDateTime | date:'medium'}}</td>
+                <td>{{transaction.endDateTime | date:'medium'}}</td>
                 <td>{{transaction.fromStation.name}} ({{transaction.fromStation.slotPosition}})</td>
                 <td><span ng-hide="transaction.toStation.name == null">{{transaction.toStation.name}} ({{transaction.toStation.slotPosition}})</span></td>
             </tr>

@@ -47,7 +47,7 @@
             </tr>
             <tr>
                 <th>Birthday</th>
-                <td ng-switch-when="false">{{customer.birthday | date: 'shortDate'}}</td>
+                <td ng-switch-when="false">{{customer.birthday | date: 'mediumDate'}}</td>
                 <td ng-switch-when="true"><input type="text" class="form-control" ng-model="customer.birthday"></td>
             </tr>
             <tr>
@@ -87,8 +87,8 @@
             <tbody>
             <tr ng-class='{warning:transaction.toStation.stationId == null}'  ng-repeat="transaction in transactions">
                 <td>{{transaction.pedelec.manufacturerId}}</td>
-                <td>{{transaction.startDateTime | date:'short'}}</td>
-                <td><span ng-hide="transaction.toStation.stationId == null">{{transaction.endDateTime | date:'short'}}</span></td>
+                <td>{{transaction.startDateTime | date:'medium'}}</td>
+                <td><span ng-hide="transaction.toStation.stationId == null">{{transaction.endDateTime | date:'medium'}}</span></td>
                 <td>{{transaction.fromStation.name}} ({{transaction.fromStation.slotPosition}})</td>
                 <td>
                     <span ng-hide="transaction.toStation.stationId == null">{{transaction.toStation.name}} ({{transaction.toStation.slotPosition}})
