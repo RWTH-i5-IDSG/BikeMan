@@ -194,8 +194,23 @@ velocityApp
             $state.transitionTo('main');
         }])
         .run(['$rootScope', '$location', '$http', 'AuthenticationSharedService', 'Session', 'USER_ROLES', '$state',
+
             function($rootScope, $location, $http, AuthenticationSharedService, Session, USER_ROLES, $state) {
+
+                var lastState;
+
                 $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {
+
+//                    TODO: WARNING! HACK! Transitions between login <> otherState are not always correct!
+                    if (fromState.name === "login") {
+                        lastState = toState;
+                    } else {
+                        lastState = fromState
+                    };
+
+                    console.log("fromState: " + fromState.name);
+                    console.log("toState: " + toState.name);
+
                     $rootScope.isAuthorized = AuthenticationSharedService.isAuthorized;
                     $rootScope.userRoles = USER_ROLES;
                     AuthenticationSharedService.valid(toState.access.authorizedRoles);
@@ -208,11 +223,12 @@ velocityApp
                 // Call when the the client is confirmed
                 $rootScope.$on('event:auth-loginConfirmed', function(data) {
                     $rootScope.authenticated = true;
-                    $state.go("main");
+                    $state.go(lastState);
                 });
 
                 // Call when the 401 response is returned by the server
                 $rootScope.$on('event:auth-loginRequired', function(rejection) {
+
                     Session.invalidate();
                     $rootScope.authenticated = false;
                     $state.go("login");
