@@ -59,7 +59,9 @@ public class TransactionRepositoryImpl implements TransactionRepository {
                     getTransactionQuery(FindType.BY_PEDELEC_ID, pedelecId, null)
             );
 
-            tq.setMaxResults(resultSize);
+            if (resultSize != null) {
+                tq.setMaxResults(resultSize);
+            }
             return tq.getResultList();
         } catch (Exception e) {
             log.error("Exception happened: {}", e);
@@ -74,7 +76,9 @@ public class TransactionRepositoryImpl implements TransactionRepository {
                     getTransactionQuery(FindType.BY_LOGIN, null, login)
             );
 
-            tq.setMaxResults(resultSize);
+            if (resultSize != null) {
+                tq.setMaxResults(resultSize);
+            }
             return tq.getResultList();
         } catch (Exception e) {
             log.error("Exception happened: {}", e);
