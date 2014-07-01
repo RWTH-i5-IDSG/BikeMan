@@ -63,8 +63,10 @@ velocityApp.controller('CustomerDetailController', ['$scope', 'resolvedCustomer'
 
         $scope.customer = resolvedCustomer;
 
-        // TODO resultSize?!
-        $scope.resultSize = 5;
+        $scope.resultSizeValues = [10, 20, 50, 100, "all"];
+
+        // set initial resultSize to 10
+        $scope.resultSize = 10;
 
         $scope.transactions = Transaction.queryTransactionsOfCustomerWithSize({login : $stateParams.login, resultSize : $scope.resultSize});
 
@@ -73,6 +75,14 @@ velocityApp.controller('CustomerDetailController', ['$scope', 'resolvedCustomer'
         $scope.toggleEdit = function () {
             $scope.customer = Customer.searchByLogin({login: $scope.customer.login});
             $scope.isEditing = !$scope.isEditing;
+        }
+
+        $scope.updateTransactions = function () {
+            if ($scope.resultSize === "all") {
+                $scope.transactions = Transaction.queryTransactionsOfCustomerWithSize({login : $stateParams.login});
+            } else {
+                $scope.transactions = Transaction.queryTransactionsOfCustomerWithSize({login : $stateParams.login, resultSize : $scope.resultSize});
+            }
         }
 
         $scope.saveCustomer = function () {

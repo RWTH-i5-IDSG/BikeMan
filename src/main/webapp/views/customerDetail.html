@@ -60,11 +60,23 @@
 
     <h3>Transactions:</h3>
 
+    <div class="form-inline">
+        <span>
+            Number of transactions to display:
+        </span>
+
+        <select type="text"
+                ng-model="resultSize"
+                ng-options="value for value in resultSizeValues"
+                class="form-control"
+                ng-change="updateTransactions()">
+        </select>
+    </div>
+
     <div class="table-responsive voffset3">
         <table class="table table-striped">
             <thead>
             <tr>
-                <!--<th>Customer</th>-->
                 <th>Pedelec</th>
                 <th>Start Time</th>
                 <th>End Time</th>
@@ -74,7 +86,6 @@
             </thead>
             <tbody>
             <tr ng-class='{warning:transaction.toStation.stationId == null}'  ng-repeat="transaction in transactions">
-                <!--<td>{{transaction.customer.lastname}}, {{transaction.customer.firstname}}</td>-->
                 <td>{{transaction.pedelec.manufacturerId}}</td>
                 <td>{{transaction.startDateTime | date:'short'}}</td>
                 <td><span ng-hide="transaction.toStation.stationId == null">{{transaction.endDateTime | date:'short'}}</span></td>

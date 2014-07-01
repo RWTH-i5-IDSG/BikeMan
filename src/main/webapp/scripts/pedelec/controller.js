@@ -38,7 +38,9 @@ velocityApp.controller('PedelecDetailController', ['$scope', 'resolvedPedelec', 
 
         $scope.pedelec = resolvedPedelec;
 
-        $scope.resultSize = 5;
+        $scope.resultSizeValues = [10, 20, 50, 100, "all"];
+
+        $scope.resultSize = 10;
 
         $scope.transactions = Transaction.queryTransactionsOfPedelecWithSize({pedelecId : $stateParams.pedelecId, resultSize : $scope.resultSize});
 
@@ -47,6 +49,14 @@ velocityApp.controller('PedelecDetailController', ['$scope', 'resolvedPedelec', 
         $scope.toggleEdit = function () {
             $scope.pedelec = Pedelec.get({id: $scope.pedelec.pedelecId});
             $scope.isEditing = !$scope.isEditing;
+        }
+
+        $scope.updateTransactions = function () {
+            if ($scope.resultSize === "all") {
+                $scope.transactions = Transaction.queryTransactionsOfPedelecWithSize({pedelecId : $stateParams.pedelecId});
+            } else {
+                $scope.transactions = Transaction.queryTransactionsOfPedelecWithSize({pedelecId : $stateParams.pedelecId, resultSize : $scope.resultSize});
+            }
         }
 
         $scope.savePedelec = function () {

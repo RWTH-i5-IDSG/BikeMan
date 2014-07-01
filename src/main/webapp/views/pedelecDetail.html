@@ -48,6 +48,19 @@
 
     <h3>Transactions:</h3>
 
+    <div class="form-inline">
+        <span>
+            Number of transactions to display:
+        </span>
+
+        <select type="text"
+                ng-model="resultSize"
+                ng-options="value for value in resultSizeValues"
+                class="form-control"
+                ng-change="updateTransactions()">
+        </select>
+    </div>
+
     <div class="table-responsive voffset3">
         <table class="table table-striped">
             <thead>
