@@ -156,9 +156,9 @@ velocityApp
                                 break;
                             default:
 //                                showMessage('Error ' + errorResponse.status + ': ' + errorResponse.data.message, 'errorMessage', errorInterval, alertType);
-                                console.log(errorResponse);
-                                var alertText =
-                                showMessage('Something went wrong :( Reason: ' + errorResponse.data.message + ' ' + errorResponse.data.error_description, 'errorMessage', errorInterval, alertType);
+//                                console.log(errorResponse);
+                                showMessage(errorResponse.data.message, 'errorMessage', errorInterval, alertType);
+                                break;
                         }
                         return $q.reject(errorResponse);
                     });
