@@ -194,7 +194,12 @@ velocityApp
             $state.transitionTo('main');
         }])
         .run(['$rootScope', '$location', '$http', 'AuthenticationSharedService', 'Session', 'USER_ROLES', '$state',
+
             function($rootScope, $location, $http, AuthenticationSharedService, Session, USER_ROLES, $state) {
+
+                // We are storing the state (web-page) for later use (See Step 1 and 2 below)
+                var wantedState;
+
                 $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {
                     $rootScope.isAuthorized = AuthenticationSharedService.isAuthorized;
                     $rootScope.userRoles = USER_ROLES;
@@ -205,17 +210,27 @@ velocityApp
                     }
                 });
 
-                // Call when the the client is confirmed
-                $rootScope.$on('event:auth-loginConfirmed', function(data) {
-                    $rootScope.authenticated = true;
-                    $state.go("main");
-                });
-
                 // Call when the 401 response is returned by the server
                 $rootScope.$on('event:auth-loginRequired', function(rejection) {
+
+                    // Step 1:
+                    // Save the state that the user wanted to see
+                    // to route to after login is confirmed (see Step 2)
+                    wantedState = $state.current;
+
                     Session.invalidate();
                     $rootScope.authenticated = false;
                     $state.go("login");
+                });
+
+                // Call when the the client is confirmed
+                $rootScope.$on('event:auth-loginConfirmed', function(data) {
+                    $rootScope.authenticated = true;
+
+                    // Step 2:
+                    // Since the login is confirmed now, route to the state
+                    // that the user wanted to see beforehand
+                    $state.go(wantedState);
                 });
 
                 // Call when the 403 response is returned by the server

@@ -120,10 +120,14 @@ velocityApp.factory('AuthenticationSharedService', ['$rootScope', '$http', 'auth
                     httpHeaders.common['Authorization'] = 'Bearer ' + data.access_token;
                     AccessToken.set(data);
 
-                    Account.get(function(data) {
-                        Session.create(data.login, data.firstName, data.lastName, data.email, data.roles);
+                    Account.get(function(accountData) {
+                        Session.create(accountData.login, accountData.firstName, accountData.lastName, accountData.email, accountData.roles);
                         $rootScope.account = Session;
-                        authService.loginConfirmed(data);
+
+                        authService.loginConfirmed(data, function(req) {
+                            req.headers.Authorization = 'Bearer ' + data.access_token;
+                            return req;
+                        });
                     });
                 }).error(function (data, status, headers, config) {
                     $rootScope.authenticationError = true;

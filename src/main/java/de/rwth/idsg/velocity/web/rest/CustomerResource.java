@@ -99,11 +99,13 @@ public class CustomerResource {
 
     @ExceptionHandler(BackendException.class)
     public void backendConflict(HttpServletResponse response, BackendException e) throws IOException {
+        log.error("Exception happened", e);
         response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
     }
 
     @ExceptionHandler(Exception.class)
     public void conflict(HttpServletResponse response, Exception e) {
+        log.error("Exception happened", e);
         response.setStatus(HttpServletResponse.SC_NOT_FOUND);
     }
 }

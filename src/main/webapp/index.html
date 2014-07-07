@@ -139,10 +139,10 @@
                             <li ui-sref-active="selectedNavItem">
                                 <a ui-sref="customers">Customer Management</a>
                             </li>
-                            <li ui-sref-active="selectedNavItem">
+                            <li ng-show="isAuthorized(userRoles.admin)" ui-sref-active="selectedNavItem">
                                 <a ui-sref="fleetmanagers">Fleetmanager Overview</a>
                             </li>
-                            <li ui-sref-active="selectedNavItem">
+                            <li ng-show="isAuthorized(userRoles.admin)" ui-sref-active="selectedNavItem">
                                 <a ui-sref="fleetmanagerCreate">Add Fleetmanager</a>
                             </li>
                         </ul>

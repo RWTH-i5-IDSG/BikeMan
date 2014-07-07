@@ -111,11 +111,13 @@ public class AccountResource {
             produces = "application/json")
     @Timed
     public List<PersistentToken> getCurrentSessions(HttpServletResponse response) {
-        User user = userRepository.findByLogin(SecurityUtils.getCurrentLogin());
-        if (user == null) {
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        }
-        return persistentTokenRepository.findByUser(user);
+//        User user = userRepository.findByLogin(SecurityUtils.getCurrentLogin());
+//        if (user == null) {
+//            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+//        }
+//        return persistentTokenRepository.findByUser(user);
+
+        return persistentTokenRepository.findAll();
     }
 
     /**

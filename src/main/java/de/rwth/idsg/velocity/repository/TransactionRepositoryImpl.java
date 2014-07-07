@@ -35,8 +35,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
                     getTransactionQuery(FindType.ALL, null, null)
             ).getResultList();
         } catch (Exception e) {
-            log.error("Exception happened: {}", e);
-            throw new BackendException("Failed during database operation.");
+            throw new BackendException("Failed during database operation.", e);
         }
     }
 
@@ -47,8 +46,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
                     getTransactionQuery(FindType.CLOSED, null, null)
             ).getResultList();
         } catch (Exception e) {
-            log.error("Exception happened: {}", e);
-            throw new BackendException("Failed during database operation.");
+            throw new BackendException("Failed during database operation.", e);
         }
     }
 
@@ -64,8 +62,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
             }
             return tq.getResultList();
         } catch (Exception e) {
-            log.error("Exception happened: {}", e);
-            throw new BackendException("Failed during database operation.");
+            throw new BackendException("Failed during database operation.", e);
         }
     }
 
@@ -81,8 +78,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
             }
             return tq.getResultList();
         } catch (Exception e) {
-            log.error("Exception happened: {}", e);
-            throw new BackendException("Failed during database operation.");
+            throw new BackendException("Failed during database operation.", e);
         }
     }
 
