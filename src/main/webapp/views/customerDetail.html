@@ -1,4 +1,4 @@
-<div>
+div>
 
     <h2>Customer: {{customer.firstname}} {{customer.lastname}}</h2>
 
@@ -24,7 +24,7 @@
                 <td ng-switch-when="false">{{customer.firstname}} {{customer.lastname}}</td>
                 <td ng-switch-when="true">
                     <input type="text" class="form-control" ng-model="customer.firstname">
-                    <input type="text" class="form-control" ng-model="customer.lastname">
+                    <input type="text" class="form-control voffset1" ng-model="customer.lastname">
                 </td>
             </tr>
             <tr>

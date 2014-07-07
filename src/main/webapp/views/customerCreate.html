@@ -22,7 +22,7 @@
                            ng-model="customer.login" ng-minlength=1 ng-maxlength=50 required></td>
                 </tr>
                 <tr>
-                    <th><label>Card Id</label></th>
+                    <th><label>Card ID</label></th>
                     <td><input type="text" class="form-control" name="cardId" placeholder="Card ID..."
                            ng-model="customer.cardId" ng-minlength=1 ng-maxlength=50 required></td>
                 </tr>
@@ -31,7 +31,7 @@
                     <td>
                         <input type="text" class="form-control" name="firstname" placeholder="Max"
                            ng-model="customer.firstname" ng-minlength=1 ng-maxlength=50 required>
-                        <input type="text" class="form-control" name="lastname" placeholder="Mustermann"
+                        <input type="text" class="form-control voffset1" name="lastname" placeholder="Mustermann"
                            ng-model="customer.lastname" ng-minlength=1 ng-maxlength=50 required>
                     </td>
                 </tr>
@@ -62,8 +62,8 @@
                 </tr>
                 <tr>
                     <th><label>Is Activated?</label></th>
-                    <td><input type="checkbox" class="form-control" name="isActivated"
-                           ng-model="customer.isActivated" ng-minlength=1 ng-maxlength=50 required></td>
+                    <td><input type="checkbox" name="isActivated"
+                           ng-model="customer.isActivated" required></td>
                 </tr>
             </table>
         </div>
