@@ -57,8 +57,12 @@
                 </tr>
                 <tr>
                     <th><label>Birthday</label></th>
-                    <td><input type="date" class="form-control" name="birthday"
-                           ng-model="customer.birthday" ng-minlength=1 ng-maxlength=50 required></td>
+                    <td class="input-group">
+                        <input type="text" class="form-control" datepicker-popup="dd-MMMM-yyyy" ng-model="customer.birthday" is-open="opened" max-date="{{maxdate}}" datepicker-options="dateOptions" ng-required="true" close-text="Close" />
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                        </span>
+                    </td>
                 </tr>
                 <tr>
                     <th><label>Is Activated?</label></th>

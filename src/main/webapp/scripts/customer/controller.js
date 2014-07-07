@@ -108,6 +108,21 @@ velocityApp.controller('CustomerDetailController', ['$scope', 'resolvedCustomer'
 velocityApp.controller('CustomerCreateController', ['$scope', 'Customer', '$timeout',
     function($scope, Customer, $timeout) {
 
+        // open the datepicker control
+        $scope.open = function ($event) {
+            $event.preventDefault();
+            $event.stopPropagation();
+
+            $scope.opened = true;
+        }
+
+        $scope.dateOptions = {
+            formatYear: 'yy',
+            startingDay: 1
+        };
+
+        $scope.maxDate = new Date();
+
         $scope.create = function () {
             Customer.save($scope.customer,
                 function () {
@@ -126,7 +141,7 @@ velocityApp.controller('CustomerCreateController', ['$scope', 'Customer', '$time
                 firstname: null,
                 lastname: null,
                 address: null,
-                birthday: null,
+                birthday: new Date(),
                 isActivated: null
             }
         };

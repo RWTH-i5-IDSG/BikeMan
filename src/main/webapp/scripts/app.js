@@ -4,19 +4,19 @@
 var httpHeaders;
 
 var velocityApp = angular.module('velocityApp', ['http-auth-interceptor', 'tmh.dynamicLocale',
-    'ngResource', 'ngCookies', 'velocityAppUtils', 'pascalprecht.translate', 'truncate', 'ui.router']);
+    'ngResource', 'ngCookies', 'velocityAppUtils', 'pascalprecht.translate', 'truncate', 'ui.router', 'ui.bootstrap']);
 
 velocityApp
     .config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$translateProvider',  'tmhDynamicLocaleProvider', 'USER_ROLES', '$compileProvider',
         function ($stateProvider, $urlRouterProvider, $httpProvider, $translateProvider, tmhDynamicLocaleProvider, USER_ROLES, $compileProvider) {
-            $urlRouterProvider.otherwise('/login')
+//            $urlRouterProvider.otherwise('/login')
             $stateProvider
                 .state('main', {
                     url: '/main',
                     templateUrl: 'views/main.html',
                     controller: 'MainController',
                     access: {
-                        authorizedRoles: [USER_ROLES.all]
+                        authorizedRoles: [USER_ROLES.admin]
                     }
                 })
                 .state('login', {
