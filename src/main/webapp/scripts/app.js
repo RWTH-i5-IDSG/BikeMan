@@ -229,9 +229,12 @@ velocityApp
                     // Step 2:
                     // Since the login is confirmed now, route to the state
                     // that the user wanted to see beforehand
-//                    console.log("going to " + wantedState.name);
+
+                    // first access to the frontend
                     if (typeof wantedState === "undefined") {
                         $state.go("main");
+
+                    // consequent state changes
                     } else {
                         console.log(wantedState.name);
                         $state.go(wantedState);
@@ -247,6 +250,6 @@ velocityApp
 
                 // Call when the user logs out
                 $rootScope.$on('event:auth-loginCancelled', function() {
-                    $state.go("main");
+                    $state.go("login");
                 });
         }]);
