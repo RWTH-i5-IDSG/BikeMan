@@ -11,20 +11,25 @@
 
         <div class="panel-body">
 
-            <div class="form-group">
-                <label>Manufacturer ID</label>
-                <input type="text" class="form-control" name="test"
-                       ng-model="pedelec.manufacturerId" ng-minlength=1 ng-maxlength=50 required>
-            </div>
-            <div class="form-group">
-                <label>Pedelec State</label>
-                <select type="text" class="form-control" name="state"
-                        ng-model="pedelec.state" required>
-                    <option value="" selected disabled>Choose...</option>
-                    <option value="OPERATIVE">OPERATIVE</option>
-                    <option value="INOPERATIVE">INOPERATIVE</option>
-                </select>
-            </div>
+            <table class="table">
+                <tr>
+                    <th><label>Manufacturer ID</label></th>
+                    <td><input type="text" class="form-control" name="test"
+                           ng-model="pedelec.manufacturerId" ng-minlength=1 ng-maxlength=50 required></td>
+                </tr>
+                <tr>
+                    <th><label>Pedelec State</label></th>
+                    <td>
+                        <select type="text" class="form-control" name="state"
+                            ng-model="pedelec.state" required>
+                            <option value="" selected disabled>Choose...</option>
+                            <option value="OPERATIVE">OPERATIVE</option>
+                            <option value="INOPERATIVE">INOPERATIVE</option>
+                        </select>
+                    </td>
+                </tr>
+                
+            </table>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clear()">
@@ -33,6 +38,6 @@
             <button type="submit" ng-disabled="form.$invalid" class="btn btn-primary">
                 <span class="glyphicon glyphicon-save"></span> Save
             </button>
-        </div>
+        </div>        
     </form>
 </div>

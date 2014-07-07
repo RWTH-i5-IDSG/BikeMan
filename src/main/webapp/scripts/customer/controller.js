@@ -104,3 +104,32 @@ velocityApp.controller('CustomerDetailController', ['$scope', 'resolvedCustomer'
         }
 
     }]);
+
+velocityApp.controller('CustomerCreateController', ['$scope', 'Customer', '$timeout',
+    function($scope, Customer, $timeout) {
+
+        $scope.create = function () {
+            Customer.save($scope.customer,
+                function () {
+                    $timeout(function () {
+                        $scope.clear();
+                    }, 1000);
+                });
+        };
+
+        $scope.clear = function () {
+            $scope.customer = {
+                userId: null,
+                login: null,
+                customerId: null,
+                cardId: null,
+                firstname: null,
+                lastname: null,
+                address: null,
+                birthday: null,
+                isActivated: null
+            }
+        };
+
+        $scope.clear();
+}])

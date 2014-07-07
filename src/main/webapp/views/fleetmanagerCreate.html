@@ -10,17 +10,19 @@
           ng-submit="create()">
 
         <div class="panel-body">
+            <table class="table">
+                <tr>
+                    <th><label>Login</label></th>
+                    <td><input type="text" class="form-control" name="test"
+                           ng-model="fleetmanager.login" ng-minlength=1 ng-maxlength=50 placeholder="manager@velocity.de" required></td>
+                </tr>
 
-            <div class="form-group">
-                <label>Login</label>
-                <input type="text" class="form-control" name="test"
-                       ng-model="fleetmanager.login" ng-minlength=1 ng-maxlength=50 placeholder="manager@velocity.de" required>
-            </div>
-            <div class="form-group">
-                <label>Password</label>
-                <input type="password" class="form-control" name="test"
-                       ng-model="fleetmanager.password" ng-minlength=1 ng-maxlength=50 placeholder="******" required>
-            </div>
+                <tr>
+                    <th><label>Password</label></th>
+                    <td><input type="password" class="form-control" name="test"
+                           ng-model="fleetmanager.password" ng-minlength=1 ng-maxlength=50 placeholder="******" required></td>
+                </tr>
+            </table>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clear()">

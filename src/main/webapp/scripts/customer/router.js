@@ -30,4 +30,12 @@ velocityApp
                         authorizedRoles: [USER_ROLES.all]
                     }
                 })
+                .state('customerCreate', {
+                    url: '/customers/create/',
+                    templateUrl: 'views/customerCreate.html',
+                    controller: 'CustomerCreateController',
+                    access: {
+                        authorizedRoles: [USER_ROLES.all]
+                    }
+                })
         }]);
