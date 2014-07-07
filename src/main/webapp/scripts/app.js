@@ -141,7 +141,6 @@ velocityApp
 
                     }, function(errorResponse) {
                         var alertType = 'alert-danger';
-                        console.log(errorResponse);
                         switch (errorResponse.status) {
                             // remove this because 401 is used for checking user auth
                             case 401:
@@ -230,7 +229,13 @@ velocityApp
                     // Step 2:
                     // Since the login is confirmed now, route to the state
                     // that the user wanted to see beforehand
-                    $state.go(wantedState);
+//                    console.log("going to " + wantedState.name);
+                    if (typeof wantedState === "undefined") {
+                        $state.go("main");
+                    } else {
+                        console.log(wantedState.name);
+                        $state.go(wantedState);
+                    }
                 });
 
                 // Call when the 403 response is returned by the server
@@ -242,6 +247,6 @@ velocityApp
 
                 // Call when the user logs out
                 $rootScope.$on('event:auth-loginCancelled', function() {
-                    $location.path('');
+                    $state.go("main");
                 });
         }]);
