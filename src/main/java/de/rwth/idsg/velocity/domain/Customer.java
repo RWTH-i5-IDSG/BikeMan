@@ -70,6 +70,10 @@ public class Customer extends User implements Serializable {
         if (inTransaction == null) {
             inTransaction = false;
         }
+
+        if (isActivated == null) {
+            isActivated = false;
+        }
     }
 
 }

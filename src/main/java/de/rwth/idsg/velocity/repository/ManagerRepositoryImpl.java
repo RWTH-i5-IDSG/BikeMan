@@ -59,8 +59,7 @@ public class ManagerRepositoryImpl implements ManagerRepository {
             return em.createQuery(criteria).getResultList();
 
         } catch (Exception e) {
-            log.error("Exception happened: {}", e);
-            throw new BackendException("Failed during database operation.");
+            throw new BackendException("Failed during database operation.", e);
         }
     }
 
@@ -74,12 +73,10 @@ public class ManagerRepositoryImpl implements ManagerRepository {
             log.debug("Created new manager {}", manager);
 
         } catch (EntityExistsException e) {
-            log.error("Exception happened: {}", e);
-            throw new BackendException("This manager exists already.");
+            throw new BackendException("This manager exists already.", e);
 
         } catch (Exception e) {
-            log.error("Exception happened: {}", e);
-            throw new BackendException("Failed to create a new manager.");
+            throw new BackendException("Failed to create a new manager.", e);
         }
     }
 
@@ -98,8 +95,7 @@ public class ManagerRepositoryImpl implements ManagerRepository {
             log.debug("Updated manager {}", manager);
 
         } catch (Exception e) {
-            log.error("Exception happened: {}", e);
-            throw new BackendException("Failed to update manager with userId " + userId);
+            throw new BackendException("Failed to update manager with userId " + userId, e);
         }
     }
 
@@ -111,8 +107,7 @@ public class ManagerRepositoryImpl implements ManagerRepository {
             log.debug("Deleted manager {}", manager);
 
         } catch (Exception e) {
-            log.error("Exception happened: {}", e);
-            throw new BackendException("Failed to delete manager with userId " + userId);
+            throw new BackendException("Failed to delete manager with userId " + userId, e);
         }
     }
 

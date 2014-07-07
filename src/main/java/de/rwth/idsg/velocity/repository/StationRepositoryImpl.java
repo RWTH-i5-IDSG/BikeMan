@@ -39,8 +39,7 @@ public class StationRepositoryImpl implements StationRepository {
             return em.createQuery(criteria).getResultList();
 
         } catch (Exception e) {
-            log.error("Exception happened: {}", e);
-            throw new BackendException("Failed during database operation.");
+            throw new BackendException("Failed during database operation.", e);
         }
     }
 
@@ -61,8 +60,7 @@ public class StationRepositoryImpl implements StationRepository {
         try {
             stat = em.createQuery(criteria).getSingleResult();
         } catch (Exception e) {
-            log.error("Exception happened: {}", e);
-            throw new BackendException("Failed to find station with stationId " + stationId);
+            throw new BackendException("Failed to find station with stationId " + stationId, e);
         }
 
         // get slots for the station
@@ -87,8 +85,7 @@ public class StationRepositoryImpl implements StationRepository {
             List<ViewStationSlotDTO> list = em.createQuery(slotCriteria).getResultList();
             stat.setSlots(list);
         } catch (Exception e) {
-            log.error("Exception happened: {}", e);
-            throw new BackendException("Failed to get slots for the station");
+            throw new BackendException("Failed to get slots for the station", e);
         }
 
         return stat;
@@ -104,12 +101,10 @@ public class StationRepositoryImpl implements StationRepository {
             log.debug("Created new manager {}", station);
 
         } catch (EntityExistsException e) {
-            log.error("Exception happened: {}", e);
-            throw new BackendException("This station exists already.");
+            throw new BackendException("This station exists already.", e);
 
         } catch (Exception e) {
-            log.error("Exception happened: {}", e);
-            throw new BackendException("Failed to create a new station.");
+            throw new BackendException("Failed to create a new station.", e);
         }
     }
 
@@ -128,8 +123,7 @@ public class StationRepositoryImpl implements StationRepository {
             log.debug("Updated station {}", station);
 
         } catch (Exception e) {
-            log.error("Exception happened: {}", e);
-            throw new BackendException("Failed to update station with stationId " + stationId);
+            throw new BackendException("Failed to update station with stationId " + stationId, e);
         }
     }
 
@@ -140,8 +134,7 @@ public class StationRepositoryImpl implements StationRepository {
             em.remove(station);
             log.debug("Deleted station {}", station);
         } catch (Exception e) {
-            log.error("Exception happened: {}", e);
-            throw new BackendException("Failed to delete station with stationId " + stationId);
+            throw new BackendException("Failed to delete station with stationId " + stationId, e);
         }
     }
 
