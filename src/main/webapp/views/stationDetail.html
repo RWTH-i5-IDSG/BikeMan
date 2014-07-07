@@ -27,18 +27,18 @@
                 <th>Address</th>
                 <td ng-switch-when="false">{{station.address.streetAndHousenumber + ', ' + station.address.zip + ', ' + station.address.city + ', ' + station.address.country}}</td>
                 <td ng-switch-when="true">
-                    Street Address: <input type="text" class="form-control" ng-model="station.address.streetAndHousenumber">
-                    ZIP: <input type="text" class="form-control" ng-model="station.address.zip">
-                    City: <input type="text" class="form-control" ng-model="station.address.city">
-                    Country: <input type="text" class="form-control" ng-model="station.address.country">
+                    <label>Street Address</label><input type="text" class="form-control" ng-model="station.address.streetAndHousenumber">
+                    <label class="voffset2">ZIP</label><input type="text" class="form-control" ng-model="station.address.zip">
+                    <label class="voffset2">City</label><input type="text" class="form-control" ng-model="station.address.city">
+                    <label class="voffset2">Country</label><input type="text" class="form-control" ng-model="station.address.country">
                 </td>
             </tr>
             <tr>
                 <th>Coordinates</th>
                 <td ng-switch-when="false">{{station.locationLatitude + ',' + station.locationLongitude}}</td>
                 <td ng-switch-when="true">
-                    Latitude: <input type="number" class="form-control" ng-model="station.locationLatitude">
-                    Longitude: <input type="number" class="form-control" ng-model="station.locationLongitude">
+                    <label class="voffset2">Latitude</label><input type="number" class="form-control" ng-model="station.locationLatitude">
+                    <label class="voffset2">Longitude</label><input type="number" class="form-control" ng-model="station.locationLongitude">
                 </td>
             </tr>
             <tr>

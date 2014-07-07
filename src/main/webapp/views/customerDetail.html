@@ -31,10 +31,10 @@ div>
                 <th>Address</th>
                 <td ng-switch-when="false">{{customer.address.streetAndHousenumber + ', ' + customer.address.zip + ', ' + customer.address.city + ', ' + customer.address.country}}</td>
                 <td ng-switch-when="true">
-                    Street Address: <input type="text" class="form-control" ng-model="customer.address.streetAndHousenumber">
-                    ZIP: <input type="text" class="form-control" ng-model="customer.address.zip">
-                    City: <input type="text" class="form-control" ng-model="customer.address.city">
-                    Country: <input type="text" class="form-control" ng-model="customer.address.country">
+                    <label>Street and Housenumber</label><input type="text" class="form-control" ng-model="customer.address.streetAndHousenumber">
+                    <label class="voffset2">ZIP</label><input type="text" class="form-control" ng-model="customer.address.zip">
+                    <label class="voffset2">City</label><input type="text" class="form-control" ng-model="customer.address.city">
+                    <label class="voffset2">Country</label><input type="text" class="form-control" ng-model="customer.address.country">
             </tr>
             <tr>
                 <th>Customer ID</th>

@@ -23,28 +23,27 @@
             </tr>
 
             <tr>
-                <th><label translate="stations.create.form.streetAndHousenumber">Street</label></th>
-                <td><input type="text" class="form-control" name="addressStreet"
-                       ng-model="station.address.streetAndHousenumber" ng-minlength=1 ng-maxlength=255 required></td>
+                <th>Address</th>
+                <td>
+                    <label translate="stations.create.form.streetAndHousenumber">Street</label>
+                    <input type="text" class="form-control" name="addressStreet"
+                           ng-model="station.address.streetAndHousenumber" ng-minlength=1 ng-maxlength=255 required>
+
+                    <label translate="stations.create.form.zip" class="voffset2">ZIP</label>
+                    <input type="text" class="form-control" name="addressZip"
+                           ng-model="station.address.zip" ng-minlength=1 ng-maxlength=255 required>
+
+                    <label translate="stations.create.form.city" class="voffset2">City</label>
+                    <input type="text" class="form-control" name="addressCity"
+                           ng-model="station.address.city" ng-minlength=1 ng-maxlength=255 required>
+
+                    <label translate="stations.create.form.country" class="voffset2">Country</label>
+                    <input type="text" class="form-control" name="addressCountry"
+                           ng-model="station.address.country" ng-minlength=1 ng-maxlength=255 required>
+                </td>
+
             </tr>
 
-            <tr>
-                <th><label translate="stations.create.form.zip">ZIP</label></th>
-                <td><input type="text" class="form-control" name="addressZip"
-                       ng-model="station.address.zip" ng-minlength=1 ng-maxlength=255 required></td>
-            </tr>
-
-            <tr>
-                <th><label translate="stations.create.form.city">City</label></th>
-                <td><input type="text" class="form-control" name="addressCity"
-                       ng-model="station.address.city" ng-minlength=1 ng-maxlength=255 required></td>
-            </tr>
-
-            <tr>
-                <th><label translate="stations.create.form.country">Country</label></th>
-                <td><input type="text" class="form-control" name="addressCountry"
-                       ng-model="station.address.country" ng-minlength=1 ng-maxlength=255 required></td>
-            </tr>
 
             <tr>
                 <th><label translate="stations.create.form.coordinates.title">Coordinates</label></th>
@@ -52,7 +51,7 @@
                     <label translate="stations.create.form.coordinates.locationLatitude">Latitude:</label>
                     <input type="text" class="form-control" name="locationLatitude"
                            ng-model="station.locationLatitude" ng-minlength=1 ng-maxlength=255 required>
-                    <label translate="stations.create.form.coordinates.locationLongitude">Longitude</label>
+                    <label translate="stations.create.form.coordinates.locationLongitude" class="voffset2">Longitude</label>
                     <input type="text" class="form-control" name="locationLongitude"
                            ng-model="station.locationLongitude" ng-minlength=1 ng-maxlength=255 required>
                 </td>
