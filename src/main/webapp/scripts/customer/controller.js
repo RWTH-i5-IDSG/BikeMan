@@ -117,7 +117,7 @@ velocityApp.controller('CustomerCreateController', ['$scope', 'Customer', '$time
         }
 
         $scope.dateOptions = {
-            formatYear: 'yy',
+            formatYear: 'yyyy',
             startingDay: 1
         };
 
