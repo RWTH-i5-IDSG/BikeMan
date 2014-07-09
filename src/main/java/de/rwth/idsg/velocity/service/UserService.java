@@ -5,9 +5,8 @@ import de.rwth.idsg.velocity.domain.login.User;
 import de.rwth.idsg.velocity.repository.PersistentTokenRepository;
 import de.rwth.idsg.velocity.repository.UserRepository;
 import de.rwth.idsg.velocity.security.SecurityUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.joda.time.LocalDate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,9 +20,8 @@ import java.util.List;
  */
 @Service
 @Transactional
+@Slf4j
 public class UserService {
-
-    private static final Logger log = LoggerFactory.getLogger(UserService.class);
 
     @Inject
     private PasswordEncoder passwordEncoder;

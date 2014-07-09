@@ -3,8 +3,7 @@ package de.rwth.idsg.velocity.security;
 import de.rwth.idsg.velocity.domain.login.Authority;
 import de.rwth.idsg.velocity.domain.login.User;
 import de.rwth.idsg.velocity.repository.UserRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,9 +19,8 @@ import java.util.Collection;
  * Authenticate a user from the database.
  */
 @Component("userDetailsService")
+@Slf4j
 public class UserDetailsService implements org.springframework.security.core.userdetails.UserDetailsService {
-
-    private final Logger log = LoggerFactory.getLogger(UserDetailsService.class);
 
     @Inject
     private UserRepository userRepository;

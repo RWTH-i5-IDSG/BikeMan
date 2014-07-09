@@ -1,8 +1,6 @@
 package de.rwth.idsg.velocity.config.metrics;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ConnectionCallback;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -17,11 +15,10 @@ import java.util.Map;
 /**
  * SpringBoot Actuator HealthIndicator check for the Database.
  */
+@Slf4j
 public class DatabaseHealthCheckIndicator extends HealthCheckIndicator {
 
     public static final String DATABASE_HEALTH_INDICATOR = "database";
-	
-    private final Logger log = LoggerFactory.getLogger(DatabaseHealthCheckIndicator.class);
     
     private static Map<String, String> queries = new HashMap<>();
 

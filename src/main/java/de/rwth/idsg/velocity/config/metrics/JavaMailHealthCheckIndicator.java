@@ -1,7 +1,6 @@
 package de.rwth.idsg.velocity.config.metrics;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import javax.mail.MessagingException;
@@ -9,11 +8,10 @@ import javax.mail.MessagingException;
 /**
  * SpringBoot Actuator HealthIndicator check for JavaMail.
  */
+@Slf4j
 public class JavaMailHealthCheckIndicator extends HealthCheckIndicator {
 
     public static final String EMAIL_HEALTH_INDICATOR = "email";
-	
-    private final Logger log = LoggerFactory.getLogger(JavaMailHealthCheckIndicator.class);
 
     private JavaMailSenderImpl javaMailSender;
 

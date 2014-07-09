@@ -6,8 +6,7 @@ import com.codahale.metrics.servlets.MetricsServlet;
 import de.rwth.idsg.velocity.web.filter.CachingHttpHeadersFilter;
 import de.rwth.idsg.velocity.web.filter.StaticResourcesProductionFilter;
 import de.rwth.idsg.velocity.web.filter.gzip.GZipServletFilter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.context.embedded.ServletContextInitializer;
 import org.springframework.context.annotation.Configuration;
@@ -25,9 +24,8 @@ import java.util.Map;
  */
 @Configuration
 @AutoConfigureAfter(CacheConfiguration.class)
+@Slf4j
 public class WebConfigurer implements ServletContextInitializer {
-
-    private final Logger log = LoggerFactory.getLogger(WebConfigurer.class);
 
     @Inject
     private Environment env;

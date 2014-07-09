@@ -19,11 +19,9 @@ import javax.inject.Inject;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
-    
 
     @Inject
     private UserDetailsService userDetailsService;
-    
 
     @Bean
     public PasswordEncoder passwordEncoder() {

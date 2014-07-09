@@ -1,7 +1,6 @@
 package de.rwth.idsg.velocity.web.filter.gzip;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -10,9 +9,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.zip.GZIPOutputStream;
 
+@Slf4j
 public class GZipServletFilter implements Filter {
-
-    private Logger log = LoggerFactory.getLogger(GZipServletFilter.class);
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {

@@ -3,7 +3,6 @@ package de.rwth.idsg.velocity.web.rest;
 import de.rwth.idsg.velocity.Application;
 import de.rwth.idsg.velocity.domain.OperationState;
 import de.rwth.idsg.velocity.repository.PedelecRepository;
-import de.rwth.idsg.velocity.service.PedelecService;
 import de.rwth.idsg.velocity.web.rest.dto.modify.CreateEditPedelecDTO;
 import org.joda.time.LocalDate;
 import org.junit.Before;

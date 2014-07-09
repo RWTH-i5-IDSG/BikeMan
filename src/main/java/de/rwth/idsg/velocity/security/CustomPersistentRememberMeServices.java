@@ -4,9 +4,8 @@ import de.rwth.idsg.velocity.domain.login.PersistentToken;
 import de.rwth.idsg.velocity.domain.login.User;
 import de.rwth.idsg.velocity.repository.PersistentTokenRepository;
 import de.rwth.idsg.velocity.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.joda.time.LocalDate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.core.Authentication;
@@ -50,10 +49,9 @@ import java.util.Arrays;
  * <p/>
  */
 @Service
+@Slf4j
 public class CustomPersistentRememberMeServices extends
         AbstractRememberMeServices {
-
-    private final Logger log = LoggerFactory.getLogger(CustomPersistentRememberMeServices.class);
 
     // Token is valid for one month
     private static final int TOKEN_VALIDITY_DAYS = 31;

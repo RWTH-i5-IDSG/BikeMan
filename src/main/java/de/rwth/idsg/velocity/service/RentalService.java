@@ -6,9 +6,8 @@ import de.rwth.idsg.velocity.repository.PedelecRepository;
 import de.rwth.idsg.velocity.repository.StationSlotRepository;
 import de.rwth.idsg.velocity.repository.TransactionRepository;
 import de.rwth.idsg.velocity.web.rest.BackendException;
+import lombok.extern.slf4j.Slf4j;
 import org.joda.time.LocalDateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,9 +18,8 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 @Transactional
+@Slf4j
 public class RentalService {
-
-    private static final Logger log = LoggerFactory.getLogger(RentalService.class);
 
     @Inject
     private StationSlotRepository stationSlotRepository;

@@ -8,6 +8,7 @@ import com.codahale.metrics.health.HealthCheckRegistry;
 import com.codahale.metrics.jvm.*;
 import com.ryantenney.metrics.spring.config.annotation.EnableMetrics;
 import com.ryantenney.metrics.spring.config.annotation.MetricsConfigurerAdapter;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -25,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 
 @Configuration
 @EnableMetrics(proxyTargetClass = true)
+@Slf4j
 public class MetricsConfiguration extends MetricsConfigurerAdapter implements EnvironmentAware {
 
     private static final String ENV_METRICS = "metrics.";
@@ -38,8 +40,6 @@ public class MetricsConfiguration extends MetricsConfigurerAdapter implements En
     private static final String PROP_METRIC_REG_JVM_THREADS = "jvm.threads";
     private static final String PROP_METRIC_REG_JVM_FILES = "jvm.files";
     private static final String PROP_METRIC_REG_JVM_BUFFERS = "jvm.buffers";
-
-    private final Logger log = LoggerFactory.getLogger(MetricsConfiguration.class);
 
     private static final MetricRegistry METRIC_REGISTRY = new MetricRegistry();
 

@@ -1,7 +1,6 @@
 package de.rwth.idsg.velocity.config;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.bind.RelaxedPropertyResolver;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
@@ -12,6 +11,7 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import java.util.Properties;
 
 @Configuration
+@Slf4j
 public class MailConfiguration implements EnvironmentAware {
 
     private static final String ENV_SPRING_MAIL = "spring.mail.";
@@ -27,8 +27,6 @@ public class MailConfiguration implements EnvironmentAware {
     private static final String PROP_SMTP_AUTH = "mail.smtp.auth";
     private static final String PROP_STARTTLS = "mail.smtp.starttls.enable";
     private static final String PROP_TRANSPORT_PROTO = "mail.transport.protocol";
-
-    private final Logger log = LoggerFactory.getLogger(MailConfiguration.class);
 
     private RelaxedPropertyResolver propertyResolver;
 

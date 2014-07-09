@@ -3,8 +3,7 @@ package de.rwth.idsg.velocity.config;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import liquibase.integration.spring.SpringLiquibase;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.bind.RelaxedPropertyResolver;
 import org.springframework.context.ApplicationContextException;
 import org.springframework.context.EnvironmentAware;
@@ -22,9 +21,8 @@ import java.util.List;
 @Configuration
 @EnableJpaRepositories("de.rwth.idsg.velocity.repository")
 @EnableTransactionManagement
+@Slf4j
 public class DatabaseConfiguration implements EnvironmentAware {
-
-    private final Logger log = LoggerFactory.getLogger(DatabaseConfiguration.class);
 
     private RelaxedPropertyResolver propertyResolver;
 

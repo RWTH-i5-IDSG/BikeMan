@@ -1,7 +1,6 @@
 package de.rwth.idsg.velocity.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
@@ -20,9 +19,8 @@ import javax.inject.Inject;
  * </p>
  */
 @Service
+@Slf4j
 public class MailService {
-
-    private final Logger log = LoggerFactory.getLogger(MailService.class);
 
     @Inject
     private Environment env;

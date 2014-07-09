@@ -22,6 +22,7 @@ public class AjaxLogoutSuccessHandler extends AbstractAuthenticationTargetUrlReq
         implements LogoutSuccessHandler {
     
     public static final String BEARER_AUTHENTICATION = "Bearer ";
+
     @Inject
     private TokenStore tokenStore;
 
