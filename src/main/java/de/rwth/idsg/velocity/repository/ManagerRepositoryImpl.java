@@ -6,8 +6,7 @@ import de.rwth.idsg.velocity.security.AuthoritiesConstants;
 import de.rwth.idsg.velocity.web.rest.BackendException;
 import de.rwth.idsg.velocity.web.rest.dto.modify.CreateEditManagerDTO;
 import de.rwth.idsg.velocity.web.rest.dto.view.ViewManagerDTO;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
@@ -28,9 +27,8 @@ import java.util.List;
 
 @Repository
 @Transactional
+@Slf4j
 public class ManagerRepositoryImpl implements ManagerRepository {
-
-    private static final Logger log = LoggerFactory.getLogger(ManagerRepositoryImpl.class);
 
     private enum Operation { CREATE, UPDATE };
 

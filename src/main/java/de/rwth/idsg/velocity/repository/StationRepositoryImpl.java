@@ -1,12 +1,14 @@
 package de.rwth.idsg.velocity.repository;
 
-import de.rwth.idsg.velocity.domain.*;
+import de.rwth.idsg.velocity.domain.Address;
+import de.rwth.idsg.velocity.domain.Pedelec;
+import de.rwth.idsg.velocity.domain.Station;
+import de.rwth.idsg.velocity.domain.StationSlot;
 import de.rwth.idsg.velocity.web.rest.BackendException;
 import de.rwth.idsg.velocity.web.rest.dto.modify.CreateEditStationDTO;
 import de.rwth.idsg.velocity.web.rest.dto.view.ViewStationDTO;
 import de.rwth.idsg.velocity.web.rest.dto.view.ViewStationSlotDTO;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityExistsException;
@@ -22,9 +24,8 @@ import java.util.List;
  */
 @Repository
 @Transactional
+@Slf4j
 public class StationRepositoryImpl implements StationRepository {
-
-    private static final Logger log = LoggerFactory.getLogger(StationRepositoryImpl.class);
 
     private enum Operation { CREATE, UPDATE };
 

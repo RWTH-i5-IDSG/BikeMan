@@ -7,8 +7,7 @@ import de.rwth.idsg.velocity.security.AuthoritiesConstants;
 import de.rwth.idsg.velocity.web.rest.BackendException;
 import de.rwth.idsg.velocity.web.rest.dto.modify.CreateEditCustomerDTO;
 import de.rwth.idsg.velocity.web.rest.dto.view.ViewCustomerDTO;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityExistsException;
@@ -25,9 +24,8 @@ import java.util.List;
  */
 @Repository
 @Transactional
+@Slf4j
 public class CustomerRepositoryImpl implements CustomerRepository {
-
-    private static final Logger log = LoggerFactory.getLogger(CustomerRepositoryImpl.class);
 
     private enum Operation { CREATE, UPDATE };
     private enum FindType { ALL, BY_NAME, BY_LOGIN };

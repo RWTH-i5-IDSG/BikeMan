@@ -4,8 +4,7 @@ import com.codahale.metrics.annotation.Timed;
 import de.rwth.idsg.velocity.domain.login.User;
 import de.rwth.idsg.velocity.repository.UserRepository;
 import de.rwth.idsg.velocity.security.AuthoritiesConstants;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -20,9 +19,8 @@ import javax.servlet.http.HttpServletResponse;
  */
 @RestController
 @RequestMapping("/app")
+@Slf4j
 public class UserResource {
-
-    private final Logger log = LoggerFactory.getLogger(UserResource.class);
 
     @Inject
     private UserRepository userRepository;

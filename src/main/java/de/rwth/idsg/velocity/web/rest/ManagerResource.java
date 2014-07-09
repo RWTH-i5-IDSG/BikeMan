@@ -4,8 +4,7 @@ import com.codahale.metrics.annotation.Timed;
 import de.rwth.idsg.velocity.repository.ManagerRepository;
 import de.rwth.idsg.velocity.web.rest.dto.modify.CreateEditManagerDTO;
 import de.rwth.idsg.velocity.web.rest.dto.view.ViewManagerDTO;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,9 +21,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/app")
 @Produces(MediaType.APPLICATION_JSON)
+@Slf4j
 public class ManagerResource {
-
-    private static final Logger log = LoggerFactory.getLogger(PedelecResource.class);
 
     @Autowired
     private ManagerRepository managerRepository;

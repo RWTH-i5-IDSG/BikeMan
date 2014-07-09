@@ -4,8 +4,7 @@ import com.codahale.metrics.annotation.Timed;
 import de.rwth.idsg.velocity.repository.CustomerRepository;
 import de.rwth.idsg.velocity.web.rest.dto.modify.CreateEditCustomerDTO;
 import de.rwth.idsg.velocity.web.rest.dto.view.ViewCustomerDTO;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
@@ -22,9 +21,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/app")
 @Produces(MediaType.APPLICATION_JSON)
+@Slf4j
 public class CustomerResource {
-
-    private static final Logger log = LoggerFactory.getLogger(CustomerResource.class);
 
     @Inject
     private CustomerRepository customerRepository;
