@@ -46,8 +46,8 @@
 
         <ul class="nav navbar-top-links navbar-right" ng-switch="authenticated">
 
-            <li class="dropdown pointer">
-                <a class="dropdown-toggle" data-toggle="dropdown" href="javascript:;">
+            <li class="dropdown pointer" on-toggle="toggled(open)">
+                <a href class="dropdown-toggle">
                             <span>
                                 <span class="glyphicon glyphicon-user"></span>
                                 <span class="hidden-tablet" translate="global.menu.account.main" translate-values="{username: '{{account.login | usernameFilter}}'}">
@@ -69,9 +69,9 @@
             </li>
 
 
-            <li ng-switch-when="true" ng-show="isAuthorized(userRoles.admin)" class="dropdown pointer"
+            <li ng-switch-when="true" ng-show="isAuthorized(userRoles.admin)" class="dropdown pointer" on-toggle="toggled(open)"
                 ng-controller="AdminController">
-                <a class="dropdown-toggle" data-toggle="dropdown" href="javascript:;">
+                <a class="dropdown-toggle" href>
                             <span>
                                 <span class="glyphicon glyphicon-tower"></span>
                                 <span class="hidden-tablet" translate="global.menu.admin">Admin</span>
@@ -93,8 +93,8 @@
             </li>
 
             <!-- /.dropdown -->
-            <li class="dropdown pointer" ng-controller="LanguageController">
-                <a class="dropdown-toggle" data-toggle="dropdown" href="javascript:;">
+            <li class="dropdown pointer" on-toggle="toggled(open)" ng-controller="LanguageController">
+                <a class="dropdown-toggle" href>
                             <span>
                                 <span class="glyphicon glyphicon-flag"></span>
                                 <span class="hidden-tablet" translate="global.menu.language">Language</span>

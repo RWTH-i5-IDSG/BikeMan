@@ -141,7 +141,7 @@ velocityApp.controller('CustomerCreateController', ['$scope', 'Customer', '$time
                 firstname: null,
                 lastname: null,
                 address: null,
-                birthday: new Date(),
+                birthday: null,
                 isActivated: null
             }
         };

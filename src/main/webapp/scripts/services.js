@@ -104,8 +104,8 @@ velocityApp.constant('USER_ROLES', {
         customer: 'ROLE_CUSTOMER'
     });
 
-velocityApp.factory('AuthenticationSharedService', ['$rootScope', '$http', 'authService', 'Session', 'Account', 'Base64Service', 'AccessToken', 
-    function ($rootScope, $http, authService, Session, Account, Base64Service, AccessToken) {
+velocityApp.factory('AuthenticationSharedService', ['$rootScope', '$http', 'authService', 'Session', 'Account', 'Base64Service', 'AccessToken', '$q',
+    function ($rootScope, $http, authService, Session, Account, Base64Service, AccessToken, $q) {
         return {
             login: function (param) {
                 var data = "username=" + param.username + "&password=" + param.password + "&grant_type=password&scope=read%20write&client_secret=mySecretOAuthSecret&client_id=velocityapp";
@@ -137,6 +137,8 @@ velocityApp.factory('AuthenticationSharedService', ['$rootScope', '$http', 'auth
             valid: function (authorizedRoles) {
                 httpHeaders.common['Authorization'] = 'Bearer ' + AccessToken.get();
 
+                var deferred = $q.defer();
+
                 $http.get('protected/transparent.gif', {
                     ignoreAuthModule: 'ignoreAuthModule'
                 }).success(function (data, status, headers, config) {
@@ -153,15 +155,19 @@ velocityApp.factory('AuthenticationSharedService', ['$rootScope', '$http', 'auth
                                 event.preventDefault();
                                 // user is not allowed
                                 $rootScope.$broadcast("event:auth-notAuthorized");
+                                deferred.resolve(false);
                             }
 
                             $rootScope.authenticated = true;
+                            deferred.resolve(true);
                         });
                     }
                     $rootScope.authenticated = !!Session.login;
                 }).error(function (data, status, headers, config) {
                     $rootScope.authenticated = false;
+                    deferred.resolve(false);
                 });
+                return deferred.promise;
             },
             isAuthorized: function (authorizedRoles) {
                 if (!angular.isArray(authorizedRoles)) {

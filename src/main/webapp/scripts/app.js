@@ -202,11 +202,11 @@ velocityApp
                 $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {
                     $rootScope.isAuthorized = AuthenticationSharedService.isAuthorized;
                     $rootScope.userRoles = USER_ROLES;
-                    AuthenticationSharedService.valid(toState.access.authorizedRoles);
-
-                    if ($rootScope.authenticated && toState.name == "login") {
-                        $state.go("main");
-                    }
+                    AuthenticationSharedService.valid(toState.access.authorizedRoles).then(function(authenticated){
+                        if (authenticated && toState.name == "login") {
+                            $state.go("main");
+                        }
+                    });
                 });
 
                 // Call when the 401 response is returned by the server
