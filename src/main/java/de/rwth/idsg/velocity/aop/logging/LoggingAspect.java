@@ -23,7 +23,7 @@ public class LoggingAspect {
     @Inject
     private Environment env;
 
-    @Pointcut("within(de.rwth.idsg.velocity.repository..*) || within(de.rwth.idsg.velocity.service..*)")
+    @Pointcut("within(de.rwth.idsg.velocity.repository..*) || within(de.rwth.idsg.velocity.service..*) || within(de.rwth.idsg.velocity.web.rest..*)")
     public void loggingPoincut() {}
 
     @AfterThrowing(pointcut = "loggingPoincut()", throwing = "e")
