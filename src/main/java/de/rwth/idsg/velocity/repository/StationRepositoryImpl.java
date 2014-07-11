@@ -10,12 +10,12 @@ import de.rwth.idsg.velocity.web.rest.dto.view.ViewStationDTO;
 import de.rwth.idsg.velocity.web.rest.dto.view.ViewStationSlotDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.*;
-import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -23,7 +23,6 @@ import java.util.List;
  * Created by sgokay on 26.05.14.
  */
 @Repository
-@Transactional
 @Slf4j
 public class StationRepositoryImpl implements StationRepository {
 
@@ -33,6 +32,7 @@ public class StationRepositoryImpl implements StationRepository {
     EntityManager em;
 
     @Override
+    @Transactional(readOnly = true)
     public List<ViewStationDTO> findAll() throws BackendException  {
         try {
             CriteriaBuilder builder = em.getCriteriaBuilder();
@@ -45,6 +45,7 @@ public class StationRepositoryImpl implements StationRepository {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ViewStationDTO> findByLocation(BigDecimal latitude, BigDecimal longitude)  throws BackendException {
         // TODO
 
@@ -52,6 +53,7 @@ public class StationRepositoryImpl implements StationRepository {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ViewStationDTO findOne(long stationId) throws BackendException {
         CriteriaBuilder builder = em.getCriteriaBuilder();
 
@@ -93,6 +95,7 @@ public class StationRepositoryImpl implements StationRepository {
     }
 
     @Override
+    @Transactional
     public void create(CreateEditStationDTO dto) throws BackendException {
         Station station = new Station();
         setFields(station, dto, Operation.CREATE);
@@ -110,6 +113,7 @@ public class StationRepositoryImpl implements StationRepository {
     }
 
     @Override
+    @Transactional
     public void update(CreateEditStationDTO dto) throws BackendException {
         final Long stationId = dto.getStationId();
         if (stationId == null) {
@@ -129,6 +133,7 @@ public class StationRepositoryImpl implements StationRepository {
     }
 
     @Override
+    @Transactional
     public void delete(long stationId) throws BackendException {
         Station station = getStationEntity(stationId);
         try {
@@ -143,6 +148,7 @@ public class StationRepositoryImpl implements StationRepository {
      * Returns a station, or throws exception when no station exists.
      *
      */
+    @Transactional(readOnly = true)
     private Station getStationEntity(long stationId) throws BackendException {
         Station station = em.find(Station.class, stationId);
         if (station == null) {

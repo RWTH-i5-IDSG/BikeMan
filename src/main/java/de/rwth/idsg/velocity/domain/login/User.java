@@ -27,7 +27,7 @@ import java.util.Set;
 @TableGenerator(name="user_gen", initialValue=0, allocationSize=1)
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @ToString(includeFieldNames = true)
-@EqualsAndHashCode(of = {"userId"})
+@EqualsAndHashCode(of = {"userId", "login"})
 public class User implements Serializable {
 
     @Id

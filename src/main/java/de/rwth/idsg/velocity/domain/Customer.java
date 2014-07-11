@@ -20,7 +20,7 @@ import java.util.Set;
                 @Index(columnList="address_id", unique = true),
                 @Index(columnList="customer_id", unique = true)})
 @EqualsAndHashCode(of = {"customerId"}, callSuper = false)
-@ToString(includeFieldNames = true)
+@ToString(includeFieldNames = true, exclude = {"address", "transactions"})
 public class Customer extends User implements Serializable {
 
     @Column(name = "customer_id")

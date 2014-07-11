@@ -9,6 +9,7 @@ import de.rwth.idsg.velocity.web.rest.dto.view.ViewManagerDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import javax.persistence.EntityExistsException;
@@ -17,16 +18,13 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import javax.transaction.Transactional;
 import java.util.HashSet;
 import java.util.List;
 
 /**
  * Created by swam on 11/06/14.
  */
-
 @Repository
-@Transactional
 @Slf4j
 public class ManagerRepositoryImpl implements ManagerRepository {
 
@@ -39,6 +37,7 @@ public class ManagerRepositoryImpl implements ManagerRepository {
     PasswordEncoder passwordEncoder;
 
     @Override
+    @Transactional(readOnly = true)
     public List<ViewManagerDTO> findAll() throws BackendException {
         try {
             CriteriaBuilder builder = em.getCriteriaBuilder();
@@ -62,6 +61,7 @@ public class ManagerRepositoryImpl implements ManagerRepository {
     }
 
     @Override
+    @Transactional
     public void create(CreateEditManagerDTO dto) throws BackendException {
         Manager manager = new Manager();
         setFields(manager, dto, Operation.CREATE);
@@ -79,6 +79,7 @@ public class ManagerRepositoryImpl implements ManagerRepository {
     }
 
     @Override
+    @Transactional
     public void update(CreateEditManagerDTO dto) throws BackendException {
         final Long userId = dto.getUserId();
         if (userId == null) {
@@ -98,6 +99,7 @@ public class ManagerRepositoryImpl implements ManagerRepository {
     }
 
     @Override
+    @Transactional
     public void delete(long userId) throws BackendException {
         Manager manager = getManagerEntity(userId);
         try {
@@ -113,6 +115,7 @@ public class ManagerRepositoryImpl implements ManagerRepository {
      * Returns a manager, or throws exception when no manager exists.
      *
      */
+    @Transactional(readOnly = true)
     private Manager getManagerEntity(long userId) throws BackendException {
         Manager manager = em.find(Manager.class, userId);
         if (manager == null) {
