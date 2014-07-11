@@ -5,19 +5,18 @@ import de.rwth.idsg.velocity.web.rest.BackendException;
 import de.rwth.idsg.velocity.web.rest.dto.view.ViewTransactionDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
-import javax.transaction.Transactional;
 import java.util.List;
 
 /**
  * Created by sgokay on 27.05.14.
  */
 @Repository
-@Transactional
 @Slf4j
 public class TransactionRepositoryImpl implements TransactionRepository {
 
@@ -27,6 +26,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
     EntityManager em;
 
     @Override
+    @Transactional(readOnly = true)
     public List<ViewTransactionDTO> findAll() throws BackendException {
         try {
             return em.createQuery(
@@ -38,6 +38,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ViewTransactionDTO> findClosed() throws BackendException {
         try {
             return em.createQuery(
@@ -49,6 +50,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ViewTransactionDTO> findByPedelecId(Long pedelecId, Integer resultSize) throws BackendException {
         try {
             TypedQuery<ViewTransactionDTO> tq = em.createQuery(
@@ -65,6 +67,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ViewTransactionDTO> findByLogin(String login, Integer resultSize) throws BackendException {
         try {
             TypedQuery<ViewTransactionDTO> tq = em.createQuery(
@@ -81,6 +84,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ViewTransactionDTO> findOpen() throws BackendException {
         CriteriaBuilder builder = em.getCriteriaBuilder();
 
@@ -122,17 +126,20 @@ public class TransactionRepositoryImpl implements TransactionRepository {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Transaction findOpenByPedelecId(Long pedelecId) {
         // TODO
         return null;
     }
 
     @Override
+    @Transactional
     public void start(Transaction transaction) {
         // TODO
     }
 
     @Override
+    @Transactional
     public void stop(Transaction transaction) {
         // TODO
     }

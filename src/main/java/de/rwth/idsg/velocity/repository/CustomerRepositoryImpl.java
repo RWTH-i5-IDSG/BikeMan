@@ -9,13 +9,13 @@ import de.rwth.idsg.velocity.web.rest.dto.modify.CreateEditCustomerDTO;
 import de.rwth.idsg.velocity.web.rest.dto.view.ViewCustomerDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.*;
-import javax.transaction.Transactional;
 import java.util.HashSet;
 import java.util.List;
 
@@ -23,7 +23,6 @@ import java.util.List;
  * Created by sgokay on 05.06.14.
  */
 @Repository
-@Transactional
 @Slf4j
 public class CustomerRepositoryImpl implements CustomerRepository {
 
@@ -34,6 +33,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     EntityManager em;
 
     @Override
+    @Transactional(readOnly = true)
     public List<ViewCustomerDTO> findAll() throws BackendException {
         try {
             CriteriaBuilder builder = em.getCriteriaBuilder();
@@ -47,6 +47,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ViewCustomerDTO> findbyName(String firstname, String lastname) throws BackendException {
         List<ViewCustomerDTO> list = null;
         try {
@@ -67,6 +68,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ViewCustomerDTO findbyLogin(String login) throws BackendException {
         try {
             CriteriaBuilder builder = em.getCriteriaBuilder();
@@ -83,6 +85,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     }
 
     @Override
+    @Transactional
     public void activate(long userId) throws BackendException {
         Customer customer = getCustomerEntity(userId);
         try {
@@ -96,6 +99,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     }
 
     @Override
+    @Transactional
     public void deactivate(long userId) throws BackendException {
         Customer customer = getCustomerEntity(userId);
         try {
@@ -109,6 +113,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     }
 
     @Override
+    @Transactional
     public void create(CreateEditCustomerDTO dto) throws BackendException {
         Customer customer = new Customer();
         setFields(customer, dto, Operation.CREATE);
@@ -126,6 +131,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     }
 
     @Override
+    @Transactional
     public void update(CreateEditCustomerDTO dto) throws BackendException {
         final Long userId = dto.getUserId();
         if (userId == null) {
@@ -144,6 +150,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     }
 
     @Override
+    @Transactional
     public void delete(long userId) throws BackendException {
         Customer customer = getCustomerEntity(userId);
         try {
@@ -159,6 +166,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
      * Returns a customer, or throws exception when no customer exists.
      *
      */
+    @Transactional(readOnly = true)
     private Customer getCustomerEntity(long userId) throws BackendException {
         Customer customer = em.find(Customer.class, userId);
         if (customer == null) {

@@ -6,19 +6,18 @@ import de.rwth.idsg.velocity.web.rest.dto.modify.CreateEditPedelecDTO;
 import de.rwth.idsg.velocity.web.rest.dto.view.ViewPedelecDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.*;
-import javax.transaction.Transactional;
 import java.util.List;
 
 /**
  * Created by sgokay on 21.05.14.
  */
 @Repository
-@Transactional
 @Slf4j
 public class PedelecRepositoryImpl implements PedelecRepository {
 
@@ -26,6 +25,7 @@ public class PedelecRepositoryImpl implements PedelecRepository {
     EntityManager em;
 
     @Override
+    @Transactional(readOnly = true)
     public List<ViewPedelecDTO> findAll() throws BackendException {
         CriteriaBuilder builder = em.getCriteriaBuilder();
 
@@ -86,6 +86,7 @@ public class PedelecRepositoryImpl implements PedelecRepository {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ViewPedelecDTO findOneDTO(Long pedelecId) throws BackendException {
         CriteriaBuilder builder = em.getCriteriaBuilder();
         try {
@@ -112,11 +113,13 @@ public class PedelecRepositoryImpl implements PedelecRepository {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Pedelec findOne(long pedelecId) throws BackendException {
         return getPedelecEntity(pedelecId);
     }
 
     @Override
+    @Transactional
     public void create(CreateEditPedelecDTO dto) throws BackendException {
         Pedelec pedelec = new Pedelec();
         setFields(pedelec, dto);
@@ -133,6 +136,7 @@ public class PedelecRepositoryImpl implements PedelecRepository {
     }
 
     @Override
+    @Transactional
     public void update(CreateEditPedelecDTO dto) throws BackendException {
         final Long pedelecId = dto.getPedelecId();
         if (pedelecId == null) {
@@ -152,6 +156,7 @@ public class PedelecRepositoryImpl implements PedelecRepository {
     }
 
     @Override
+    @Transactional
     public void delete(long pedelecId) throws BackendException {
         Pedelec pedelec = getPedelecEntity(pedelecId);
 
@@ -168,6 +173,7 @@ public class PedelecRepositoryImpl implements PedelecRepository {
      * Returns a pedelec, or throws exception when no pedelec exists.
      *
      */
+    @Transactional(readOnly = true)
     private Pedelec getPedelecEntity(long pedelecId) throws BackendException {
         Pedelec pedelec = em.find(Pedelec.class, pedelecId);
         if (pedelec == null) {
