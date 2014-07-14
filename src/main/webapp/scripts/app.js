@@ -203,6 +203,9 @@ velocityApp
                     $rootScope.isAuthorized = AuthenticationSharedService.isAuthorized;
                     $rootScope.userRoles = USER_ROLES;
                     AuthenticationSharedService.valid(toState.access.authorizedRoles).then(function(authenticated){
+                        if (!authenticated) {
+                            $state.go("login");
+                        }
                         if (authenticated && toState.name == "login") {
                             $state.go("main");
                         }
