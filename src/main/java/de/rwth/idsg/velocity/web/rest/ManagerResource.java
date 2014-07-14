@@ -4,15 +4,14 @@ import com.codahale.metrics.annotation.Timed;
 import de.rwth.idsg.velocity.repository.ManagerRepository;
 import de.rwth.idsg.velocity.web.rest.dto.modify.CreateEditManagerDTO;
 import de.rwth.idsg.velocity.web.rest.dto.view.ViewManagerDTO;
+import de.rwth.idsg.velocity.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -32,43 +31,29 @@ public class ManagerResource {
 
     @Timed
     @RequestMapping(value = BASE_PATH, method = RequestMethod.GET)
-    public List<ViewManagerDTO> getAll() throws BackendException {
+    public List<ViewManagerDTO> getAll() throws DatabaseException {
         log.info("REST request to get all Manager");
         return managerRepository.findAll();
     }
 
     @Timed
     @RequestMapping(value = BASE_PATH, method = RequestMethod.POST)
-    public void create(@Valid @RequestBody CreateEditManagerDTO manager) throws BackendException {
+    public void create(@Valid @RequestBody CreateEditManagerDTO manager) throws DatabaseException {
         log.debug("REST request to save manager : {}", manager);
         managerRepository.create(manager);
     }
 
     @Timed
     @RequestMapping(value = BASE_PATH, method = RequestMethod.PUT)
-    public void update(@Valid @RequestBody CreateEditManagerDTO manager) throws BackendException {
+    public void update(@Valid @RequestBody CreateEditManagerDTO manager) throws DatabaseException {
         log.debug("REST request to update Manager");
         managerRepository.update(manager);
     }
 
     @Timed
     @RequestMapping(value = ID_PATH, method = RequestMethod.DELETE)
-    public void delete(@PathVariable Long id) throws BackendException {
+    public void delete(@PathVariable Long id) throws DatabaseException {
         log.debug("REST request to delete Manager : {}", id);
         managerRepository.delete(id);
-    }
-
-    ///// Methods to catch exceptions /////
-
-    @ExceptionHandler(BackendException.class)
-    public void backendConflict(HttpServletResponse response, BackendException e) throws IOException {
-        log.error("Exception happened", e);
-        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-    }
-
-    @ExceptionHandler(Exception.class)
-    public void conflict(HttpServletResponse response, Exception e) {
-        log.error("Exception happened", e);
-        response.setStatus(HttpServletResponse.SC_NOT_FOUND);
     }
 }

@@ -5,7 +5,7 @@ import de.rwth.idsg.velocity.endpoint.StationEndpoint;
 import de.rwth.idsg.velocity.repository.PedelecRepository;
 import de.rwth.idsg.velocity.repository.StationSlotRepository;
 import de.rwth.idsg.velocity.repository.TransactionRepository;
-import de.rwth.idsg.velocity.web.rest.BackendException;
+import de.rwth.idsg.velocity.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.LocalDateTime;
 import org.springframework.stereotype.Service;
@@ -102,7 +102,7 @@ public class RentalService {
     }
 
 
-    public boolean returnPedelec(long pedelecId, long slotId) throws BackendException{
+    public boolean returnPedelec(long pedelecId, long slotId) throws DatabaseException {
 
         Pedelec pedelec = pedelecRepository.findOne(pedelecId);
         StationSlot stationSlot = stationSlotRepository.findOne(slotId);

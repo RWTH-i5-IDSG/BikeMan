@@ -1,7 +1,7 @@
 package de.rwth.idsg.velocity.repository;
 
 import de.rwth.idsg.velocity.domain.Transaction;
-import de.rwth.idsg.velocity.web.rest.BackendException;
+import de.rwth.idsg.velocity.web.rest.exception.DatabaseException;
 import de.rwth.idsg.velocity.web.rest.dto.view.ViewTransactionDTO;
 
 import java.util.List;
@@ -17,17 +17,17 @@ public interface TransactionRepository {
     /*
     * Find ALL transactions.
     */
-    List<ViewTransactionDTO> findAll() throws BackendException;
+    List<ViewTransactionDTO> findAll() throws DatabaseException;
 
     /*
     * Find OPEN (ONGOING) transactions.
     */
-    List<ViewTransactionDTO> findOpen() throws BackendException;
+    List<ViewTransactionDTO> findOpen() throws DatabaseException;
 
     /*
     * Find CLOSED transactions.
     */
-    List<ViewTransactionDTO> findClosed() throws BackendException;
+    List<ViewTransactionDTO> findClosed() throws DatabaseException;
 
     /*
     * Find OPEN and CLOSED transactions for ONE pedelec.
@@ -35,7 +35,7 @@ public interface TransactionRepository {
     * @param resultSize   Limits the max number or results that are returned.
     *
     */
-    List<ViewTransactionDTO> findByPedelecId(Long pedelecId, Integer resultSize) throws BackendException;
+    List<ViewTransactionDTO> findByPedelecId(Long pedelecId, Integer resultSize) throws DatabaseException;
 
     /*
     * Find OPEN and CLOSED transactions for ONE user.
@@ -43,7 +43,7 @@ public interface TransactionRepository {
     * @param resultSize   Limits the max number or results that are returned.
     *
     */
-    List<ViewTransactionDTO> findByLogin(String login, Integer resultSize) throws BackendException;
+    List<ViewTransactionDTO> findByLogin(String login, Integer resultSize) throws DatabaseException;
 
     /*
     * Find the OPEN (ONGOING) transaction for ONE pedelec.

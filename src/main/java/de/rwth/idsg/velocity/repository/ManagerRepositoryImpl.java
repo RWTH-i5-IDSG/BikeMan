@@ -3,7 +3,7 @@ package de.rwth.idsg.velocity.repository;
 import de.rwth.idsg.velocity.domain.Manager;
 import de.rwth.idsg.velocity.domain.login.Authority;
 import de.rwth.idsg.velocity.security.AuthoritiesConstants;
-import de.rwth.idsg.velocity.web.rest.BackendException;
+import de.rwth.idsg.velocity.web.rest.exception.DatabaseException;
 import de.rwth.idsg.velocity.web.rest.dto.modify.CreateEditManagerDTO;
 import de.rwth.idsg.velocity.web.rest.dto.view.ViewManagerDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +38,7 @@ public class ManagerRepositoryImpl implements ManagerRepository {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ViewManagerDTO> findAll() throws BackendException {
+    public List<ViewManagerDTO> findAll() throws DatabaseException {
         try {
             CriteriaBuilder builder = em.getCriteriaBuilder();
 
@@ -56,13 +56,13 @@ public class ManagerRepositoryImpl implements ManagerRepository {
             return em.createQuery(criteria).getResultList();
 
         } catch (Exception e) {
-            throw new BackendException("Failed during database operation.", e);
+            throw new DatabaseException("Failed during database operation.", e);
         }
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void create(CreateEditManagerDTO dto) throws BackendException {
+    public void create(CreateEditManagerDTO dto) throws DatabaseException {
         Manager manager = new Manager();
         setFields(manager, dto, Operation.CREATE);
 
@@ -71,16 +71,16 @@ public class ManagerRepositoryImpl implements ManagerRepository {
             log.debug("Created new manager {}", manager);
 
         } catch (EntityExistsException e) {
-            throw new BackendException("This manager exists already.", e);
+            throw new DatabaseException("This manager exists already.", e);
 
         } catch (Exception e) {
-            throw new BackendException("Failed to create a new manager.", e);
+            throw new DatabaseException("Failed to create a new manager.", e);
         }
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void update(CreateEditManagerDTO dto) throws BackendException {
+    public void update(CreateEditManagerDTO dto) throws DatabaseException {
         final Long userId = dto.getUserId();
         if (userId == null) {
             return;
@@ -94,20 +94,20 @@ public class ManagerRepositoryImpl implements ManagerRepository {
             log.debug("Updated manager {}", manager);
 
         } catch (Exception e) {
-            throw new BackendException("Failed to update manager with userId " + userId, e);
+            throw new DatabaseException("Failed to update manager with userId " + userId, e);
         }
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void delete(long userId) throws BackendException {
+    public void delete(long userId) throws DatabaseException {
         Manager manager = getManagerEntity(userId);
         try {
             em.remove(manager);
             log.debug("Deleted manager {}", manager);
 
         } catch (Exception e) {
-            throw new BackendException("Failed to delete manager with userId " + userId, e);
+            throw new DatabaseException("Failed to delete manager with userId " + userId, e);
         }
     }
 
@@ -116,10 +116,10 @@ public class ManagerRepositoryImpl implements ManagerRepository {
      *
      */
     @Transactional(readOnly = true)
-    private Manager getManagerEntity(long userId) throws BackendException {
+    private Manager getManagerEntity(long userId) throws DatabaseException {
         Manager manager = em.find(Manager.class, userId);
         if (manager == null) {
-            throw new BackendException("No manager with userId " + userId);
+            throw new DatabaseException("No manager with userId " + userId);
         } else {
             return manager;
         }

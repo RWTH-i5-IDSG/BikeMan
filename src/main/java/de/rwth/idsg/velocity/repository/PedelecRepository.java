@@ -1,7 +1,7 @@
 package de.rwth.idsg.velocity.repository;
 
 import de.rwth.idsg.velocity.domain.Pedelec;
-import de.rwth.idsg.velocity.web.rest.BackendException;
+import de.rwth.idsg.velocity.web.rest.exception.DatabaseException;
 import de.rwth.idsg.velocity.web.rest.dto.modify.CreateEditPedelecDTO;
 import de.rwth.idsg.velocity.web.rest.dto.view.ViewPedelecDTO;
 
@@ -12,10 +12,10 @@ import java.util.List;
  */
 public interface PedelecRepository {
 
-    List<ViewPedelecDTO> findAll() throws BackendException;
-    ViewPedelecDTO findOneDTO(Long pedelecId) throws BackendException;
-    Pedelec findOne(long pedelecId) throws BackendException;
-    void create(CreateEditPedelecDTO dto) throws BackendException;
-    void update(CreateEditPedelecDTO dto) throws BackendException;
-    void delete(long pedelecId) throws BackendException;
+    List<ViewPedelecDTO> findAll() throws DatabaseException;
+    ViewPedelecDTO findOneDTO(Long pedelecId) throws DatabaseException;
+    Pedelec findOne(long pedelecId) throws DatabaseException;
+    void create(CreateEditPedelecDTO dto) throws DatabaseException;
+    void update(CreateEditPedelecDTO dto) throws DatabaseException;
+    void delete(long pedelecId) throws DatabaseException;
 }

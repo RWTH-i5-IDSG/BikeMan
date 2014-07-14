@@ -4,7 +4,7 @@ import de.rwth.idsg.velocity.domain.Address;
 import de.rwth.idsg.velocity.domain.Customer;
 import de.rwth.idsg.velocity.domain.login.Authority;
 import de.rwth.idsg.velocity.security.AuthoritiesConstants;
-import de.rwth.idsg.velocity.web.rest.BackendException;
+import de.rwth.idsg.velocity.web.rest.exception.DatabaseException;
 import de.rwth.idsg.velocity.web.rest.dto.modify.CreateEditCustomerDTO;
 import de.rwth.idsg.velocity.web.rest.dto.view.ViewCustomerDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +34,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ViewCustomerDTO> findAll() throws BackendException {
+    public List<ViewCustomerDTO> findAll() throws DatabaseException {
         try {
             CriteriaBuilder builder = em.getCriteriaBuilder();
             return em.createQuery(
@@ -42,13 +42,13 @@ public class CustomerRepositoryImpl implements CustomerRepository {
             ).getResultList();
 
         } catch (Exception e) {
-            throw new BackendException("Failed during database operation.", e);
+            throw new DatabaseException("Failed during database operation.", e);
         }
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<ViewCustomerDTO> findbyName(String firstname, String lastname) throws BackendException {
+    public List<ViewCustomerDTO> findbyName(String firstname, String lastname) throws DatabaseException {
         List<ViewCustomerDTO> list = null;
         try {
             CriteriaBuilder builder = em.getCriteriaBuilder();
@@ -57,11 +57,11 @@ public class CustomerRepositoryImpl implements CustomerRepository {
             ).getResultList();
 
         } catch (Exception e) {
-            throw new BackendException("Failed during database operation.", e);
+            throw new DatabaseException("Failed during database operation.", e);
         }
 
         if (list.isEmpty()) {
-            throw new BackendException("No customer found with name " + firstname + " " + lastname);
+            throw new DatabaseException("No customer found with name " + firstname + " " + lastname);
         } else {
             return list;
         }
@@ -69,7 +69,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
 
     @Override
     @Transactional(readOnly = true)
-    public ViewCustomerDTO findbyLogin(String login) throws BackendException {
+    public ViewCustomerDTO findbyLogin(String login) throws DatabaseException {
         try {
             CriteriaBuilder builder = em.getCriteriaBuilder();
             return em.createQuery(
@@ -77,16 +77,16 @@ public class CustomerRepositoryImpl implements CustomerRepository {
             ).getSingleResult();
 
         } catch (NoResultException e) {
-            throw new BackendException("No customer found with login " + login, e);
+            throw new DatabaseException("No customer found with login " + login, e);
 
         } catch (Exception e) {
-            throw new BackendException("Failed during database operation.", e);
+            throw new DatabaseException("Failed during database operation.", e);
         }
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void activate(long userId) throws BackendException {
+    public void activate(long userId) throws DatabaseException {
         Customer customer = getCustomerEntity(userId);
         try {
             customer.setIsActivated(true);
@@ -94,13 +94,13 @@ public class CustomerRepositoryImpl implements CustomerRepository {
             log.debug("Activated customer {}", customer);
 
         } catch (Exception e) {
-            throw new BackendException("Failed to activate customer with userId " + userId, e);
+            throw new DatabaseException("Failed to activate customer with userId " + userId, e);
         }
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void deactivate(long userId) throws BackendException {
+    public void deactivate(long userId) throws DatabaseException {
         Customer customer = getCustomerEntity(userId);
         try {
             customer.setIsActivated(false);
@@ -108,13 +108,13 @@ public class CustomerRepositoryImpl implements CustomerRepository {
             log.debug("Deactivated customer {}", customer);
 
         } catch (Exception e) {
-            throw new BackendException("Failed to deactivate customer with userId " + userId, e);
+            throw new DatabaseException("Failed to deactivate customer with userId " + userId, e);
         }
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void create(CreateEditCustomerDTO dto) throws BackendException {
+    public void create(CreateEditCustomerDTO dto) throws DatabaseException {
         Customer customer = new Customer();
         setFields(customer, dto, Operation.CREATE);
 
@@ -123,16 +123,16 @@ public class CustomerRepositoryImpl implements CustomerRepository {
             log.debug("Created new customer {}", customer);
 
         } catch (EntityExistsException e) {
-            throw new BackendException("This customer exists already.", e);
+            throw new DatabaseException("This customer exists already.", e);
 
         } catch (Exception e) {
-            throw new BackendException("Failed to create a new customer.", e);
+            throw new DatabaseException("Failed to create a new customer.", e);
         }
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void update(CreateEditCustomerDTO dto) throws BackendException {
+    public void update(CreateEditCustomerDTO dto) throws DatabaseException {
         final Long userId = dto.getUserId();
         if (userId == null) {
             return;
@@ -145,20 +145,20 @@ public class CustomerRepositoryImpl implements CustomerRepository {
             log.debug("Updated customer {}", customer);
 
         } catch (Exception e) {
-            throw new BackendException("Failed to update customer with userId " + userId, e);
+            throw new DatabaseException("Failed to update customer with userId " + userId, e);
         }
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void delete(long userId) throws BackendException {
+    public void delete(long userId) throws DatabaseException {
         Customer customer = getCustomerEntity(userId);
         try {
             em.remove(customer);
             log.debug("Deleted customer {}", customer);
 
         } catch (Exception e) {
-            throw new BackendException("Failed to delete customer with userId " + userId, e);
+            throw new DatabaseException("Failed to delete customer with userId " + userId, e);
         }
     }
 
@@ -167,10 +167,10 @@ public class CustomerRepositoryImpl implements CustomerRepository {
      *
      */
     @Transactional(readOnly = true)
-    private Customer getCustomerEntity(long userId) throws BackendException {
+    private Customer getCustomerEntity(long userId) throws DatabaseException {
         Customer customer = em.find(Customer.class, userId);
         if (customer == null) {
-            throw new BackendException("No customer with userId " + userId);
+            throw new DatabaseException("No customer with userId " + userId);
         } else {
             return customer;
         }

@@ -3,6 +3,7 @@ package de.rwth.idsg.velocity.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import de.rwth.idsg.velocity.service.RentalService;
 import de.rwth.idsg.velocity.web.rest.dto.ReturnPedelecDTO;
+import de.rwth.idsg.velocity.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -54,7 +55,7 @@ public class RentalResource {
             method = RequestMethod.POST,
             produces = "application/json")
     @Timed
-    public void returnPedelec(@RequestBody ReturnPedelecDTO returnPedelecDTO) throws BackendException {
+    public void returnPedelec(@RequestBody ReturnPedelecDTO returnPedelecDTO) throws DatabaseException {
 
         rentalService.returnPedelec(returnPedelecDTO.getPedelecId(), returnPedelecDTO.getStationSlotId());
     }

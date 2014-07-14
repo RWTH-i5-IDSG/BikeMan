@@ -4,7 +4,7 @@ import de.rwth.idsg.velocity.domain.Address;
 import de.rwth.idsg.velocity.domain.Pedelec;
 import de.rwth.idsg.velocity.domain.Station;
 import de.rwth.idsg.velocity.domain.StationSlot;
-import de.rwth.idsg.velocity.web.rest.BackendException;
+import de.rwth.idsg.velocity.web.rest.exception.DatabaseException;
 import de.rwth.idsg.velocity.web.rest.dto.modify.CreateEditStationDTO;
 import de.rwth.idsg.velocity.web.rest.dto.view.ViewStationDTO;
 import de.rwth.idsg.velocity.web.rest.dto.view.ViewStationSlotDTO;
@@ -33,20 +33,20 @@ public class StationRepositoryImpl implements StationRepository {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ViewStationDTO> findAll() throws BackendException  {
+    public List<ViewStationDTO> findAll() throws DatabaseException {
         try {
             CriteriaBuilder builder = em.getCriteriaBuilder();
             CriteriaQuery<ViewStationDTO> criteria = this.getStationQuery(builder, null);
             return em.createQuery(criteria).getResultList();
 
         } catch (Exception e) {
-            throw new BackendException("Failed during database operation.", e);
+            throw new DatabaseException("Failed during database operation.", e);
         }
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<ViewStationDTO> findByLocation(BigDecimal latitude, BigDecimal longitude)  throws BackendException {
+    public List<ViewStationDTO> findByLocation(BigDecimal latitude, BigDecimal longitude)  throws DatabaseException {
         // TODO
 
         return null;
@@ -54,7 +54,7 @@ public class StationRepositoryImpl implements StationRepository {
 
     @Override
     @Transactional(readOnly = true)
-    public ViewStationDTO findOne(long stationId) throws BackendException {
+    public ViewStationDTO findOne(long stationId) throws DatabaseException {
         CriteriaBuilder builder = em.getCriteriaBuilder();
 
         // get station info
@@ -63,7 +63,7 @@ public class StationRepositoryImpl implements StationRepository {
         try {
             stat = em.createQuery(criteria).getSingleResult();
         } catch (Exception e) {
-            throw new BackendException("Failed to find station with stationId " + stationId, e);
+            throw new DatabaseException("Failed to find station with stationId " + stationId, e);
         }
 
         // get slots for the station
@@ -88,7 +88,7 @@ public class StationRepositoryImpl implements StationRepository {
             List<ViewStationSlotDTO> list = em.createQuery(slotCriteria).getResultList();
             stat.setSlots(list);
         } catch (Exception e) {
-            throw new BackendException("Failed to get slots for the station", e);
+            throw new DatabaseException("Failed to get slots for the station", e);
         }
 
         return stat;
@@ -96,7 +96,7 @@ public class StationRepositoryImpl implements StationRepository {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void create(CreateEditStationDTO dto) throws BackendException {
+    public void create(CreateEditStationDTO dto) throws DatabaseException {
         Station station = new Station();
         setFields(station, dto, Operation.CREATE);
 
@@ -105,16 +105,16 @@ public class StationRepositoryImpl implements StationRepository {
             log.debug("Created new manager {}", station);
 
         } catch (EntityExistsException e) {
-            throw new BackendException("This station exists already.", e);
+            throw new DatabaseException("This station exists already.", e);
 
         } catch (Exception e) {
-            throw new BackendException("Failed to create a new station.", e);
+            throw new DatabaseException("Failed to create a new station.", e);
         }
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void update(CreateEditStationDTO dto) throws BackendException {
+    public void update(CreateEditStationDTO dto) throws DatabaseException {
         final Long stationId = dto.getStationId();
         if (stationId == null) {
             return;
@@ -128,19 +128,19 @@ public class StationRepositoryImpl implements StationRepository {
             log.debug("Updated station {}", station);
 
         } catch (Exception e) {
-            throw new BackendException("Failed to update station with stationId " + stationId, e);
+            throw new DatabaseException("Failed to update station with stationId " + stationId, e);
         }
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void delete(long stationId) throws BackendException {
+    public void delete(long stationId) throws DatabaseException {
         Station station = getStationEntity(stationId);
         try {
             em.remove(station);
             log.debug("Deleted station {}", station);
         } catch (Exception e) {
-            throw new BackendException("Failed to delete station with stationId " + stationId, e);
+            throw new DatabaseException("Failed to delete station with stationId " + stationId, e);
         }
     }
 
@@ -149,10 +149,10 @@ public class StationRepositoryImpl implements StationRepository {
      *
      */
     @Transactional(readOnly = true)
-    private Station getStationEntity(long stationId) throws BackendException {
+    private Station getStationEntity(long stationId) throws DatabaseException {
         Station station = em.find(Station.class, stationId);
         if (station == null) {
-            throw new BackendException("No station with stationId " + stationId);
+            throw new DatabaseException("No station with stationId " + stationId);
         } else {
             return station;
         }

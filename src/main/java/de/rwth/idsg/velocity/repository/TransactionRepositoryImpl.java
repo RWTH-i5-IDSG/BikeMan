@@ -1,7 +1,7 @@
 package de.rwth.idsg.velocity.repository;
 
 import de.rwth.idsg.velocity.domain.*;
-import de.rwth.idsg.velocity.web.rest.BackendException;
+import de.rwth.idsg.velocity.web.rest.exception.DatabaseException;
 import de.rwth.idsg.velocity.web.rest.dto.view.ViewTransactionDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
@@ -27,31 +27,31 @@ public class TransactionRepositoryImpl implements TransactionRepository {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ViewTransactionDTO> findAll() throws BackendException {
+    public List<ViewTransactionDTO> findAll() throws DatabaseException {
         try {
             return em.createQuery(
                     getTransactionQuery(FindType.ALL, null, null)
             ).getResultList();
         } catch (Exception e) {
-            throw new BackendException("Failed during database operation.", e);
+            throw new DatabaseException("Failed during database operation.", e);
         }
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<ViewTransactionDTO> findClosed() throws BackendException {
+    public List<ViewTransactionDTO> findClosed() throws DatabaseException {
         try {
             return em.createQuery(
                     getTransactionQuery(FindType.CLOSED, null, null)
             ).getResultList();
         } catch (Exception e) {
-            throw new BackendException("Failed during database operation.", e);
+            throw new DatabaseException("Failed during database operation.", e);
         }
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<ViewTransactionDTO> findByPedelecId(Long pedelecId, Integer resultSize) throws BackendException {
+    public List<ViewTransactionDTO> findByPedelecId(Long pedelecId, Integer resultSize) throws DatabaseException {
         try {
             TypedQuery<ViewTransactionDTO> tq = em.createQuery(
                     getTransactionQuery(FindType.BY_PEDELEC_ID, pedelecId, null)
@@ -62,13 +62,13 @@ public class TransactionRepositoryImpl implements TransactionRepository {
             }
             return tq.getResultList();
         } catch (Exception e) {
-            throw new BackendException("Failed during database operation.", e);
+            throw new DatabaseException("Failed during database operation.", e);
         }
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<ViewTransactionDTO> findByLogin(String login, Integer resultSize) throws BackendException {
+    public List<ViewTransactionDTO> findByLogin(String login, Integer resultSize) throws DatabaseException {
         try {
             TypedQuery<ViewTransactionDTO> tq = em.createQuery(
                     getTransactionQuery(FindType.BY_LOGIN, null, login)
@@ -79,13 +79,13 @@ public class TransactionRepositoryImpl implements TransactionRepository {
             }
             return tq.getResultList();
         } catch (Exception e) {
-            throw new BackendException("Failed during database operation.", e);
+            throw new DatabaseException("Failed during database operation.", e);
         }
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<ViewTransactionDTO> findOpen() throws BackendException {
+    public List<ViewTransactionDTO> findOpen() throws DatabaseException {
         CriteriaBuilder builder = em.getCriteriaBuilder();
 
         CriteriaQuery<ViewTransactionDTO> criteria = builder.createQuery(ViewTransactionDTO.class);
@@ -121,7 +121,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         try {
             return em.createQuery(criteria).getResultList();
         } catch (Exception e) {
-            throw new BackendException("Failed during database operation.");
+            throw new DatabaseException("Failed during database operation.");
         }
     }
 

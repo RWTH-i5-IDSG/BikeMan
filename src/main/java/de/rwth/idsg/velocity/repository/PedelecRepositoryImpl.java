@@ -1,7 +1,7 @@
 package de.rwth.idsg.velocity.repository;
 
 import de.rwth.idsg.velocity.domain.*;
-import de.rwth.idsg.velocity.web.rest.BackendException;
+import de.rwth.idsg.velocity.web.rest.exception.DatabaseException;
 import de.rwth.idsg.velocity.web.rest.dto.modify.CreateEditPedelecDTO;
 import de.rwth.idsg.velocity.web.rest.dto.view.ViewPedelecDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +26,7 @@ public class PedelecRepositoryImpl implements PedelecRepository {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ViewPedelecDTO> findAll() throws BackendException {
+    public List<ViewPedelecDTO> findAll() throws DatabaseException {
         CriteriaBuilder builder = em.getCriteriaBuilder();
 
         // Get the pedelecs in transaction
@@ -87,7 +87,7 @@ public class PedelecRepositoryImpl implements PedelecRepository {
 
     @Override
     @Transactional(readOnly = true)
-    public ViewPedelecDTO findOneDTO(Long pedelecId) throws BackendException {
+    public ViewPedelecDTO findOneDTO(Long pedelecId) throws DatabaseException {
         CriteriaBuilder builder = em.getCriteriaBuilder();
         try {
             // Get the pedelecs in transaction
@@ -108,19 +108,19 @@ public class PedelecRepositoryImpl implements PedelecRepository {
             return em.createQuery(criteria).getSingleResult();
 
         } catch (Exception e) {
-            throw new BackendException("Failed to find pedelec with pedelecId " + pedelecId, e);
+            throw new DatabaseException("Failed to find pedelec with pedelecId " + pedelecId, e);
         }
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Pedelec findOne(long pedelecId) throws BackendException {
+    public Pedelec findOne(long pedelecId) throws DatabaseException {
         return getPedelecEntity(pedelecId);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void create(CreateEditPedelecDTO dto) throws BackendException {
+    public void create(CreateEditPedelecDTO dto) throws DatabaseException {
         Pedelec pedelec = new Pedelec();
         setFields(pedelec, dto);
         try {
@@ -128,16 +128,16 @@ public class PedelecRepositoryImpl implements PedelecRepository {
             log.debug("Created new pedelec {}", pedelec);
 
         } catch (EntityExistsException e) {
-            throw new BackendException("This pedelec exists already.", e);
+            throw new DatabaseException("This pedelec exists already.", e);
 
         } catch (Exception e) {
-            throw new BackendException("Failed to create a new pedelec.", e);
+            throw new DatabaseException("Failed to create a new pedelec.", e);
         }
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void update(CreateEditPedelecDTO dto) throws BackendException {
+    public void update(CreateEditPedelecDTO dto) throws DatabaseException {
         final Long pedelecId = dto.getPedelecId();
         if (pedelecId == null) {
             return;
@@ -151,13 +151,13 @@ public class PedelecRepositoryImpl implements PedelecRepository {
             log.debug("Updated pedelec {}", pedelec);
 
         } catch (Exception e) {
-            throw new BackendException("Failed to update pedelec with pedelecId " + pedelecId, e);
+            throw new DatabaseException("Failed to update pedelec with pedelecId " + pedelecId, e);
         }
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void delete(long pedelecId) throws BackendException {
+    public void delete(long pedelecId) throws DatabaseException {
         Pedelec pedelec = getPedelecEntity(pedelecId);
 
         try {
@@ -165,7 +165,7 @@ public class PedelecRepositoryImpl implements PedelecRepository {
             log.debug("Deleted pedelec {}", pedelec);
 
         } catch (Exception e) {
-            throw new BackendException("Failed to delete pedelec with pedelec " + pedelecId, e);
+            throw new DatabaseException("Failed to delete pedelec with pedelec " + pedelecId, e);
         }
     }
 
@@ -174,10 +174,10 @@ public class PedelecRepositoryImpl implements PedelecRepository {
      *
      */
     @Transactional(readOnly = true)
-    private Pedelec getPedelecEntity(long pedelecId) throws BackendException {
+    private Pedelec getPedelecEntity(long pedelecId) throws DatabaseException {
         Pedelec pedelec = em.find(Pedelec.class, pedelecId);
         if (pedelec == null) {
-            throw new BackendException("No pedelec with pedelecId " + pedelecId);
+            throw new DatabaseException("No pedelec with pedelecId " + pedelecId);
         } else {
             return pedelec;
         }
