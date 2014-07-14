@@ -48,7 +48,10 @@
             <tr>
                 <th>Birthday</th>
                 <td ng-switch-when="false">{{customer.birthday | date: 'mediumDate'}}</td>
-                <td ng-switch-when="true"><input type="text" class="form-control" ng-model="customer.birthday"></td>
+                <td ng-switch-when="true" class="input-group"><input type="text" class="form-control" datepicker-popup="dd-MMMM-yyyy" ng-model="customer.birthday" is-open="$parent.isOpen" max-date="{{maxDate}}" datepicker-options="dateOptions" ng-required="true" show-button-bar="false" datepicker-mode="year"/>
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                        </span></td>
             </tr>
             <tr>
                 <th>Activated</th>
@@ -89,9 +92,9 @@
                 <td>{{transaction.pedelec.manufacturerId}}</td>
                 <td>{{transaction.startDateTime | date:'medium'}}</td>
                 <td><span ng-hide="transaction.toStation.stationId == null">{{transaction.endDateTime | date:'medium'}}</span></td>
-                <td>{{transaction.fromStation.name}} ({{transaction.fromStation.slotPosition}})</td>
+                <td>{{transaction.fromStation.name}} <span class="badge">{{transaction.fromStation.slotPosition}}</span></td>
                 <td>
-                    <span ng-hide="transaction.toStation.stationId == null">{{transaction.toStation.name}} ({{transaction.toStation.slotPosition}})
+                    <span ng-hide="transaction.toStation.stationId == null">{{transaction.toStation.name}} <span class="badge">{{transaction.toStation.slotPosition}}</span>
                     </span>
                 </td>
             </tr>

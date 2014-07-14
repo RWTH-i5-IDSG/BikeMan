@@ -72,6 +72,21 @@ velocityApp.controller('CustomerDetailController', ['$scope', 'resolvedCustomer'
 
         $scope.isEditing = false;
 
+        // open the datepicker control
+        $scope.open = function ($event) {
+            $event.preventDefault();
+            $event.stopPropagation();
+
+            $scope.isOpen = true;
+        }
+
+        $scope.dateOptions = {
+            formatYear: 'yyyy',
+            startingDay: 1
+        };
+
+        $scope.maxDate = new Date();
+
         $scope.toggleEdit = function () {
             $scope.customer = Customer.searchByLogin({login: $scope.customer.login});
             $scope.isEditing = !$scope.isEditing;
