@@ -119,7 +119,7 @@ public class PedelecRepositoryImpl implements PedelecRepository {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void create(CreateEditPedelecDTO dto) throws BackendException {
         Pedelec pedelec = new Pedelec();
         setFields(pedelec, dto);
@@ -136,7 +136,7 @@ public class PedelecRepositoryImpl implements PedelecRepository {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void update(CreateEditPedelecDTO dto) throws BackendException {
         final Long pedelecId = dto.getPedelecId();
         if (pedelecId == null) {
@@ -156,7 +156,7 @@ public class PedelecRepositoryImpl implements PedelecRepository {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void delete(long pedelecId) throws BackendException {
         Pedelec pedelec = getPedelecEntity(pedelecId);
 

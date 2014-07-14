@@ -61,7 +61,7 @@ public class ManagerRepositoryImpl implements ManagerRepository {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void create(CreateEditManagerDTO dto) throws BackendException {
         Manager manager = new Manager();
         setFields(manager, dto, Operation.CREATE);
@@ -79,7 +79,7 @@ public class ManagerRepositoryImpl implements ManagerRepository {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void update(CreateEditManagerDTO dto) throws BackendException {
         final Long userId = dto.getUserId();
         if (userId == null) {
@@ -99,7 +99,7 @@ public class ManagerRepositoryImpl implements ManagerRepository {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void delete(long userId) throws BackendException {
         Manager manager = getManagerEntity(userId);
         try {

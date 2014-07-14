@@ -95,7 +95,7 @@ public class StationRepositoryImpl implements StationRepository {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void create(CreateEditStationDTO dto) throws BackendException {
         Station station = new Station();
         setFields(station, dto, Operation.CREATE);
@@ -113,7 +113,7 @@ public class StationRepositoryImpl implements StationRepository {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void update(CreateEditStationDTO dto) throws BackendException {
         final Long stationId = dto.getStationId();
         if (stationId == null) {
@@ -133,7 +133,7 @@ public class StationRepositoryImpl implements StationRepository {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void delete(long stationId) throws BackendException {
         Station station = getStationEntity(stationId);
         try {

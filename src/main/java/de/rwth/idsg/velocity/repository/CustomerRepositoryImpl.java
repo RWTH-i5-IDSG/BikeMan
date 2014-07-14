@@ -85,7 +85,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void activate(long userId) throws BackendException {
         Customer customer = getCustomerEntity(userId);
         try {
@@ -99,7 +99,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void deactivate(long userId) throws BackendException {
         Customer customer = getCustomerEntity(userId);
         try {
@@ -113,7 +113,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void create(CreateEditCustomerDTO dto) throws BackendException {
         Customer customer = new Customer();
         setFields(customer, dto, Operation.CREATE);
@@ -131,7 +131,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void update(CreateEditCustomerDTO dto) throws BackendException {
         final Long userId = dto.getUserId();
         if (userId == null) {
@@ -150,7 +150,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void delete(long userId) throws BackendException {
         Customer customer = getCustomerEntity(userId);
         try {

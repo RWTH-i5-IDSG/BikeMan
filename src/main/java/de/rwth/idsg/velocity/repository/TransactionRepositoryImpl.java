@@ -133,13 +133,13 @@ public class TransactionRepositoryImpl implements TransactionRepository {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void start(Transaction transaction) {
         // TODO
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void stop(Transaction transaction) {
         // TODO
     }
