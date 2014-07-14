@@ -58,7 +58,7 @@
 
                 </td>
                 <td>{{customer.birthday | date:'mediumDate'}}</td>
-                <td><a ui-sref="customerDetail({login:'{{customer.login}}'})">Details</a></td>
+                <td><button type="button" class="btn btn-info" ui-sref="customerDetail({login:'{{customer.login}}'})"><span class="glyphicon glyphicon-eye-open"></span> Details</button></td>
             </tr>
             </tbody>
         </table>

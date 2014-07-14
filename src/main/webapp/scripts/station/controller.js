@@ -5,21 +5,6 @@ velocityApp.controller('StationController', ['$scope', 'resolvedStation', 'Stati
 
         $scope.stations = resolvedStation;
 
-//        $scope.update = function () {
-//            Station.update($scope.station,
-//                function () {
-//                    $scope.stations = Station.query();
-//                    $('editStationModal').hideModal();
-//                    $scope.clear;
-//                });
-//        }
-
-//        $scope.showUpdate = function (id) {
-//            $scope.station = CreateEditStation.get({id: id});
-//            console.log($scope.station);
-//            $('#saveStationModal').modal('show');
-//        };
-
         $scope.getStationDetails = function(station) {
 
             Station.get({id: station.stationId}, function(requestedStation) {

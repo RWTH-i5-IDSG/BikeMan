@@ -79,9 +79,9 @@
                 <td>{{transaction.pedelec.manufacturerId}}</td>
                 <td>{{transaction.startDateTime | date:'medium'}}</td>
                 <td><span ng-show="!pedelec.inTransaction || !$first">{{transaction.endDateTime | date:'medium'}}</span></td>
-                <td>{{transaction.fromStation.name}} ({{transaction.fromStation.slotPosition}})</td>
+                <td>{{transaction.fromStation.name}} <span class="badge">{{transaction.fromStation.slotPosition}}</span></td>
                 <td>
-                    <span ng-show="!pedelec.inTransaction || !$first">{{transaction.toStation.name}} ({{transaction.toStation.slotPosition}})
+                    <span ng-show="!pedelec.inTransaction || !$first">{{transaction.toStation.name}} <span class="badge">{{transaction.toStation.slotPosition}}</span>
                     </span>
                 </td>
             </tr>

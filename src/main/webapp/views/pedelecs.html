@@ -31,7 +31,7 @@
                     <td>{{pedelec.station.stationManufacturerId}} <span class="badge">{{pedelec.station.stationSlotPosition}}</span></td>
                     <td>{{pedelec.transaction.firstname + " " + pedelec.transaction.lastname}}</td>
                     <td>
-                        <a ui-sref="pedelecDetail({pedelecId:{{pedelec.pedelecId}}})">Details</a>
+                        <button type="button" class="btn btn-info" ui-sref="pedelecDetail({pedelecId:{{pedelec.pedelecId}}})"><span class="glyphicon glyphicon-eye-open"></span> Details</button>
                     </td>
                 </tr>
             </tbody>

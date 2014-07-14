@@ -29,44 +29,33 @@
                     <td><small>{{station.address.streetAndHousenumber + ', ' + station.address.zip + ', ' + station.address.city + ', ' + station.address.country}}</small></td>
                     <td>{{station.state}}</td>
                     <td>{{station.numFreeSlots}} / {{station.numAllSlots}}</td>
-                    <td><a ui-sref="stationDetail({stationId:{{station.stationId}}})">Details</a></td>
+                    <td><button type="button" class="btn btn-info" ui-sref="stationDetail({stationId:{{station.stationId}}})"><span class="glyphicon glyphicon-eye-open"></span> Details</button></td>
                 </tr>
                 <tr ng-repeat-end>
-                    <td colspan="7" class="hiddenRow"><div class="accordian-body collapse" id="{{station.stationId}}">
-                        <table class="table table-bordered remove-margin">
-                            <thead>
-                                <tr>
-                                    <th>Slot</th>
-                                    <th>Manufacturer ID</th>
-                                    <th>State</th>
-                                    <th>Occupied</th>
-                                    <th>Pedelec (Manufacturer ID)</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr ng-repeat="slot in station.slots">
-                                    <td>{{slot.slotPosition}}</td>
-                                    <td>{{slot.manufacturerId}}</td>
-                                    <td>{{slot.state}}</td>
-                                    <td class="text-center">{{slot.isOccupied | occupiedFilter}}</td>
-                                    <td>{{slot.pedelec | pedelecViewFilter}}</td>
-                                    <td>
-                                        <button type="submit"
-                                                ng-click="showUpdate(station.id)"
-                                                class="btn">
-                                            <span class="glyphicon glyphicon-pencil"></span>
-                                        </button>
-                                        <!--<button type="submit"-->
-                                                <!--ng-click="delete(station.id)"-->
-                                                <!--class="btn btn-danger">-->
-                                            <!--<span class="glyphicon glyphicon-remove-circle"></span>-->
-                                        <!--</button>-->
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div> </td>
+                    <td colspan="7" class="hiddenRow">
+                        <div class="accordian-body collapse stations-inside panel panel-default" id="{{station.stationId}}">
+                            <table class="table table-curved stations-inside-table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Slot</th>
+                                        <th>Manufacturer ID</th>
+                                        <th>State</th>
+                                        <th>Occupied</th>
+                                        <th>Pedelec (Manufacturer ID)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="slot in station.slots">
+                                        <td>{{slot.slotPosition}}</td>
+                                        <td>{{slot.manufacturerId}}</td>
+                                        <td>{{slot.state}}</td>
+                                        <td class="text-center">{{slot.isOccupied | occupiedFilter}}</td>
+                                        <td>{{slot.pedelec | pedelecViewFilter}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </td>
                 </tr>
             </tbody>
         </table>

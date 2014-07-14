@@ -23,8 +23,8 @@
                 <td>{{transaction.pedelec.manufacturerId}}</td>
                 <td>{{transaction.startDateTime | date:'medium'}}</td>
                 <td>{{transaction.endDateTime | date:'medium'}}</td>
-                <td>{{transaction.fromStation.name}} ({{transaction.fromStation.slotPosition}})</td>
-                <td><span ng-hide="transaction.toStation.name == null">{{transaction.toStation.name}} ({{transaction.toStation.slotPosition}})</span></td>
+                <td>{{transaction.fromStation.name}} <span class="badge">{{transaction.fromStation.slotPosition}}</span></td>
+                <td><span ng-hide="transaction.toStation.name == null">{{transaction.toStation.name}} <span class="badge">{{transaction.toStation.slotPosition}}</span></span></td>
             </tr>
             </tbody>
         </table>
