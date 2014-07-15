@@ -12,16 +12,17 @@ import org.joda.time.LocalDateTime;
 /**
  * Created by sgokay on 20.05.14.
  */
+@Getter
 @ToString(includeFieldNames = true)
 public class ViewPedelecDTO {
 
-    @Getter private Long pedelecId;
-    @Getter private String manufacturerId;
-    @Getter private Float stateOfCharge;
-    @Getter private OperationState state;
-    @Getter private Boolean inTransaction;
-    @Getter private ViewStationDTO station;
-    @Getter private ViewTransactionDTO transaction;
+    private Long pedelecId;
+    private String manufacturerId;
+    private Float stateOfCharge;
+    private OperationState state;
+    private Boolean inTransaction;
+    private ViewStationDTO station;
+    private ViewTransactionDTO transaction;
 
     // Basic
     public ViewPedelecDTO(Long pedelecId, String manufacturerId, Float stateOfCharge,

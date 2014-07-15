@@ -24,42 +24,37 @@ import java.io.Serializable;
 @TableGenerator(name="transaction_gen", initialValue=0, allocationSize=1)
 @EqualsAndHashCode(of = {"transactionId"})
 @ToString(includeFieldNames = true)
+@Getter
+@Setter
 public class Transaction implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE, generator = "transaction_gen")
     @Column(name = "transaction_id")
-    @Getter @Setter
     private long transactionId;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    @Getter @Setter
     private Customer customer;
 
     @Column(name = "start_datetime")
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
-    @Getter @Setter
     private LocalDateTime startDateTime;
 
     @Column(name = "end_datetime")
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
-    @Getter @Setter
     private LocalDateTime endDateTime;
 
     @ManyToOne
     @JoinColumn(name = "pedelec_id")
-    @Getter @Setter
     private Pedelec pedelec;
 
     @ManyToOne
     @JoinColumn(name = "from_slot_id")
-    @Getter @Setter
     private StationSlot fromSlot;
 
     @ManyToOne
     @JoinColumn(name = "to_slot_id")
-    @Getter @Setter
     private StationSlot toSlot;
 
 }

@@ -11,17 +11,16 @@ import javax.validation.constraints.NotNull;
 /**
  * Created by sgokay on 22.05.14.
  */
+@Getter
+@Setter
 @ToString(includeFieldNames = true)
 public class CreateEditPedelecDTO {
 
-    @Getter @Setter
     private Long pedelecId;
 
     @NotBlank
-    @Getter @Setter
     private String manufacturerId;
 
     @NotNull
-    @Getter @Setter
     private OperationState state;
 }

@@ -11,20 +11,21 @@ import java.util.List;
 /**
  * Created by swam on 23/05/14.
  */
+@Getter
 @ToString(includeFieldNames = true)
 public class ViewStationDTO {
 
-    @Getter private Long stationId;
-    @Getter private String manufacturerId;
-    @Getter private String name;
-    @Getter private ViewAddressDTO address;
-    @Getter private BigDecimal locationLatitude;
-    @Getter private BigDecimal locationLongitude;
-    @Getter private String note;
-    @Getter private OperationState state;
-    @Getter private Long numFreeSlots;
-    @Getter private Long numAllSlots;
-    @Getter @Setter private List<ViewStationSlotDTO> slots;
+    private Long stationId;
+    private String manufacturerId;
+    private String name;
+    private ViewAddressDTO address;
+    private BigDecimal locationLatitude;
+    private BigDecimal locationLongitude;
+    private String note;
+    private OperationState state;
+    private Long numFreeSlots;
+    private Long numAllSlots;
+    @Setter private List<ViewStationSlotDTO> slots;
 
     public ViewStationDTO(Long stationId, String manufacturerId, String name,
                           String streetAndHousenumber, String zip, String city, String country,

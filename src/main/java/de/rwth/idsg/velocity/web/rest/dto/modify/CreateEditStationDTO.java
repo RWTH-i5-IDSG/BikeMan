@@ -13,35 +13,29 @@ import java.math.BigDecimal;
 /**
  * Created by swam on 23/05/14.
  */
+@Getter
+@Setter
 @ToString(includeFieldNames = true)
 public class CreateEditStationDTO {
 
-    @Getter @Setter
     private Long stationId;
 
     @NotBlank
-    @Getter @Setter
     private String manufacturerId;
 
-    @Getter @Setter
     private String name;
 
     @Valid
-    @Getter @Setter
     private CreateEditAddressDTO address;
 
     @Range(min = -90, max = 90)
-    @Getter @Setter
     private BigDecimal locationLatitude;
 
     @Range(min = -180, max = 180)
-    @Getter @Setter
     private BigDecimal locationLongitude;
 
-    @Getter @Setter
     private String note;
 
-    @Getter @Setter
     private OperationState state;
 
 }

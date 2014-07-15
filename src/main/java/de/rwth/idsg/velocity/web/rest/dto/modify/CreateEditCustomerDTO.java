@@ -14,43 +14,36 @@ import javax.validation.constraints.Past;
 /**
  * Created by swam on 05/06/14.
  */
+@Getter
+@Setter
 @ToString(includeFieldNames = true)
 public class CreateEditCustomerDTO {
 
-    @Getter @Setter
     private Long userId;
 
     @NotBlank
-    @Getter @Setter
     private String login;
 
     @NotBlank
-    @Getter @Setter
     private String customerId;
 
     // TODO @CreditCardNumber
     @NotBlank
-    @Getter @Setter
     private String cardId;
 
     @NotBlank
-    @Getter @Setter
     private String firstname;
 
     @NotBlank
-    @Getter @Setter
     private String lastname;
 
     @Valid
-    @Getter @Setter
     private CreateEditAddressDTO address;
 
     @Past
     @JsonDeserialize(using = LocalDateDeserializer.class)
-    @Getter @Setter
     private LocalDate birthday;
 
-    @Getter @Setter
     private Boolean isActivated;
 
 }

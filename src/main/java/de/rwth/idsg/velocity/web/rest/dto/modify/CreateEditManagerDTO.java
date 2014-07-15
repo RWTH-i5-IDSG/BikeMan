@@ -8,17 +8,16 @@ import org.hibernate.validator.constraints.NotBlank;
 /**
  * Created by sgokay on 22.05.14.
  */
+@Getter
+@Setter
 @ToString(includeFieldNames = true)
 public class CreateEditManagerDTO {
 
-    @Getter @Setter
     private Long userId;
 
     @NotBlank
-    @Getter @Setter
     private String login;
 
     @NotBlank
-    @Getter @Setter
     private String password;
 }

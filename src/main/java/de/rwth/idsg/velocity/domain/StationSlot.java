@@ -20,38 +20,33 @@ import java.io.Serializable;
 @TableGenerator(name="slot_gen", initialValue=0, allocationSize=1)
 @EqualsAndHashCode(of = {"stationSlotId"})
 @ToString(includeFieldNames = true)
+@Getter
+@Setter
 public class StationSlot implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE, generator = "slot_gen")
     @Column(name = "station_slot_id")
-    @Getter @Setter
     private long stationSlotId;
 
     @Column(name = "station_slot_position")
-    @Getter @Setter
     private Integer stationSlotPosition;
 
     @Column(name = "manufacturer_id", updatable = false)
-    @Getter @Setter
     private String manufacturerId;
 
     @Column(name = "state")
     @Enumerated(EnumType.STRING)
-    @Getter @Setter
     private OperationState state;
 
     @Column(name = "is_occupied")
-    @Getter @Setter
     private Boolean isOccupied;
 
     @OneToOne
     @JoinColumn(name = "pedelec_id")
-    @Getter @Setter
     private Pedelec pedelec;
 
     @ManyToOne
     @JoinColumn(name = "station_id")
-    @Getter @Setter
     private Station station;
 }

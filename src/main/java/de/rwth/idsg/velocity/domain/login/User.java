@@ -28,23 +28,22 @@ import java.util.Set;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @ToString(includeFieldNames = true)
 @EqualsAndHashCode(of = {"userId", "login"})
+@Getter
+@Setter
 public class User implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE, generator = "user_gen")
     @Column(name = "user_id")
-    @Getter @Setter
     private long userId;
 
     @NotNull
     @Email
     @Size(min = 0, max = 100)
-    @Getter @Setter
     private String login;
 
     @JsonIgnore
     @Size(min = 0, max = 100)
-    @Getter @Setter
     private String password;
 
     @JsonIgnore
@@ -54,13 +53,11 @@ public class User implements Serializable {
             joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "user_id")},
             inverseJoinColumns = {@JoinColumn(name = "name", referencedColumnName = "name")})
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    @Getter @Setter
     private Set<Authority> authorities;
 
     @JsonIgnore
     @OneToMany(mappedBy = "user")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    @Getter @Setter
     private Set<PersistentToken> persistentTokens;
 
 }

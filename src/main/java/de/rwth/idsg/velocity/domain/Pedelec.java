@@ -18,37 +18,32 @@ import java.util.Set;
 @TableGenerator(name="pedelec_gen", initialValue=0, allocationSize=1)
 @EqualsAndHashCode(of = {"pedelecId", "manufacturerId"})
 @ToString(includeFieldNames = true, exclude = {"transactions"})
+@Getter
+@Setter
 public class Pedelec implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE, generator = "pedelec_gen")
     @Column(name = "pedelec_id")
-    @Getter @Setter
     private long pedelecId;
 
     @Column(name = "manufacturer_id")
-    @Getter @Setter
     private String manufacturerId;
 
     @Column(name = "state_of_charge")
-    @Getter @Setter
     private Float stateOfCharge;
 
     @Column(name = "in_transaction")
-    @Getter @Setter
     private Boolean inTransaction;
 
     @Column(name = "state")
     @Enumerated(EnumType.STRING)
-    @Getter @Setter
     private OperationState state;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "pedelec")
-    @Getter @Setter
     private Set<Transaction> transactions;
 
     @OneToOne(mappedBy = "pedelec")
-    @Getter @Setter
     private StationSlot stationSlot;
 
     @PrePersist

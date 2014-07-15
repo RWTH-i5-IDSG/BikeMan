@@ -9,15 +9,16 @@ import lombok.ToString;
 /**
  * Created by swam on 23/05/14.
  */
+@Getter
 @ToString(includeFieldNames = true)
 public class ViewStationSlotDTO {
 
-    @Getter private Long stationSlotId;
-    @Getter private String manufacturerId;
-    @Getter private Integer slotPosition;
-    @Getter private OperationState state;
-    @Getter private Boolean isOccupied;
-    @Getter private StationSlotPedelecDTO pedelec;
+    private Long stationSlotId;
+    private String manufacturerId;
+    private Integer slotPosition;
+    private OperationState state;
+    private Boolean isOccupied;
+    private StationSlotPedelecDTO pedelec;
 
     public ViewStationSlotDTO(Long stationSlotId, String manufacturerId, Integer slotPosition,
                               OperationState state, Boolean isOccupied, Long pedelecId,

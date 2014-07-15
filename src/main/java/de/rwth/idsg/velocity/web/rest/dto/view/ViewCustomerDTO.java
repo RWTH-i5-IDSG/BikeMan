@@ -9,20 +9,21 @@ import org.joda.time.LocalDate;
 /**
  * Created by swam on 05/06/14.
  */
+@Getter
 @ToString(includeFieldNames = true)
 public class ViewCustomerDTO {
 
-    @Getter private Long userId;
-    @Getter private String login;
-    @Getter private String customerId;
-    @Getter private String firstname;
-    @Getter private String lastname;
-    @Getter private Boolean isActivated;
-    @Getter private String cardId;
-    @Getter private ViewAddressDTO address;
+    private Long userId;
+    private String login;
+    private String customerId;
+    private String firstname;
+    private String lastname;
+    private Boolean isActivated;
+    private String cardId;
+    private ViewAddressDTO address;
 
     @JsonSerialize(using = CustomLocalDateSerializer.class)
-    @Getter private LocalDate birthday;
+    private LocalDate birthday;
 
     public ViewCustomerDTO(Long userId, String login, String customerId, String firstname, String lastname,
                            Boolean isActivated, LocalDate birthday, String cardId,

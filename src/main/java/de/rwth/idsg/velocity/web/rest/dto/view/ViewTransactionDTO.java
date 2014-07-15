@@ -11,20 +11,21 @@ import org.joda.time.LocalDateTime;
 /**
  * Created by swam on 23/05/14.
  */
+@Getter
 @ToString(includeFieldNames = true)
 public class ViewTransactionDTO {
 
-    @Getter private Long transactionId;
-    @Getter private TransactionStationDTO fromStation;
-    @Getter private TransactionStationDTO toStation;
-    @Getter private CustomerDTO customer;
-    @Getter private TransactionPedelecDTO pedelec;
+    private Long transactionId;
+    private TransactionStationDTO fromStation;
+    private TransactionStationDTO toStation;
+    private CustomerDTO customer;
+    private TransactionPedelecDTO pedelec;
 
     @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
-    @Getter private LocalDateTime startDateTime;
+    private LocalDateTime startDateTime;
 
     @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
-    @Getter private LocalDateTime endDateTime;
+    private LocalDateTime endDateTime;
 
     // All and closed transactions
     public ViewTransactionDTO(Long transactionId, LocalDateTime startDateTime, LocalDateTime endDateTime,

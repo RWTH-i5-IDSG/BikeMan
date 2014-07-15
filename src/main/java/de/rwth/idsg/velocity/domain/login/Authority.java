@@ -19,12 +19,13 @@ import java.io.Serializable;
 @ToString(includeFieldNames = true)
 @EqualsAndHashCode(of = {"name"})
 @AllArgsConstructor
+@Getter
+@Setter
 public class Authority implements Serializable {
 
     @NotNull
     @Size(min = 0, max = 50)
     @Id
-    @Getter @Setter
     private String name;
 
     public Authority() {}
