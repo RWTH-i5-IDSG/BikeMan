@@ -49,7 +49,6 @@ public class CreateEditCustomerDTO {
     @Getter @Setter
     private LocalDate birthday;
 
-    @NotNull
     @Getter @Setter
     private Boolean isActivated;
 

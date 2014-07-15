@@ -1,6 +1,9 @@
 package de.rwth.idsg.velocity.web.rest.exception;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -11,6 +14,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by sgokay on 14.07.14.
@@ -19,12 +23,8 @@ import java.util.List;
 @Slf4j
 public class GeneralExceptionHandler {
 
-//    private MessageSource messageSource;
-//
-//    @Autowired
-//    public GeneralExceptionHandler(MessageSource messageSource) {
-//        this.messageSource = messageSource;
-//    }
+    @Autowired
+    private MessageSource messageSource;
 
     @ExceptionHandler(Exception.class)
     public void processException(HttpServletResponse response, Exception e) {
@@ -49,10 +49,13 @@ public class GeneralExceptionHandler {
     public ResponseEntity<ErrorMessage> processValidationException(MethodArgumentNotValidException e) {
         log.error("Exception happened", e);
 
+        Locale currentLocale =  LocaleContextHolder.getLocale();
+
         List<FieldError> errors = e.getBindingResult().getFieldErrors();
         List<String> errorMessages = new ArrayList<>();
         for (FieldError fieldError : errors) {
-            errorMessages.add(fieldError.getDefaultMessage());
+            String localizedError = messageSource.getMessage(fieldError, currentLocale);
+            errorMessages.add(localizedError);
         }
 
         HttpStatus status = HttpStatus.BAD_REQUEST;
