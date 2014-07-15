@@ -4,9 +4,10 @@ import de.rwth.idsg.velocity.domain.Address;
 import de.rwth.idsg.velocity.domain.Customer;
 import de.rwth.idsg.velocity.domain.login.Authority;
 import de.rwth.idsg.velocity.security.AuthoritiesConstants;
-import de.rwth.idsg.velocity.web.rest.exception.DatabaseException;
+import de.rwth.idsg.velocity.web.rest.dto.modify.CreateEditAddressDTO;
 import de.rwth.idsg.velocity.web.rest.dto.modify.CreateEditCustomerDTO;
 import de.rwth.idsg.velocity.web.rest.dto.view.ViewCustomerDTO;
+import de.rwth.idsg.velocity.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -195,7 +196,13 @@ public class CustomerRepositoryImpl implements CustomerRepository {
         switch (operation) {
             case CREATE:
                 // for create (brand new address entity)
-                customer.setAddress(dto.getAddress());
+                Address newAdd = new Address();
+                CreateEditAddressDTO newDtoAdd = dto.getAddress();
+                newAdd.setStreetAndHousenumber(newDtoAdd.getStreetAndHousenumber());
+                newAdd.setZip(newDtoAdd.getZip());
+                newAdd.setCity(newDtoAdd.getCity());
+                newAdd.setCountry(newDtoAdd.getCountry());
+                customer.setAddress(newAdd);
 
                 HashSet<Authority> authorities = new HashSet<>();
                 authorities.add(new Authority(AuthoritiesConstants.CUSTOMER));
@@ -205,7 +212,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
             case UPDATE:
                 // for edit (keep the address ID)
                 Address add = customer.getAddress();
-                Address dtoAdd = dto.getAddress();
+                CreateEditAddressDTO dtoAdd = dto.getAddress();
                 add.setStreetAndHousenumber(dtoAdd.getStreetAndHousenumber());
                 add.setZip(dtoAdd.getZip());
                 add.setCity(dtoAdd.getCity());

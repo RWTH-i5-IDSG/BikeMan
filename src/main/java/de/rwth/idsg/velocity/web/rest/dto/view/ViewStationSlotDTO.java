@@ -2,13 +2,13 @@ package de.rwth.idsg.velocity.web.rest.dto.view;
 
 import de.rwth.idsg.velocity.domain.OperationState;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.ToString;
 
 /**
  * Created by swam on 23/05/14.
  */
-
 @ToString(includeFieldNames = true)
 public class ViewStationSlotDTO {
 
@@ -33,11 +33,9 @@ public class ViewStationSlotDTO {
         }
     }
 
-    @AllArgsConstructor
-    @ToString(includeFieldNames = true)
+    @Data
     class StationSlotPedelecDTO {
-
-        @Getter private Long pedelecId;
-        @Getter private String manufacturerId;
+        private final Long pedelecId;
+        private final String manufacturerId;
     }
 }

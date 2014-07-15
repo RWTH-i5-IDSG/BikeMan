@@ -14,30 +14,14 @@ import javax.validation.constraints.NotNull;
 @ToString(includeFieldNames = true)
 public class CreateEditPedelecDTO {
 
-    /**
-     * Create: Ignore
-     * Edit: Mandatory frontend parameter for lookup
-     */
-    @Getter
-    @Setter
+    @Getter @Setter
     private Long pedelecId;
 
-    /**
-     * Create: Mandatory user input
-     * Edit: Ignore
-     */
     @NotBlank
-    @Getter
-    @Setter
+    @Getter @Setter
     private String manufacturerId;
 
-    /**
-     * Create: Possible parameter
-     * Edit: Mandatory parameter
-     */
     @NotNull
-    @Getter
-    @Setter
+    @Getter @Setter
     private OperationState state;
-
 }

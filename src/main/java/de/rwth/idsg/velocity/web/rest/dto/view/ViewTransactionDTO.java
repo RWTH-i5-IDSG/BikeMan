@@ -3,6 +3,7 @@ package de.rwth.idsg.velocity.web.rest.dto.view;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import de.rwth.idsg.velocity.web.rest.dto.util.CustomLocalDateTimeSerializer;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.ToString;
 import org.joda.time.LocalDateTime;
@@ -10,7 +11,6 @@ import org.joda.time.LocalDateTime;
 /**
  * Created by swam on 23/05/14.
  */
-
 @ToString(includeFieldNames = true)
 public class ViewTransactionDTO {
 
@@ -20,13 +20,11 @@ public class ViewTransactionDTO {
     @Getter private CustomerDTO customer;
     @Getter private TransactionPedelecDTO pedelec;
 
-    @Getter
     @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
-    private LocalDateTime startDateTime;
+    @Getter private LocalDateTime startDateTime;
 
-    @Getter
     @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
-    private LocalDateTime endDateTime;
+    @Getter private LocalDateTime endDateTime;
 
     // All and closed transactions
     public ViewTransactionDTO(Long transactionId, LocalDateTime startDateTime, LocalDateTime endDateTime,
@@ -59,30 +57,23 @@ public class ViewTransactionDTO {
         this.pedelec = new TransactionPedelecDTO(pedelecId, pedelecManufacturerId);
     }
 
-    @AllArgsConstructor
-    @ToString(includeFieldNames = true)
+    @Data
     class TransactionStationDTO {
-
-        @Getter private Long stationId;
-        @Getter private String name;
-        @Getter private Integer slotPosition;
+        private final Long stationId;
+        private final String name;
+        private final Integer slotPosition;
     }
 
-    @AllArgsConstructor
-    @ToString(includeFieldNames = true)
+    @Data
     class TransactionPedelecDTO {
-
-        @Getter private Long pedelecId;
-        @Getter private String manufacturerId;
+        private final Long pedelecId;
+        private final String manufacturerId;
     }
 
-    @AllArgsConstructor
-    @ToString(includeFieldNames = true)
+    @Data
     class CustomerDTO {
-
-        @Getter private String customerId;
-        @Getter private String firstname;
-        @Getter private String lastname;
+        private final String customerId;
+        private final String firstname;
+        private final String lastname;
     }
-
 }

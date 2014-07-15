@@ -2,14 +2,14 @@ package de.rwth.idsg.velocity.web.rest.dto.modify;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.datatype.joda.deser.LocalDateDeserializer;
-import de.rwth.idsg.velocity.domain.Address;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.validator.constraints.NotBlank;
 import org.joda.time.LocalDate;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.Valid;
+import javax.validation.constraints.Past;
 
 /**
  * Created by swam on 05/06/14.
@@ -28,6 +28,7 @@ public class CreateEditCustomerDTO {
     @Getter @Setter
     private String customerId;
 
+    // TODO @CreditCardNumber
     @NotBlank
     @Getter @Setter
     private String cardId;
@@ -40,11 +41,11 @@ public class CreateEditCustomerDTO {
     @Getter @Setter
     private String lastname;
 
-    @NotNull
+    @Valid
     @Getter @Setter
-    private Address address;
+    private CreateEditAddressDTO address;
 
-    @NotNull
+    @Past
     @JsonDeserialize(using = LocalDateDeserializer.class)
     @Getter @Setter
     private LocalDate birthday;

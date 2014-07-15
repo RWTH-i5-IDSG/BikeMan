@@ -4,6 +4,7 @@ import de.rwth.idsg.velocity.Application;
 import de.rwth.idsg.velocity.domain.Address;
 import de.rwth.idsg.velocity.domain.OperationState;
 import de.rwth.idsg.velocity.repository.StationRepository;
+import de.rwth.idsg.velocity.web.rest.dto.modify.CreateEditAddressDTO;
 import de.rwth.idsg.velocity.web.rest.dto.modify.CreateEditStationDTO;
 import de.rwth.idsg.velocity.web.rest.dto.view.ViewStationDTO;
 import org.apache.commons.lang.RandomStringUtils;
@@ -85,7 +86,7 @@ public class StationResourceTest {
         for (int n=1; n <= REPEAT_COUNT; n++ ) {
             Collections.shuffle(states);
 
-            Address add = new Address();
+            CreateEditAddressDTO add = new CreateEditAddressDTO();
             add.setStreetAndHousenumber(RandomStringUtils.randomAlphanumeric(8));
             add.setCity(RandomStringUtils.randomAlphabetic(8));
             add.setCountry(RandomStringUtils.randomAlphabetic(8));

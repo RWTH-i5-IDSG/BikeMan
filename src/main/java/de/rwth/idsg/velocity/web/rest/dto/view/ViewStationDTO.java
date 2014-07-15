@@ -1,7 +1,6 @@
 package de.rwth.idsg.velocity.web.rest.dto.view;
 
 import de.rwth.idsg.velocity.domain.OperationState;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -12,7 +11,6 @@ import java.util.List;
 /**
  * Created by swam on 23/05/14.
  */
-
 @ToString(includeFieldNames = true)
 public class ViewStationDTO {
 
@@ -43,15 +41,5 @@ public class ViewStationDTO {
         this.numAllSlots = numAllSlots;
 
         this.address = new ViewAddressDTO(streetAndHousenumber, zip, city, country);
-    }
-
-    @AllArgsConstructor
-    @ToString(includeFieldNames = true)
-    class ViewAddressDTO {
-
-        @Getter private String streetAndHousenumber;
-        @Getter private String zip;
-        @Getter private String city;
-        @Getter private String country;
     }
 }

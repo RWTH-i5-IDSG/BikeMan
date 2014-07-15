@@ -4,10 +4,11 @@ import de.rwth.idsg.velocity.domain.Address;
 import de.rwth.idsg.velocity.domain.Pedelec;
 import de.rwth.idsg.velocity.domain.Station;
 import de.rwth.idsg.velocity.domain.StationSlot;
-import de.rwth.idsg.velocity.web.rest.exception.DatabaseException;
+import de.rwth.idsg.velocity.web.rest.dto.modify.CreateEditAddressDTO;
 import de.rwth.idsg.velocity.web.rest.dto.modify.CreateEditStationDTO;
 import de.rwth.idsg.velocity.web.rest.dto.view.ViewStationDTO;
 import de.rwth.idsg.velocity.web.rest.dto.view.ViewStationSlotDTO;
+import de.rwth.idsg.velocity.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -174,13 +175,19 @@ public class StationRepositoryImpl implements StationRepository {
         switch (operation) {
             case CREATE:
                 // for create (brand new address entity)
-                station.setAddress(dto.getAddress());
+                Address newAdd = new Address();
+                CreateEditAddressDTO newDtoAdd = dto.getAddress();
+                newAdd.setStreetAndHousenumber(newDtoAdd.getStreetAndHousenumber());
+                newAdd.setZip(newDtoAdd.getZip());
+                newAdd.setCity(newDtoAdd.getCity());
+                newAdd.setCountry(newDtoAdd.getCountry());
+                station.setAddress(newAdd);
                 break;
 
             case UPDATE:
                 // for edit (keep the address ID)
                 Address add = station.getAddress();
-                Address dtoAdd = dto.getAddress();
+                CreateEditAddressDTO dtoAdd = dto.getAddress();
                 add.setStreetAndHousenumber(dtoAdd.getStreetAndHousenumber());
                 add.setZip(dtoAdd.getZip());
                 add.setCity(dtoAdd.getCity());
