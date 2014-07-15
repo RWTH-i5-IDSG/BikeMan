@@ -113,4 +113,10 @@ angular.module('velocityApp')
                 }
             });
         };
-    });
+    }).directive('metisMenu', function() {
+        return function(scope, element) {
+            element.metisMenu({
+                toggle:true
+            });
+        }
+    })

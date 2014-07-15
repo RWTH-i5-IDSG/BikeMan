@@ -11,14 +11,6 @@ velocityApp
         function ($stateProvider, $urlRouterProvider, $httpProvider, $translateProvider, tmhDynamicLocaleProvider, USER_ROLES, $compileProvider) {
 //            $urlRouterProvider.otherwise('/login')
             $stateProvider
-                .state('main', {
-                    url: '/main',
-                    templateUrl: 'views/main.html',
-                    controller: 'MainController',
-                    access: {
-                        authorizedRoles: [USER_ROLES.admin]
-                    }
-                })
                 .state('login', {
                     url: '/login',
                     templateUrl: 'views/login.html',
@@ -26,7 +18,14 @@ velocityApp
                     access: {
                         authorizedRoles: [USER_ROLES.all]
                     }
-
+                })
+                .state('main', {
+                    url: '/main',
+                    templateUrl: 'views/main.html',
+                    controller: 'MainController',
+                    access: {
+                        authorizedRoles: [USER_ROLES.admin]
+                    }
                 })
                 .state('error', {
                     url: '/error',
@@ -188,9 +187,16 @@ velocityApp
 
             httpHeaders = $httpProvider.defaults.headers;
         }])
-        .run(['$rootScope', '$state',
-        function ($rootScope, $state) {
-            $state.transitionTo('main');
+        .run(['$rootScope', '$state', 'AuthenticationSharedService', 'USER_ROLES',
+        function ($rootScope, $state, AuthenticationSharedService, USER_ROLES) {
+            $rootScope.isAuthorized = AuthenticationSharedService.isAuthorized;
+            AuthenticationSharedService.valid(USER_ROLES.all).then(function(authenticated) {
+                if (!authenticated) {
+                    $state.transitionTo("login");
+                } else {
+                    $state.transitionTo('main');
+                }
+            });
         }])
         .run(['$rootScope', '$location', '$http', 'AuthenticationSharedService', 'Session', 'USER_ROLES', '$state',
 
