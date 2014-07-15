@@ -1,6 +1,7 @@
 package de.rwth.idsg.velocity.web.rest.exception;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.TypeMismatchException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -45,6 +46,28 @@ public class GeneralExceptionHandler {
         return new ResponseEntity<>(msg, status);
     }
 
+    /*
+    * Catches the controller path errors of the Rest API.
+    *
+    * Example: If a controller declares an integer in the path, but frontend sends anything but an integer.
+    */
+    @ExceptionHandler(TypeMismatchException.class)
+    public ResponseEntity<ErrorMessage> processTypeException(TypeMismatchException e) {
+        log.error("Exception happened", e);
+
+        HttpStatus status = HttpStatus.UNPROCESSABLE_ENTITY;
+        ErrorMessage msg = new ErrorMessage(
+                status.value(),
+                status.getReasonPhrase(),
+                e.getMessage()
+        );
+        return new ResponseEntity<>(msg, status);
+    }
+
+    /*
+    * Catches the Hibernate validation errors and
+    * responds with an error message in appropriate language.
+    */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorMessage> processValidationException(MethodArgumentNotValidException e) {
         log.error("Exception happened", e);
