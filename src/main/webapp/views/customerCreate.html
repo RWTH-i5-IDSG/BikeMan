@@ -58,16 +58,18 @@
                 <tr>
                     <th><label>Birthday</label></th>
                     <td class="input-group">
-                        <input type="text" class="form-control" datepicker-popup="dd-MMMM-yyyy" ng-model="customer.birthday" is-open="opened" max-date="{{maxDate}}" datepicker-options="dateOptions" ng-required="true" show-button-bar="false" datepicker-mode="year"/>
-                        <span class="input-group-btn">
-                            <button type="button" class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
-                        </span>
+                        <input date-select model="customer.birthday">
+                        <!--<input type="text" class="form-control" datepicker-popup="dd-MMMM-yyyy" ng-model="customer.birthday" is-open="opened"-->
+                               <!--max-date="{{maxDate}}" datepicker-options="dateOptions" ng-required="true" show-button-bar="false" datepicker-mode="year"/>-->
+                        <!--<span class="input-group-btn">-->
+                            <!--<button type="button" class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>-->
+                        <!--</span>-->
                     </td>
                 </tr>
                 <tr>
                     <th><label>Is Activated?</label></th>
                     <td><input type="checkbox" name="isActivated"
-                           ng-model="customer.isActivated" required></td>
+                           ng-model="customer.isActivated"></td>
                 </tr>
             </table>
         </div>

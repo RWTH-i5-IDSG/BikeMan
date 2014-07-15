@@ -9,7 +9,6 @@ var velocityApp = angular.module('velocityApp', ['http-auth-interceptor', 'tmh.d
 velocityApp
     .config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$translateProvider',  'tmhDynamicLocaleProvider', 'USER_ROLES', '$compileProvider',
         function ($stateProvider, $urlRouterProvider, $httpProvider, $translateProvider, tmhDynamicLocaleProvider, USER_ROLES, $compileProvider) {
-//            $urlRouterProvider.otherwise('/login')
             $stateProvider
                 .state('login', {
                     url: '/login',
@@ -142,6 +141,9 @@ velocityApp
                         var alertType = 'alert-danger';
                         switch (errorResponse.status) {
                             // remove this because 401 is used for checking user auth
+                            case 400:
+                                showMessage(errorResponse.data.message + "\n" + errorResponse.data.fieldErrors.join("\n"), 'errorMessage', errorInterval, alertType);
+                                break;
                             case 401:
                                 // do nothing for now
 //                                showMessage('Wrong usename or password', 'errorMessage', errorInterval, alertType);

@@ -120,8 +120,8 @@ velocityApp.controller('CustomerDetailController', ['$scope', 'resolvedCustomer'
 
     }]);
 
-velocityApp.controller('CustomerCreateController', ['$scope', 'Customer', '$timeout',
-    function($scope, Customer, $timeout) {
+velocityApp.controller('CustomerCreateController', ['$scope', 'Customer', '$timeout', '$filter',
+    function($scope, Customer, $timeout, $filter) {
 
         // open the datepicker control
         $scope.open = function ($event) {
@@ -157,7 +157,7 @@ velocityApp.controller('CustomerCreateController', ['$scope', 'Customer', '$time
                 lastname: null,
                 address: null,
                 birthday: null,
-                isActivated: null
+                isActivated: false
             }
         };
 
