@@ -111,29 +111,45 @@ velocityApp
             // GLOBAL MESSAGES
             // http://blog.tomaka17.com/2012/12/random-tricks-when-using-angularjs/
             var elementsList = $();
-            var showMessage = function(content, cl, time, type) {
-                $('<div class="voffset3"><button type="button" class="close" data-dismiss="alert">&times;</button></div>')
-                    .addClass('message')
-                    .addClass(cl)
-                    .addClass('alert')
-                    .addClass(type)
-                    .hide()
-                    .fadeIn('fast')
-                    .delay(time)
-                    .fadeOut('fast', function() { $(this).remove(); })
-                    .appendTo(elementsList)
-                    .text(content);
-            };
+//            var showMessage = function(content, cl, time, type) {
+//                var alert =
+//                  $('<div><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button></div>')
+//                    .addClass('message')
+//                    .addClass(cl)
+//                    .addClass('alert')
+//                    .addClass(type)
+//                    //.addClass('alert-top-right')
+//                    .hide()
+//                    .fadeIn('fast');
+//
+//                if(type == 'alert-success') {
+//                    alert
+//                        .delay(time)
+//                        .fadeOut('fast', function() { $(this).remove(); });
+//                }
+//                else if(type == 'alert-danger') {
+//                }
+//
+//                alert
+//                    .appendTo(elementsList)
+//                    .text(content);
+//            };
 
-            $httpProvider.responseInterceptors.push(function($timeout, $q) {
+
+
+            $httpProvider.responseInterceptors.push(function($timeout, $q, $rootScope) {
                 return function(promise) {
                     var errorInterval = 3000;
-                    var successInterval = 1000;
+                    var successInterval = 1500;
 
                     return promise.then(function(successResponse) {
+
+                        $rootScope.$broadcast('remove-error-message');
+
                         if (successResponse.config.method.toUpperCase() != 'GET') {
                             var alertType = 'alert-success';
-                            showMessage('Successful', 'successMessage', successInterval, alertType);
+                            //showMessage('Successful', 'successMessage', successInterval, alertType);
+                            $rootScope.$broadcast('new-success-message', {msg: "Successful"});
                         }
                         return successResponse;
 
@@ -142,22 +158,27 @@ velocityApp
                         switch (errorResponse.status) {
                             // remove this because 401 is used for checking user auth
                             case 400:
-                                showMessage(errorResponse.data.message + "\n" + errorResponse.data.fieldErrors.join("\n"), 'errorMessage', errorInterval, alertType);
+                                //showMessage(errorResponse.data.message + "\n" + errorResponse.data.fieldErrors.join("\n"), 'errorMessage', errorInterval, alertType);
+
+                                $rootScope.$broadcast('new-error-message', {msg: errorResponse.data.message, errors:errorResponse.data.fieldErrors});
                                 break;
                             case 401:
                                 // do nothing for now
 //                                showMessage('Wrong usename or password', 'errorMessage', errorInterval, alertType);
                                 break;
                             case 403:
-                                showMessage('You don\'t have the right to do this', 'errorMessage', errorInterval, alertType);
+                                //showMessage('You don\'t have the right to do this', 'errorMessage', errorInterval, alertType);
+                                $rootScope.$broadcast('new-error-message', {msg: 'You don\'t have the right to do this'});
                                 break;
                             case 404:
-                                showMessage('Not Found', 'errorMessage', errorInterval, alertType);
+                                //showMessage('Not Found', 'errorMessage', errorInterval, alertType);
+                                $rootScope.$broadcast('new-error-message', {msg: 'You don\'t have the right to do this'});
                                 break;
                             default:
 //                                showMessage('Error ' + errorResponse.status + ': ' + errorResponse.data.message, 'errorMessage', errorInterval, alertType);
 //                                console.log(errorResponse);
-                                showMessage(errorResponse.data.message, 'errorMessage', errorInterval, alertType);
+                                //showMessage(errorResponse.data.message, 'errorMessage', errorInterval, alertType);
+                                $rootScope.$broadcast('new-error-message', {msg: 'You don\'t have the right to do this'});
                                 break;
                         }
                         return $q.reject(errorResponse);

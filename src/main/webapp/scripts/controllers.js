@@ -2,8 +2,39 @@
 
 /* Controllers */
 
-velocityApp.controller('MainController', ['$scope',
-    function ($scope) {
+velocityApp.controller('MainController', ['$scope', '$timeout',
+    function ($scope, $timeout) {
+
+        $scope.errorAlerts = [
+
+        ];
+
+        $scope.successAlerts = [
+
+        ];
+
+        $scope.$on('new-success-message', function(event, args) {
+            $scope.successAlerts.push(args);
+            $timeout(function(){
+                $scope.successAlerts.splice($scope.successAlerts.indexOf(args), 1);
+            }, 3000);
+
+        });
+
+        $scope.$on('remove-error-message', function() {
+            $scope.errorAlerts.splice(0,1);
+        })
+
+        $scope.$on('new-error-message', function(event, args) {
+            $scope.errorAlerts[0] = args;
+        });
+
+
+        $scope.closeAlert = function(index) {
+            $scope.errorAlerts.splice(index, 1);
+        };
+
+
     }]);
 
 velocityApp.controller('AdminController', ['$scope',
