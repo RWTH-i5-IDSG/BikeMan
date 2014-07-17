@@ -17,9 +17,9 @@ public interface CustomerRepository {
     List<ViewCustomerDTO> findAll() throws DatabaseException;
 
     /**
-    * Two customers could have the same full name, hence the list as return
+    * Two customers could have the same name, hence the list as return
     */
-    List<ViewCustomerDTO> findbyName(String firstName, String lastName) throws DatabaseException;
+    List<ViewCustomerDTO> findbyName(String name) throws DatabaseException;
 
     /**
      * Login (aka email) field of each customer is unique

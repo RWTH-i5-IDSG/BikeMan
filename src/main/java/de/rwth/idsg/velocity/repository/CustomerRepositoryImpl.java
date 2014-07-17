@@ -39,7 +39,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
         try {
             CriteriaBuilder builder = em.getCriteriaBuilder();
             return em.createQuery(
-                    getQuery(builder, FindType.ALL, null, null, null)
+                    getQuery(builder, FindType.ALL, null, null)
             ).getResultList();
 
         } catch (Exception e) {
@@ -49,12 +49,12 @@ public class CustomerRepositoryImpl implements CustomerRepository {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ViewCustomerDTO> findbyName(String firstname, String lastname) throws DatabaseException {
+    public List<ViewCustomerDTO> findbyName(String name) throws DatabaseException {
         List<ViewCustomerDTO> list = null;
         try {
             CriteriaBuilder builder = em.getCriteriaBuilder();
             list = em.createQuery(
-                    getQuery(builder, FindType.BY_NAME, firstname, lastname, null)
+                    getQuery(builder, FindType.BY_NAME, name, null)
             ).getResultList();
 
         } catch (Exception e) {
@@ -62,7 +62,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
         }
 
         if (list.isEmpty()) {
-            throw new DatabaseException("No customer found with name " + firstname + " " + lastname);
+            throw new DatabaseException("No customer found with name " + name);
         } else {
             return list;
         }
@@ -74,7 +74,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
         try {
             CriteriaBuilder builder = em.getCriteriaBuilder();
             return em.createQuery(
-                    getQuery(builder, FindType.BY_LOGIN, null, null, login)
+                    getQuery(builder, FindType.BY_LOGIN, null, login)
             ).getSingleResult();
 
         } catch (NoResultException e) {
@@ -226,7 +226,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
      *
      */
     private CriteriaQuery<ViewCustomerDTO> getQuery(CriteriaBuilder builder, FindType findType,
-                                                    String firstname, String lastname,
+                                                    String name,
                                                     String login) {
         CriteriaQuery<ViewCustomerDTO> criteria = builder.createQuery(ViewCustomerDTO.class);
         Root<Customer> root = criteria.from(Customer.class);
@@ -262,12 +262,26 @@ public class CustomerRepositoryImpl implements CustomerRepository {
                 Path<String> lastPath = root.get("lastname");
                 Expression<String> lastLower = builder.lower(lastPath);
 
+                /*
+                * Frontend can send the search parameter with '+' sign between first and last name (or any substring of them).
+                * We replace this with '%' since Postgre uses it to match any string of zero or more characters.
+                *
+                * The method returns a reference to the old object, when '+' does not occur in the string.
+                * Therefore, no if-statement is needed.
+                */
+                name = name.replace("+", "%");
+
                 criteria.where(
-                        builder.and(
-                                builder.equal(firstLower, firstname.toLowerCase()),
-                                builder.equal(lastLower, lastname.toLowerCase())
+                        builder.like(
+                                // Concatenate the two columns and search within the resulting representation
+                                // for flexibility, since the user can search by first or last name, or both.
+                                builder.concat(firstLower, lastLower),
+
+                                // Find a matching sequence anywhere within the concatenated representation
+                                ("%" + name + "%").toLowerCase()
                         )
                 );
+
                 break;
 
             // Case insensitive search

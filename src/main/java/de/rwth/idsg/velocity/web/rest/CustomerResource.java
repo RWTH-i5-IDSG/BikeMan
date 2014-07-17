@@ -30,7 +30,9 @@ public class CustomerResource {
     private static final String ID_PATH = "/rest/customers/{id}";
     private static final String ID_PATH_ACTIVATE = "/rest/customers/{id}/activate";
     private static final String ID_PATH_DEACTIVATE = "/rest/customers/{id}/deactivate";
-    private static final String FULL_NAME_PATH = "/rest/customers/name/{firstname}+{lastname}";
+
+    // If name should include first AND last name, there must be '+' sign in-between.
+    private static final String NAME_PATH = "/rest/customers/name/{name}";
 
     // Restriction: Customers login with an e-mail address
     // Regular expression for Spring MVC to interpret domain extensions as part of the path variable
@@ -44,10 +46,10 @@ public class CustomerResource {
     }
 
     @Timed
-    @RequestMapping(value = FULL_NAME_PATH, method = RequestMethod.GET)
-    public List<ViewCustomerDTO> getByName(@PathVariable String firstname, @PathVariable String lastname) throws DatabaseException {
-        log.debug("REST request to get Customer with name: {} {}", firstname, lastname);
-        return customerRepository.findbyName(firstname,lastname);
+    @RequestMapping(value = NAME_PATH, method = RequestMethod.GET)
+    public List<ViewCustomerDTO> getByName(@PathVariable String name) throws DatabaseException {
+        log.debug("REST request to get Customer with name including: {}", name);
+        return customerRepository.findbyName(name);
     }
 
     @Timed
