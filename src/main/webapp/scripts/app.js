@@ -4,7 +4,7 @@
 var httpHeaders;
 
 var velocityApp = angular.module('velocityApp', ['http-auth-interceptor', 'tmh.dynamicLocale',
-    'ngResource', 'ngCookies', 'velocityAppUtils', 'pascalprecht.translate', 'truncate', 'ui.router', 'ui.bootstrap']);
+    'ngResource', 'ngCookies', 'velocityAppUtils', 'pascalprecht.translate', 'truncate', 'ui.router', 'ui.bootstrap', 'ui.bootstrap.showErrors']);
 
 velocityApp
     .config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$translateProvider',  'tmhDynamicLocaleProvider', 'USER_ROLES', '$compileProvider',
@@ -216,7 +216,7 @@ velocityApp
             AuthenticationSharedService.valid(USER_ROLES.all).then(function(authenticated) {
                 if (!authenticated) {
                     $state.transitionTo("login");
-                } else {
+                } else if ($state.$current.name == "login") {
                     $state.transitionTo('main');
                 }
             });
