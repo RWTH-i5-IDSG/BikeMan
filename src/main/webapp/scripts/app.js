@@ -4,7 +4,7 @@
 var httpHeaders;
 
 var velocityApp = angular.module('velocityApp', ['http-auth-interceptor', 'tmh.dynamicLocale',
-    'ngResource', 'ngCookies', 'velocityAppUtils', 'pascalprecht.translate', 'truncate', 'ui.router', 'ui.bootstrap']);
+    'ngResource', 'ngCookies', 'velocityAppUtils', 'pascalprecht.translate', 'truncate', 'ui.router', 'ui.bootstrap', 'ui.bootstrap.showErrors']);
 
 velocityApp
     .config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$translateProvider',  'tmhDynamicLocaleProvider', 'USER_ROLES', '$compileProvider',
@@ -216,7 +216,7 @@ velocityApp
             AuthenticationSharedService.valid(USER_ROLES.all).then(function(authenticated) {
                 if (!authenticated) {
                     $state.transitionTo("login");
-                } else {
+                } else if ($state.$current.name == "login") {
                     $state.transitionTo('main');
                 }
             });
@@ -244,14 +244,15 @@ velocityApp
                 // Call when the 401 response is returned by the server
                 $rootScope.$on('event:auth-loginRequired', function(rejection) {
 
+                    AuthenticationSharedService.refresh();
                     // Step 1:
                     // Save the state that the user wanted to see
                     // to route to after login is confirmed (see Step 2)
-                    wantedState = $state.current;
+//                    wantedState = $state.current;
+//
+//                    $rootScope.authenticated = false;
+//                    $state.go("login");
 
-                    Session.invalidate();
-                    $rootScope.authenticated = false;
-                    $state.go("login");
                 });
 
                 // Call when the the client is confirmed

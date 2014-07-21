@@ -200,6 +200,33 @@ velocityApp.factory('AuthenticationSharedService', ['$rootScope', '$http', 'auth
                 Session.invalidate();
                 httpHeaders.common['Authorization'] = null;
                 authService.loginCancelled();
+            },
+            refresh: function () {
+                var data = "refresh_token=" + Token.get('refresh_token') + "&grant_type=refresh_token&client_secret=mySecretOAuthSecret&client_id=carcloudapp";
+                $http.post('oauth/token', data, {
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                        "Accept": "application/json",
+                        "Authorization": "Basic " + Base64Service.encode("carcloudapp" + ':' + "mySecretOAuthSecret")
+                    },
+                    ignoreAuthModule: 'ignoreAuthModule'
+                }).success(function (data, status, headers, config) {
+                    if (data.access_token) httpHeaders.common['Authorization'] = 'Bearer ' + data.access_token;
+                    Token.set(data);
+
+                    Account.get(function (data) {
+                        Session.create(data.login, data.firstName, data.lastName, data.email, data.roles);
+                        $rootScope.account = Session;
+                        authService.loginConfirmed(data, function(config) {
+                            console.log("setting new header");
+                            config.headers['Authorization'] = 'Bearer ' + Token.get('access_token');
+                            return config;
+                        });
+                    });
+                }).error(function (data, status, headers, config) {
+                    $rootScope.authenticationError = true;
+                    Session.invalidate();
+                });
             }
         };
     }]);
