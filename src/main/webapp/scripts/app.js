@@ -109,34 +109,6 @@ velocityApp
 
 
             // GLOBAL MESSAGES
-            // http://blog.tomaka17.com/2012/12/random-tricks-when-using-angularjs/
-            var elementsList = $();
-//            var showMessage = function(content, cl, time, type) {
-//                var alert =
-//                  $('<div><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button></div>')
-//                    .addClass('message')
-//                    .addClass(cl)
-//                    .addClass('alert')
-//                    .addClass(type)
-//                    //.addClass('alert-top-right')
-//                    .hide()
-//                    .fadeIn('fast');
-//
-//                if(type == 'alert-success') {
-//                    alert
-//                        .delay(time)
-//                        .fadeOut('fast', function() { $(this).remove(); });
-//                }
-//                else if(type == 'alert-danger') {
-//                }
-//
-//                alert
-//                    .appendTo(elementsList)
-//                    .text(content);
-//            };
-
-
-
             $httpProvider.responseInterceptors.push(function($timeout, $q, $rootScope) {
                 return function(promise) {
                     var errorInterval = 3000;
@@ -174,6 +146,9 @@ velocityApp
                                 //showMessage('Not Found', 'errorMessage', errorInterval, alertType);
                                 $rootScope.$broadcast('new-error-message', {msg: 'You don\'t have the right to do this'});
                                 break;
+                            case 500:
+                                $rootScope.$broadcast('new-error-message', {msg: errorResponse.data.message, error:errorResponse.data.fieldErrors});
+                                break;
                             default:
 //                                showMessage('Error ' + errorResponse.status + ': ' + errorResponse.data.message, 'errorMessage', errorInterval, alertType);
 //                                console.log(errorResponse);
@@ -186,12 +161,12 @@ velocityApp
                 };
             });
 
-            $compileProvider.directive('appMessages', function() {
-                var directiveDefinitionObject = {
-                    link: function(scope, element, attrs) { elementsList.push($(element)); }
-                };
-                return directiveDefinitionObject;
-            });
+//            $compileProvider.directive('appMessages', function() {
+//                var directiveDefinitionObject = {
+//                    link: function(scope, element, attrs) { elementsList.push($(element)); }
+//                };
+//                return directiveDefinitionObject;
+//            });
 
             // END Global Messages
 

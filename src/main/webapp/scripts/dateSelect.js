@@ -80,8 +80,6 @@ angular.module('velocityApp')
                 $scope.upDate = function () {
                     if (dateSelectUtils.validate($scope.dateFields)) {
                         $scope.model = $scope.formatDate($scope.dateFields);
-                    } else {
-                        $scope.dateFields = lastSavedValue;
                     }
                 }
             }],
