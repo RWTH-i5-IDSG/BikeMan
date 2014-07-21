@@ -17,7 +17,13 @@ velocityApp.controller('CustomerController', ['$scope', 'resolvedCustomer', 'Cus
                 $scope.customers = Customer.query();
             }
             else {
-                $scope.customers = [Customer.searchByLogin({login: login})];
+                $scope.customers = Customer.searchByLogin({login: login}, function(customer) {
+                    if (customer) {
+                        $scope.customers = [customer];
+                    } else {
+                        $scope.customers = [];
+                    }
+                });
             }
         };
 
