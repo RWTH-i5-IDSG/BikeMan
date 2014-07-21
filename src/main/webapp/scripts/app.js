@@ -244,14 +244,15 @@ velocityApp
                 // Call when the 401 response is returned by the server
                 $rootScope.$on('event:auth-loginRequired', function(rejection) {
 
+                    AuthenticationSharedService.refresh();
                     // Step 1:
                     // Save the state that the user wanted to see
                     // to route to after login is confirmed (see Step 2)
-                    wantedState = $state.current;
+//                    wantedState = $state.current;
+//
+//                    $rootScope.authenticated = false;
+//                    $state.go("login");
 
-                    Session.invalidate();
-                    $rootScope.authenticated = false;
-                    $state.go("login");
                 });
 
                 // Call when the the client is confirmed

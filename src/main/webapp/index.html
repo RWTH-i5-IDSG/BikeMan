@@ -210,7 +210,7 @@
         <!-- show global error messages here -->
         <div class="row messagesList" app-messages></div>
         <div class="row">
-            <alert class="voffset3" ng-repeat="errorAlert in errorAlerts" type="danger" close="closeAlert($index)">
+            <alert class="voffset3" ng-repeat="errorAlert in errorAlerts" type="danger" close="closeAlert($index)" ng-cloak>
                 <h4>{{errorAlert.msg}}</h4>
                 <ul ng-repeat="error in errorAlert.errors">
                     <li>{{error}}</li>
@@ -285,6 +285,7 @@
 <script src="scripts/dateSelect.js"></script>
 <!-- endbuild -->
 <script src="scripts/sb-admin.js"></script>
+<script src="bower_components/angular-bootstrap-show-errors/src/showErrors.js"></script>
 </body>
 
 
