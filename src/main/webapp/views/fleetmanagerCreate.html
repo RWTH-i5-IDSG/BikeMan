@@ -1,7 +1,7 @@
 <div>
     <div class="row">
         <div class="col-lg-12">
-            <h1 class="page-header">Create Fleetmanager</h1>
+            <h1 class="page-header" translate="fleetmanagerCreate.title">Create Fleetmanager</h1>
         </div>
     </div>
 
@@ -12,24 +12,28 @@
         <div class="panel-body">
             <table class="table">
                 <tr>
-                    <th><label>Login</label></th>
+                    <th><label translate="fleetmanagerCreate.table.header.login">Login</label></th>
                     <td><input type="text" class="form-control" name="test"
-                           ng-model="fleetmanager.login" ng-minlength=1 ng-maxlength=50 placeholder="manager@velocity.de" required></td>
+                           ng-model="fleetmanager.login" ng-minlength=1 ng-maxlength=50
+                           placeholder="{{ 'fleetmanagerCreate.table.placeholders.login' | translate }}" required></td>
                 </tr>
 
                 <tr>
-                    <th><label>Password</label></th>
+                    <th><label translate="fleetmanagerCreate.table.header.password">Password</label></th>
                     <td><input type="password" class="form-control" name="test"
-                           ng-model="fleetmanager.password" ng-minlength=1 ng-maxlength=50 placeholder="******" required></td>
+                           ng-model="fleetmanager.password" ng-minlength=1 ng-maxlength=50
+                           placeholder="{{ 'fleetmanagerCreate.table.placeholders.password' | translate }}" required></td>
                 </tr>
             </table>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clear()">
-                <span class="glyphicon glyphicon-ban-circle"></span> Cancel
+                <span class="glyphicon glyphicon-ban-circle"></span>
+                <span translate="fleetmanagerCreate.buttons.cancel">Cancel</span>
             </button>
             <button type="submit" ng-disabled="form.$invalid" class="btn btn-primary">
-                <span class="glyphicon glyphicon-save"></span> Save
+                <span class="glyphicon glyphicon-save"></span>
+                <span translate="fleetmanagerCreate.buttons.save">Save</span>
             </button>
         </div>
     </form>

@@ -17,8 +17,29 @@
                 "logout": "Log out",
                 "apidocs": "API"
             },
-            "station": "Station",
-            "pedelec": "Pedelec",
+            "management": {
+                "title": "Management",
+                "custOverview": "Customer Overview",
+                "custCreate": "Create Customer",
+                "fleetOverview": "Fleetmanager Overview",
+                "fleetCreate": "Create Fleetmanager"
+            },
+            "station": {
+                "title": "Station Control",
+                "overview": "Station Overview",
+                "create": "Create Station"
+            },
+            "pedelec": {
+                "title": "Pedelec Control",
+                "overview": "Pedelec Overview",
+                "create": "Create Pedelec"
+            },
+            "driverlog": {
+                "title": "Driver's Logbook",
+                "allTransactions": "All Transactions",
+                "closedTransactions": "Closed Transactions",
+                "openTransactions": "Open Transactions"
+            },
             "admin": "Administration",
             "language": "Language"
         },
@@ -31,11 +52,11 @@
         }
     },
     "main": {
-        "title": "Welcome, Java Hipster!",
+        "title": "Welcome to Velocity!",
         "subtitle": "This is your homepage",
         "logged": {
             "message": "You are logged in as user \"{{username}}\".",
-            "authenticated": "If you want to <a href=\"#/login\">authenticate</a>, you can try the default accounts:<br/>- Admnistrator (login=\"admin\" and password=\"admin\") <br/>- User (login=\"user\" and password=\"user\")."
+            "authenticated": "If you want to <a ui-sref=\"login\">authenticate</a>, you can try the default accounts:<br/>- Admnistrator (login=\"admin\" and password=\"admin\") <br/>- User (login=\"user\" and password=\"user\")."
         },
         "question": "If you have any question on JHipster:",
         "link": {
@@ -48,26 +69,253 @@
         "github": "Github"
     },
     "stations": {
-        "create": {
-            "title": "",
-            "subtitle": "Enter station data below!",
-            "form": {
+        "title": "Stations",
+        "table": {
+            "header": {
                 "name": "Name",
                 "manufacturerId": "Manufacturer ID",
-                "streetAndHousenumber": "Street Address",
-                "zip": "ZIP Code",
-                "city": "City",
-                "country": "Country",
-                "coordinates": {
-                    "title": "Coordinates",
-                    "locationLatitude": "Latitude",
-                    "locationLongitude": "Longitude"
-                },
-                "state": "Station State",
-                "note": "Note"
+                "address": "Address",
+                "state": "State",
+                "allocation": "Allocation"
             },
+            "body": {
+                "details": "Details"
+            },
+            "hiddenRow": {
+                "slot": "Slot",
+                "manufacturerId": "Manufacturer ID",
+                "state": "State",
+                "occupied": "Occupied",
+                "pedelec": "Pedelec (Manufacturer ID)"
+            }
+        }
+    },
+    "stationCreate": {
+        "title": "Create Station",
+        "subtitle": "Enter station data below!",
+        "form": {
+            "name": "Name",
+            "manufacturerId": "Manufacturer ID",
+            "streetAndHousenumber": "Street Address",
+            "zip": "ZIP Code",
+            "city": "City",
+            "country": "Country",
+            "coordinates": {
+                "title": "Coordinates",
+                "locationLatitude": "Latitude",
+                "locationLongitude": "Longitude"
+        },
+            "state": "Station State",
+            "note": "Note"
+        },
+        "buttons": {
+            "cancel": "Clear",
+            "save": "Save"
+        }
+    },
+    "customers": {
+        "title": "Customers",
+        "search": {
+            "searchByName": "Search: Max Mustermann",
+            "searchByLogin": "Search: customers@email.com",
+            "reset": "Reset"
+        },
+        "table": {
+            "header": {
+                "customerId": "Customer-ID",
+                "name": "Name",
+                "login": "E-Mail",
+                "isActivated": "Activated",
+                "birthday": "Birthday"
+            },
+            "body": {
+                "isActivated": "Activated",
+                "details": "Details"
+            }
+        }
+    },
+    "customerDetail": {
+        "title": "Customer: {{firstname}} {{lastname}}",
+        "buttons": {
+            "back": "Back",
+            "edit": "Edit Customer",
+            "cancel": "Cancel",
+            "save": "Save Customer"
+        },
+        "table": {
+            "header": {
+                "login": "Login",
+                "name": "Name",
+                "address": "Address",
+                "customerId": "Customer ID",
+                "cardId": "Card ID",
+                "birthday": "Birthday",
+                "isActivated": "Activated"
+            },
+            "body": {
+                "address": {
+                    "streetAndHousenumber": "Street and Housenumber",
+                    "zip": "ZIP",
+                    "city": "City",
+                    "country": "Country"
+                }
+            }
+        },
+        "transactions": {
+            "title": "Transactions:",
+            "numberOfTransactions": "Number of transactions to display:",
+            "table": {
+                "header": {
+                    "pedelec": "Pedelec",
+                    "startTime": "Start Time",
+                    "endTime": "End Time",
+                    "fromLocation": "From Location",
+                    "toLocation": "To Location"
+                }
+            }
+        }
+    },
+    "customerCreate": {
+        "title": "Create Customer",
+        "table": {
+            "header": {
+                "customerId": "Customer ID",
+                "login": "Login",
+                "cardId": "Card ID",
+                "name": "Name",
+                "address": {
+                    "title": "Address",
+                    "streetAndHousenumber": "Street and Housenumber",
+                    "zip": "ZIP",
+                    "city": "City",
+                    "country": "Country"
+                },
+                "birthday": "Birthday",
+                "isActivated": "Activated"
+            },
+            "placeholders": {
+                "customerId": "Customer ID...",
+                "login": "customer@velocity.de",
+                "cardId": "Card ID...",
+                "firstname": "Max",
+                "lastname": "Mustermann",
+                "streetAndHousenumber": "Street...",
+                "zip": "ZIP...",
+                "city": "City...",
+                "country": "Country..."
+            }
+        },
+        "buttons": {
             "cancel": "Cancel",
             "save": "Save"
+        }
+    },
+    "fleetmanagers": {
+        "title": "Fleetmanagers",
+        "table": {
+            "header": {
+                "login": "Login"
+            },
+            "buttons": {
+                "delete": "Delete"
+            }
+        },
+        "modal": {
+            "title": "Delete Fleetmanager",
+            "body": "Are you sure to delete <b>{{login}}</b>?",
+            "buttons": {
+                "close": "Close",
+                "delete": "Delete"
+            }
+        }
+    },
+    "fleetmanagerCreate": {
+        "title": "Create Fleetmanager",
+        "table": {
+            "header": {
+                "login": "Login",
+                "password": "Password"
+            },
+            "placeholders": {
+                "login": "manager@velocity.de",
+                "password": "*******"
+            }
+        },
+        "buttons": {
+            "cancel": "Cancel",
+            "save": "Save"
+        }
+    },
+    "pedelecs": {
+        "title": "Pedelecs",
+        "table": {
+            "header": {
+                "manufacturerId": "Manufacturer ID",
+                "stateOfCharge": "State of Charge",
+                "state": "State",
+                "station": "Station (Slot)",
+                "customer": "Customer"
+            },
+            "body": {
+                "details": "Details"
+            }
+        }
+    },
+    "pedelecDetail": {
+        "title": "Pedelec: {{ manufacturerId }}",
+        "buttons": {
+            "back": "Back",
+            "edit": "Edit Pedelec",
+            "cancel": "Cancel",
+            "save": "Save Pedelec"
+        },
+        "table": {
+            "header": {
+                "manufacturerId": "Manufacturer ID",
+                "stateOfCharge": "State of Charge",
+                "state": "State",
+                "inTransaction": "In Transaction"
+            }
+        },
+        "transactions": {
+            "title": "Transactions:",
+            "numberOfTransactions": "Number of transactions to display:",
+            "table": {
+                "header": {
+                    "customer": "Customer",
+                    "pedelec": "Pedelec",
+                    "startTime": "Start Time",
+                    "endTime": "End Time",
+                    "fromLocation": "From Location",
+                    "toLocation": "To Location"
+                }
+            }
+        }
+    },
+    "pedelecCreate": {
+        "title": "Create Pedelec",
+        "table": {
+            "header": {
+                "manufacturerId": "Manufacturer ID",
+                "state": "Pedelec State"
+            }
+        },
+        "buttons": {
+            "cancel": "Cancel",
+            "save": "Save"
+        }
+    },
+    "transactions": {
+        "title": "Transactions",
+        "table": {
+            "header": {
+                "customer": "Customer",
+                "pedelec": "Pedelec",
+                "startTime": "Start Time",
+                "endTime": "End Time",
+                "fromLocation": "From Location",
+                "toLocation": "To Location"
+            }
         }
     },
     "login": {

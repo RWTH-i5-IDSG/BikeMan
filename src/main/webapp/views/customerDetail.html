@@ -1,26 +1,27 @@
 <div>
 
-    <h2>Customer: {{customer.firstname}} {{customer.lastname}}</h2>
+    <h2 translate="customerDetail.title" translate-values="{firstname: '{{customer.firstname}}', lastname: '{{customer.lastname}}'}">Customer: {{customer.firstname}} {{customer.lastname}}</h2>
 
     <div ng-switch="isEditing">
-        <button type="button" ui-sref="customers" class="btn btn-default" ng-disabled="isEditing"><span class="glyphicon glyphicon-arrow-left"></span> Back</button>
+        <button type="button" ui-sref="customers" class="btn btn-default" ng-disabled="isEditing">
+            <span class="glyphicon glyphicon-arrow-left"></span> <span translate="customerDetail.buttons.back"> Back</span></button>
         <button type="button" ng-switch-when="false" ng-click="toggleEdit()" class="btn btn-default">
-            <span class="glyphicon glyphicon-pencil"></span> Edit Customer</button>
+            <span class="glyphicon glyphicon-pencil"></span> <span translate="customerDetail.buttons.edit"> Edit Customer</span></button>
         <button type="button" ng-switch-when="true" ng-click="toggleEdit()" class="btn btn-warning">
-            <span class="glyphicon glyphicon-pencil"></span> Cancel</button>
+            <span class="glyphicon glyphicon-pencil"></span> <span translate="customerDetail.buttons.cancel"> Cancel</span></button>
         <button type="button" ng-click="saveCustomer()" class="btn btn-primary" ng-show="isEditing">
-            <span class="glyphicon glyphicon-pencil"></span> Save Customer</button>
+            <span class="glyphicon glyphicon-pencil"></span> <span translate="customerDetail.buttons.save"> Save Customer</span></button>
     </div>
 
     <div class="table-responsive voffset3">
         <table class="table" ng-switch="isEditing">
             <tr>
-                <th>Login</th>
+                <th translate="customerDetail.table.header.login">Login</th>
                 <td ng-switch-when="false">{{customer.login}}</td>
                 <td ng-switch-when="true"><input type="text" class="form-control" ng-model="customer.login"></td>
             </tr>
             <tr>
-                <th>Name</th>
+                <th translate="customerDetail.table.header.name">Name</th>
                 <td ng-switch-when="false">{{customer.firstname}} {{customer.lastname}}</td>
                 <td ng-switch-when="true">
                     <input type="text" class="form-control" ng-model="customer.firstname">
@@ -28,25 +29,29 @@
                 </td>
             </tr>
             <tr>
-                <th>Address</th>
+                <th translate="customerDetail.table.header.address">Address</th>
                 <td ng-switch-when="false">{{customer.address.streetAndHousenumber + ', ' + customer.address.zip + ', ' + customer.address.city + ', ' + customer.address.country}}</td>
                 <td ng-switch-when="true">
-                    <label>Street and Housenumber</label><input type="text" class="form-control" ng-model="customer.address.streetAndHousenumber">
-                    <label class="voffset2">ZIP</label><input type="text" class="form-control" ng-model="customer.address.zip">
-                    <label class="voffset2">City</label><input type="text" class="form-control" ng-model="customer.address.city">
-                    <label class="voffset2">Country</label><input type="text" class="form-control" ng-model="customer.address.country">
+                    <label translate="customerDetail.table.body.address.streetAndHousenumber">Street and Housenumber</label>
+                    <input type="text" class="form-control" ng-model="customer.address.streetAndHousenumber">
+                    <label class="voffset2" translate="customerDetail.table.body.address.zip">ZIP</label>
+                    <input type="text" class="form-control" ng-model="customer.address.zip">
+                    <label class="voffset2" translate="customerDetail.table.body.address.city">City</label>
+                    <input type="text" class="form-control" ng-model="customer.address.city">
+                    <label class="voffset2" translate="customerDetail.table.body.address.country">Country</label>
+                    <input type="text" class="form-control" ng-model="customer.address.country">
             </tr>
             <tr>
-                <th>Customer ID</th>
+                <th translate="customerDetail.table.header.customerId">Customer ID</th>
                 <td>{{customer.customerId}}</td>
             </tr>
             <tr>
-                <th>Card ID</th>
+                <th translate="customerDetail.table.header.cardId">Card ID</th>
                 <td ng-switch-when="false">{{customer.cardId}}</td>
                 <td ng-switch-when="true"><input type="text" class="form-control" ng-model="customer.cardId"></td>
             </tr>
             <tr>
-                <th>Birthday</th>
+                <th translate="customerDetail.table.header.birthday">Birthday</th>
                 <td ng-switch-when="false">{{customer.birthday | date: 'mediumDate'}}</td>
                 <td ng-switch-when="true" class="input-group"><input date-select model="customer.birthday"></td>
                 <!--<td ng-switch-when="true" class="input-group"><input type="text" class="form-control" datepicker-popup="dd-MMMM-yyyy" ng-model="customer.birthday" is-open="$parent.isOpen" max-date="{{maxDate}}" datepicker-options="dateOptions" ng-required="true" show-button-bar="false" datepicker-mode="year"/>-->
@@ -55,17 +60,17 @@
                         <!--</span></td>-->
             </tr>
             <tr>
-                <th>Activated</th>
+                <th translate="customerDetail.table.header.isActivated">Activated</th>
                 <td ng-switch-when="false">{{customer.isActivated | occupiedFilter}}</td>
                 <td ng-switch-when="true"><input type="checkbox" ng-model="customer.isActivated"></td>
             </tr>
         </table>
     </div>
 
-    <h3>Transactions:</h3>
+    <h3 translate="customerDetail.transactions.title">Transactions:</h3>
 
     <div class="form-inline">
-        <span>
+        <span translate="customerDetail.transactions.numberOfTransactions">
             Number of transactions to display:
         </span>
 
@@ -81,11 +86,11 @@
         <table class="table table-striped">
             <thead>
             <tr>
-                <th>Pedelec</th>
-                <th>Start Time</th>
-                <th>End Time</th>
-                <th>From Location</th>
-                <th>To Location</th>
+                <th translate="customerDetail.transactions.table.header.pedelec">Pedelec</th>
+                <th translate="customerDetail.transactions.table.header.startTime">Start Time</th>
+                <th translate="customerDetail.transactions.table.header.endTime">End Time</th>
+                <th translate="customerDetail.transactions.table.header.fromLocation">From Location</th>
+                <th translate="customerDetail.transactions.table.header.toLocation">To Location</th>
             </tr>
             </thead>
             <tbody>

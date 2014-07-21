@@ -1,7 +1,7 @@
 <div>
     <div class="row">
         <div class="col-lg-12">
-            <h1 class="page-header">Pedelecs</h1>
+            <h1 class="page-header" translate="pedelecs.title">Pedelecs</h1>
         </div>
     </div>
 
@@ -9,11 +9,11 @@
         <table class="table table-hover">
             <thead>
                 <tr>
-                    <th>Manufacturer ID</th>
-                    <th>State of Charge</th>
-                    <th>State</th>
-                    <th>Station (Slot)</th>
-                    <th>Customer</th>
+                    <th translate="pedelecs.table.header.manufacturerId">Manufacturer ID</th>
+                    <th translate="pedelecs.table.header.stateOfCharge">State of Charge</th>
+                    <th translate="pedelecs.table.header.state">State</th>
+                    <th translate="pedelecs.table.header.station">Station (Slot)</th>
+                    <th translate="pedelecs.table.header.customer">Customer</th>
                     <th></th>
                 </tr>
             </thead>
@@ -31,7 +31,10 @@
                     <td>{{pedelec.station.stationManufacturerId}} <span class="badge">{{pedelec.station.stationSlotPosition}}</span></td>
                     <td>{{pedelec.transaction.firstname + " " + pedelec.transaction.lastname}}</td>
                     <td>
-                        <button type="button" class="btn btn-info" ui-sref="pedelecDetail({pedelecId:{{pedelec.pedelecId}}})"><span class="glyphicon glyphicon-eye-open"></span> Details</button>
+                        <button type="button" class="btn btn-info" ui-sref="pedelecDetail({pedelecId:{{pedelec.pedelecId}}})">
+                            <span class="glyphicon glyphicon-eye-open"></span>
+                            <span translate="pedelecs.table.body.details">Details</span>
+                        </button>
                     </td>
                 </tr>
             </tbody>

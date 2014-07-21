@@ -1,7 +1,7 @@
 <div>
     <div class="row">
         <div class="col-lg-12">
-            <h1 class="page-header">Stations</h1>
+            <h1 class="page-header" translate="stations.title">Stations</h1>
         </div>
     </div>
 
@@ -11,25 +11,30 @@
                 <tr>
                     <!--<th>ID</th>-->
                     <th></th>
-                    <th>Name</th>
-                    <th>Manufacturer ID</th>
-                    <th>Address</th>
-                    <th>State</th>
-                    <th>Allocation</th>
+                    <th translate="stations.table.header.name">Name</th>
+                    <th translate="stations.table.header.manufacturerId">Manufacturer ID</th>
+                    <th translate="stations.table.header.address">Address</th>
+                    <th translate="stations.table.header.state">State</th>
+                    <th translate="stations.table.header.allocation">Allocation</th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat-start="station in stations" data-parent="#stations-table" data-toggle="collapse" data-target="#{{station.stationId}}" ng-click="getStationDetails(station)">
+                <tr ng-repeat-start="station in stations" data-parent="#stations-table" data-toggle="collapse"
+                    data-target="#{{station.stationId}}" ng-click="getStationDetails(station)">
                     <td><a class="dropdown-toggle" data-toggle="dropdown"  href="javascript:;">
                         <span class="fa fa-angle-right"></span>
                     </a></span></td>
                     <td>{{station.name}}</td>
                     <td>{{station.manufacturerId}}</td>
-                    <td><small>{{station.address.streetAndHousenumber + ', ' + station.address.zip + ', ' + station.address.city + ', ' + station.address.country}}</small></td>
+                    <td><small>{{station.address.streetAndHousenumber + ', ' + station.address.zip + ', '
+                        + station.address.city + ', ' + station.address.country}}</small></td>
                     <td>{{station.state}}</td>
                     <td>{{station.numFreeSlots}} / {{station.numAllSlots}}</td>
-                    <td><button type="button" class="btn btn-info" ui-sref="stationDetail({stationId:{{station.stationId}}})"><span class="glyphicon glyphicon-eye-open"></span> Details</button></td>
+                    <td><button type="button" class="btn btn-info" ui-sref="stationDetail({stationId:{{station.stationId}}})">
+                        <span class="glyphicon glyphicon-eye-open"></span>
+                        <span translate="stations.table.body.details">Details</span>
+                    </button></td>
                 </tr>
                 <tr ng-repeat-end>
                     <td colspan="7" class="hiddenRow">
@@ -37,11 +42,11 @@
                             <table class="table table-curved stations-inside-table table-hover">
                                 <thead>
                                     <tr>
-                                        <th>Slot</th>
-                                        <th>Manufacturer ID</th>
-                                        <th>State</th>
-                                        <th>Occupied</th>
-                                        <th>Pedelec (Manufacturer ID)</th>
+                                        <th translate="stations.table.hiddenRow.slot">Slot</th>
+                                        <th translate="stations.table.hiddenRow.manufacturerId">Manufacturer ID</th>
+                                        <th translate="stations.table.hiddenRow.state">State</th>
+                                        <th translate="stations.table.hiddenRow.occupied">Occupied</th>
+                                        <th translate="stations.table.hiddenRow.pedelec">Pedelec (Manufacturer ID)</th>
                                     </tr>
                                 </thead>
                                 <tbody>

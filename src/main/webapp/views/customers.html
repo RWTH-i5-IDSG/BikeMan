@@ -1,7 +1,7 @@
 <div>
     <div class="row">
         <div class="col-lg-12">
-            <h1 class="page-header">Customers</h1>
+            <h1 class="page-header" translate="customers.title">Customers</h1>
         </div>
     </div>
 
@@ -9,7 +9,8 @@
 
         <div class="col-md-4">
             <div class="input-group custom-search-form">
-                <input ng-model="search.name" type="text" class="form-control" placeholder="Search: Max Mustermann" sg-enter="searchByName(search.name)">
+                <input ng-model="search.name" type="text" class="form-control"
+                       sg-enter="searchByName(search.name)" placeholder="{{'customers.search.searchByName' | translate}}">
                                 <span class="input-group-btn">
                                 <button class="btn btn-default" type="button" ng-click="searchByName(search.name)">
                                     <i class="fa fa-search"></i>
@@ -20,7 +21,8 @@
 
         <div class="col-md-4">
             <div class="input-group custom-search-form">
-                <input ng-model="search.login" type="text" class="form-control" placeholder="Search: customers@email.com" sg-enter="searchByLogin(search.login)">
+                <input ng-model="search.login" type="text" class="form-control"
+                       sg-enter="searchByLogin(search.login)" placeholder="{{'customers.search.searchByLogin' | translate}}">
                                 <span class="input-group-btn">
                                 <button class="btn btn-default" type="button" ng-click="searchByLogin(search.login)">
                                     <i class="fa fa-search"></i>
@@ -29,7 +31,7 @@
             </div>
         </div>
         <div class=" col-md-2">
-            <button class="btn btn-warning btn-block" type="button" ng-click="resetCustomers()">Reset</button>
+            <button class="btn btn-warning btn-block" type="button" ng-click="resetCustomers()" translate="customers.search.reset">Reset</button>
         </div>
     </div>
 
@@ -38,11 +40,11 @@
         <table class="table table-striped">
             <thead>
             <tr>
-                <th>Customer-ID</th>
-                <th>Name</th>
-                <th>E-Mail</th>
-                <th>Activated</th>
-                <th>Birthday</th>
+                <th translate="customers.table.header.customerId">Customer-ID</th>
+                <th translate="customers.table.header.name">Name</th>
+                <th translate="customers.table.header.login">E-Mail</th>
+                <th translate="customers.table.header.isActivated">Activated</th>
+                <th translate="customers.table.header.birthday">Birthday</th>
                 <th></th>
             </tr>
             </thead>
@@ -53,12 +55,17 @@
                 <td>{{customer.login}}</td>
                 <!--toggleActivation(customer.customerId)-->
                 <td>
-                    <button ng-if="customer.isActivated" class="btn btn-sm btn-success" type="button" ng-click="toggleActivation(customer.userId, customer.isActivated)"><span class="glyphicon glyphicon-ok"/> Activated</button>
-                    <button ng-if="!customer.isActivated" class="btn btn-sm btn-default" type="button" ng-click="toggleActivation(customer.userId, customer.isActivated)"><span class="glyphicon glyphicon-remove"/> Deactivated</button>
+                    <button ng-if="customer.isActivated" class="btn btn-sm btn-success" type="button"
+                            ng-click="toggleActivation(customer.userId, customer.isActivated)">
+                        <span class="glyphicon glyphicon-ok"/> <span translate="customers.table.body.isActivated">Activated</span></button>
+                    <button ng-if="!customer.isActivated" class="btn btn-sm btn-default" type="button"
+                            ng-click="toggleActivation(customer.userId, customer.isActivated)">
+                        <span class="glyphicon glyphicon-remove"/> <span translate="customers.table.body.isActivated">Deactivated</span></button>
 
                 </td>
                 <td>{{customer.birthday | date:'mediumDate'}}</td>
-                <td><button type="button" class="btn btn-info" ui-sref="customerDetail({login:'{{customer.login}}'})"><span class="glyphicon glyphicon-eye-open"></span> Details</button></td>
+                <td><button type="button" class="btn btn-info" ui-sref="customerDetail({login:'{{customer.login}}'})">
+                    <span class="glyphicon glyphicon-eye-open"></span> <span translate="customers.table.body.details">Details</span></button></td>
             </tr>
             </tbody>
         </table>

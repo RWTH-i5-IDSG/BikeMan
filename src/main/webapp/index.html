@@ -29,7 +29,7 @@
     your browser</a> to improve your experience.</p>
 <![endif]-->
 
-<alert data-ng-animate="'fade'" class="alert-top-right" ng-repeat="successAlert in successAlerts" type="success">{{successAlert.msg}}</alert>
+<alert data-ng-animate="'fade'" class="alert-top-right" ng-repeat="successAlert in successAlerts" type="success" ng-cloak>{{successAlert.msg}}</alert>
 
 <div class="development"></div>
 <div id="wrapper">
@@ -133,66 +133,96 @@
                         <!-- /input-group -->
                     </li>
                     <li>
-                        <a ui-sref="main"><i class="fa fa-dashboard fa-fw"></i> Home</a>
+                        <a ui-sref="main"><i class="fa fa-dashboard fa-fw"></i>
+                            <span translate="global.menu.home"> Home</span>
+                        </a>
                     </li>
                     <li>
-                        <a href="#"><i class="fa fa-desktop fa-fw"></i> Management<span class="fa arrow"></span></a>
+                        <a href="#"><i class="fa fa-desktop fa-fw"></i>
+                            <span translate="global.menu.management.title">Management</span>
+                            <span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
                             <li ui-sref-active="selectedNavItem">
-                                <a ui-sref="customers">Customer Overview</a>
+                                <a ui-sref="customers">
+                                    <span translate="global.menu.management.custOverview">Customer Overview</span>
+                                </a>
                             </li>
                             <li ng-show="isAuthorized(userRoles.admin)" ui-sref-active="selectedNavItem">
-                                <a ui-sref="customerCreate">Create Customer</a>
+                                <a ui-sref="customerCreate">
+                                    <span translate="global.menu.management.custCreate">Create Customer</span>
+                                </a>
                             </li>
                             <li ng-show="isAuthorized(userRoles.admin)" ui-sref-active="selectedNavItem">
-                                <a ui-sref="fleetmanagers">Fleetmanager Overview</a>
+                                <a ui-sref="fleetmanagers">
+                                    <span translate="global.menu.management.fleetOverview">Fleetmanager Overview</span>
+                                </a>
                             </li>
                             <li ng-show="isAuthorized(userRoles.admin)" ui-sref-active="selectedNavItem">
-                                <a ui-sref="fleetmanagerCreate">Create Fleetmanager</a>
+                                <a ui-sref="fleetmanagerCreate">
+                                    <span translate="global.menu.management.fleetCreate">Create Fleetmanager</span>
+                                </a>
                             </li>
                         </ul>
                         <!-- /.nav-second-level -->
                     </li>
                     <li ui-sref-active="active">
-                        <a href="#"><i class="glyphicon glyphicon-record fa-fw"></i> Station Control<span
-                                class="fa arrow"></span></a>
+                        <a href="#"><i class="glyphicon glyphicon-record fa-fw"></i>
+                            <span translate="global.menu.station.title">Station Control</span>
+                            <span class="fa arrow"></span>
+                        </a>
                         <ul class="nav nav-second-level">
                             <li ui-sref-active="selectedNavItem">
-                                <a ui-sref="stations">Station Overview</a>
+                                <a ui-sref="stations">
+                                    <span translate="global.menu.station.overview">Station Overview</span>
+                                </a>
                             </li>
                             <li ui-sref-active="selectedNavItem">
-                                <a ui-sref="stationCreate">Create Station</a>
+                                <a ui-sref="stationCreate">
+                                    <span translate="global.menu.station.create">Create Station</span>
+                                </a>
                             </li>
                         </ul>
                         <!-- /.nav-second-level -->
                     </li>
 
                     <li>
-                        <a href="#"><i class="glyphicon glyphicon-send fa-fw"></i> Pedelec Control<span
-                                class="fa arrow"></span></a>
+                        <a href="#"><i class="glyphicon glyphicon-send fa-fw"></i>
+                            <span translate="global.menu.pedelec.title">Pedelec Control</span>
+                            <span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
                             <li ui-sref-active="selectedNavItem">
-                                <a ui-sref="pedelecs">Pedelec Overview</a>
+                                <a ui-sref="pedelecs">
+                                    <span translate="global.menu.pedelec.overview">Pedelec Overview</span>
+                                </a>
                             </li>
                             <li ui-sref-active="selectedNavItem">
-                                <a ui-sref="pedelecCreate">Create Pedelec</a>
+                                <a ui-sref="pedelecCreate">
+                                    <span translate="global.menu.pedelec.create">Create Pedelec</span>
+                                </a>
                             </li>
                         </ul>
                         <!-- /.nav-second-level -->
                     </li>
 
                     <li>
-                        <a href="#"><i class="fa fa-book fa-fw"></i> Driver's Logbook<span
-                                class="fa arrow"></span></a>
+                        <a href="#"><i class="fa fa-book fa-fw"></i>
+                            <span translate="global.menu.driverlog.title">Driver's Logbook</span>
+                            <span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
                             <li ui-sref-active="selectedNavItem">
-                                <a ui-sref="transaction">All Transactions</a>
+                                <a ui-sref="transaction">
+                                    <span translate="global.menu.driverlog.allTransactions">All Transactions</span>
+                                </a>
                             </li>
                             <li ui-sref-active="selectedNavItem">
-                                <a ui-sref="closedTransaction">Closed Transactions</a>
+                                <a ui-sref="closedTransaction">
+                                    <span translate="global.menu.driverlog.closedTransactions">Closed Transactions</span>
+                                </a>
                             </li>
                             <li ui-sref-active="selectedNavItem">
-                                <a ui-sref="openTransaction">Open Transactions</a>
+                                <a ui-sref="openTransaction">
+                                    <span translate="global.menu.driverlog.openTransactions">Open Transactions</span>
+                                </a>
                             </li>
                         </ul>
                         <!-- /.nav-second-level -->

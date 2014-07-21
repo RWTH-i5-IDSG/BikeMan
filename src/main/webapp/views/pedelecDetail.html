@@ -1,25 +1,34 @@
 <div>
 
-    <h2>Pedelec: {{pedelec.manufacturerId}}</h2>
+    <h2 translate="pedelecDetail.title" translate-values="{manufacturerId: '{{ pedelec.manufacturerId }}'}">Pedelec: {{pedelec.manufacturerId}}</h2>
 
     <div ng-switch="isEditing">
-        <button type="button" ui-sref="pedelecs" class="btn btn-default" ng-disabled="isEditing"><span class="glyphicon glyphicon-arrow-left"></span> Back</button>
+        <button type="button" ui-sref="pedelecs" class="btn btn-default" ng-disabled="isEditing">
+            <span class="glyphicon glyphicon-arrow-left"></span>
+            <span translate="pedelecDetail.buttons.back"> Back</span>
+        </button>
         <button type="button" ng-switch-when="false" ng-click="toggleEdit()" class="btn btn-default">
-            <span class="glyphicon glyphicon-pencil"></span> Edit Pedelec</button>
+            <span class="glyphicon glyphicon-pencil"></span>
+            <span translate="pedelecDetail.buttons.edit">Edit Pedelec</span>
+        </button>
         <button type="button" ng-switch-when="true" ng-click="toggleEdit()" class="btn btn-warning">
-            <span class="glyphicon glyphicon-pencil"></span> Cancel</button>
+            <span class="glyphicon glyphicon-pencil"></span>
+            <span translate="pedelecDetail.buttons.cancel">Cancel</span>
+        </button>
         <button type="button" ng-click="savePedelec()" class="btn btn-primary" ng-show="isEditing">
-            <span class="glyphicon glyphicon-pencil"></span> Save Pedelec</button>
+            <span class="glyphicon glyphicon-pencil"></span>
+            <span translate="pedelecDetail.buttons.save">Save Pedelec</span>
+        </button>
     </div>
 
     <div class="table-responsive voffset3">
         <table class="table" ng-switch="isEditing">
             <tr>
-                <th>Manufacturer ID</th>
+                <th translate="pedelecDetail.table.header.manufacturerId">Manufacturer ID</th>
                 <td >{{pedelec.manufacturerId}}</td>
             </tr>
             <tr>
-                <th>State Of Charge</th>
+                <th translate="pedelecDetail.table.header.stateOfCharge">State Of Charge</th>
                 <td >
                     <div class="progress remove-margin">
                         <div class="progress-bar" role="progressbar" aria-valuenow="{{pedelec.stateOfCharge*100}}" aria-valuemin="0" aria-valuemax="100" style="width: {{pedelec.stateOfCharge*100}}%;">
@@ -29,7 +38,7 @@
                 </td>
             </tr>
             <tr>
-                <th>State</th>
+                <th translate="pedelecDetail.table.header.state">State</th>
                 <td ng-switch-when="false">{{pedelec.state}}</td>
                 <td ng-switch-when="true">
                     <select type="text" class="form-control"
@@ -40,16 +49,16 @@
                 </td>
             </tr>
             <tr>
-                <th>In Transaction</th>
+                <th translate="pedelecDetail.table.header.inTransaction">In Transaction</th>
                 <td>{{pedelec.inTransaction | occupiedFilter}}</td>
             </tr>
         </table>
     </div>
 
-    <h3>Transactions:</h3>
+    <h3 translate="pedelecDetail.transactions.title">Transactions:</h3>
 
     <div class="form-inline">
-        <span>
+        <span translate="pedelecDetail.transactions.numberOfTransactions">
             Number of transactions to display:
         </span>
 
@@ -65,12 +74,12 @@
         <table class="table table-striped">
             <thead>
             <tr>
-                <th>Customer</th>
-                <th>Pedelec</th>
-                <th>Start Time</th>
-                <th>End Time</th>
-                <th>From Location</th>
-                <th>To Location</th>
+                <th translate="pedelecDetail.transactions.table.header.customer">Customer</th>
+                <th translate="pedelecDetail.transactions.table.header.pedelec">Pedelec</th>
+                <th translate="pedelecDetail.transactions.table.header.startTime">Start Time</th>
+                <th translate="pedelecDetail.transactions.table.header.endTime">End Time</th>
+                <th translate="pedelecDetail.transactions.table.header.fromLocation">From Location</th>
+                <th translate="pedelecDetail.transactions.table.header.toLocation">To Location</th>
             </tr>
             </thead>
             <tbody>
@@ -81,7 +90,8 @@
                 <td><span ng-show="!pedelec.inTransaction || !$first">{{transaction.endDateTime | date:'medium'}}</span></td>
                 <td>{{transaction.fromStation.name}} <span class="badge">{{transaction.fromStation.slotPosition}}</span></td>
                 <td>
-                    <span ng-show="!pedelec.inTransaction || !$first">{{transaction.toStation.name}} <span class="badge">{{transaction.toStation.slotPosition}}</span>
+                    <span ng-show="!pedelec.inTransaction || !$first">{{transaction.toStation.name}}
+                        <span class="badge">{{transaction.toStation.slotPosition}}</span>
                     </span>
                 </td>
             </tr>

@@ -1,7 +1,7 @@
 <div>
     <div class="row">
         <div class="col-lg-12">
-            <h1 class="page-header">Create Customer</h1>
+            <h1 class="page-header" translate="customerCreate.title">Create Customer</h1>
         </div>
     </div>
 
@@ -12,51 +12,60 @@
         <div class="panel-body">
             <table class="table">
                 <tr>
-                    <th><label>Customer ID</label></th>
-                    <td><input type="text" class="form-control" name="customerId" placeholder="Customer ID..."
+                    <th><label translate="customerCreate.table.header.customerId">Customer ID</label></th>
+                    <td><input type="text" class="form-control" name="customerId"
+                               placeholder="{{'customerCreate.table.placeholders.customerId' | translate}}"
                            ng-model="customer.customerId" ng-minlength=1 ng-maxlength=50 required></td>
                 </tr>
                 <tr>
-                    <th><label>Login</label></th>
-                    <td><input type="text" class="form-control" name="login" placeholder="customer@velocity.de"
+                    <th><label translate="customerCreate.table.header.login">Login</label></th>
+                    <td><input type="text" class="form-control" name="login"
+                               placeholder="{{'customerCreate.table.placeholders.login' | translate}}"
                            ng-model="customer.login" ng-minlength=1 ng-maxlength=50 required></td>
                 </tr>
                 <tr>
-                    <th><label>Card ID</label></th>
-                    <td><input type="text" class="form-control" name="cardId" placeholder="Card ID..."
+                    <th><label translate="customerCreate.table.header.cardId">Card ID</label></th>
+                    <td><input type="text" class="form-control" name="cardId"
+                               placeholder="{{'customerCreate.table.placeholders.cardId' | translate}}"
                            ng-model="customer.cardId" ng-minlength=1 ng-maxlength=50 required></td>
                 </tr>
                 <tr>
-                    <th><label>Name</label></th>
+                    <th><label translate="customerCreate.table.header.name">Name</label></th>
                     <td>
-                        <input type="text" class="form-control" name="firstname" placeholder="Max"
+                        <input type="text" class="form-control" name="firstname"
+                               placeholder="{{'customerCreate.table.placeholders.firstname' | translate}}"
                            ng-model="customer.firstname" ng-minlength=1 ng-maxlength=50 required>
-                        <input type="text" class="form-control voffset1" name="lastname" placeholder="Mustermann"
+                        <input type="text" class="form-control voffset1" name="lastname"
+                               placeholder="{{'customerCreate.table.placeholders.lastname' | translate}}"
                            ng-model="customer.lastname" ng-minlength=1 ng-maxlength=50 required>
                     </td>
                 </tr>
                 <tr>
-                    <th>Address</th>
+                    <th translate="customerCreate.table.header.address.title">Address</th>
                     <td>
-                        <label>Street and Housenumber</label>
-                        <input type="text" class="form-control" name="streetAndHousenumber" placeholder="Street..."
+                        <label translate="customerCreate.table.header.address.streetAndHousenumber">Street and Housenumber</label>
+                        <input type="text" class="form-control" name="streetAndHousenumber"
+                               placeholder="{{'customerCreate.table.placeholders.streetAndHousenumber' | translate}}"
                            ng-model="customer.address.streetAndHousenumber" ng-minlength=1 ng-maxlength=50 required>
 
-                        <label class="voffset2">ZIP</label>
-                        <input type="text" class="form-control" name="zip" placeholder="ZIP..."
+                        <label class="voffset2" translate="customerCreate.table.header.address.zip">ZIP</label>
+                        <input type="text" class="form-control" name="zip"
+                               placeholder="{{'customerCreate.table.placeholders.zip' | translate}}"
                            ng-model="customer.address.zip" ng-minlength=1 ng-maxlength=50 required>
 
-                        <label class="voffset2">City</label>
-                        <input type="text" class="form-control" name="city" placeholder="City..."
+                        <label class="voffset2" translate="customerCreate.table.header.address.city">City</label>
+                        <input type="text" class="form-control" name="city"
+                               placeholder="{{'customerCreate.table.placeholders.city' | translate}}"
                            ng-model="customer.address.city" ng-minlength=1 ng-maxlength=50 required>
 
-                        <label class="voffset2">Country</label>
-                        <input type="text" class="form-control" name="country" placeholder="Country..."
+                        <label class="voffset2" translate="customerCreate.table.header.address.country">Country</label>
+                        <input type="text" class="form-control" name="country"
+                               placeholder="{{'customerCreate.table.placeholders.country' | translate}}"
                            ng-model="customer.address.country" ng-minlength=1 ng-maxlength=50 required>
                     </td>
                 </tr>
                 <tr>
-                    <th><label>Birthday</label></th>
+                    <th><label translate="customerCreate.table.header.birthday">Birthday</label></th>
                     <td class="input-group">
                         <input date-select model="customer.birthday">
                         <!--<input type="text" class="form-control" datepicker-popup="dd-MMMM-yyyy" ng-model="customer.birthday" is-open="opened"-->
@@ -67,7 +76,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <th><label>Is Activated?</label></th>
+                    <th><label translate="customerCreate.table.header.isActivated">Is Activated?</label></th>
                     <td><input type="checkbox" name="isActivated"
                            ng-model="customer.isActivated"></td>
                 </tr>
@@ -75,10 +84,16 @@
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clear()">
-                <span class="glyphicon glyphicon-ban-circle"></span> Cancel
+                <span class="glyphicon glyphicon-ban-circle"></span>
+                <span translate="customerCreate.buttons.cancel">
+                    Cancel
+                </span>
             </button>
             <button type="submit" ng-disabled="form.$invalid" class="btn btn-primary">
-                <span class="glyphicon glyphicon-save"></span> Save
+                <span class="glyphicon glyphicon-save"></span>
+                <span translate="customerCreate.buttons.save">
+                    Save
+                </span>
             </button>
         </div>
     </form>
