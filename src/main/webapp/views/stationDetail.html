@@ -1,75 +1,125 @@
 <div>
 
-    <h2>Station: {{station.name}}</h2>
+    <h2 translate="stationDetail.title" translate-values="{stationName: {{station.name}}}">Station: {{station.name}}</h2>
 
     <div ng-switch="isEditing">
-        <button type="button" ui-sref="stations" class="btn btn-default" ng-disabled="isEditing"><span class="glyphicon glyphicon-arrow-left"></span> Back</button>
+        <button type="button" ui-sref="stations" class="btn btn-default" ng-disabled="isEditing">
+            <span class="glyphicon glyphicon-arrow-left"></span>
+            <span translate="stationDetail.button.back">
+                Back
+            </span>
+        </button>
         <button type="button" ng-switch-when="false" ng-click="toggleEdit()" class="btn btn-default">
-            <span class="glyphicon glyphicon-pencil"></span> Edit Station</button>
+            <span class="glyphicon glyphicon-pencil"></span>
+            <span translate="stationDetail.button.edit">
+                Edit Station
+            </span>
+        </button>
         <button type="button" ng-switch-when="true" ng-click="toggleEdit()" class="btn btn-warning">
-            <span class="glyphicon glyphicon-pencil"></span> Cancel</button>
+            <span class="glyphicon glyphicon-pencil"></span>
+            <span translate="stationDetail.button.cancel">
+                Cancel
+            </span>
+        </button>
         <button type="button" ng-click="saveStation()" class="btn btn-primary" ng-show="isEditing">
-            <span class="glyphicon glyphicon-pencil"></span> Save Station</button>
+            <span class="glyphicon glyphicon-pencil"></span>
+            <span translate="stationDetail.button.save">
+                Save Station
+            </span>
+        </button>
     </div>
 
-    <div class="table-responsive voffset3">
-        <table class="table" ng-switch="isEditing">
-            <tr>
-                <th>Manufacturer ID</th>
-                <td >{{station.manufacturerId}}</td>
-            </tr>
-            <tr>
-                <th>Name</th>
-                <td ng-switch-when="false">{{station.name}}</td>
-                <td ng-switch-when="true"><input type="text" class="form-control" ng-model="station.name"></td>
-            </tr>
-            <tr>
-                <th>Address</th>
-                <td ng-switch-when="false">{{station.address.streetAndHousenumber + ', ' + station.address.zip + ', ' + station.address.city + ', ' + station.address.country}}</td>
-                <td ng-switch-when="true">
-                    <label>Street Address</label><input type="text" class="form-control" ng-model="station.address.streetAndHousenumber">
-                    <label class="voffset2">ZIP</label><input type="text" class="form-control" ng-model="station.address.zip">
-                    <label class="voffset2">City</label><input type="text" class="form-control" ng-model="station.address.city">
-                    <label class="voffset2">Country</label><input type="text" class="form-control" ng-model="station.address.country">
-                </td>
-            </tr>
-            <tr>
-                <th>Coordinates</th>
-                <td ng-switch-when="false">{{station.locationLatitude + ',' + station.locationLongitude}}</td>
-                <td ng-switch-when="true">
-                    <label class="voffset2">Latitude</label><input type="number" class="form-control" ng-model="station.locationLatitude">
-                    <label class="voffset2">Longitude</label><input type="number" class="form-control" ng-model="station.locationLongitude">
-                </td>
-            </tr>
-            <tr>
-                <th>State</th>
-                <td ng-switch-when="false">{{station.state}}</td>
-                <td ng-switch-when="true">
+    <form name="form" role="form" novalidate
+          class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength form-horizontal"
+          ng-submit="create()" ng-switch="isEditing">
+        <div class="panel-body">
+            <div class="form-group" show-errors>
+                <label class="control-label col-md-2" translate="stationDetail.form.manufacturerId">Manufacturer ID</label>
+                <div class="well well-sm col-md-10 remove-margin" ng-switch-when="false">{{station.manufacturerId}}</div>
+                <div ng-switch-when="true" class="col-md-10"><input type="text" class="form-control" ng-model="station.manufacturerId" ng-disabled="true"></div>
+            </div>
+            <div class="form-group" show-errors>
+                <label class="control-label col-md-2" translate="stationDetail.form.name">Name</label>
+                <div class="well well-sm col-md-10 remove-margin" ng-switch-when="false">{{station.name}}</div>
+                <div ng-switch-when="true" class="col-md-10"><input type="text" class="form-control" ng-model="station.name"></div>
+            </div>
+            <div class="form-group" show-errors>
+                <label class="control-label col-md-2" translate="stationDetail.form.address.title">Address</label>
+                <div class="well well-sm col-md-10 remove-margin" ng-switch-when="false">{{station.address.streetAndHousenumber + ', ' + station.address.zip + ', ' + station.address.city + ', ' + station.address.country}}</div>
+                <div ng-switch-when="true" class="col-md-10">
+                    <div class="form-group" show-errors>
+                        <label class="control-label col-md-2" translate="stationDetail.form.address.streetAddress">Street Address</label>
+                        <div class="col-md-10">
+                            <input type="text" class="form-control" ng-model="station.address.streetAndHousenumber">
+                        </div>
+                    </div>
+                    <div class="form-group" show-errors>
+                        <label class="control-label col-md-2" translate="stationDetail.form.address.zip">ZIP</label>
+                        <div class="col-md-10">
+                            <input type="text" class="form-control" ng-model="station.address.zip">
+                        </div>
+                    </div>
+                    <div class="form-group" show-errors>
+                        <label class="control-label col-md-2" translate="stationDetail.form.address.city">City</label>
+                        <div class="col-md-10">
+                            <input type="text" class="form-control" ng-model="station.address.city">
+                        </div>
+                    </div>
+                    <div class="form-group" show-errors>
+                        <label class="control-label col-md-2" translate="stationDetail.form.address.country">Country</label>
+                        <div class="col-md-10">
+                            <input type="text" class="form-control" ng-model="station.address.country">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group" show-errors>
+                <label class="control-label col-md-2" translate="stationDetail.form.coordinates.title">Coordinates</label>
+                <div class="well well-sm col-md-10 remove-margin" ng-switch-when="false">{{station.locationLatitude + ', ' + station.locationLongitude}}</div>
+                <div ng-switch-when="true" class="col-md-10">
+                    <div class="form-group" show-errors>
+                        <label class="control-label col-md-2" translate="stationDetail.form.coordinates.latitude">Latitude</label>
+                        <div class="col-md-10">
+                            <input type="number" class="form-control" ng-model="station.locationLatitude">
+                        </div>
+                    </div>
+                    <div class="form-group" show-errors>
+                        <label class="control-label col-md-2" translate="stationDetail.form.coordinates.longitude">Longitude</label>
+                        <div class="col-md-10">
+                            <input type="number" class="form-control" ng-model="station.locationLongitude">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group" show-errors>
+                <label class="control-label col-md-2" translate="stationDetail.form.state">State</label>
+                <div class="well well-sm col-md-10 remove-margin" ng-switch-when="false">{{station.state}}</div>
+                <div ng-switch-when="true" class="col-md-10">
                     <select type="text" class="form-control"
                             ng-model="station.state">
                         <option value="OPERATIVE">OPERATIVE</option>
                         <option value="INOPERATIVE">INOPERATIVE</option>
                     </select>
-                </td>
-            </tr>
-            <tr>
-                <th>Note</th>
-                <td ng-switch-when="false">{{station.note}}</td>
-                <td ng-switch-when="true"><input type="text" class="form-control" ng-model="station.note"></td>
-            </tr>
-        </table>
-    </div>
+                </div>
+            </div>
+            <div class="form-group" show-errors>
+                <label class="control-label col-md-2" translate="stationDetail.form.note">Note</label>
+                <div class="well well-sm col-md-10 remove-margin" ng-switch-when="false">{{station.note}}</div>
+                <div ng-switch-when="true" class="col-md-10"><input type="text" class="form-control" ng-model="station.note"></div>
+            </div>
+        </div>
+    </form>
 
     <div class="table-responsive">
-        <h4>Station Slots</h4>
+        <h4 translate="stationDetail.table.title">Station Slots</h4>
 
         <table class="table table-striped">
             <thead>
             <tr>
-                <th>Manufacturer ID</th>
-                <th>Available</th>
-                <th>State</th>
-                <th>Pedelec (Manufacturer ID)</th>
+                <th translate="stationDetail.table.header.manufacturerId">Manufacturer ID</th>
+                <th translate="stationDetail.table.header.available">Available</th>
+                <th translate="stationDetail.table.header.state">State</th>
+                <th translate="stationDetail.table.header.pedelec">Pedelec (Manufacturer ID)</th>
             </tr>
             </thead>
             <tbody>

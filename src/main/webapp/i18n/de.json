@@ -1,24 +1,47 @@
 {
     "global": {
         "title": "velocity",
-        "browsehappy": "Sie benutzen einen <strong>veralteten</strong> Browser. Bitte <a href=\"http://browsehappy.com/?locale=de/\">aktualisieren Sie Ihren Browser</a>, um die Benutzerfreundlichkeit zu erhöhen.",
+        "browsehappy": "Sie benutzen einen <strong>veralteten</strong> Browser. Bitte <a href=\"http://browsehappy.com/?locale=en\">aktualisieren Sie Ihren Browser</a>, um die Benutzerfreundlichkeit zu erhöhen .",
         "menu": {
-            "home": "Startseite",
+            "home": "Home",
             "account": {
-                "main": "Zugang",
+                "main": "{{username}}",
                 "settings": "Einstellungen",
                 "password": "Passwort",
                 "sessions": "Sitzungen",
                 "tracker": "User tracker",
                 "metrics": "Metriken",
-                "logs": "Protokoll",
+                "logs": "Logs",
                 "audits": "Audits",
                 "login": "Anmelden",
                 "logout": "Abmelden",
                 "apidocs": "API"
             },
+            "management": {
+                "title": "Verwaltung",
+                "custOverview": "Kundenübersicht",
+                "custCreate": "Kunden anlegen",
+                "fleetOverview": "Fuhrparkleiter Übersicht",
+                "fleetCreate": "Fuhrparkleiter anlegen"
+            },
+            "station": {
+                "title": "Stationsverwaltung",
+                "overview": "Stationsübersicht",
+                "create": "Station anlegen"
+            },
+            "pedelec": {
+                "title": "Pedelecverwaltung",
+                "overview": "Pedelecübersicht",
+                "create": "Pedelec anlegen"
+            },
+            "driverlog": {
+                "title": "Fahrtenbuch",
+                "allTransactions": "Alle Transaktionen",
+                "closedTransactions": "Abgeschlossene Transaktionen",
+                "openTransactions": "Offene Transaktionen"
+            },
             "admin": "Administration",
-            "language": "Sprache"
+            "language": "Sprace"
         },
         "language": {
             "da": "Dänisch",
@@ -29,21 +52,298 @@
         }
     },
     "main": {
-        "title": "Willkommen, Java Hipster!",
-        "subtitle": "Dies ist Ihre Hauptseite",
+        "title": "Willkommen bei Velocity!",
+        "subtitle": "Dies ist Ihre Homepage",
         "logged": {
-            "message": "Sie sind als Benutzer \"{{username}}\" angemeldet.",
-            "authenticated": "Wenn Sie sich <a href=\"#/login\">anmelden</a> möchten, versuchen Sie es mit <br/>- Administrator (Name=\"admin\" und Passwort=\"admin\")<br/>- Benutzer (Name=\"user\" und Passwort=\"user\")."
+            "message": "Sie sind angemeldet als Benutzer \"{{username}}\".",
+            "authenticated": "Wenn Sie sich <a ui-sref=\"login\">anmelden</a> wollen, probieren Sie die Standard-Accounts<br/>- Admnistrator (login=\"admin\" and password=\"admin\") <br/>- User (login=\"user\" and password=\"user\")."
+        }
+    },
+    "stations": {
+        "title": "Stationen",
+        "table": {
+            "header": {
+                "name": "Name",
+                "manufacturerId": "Hersteller ID",
+                "address": "Adresse",
+                "state": "Status",
+                "allocation": "Allokation"
+            },
+            "body": {
+                "details": "Details"
+            },
+            "hiddenRow": {
+                "slot": "Stellplatz",
+                "manufacturerId": "Hersteller ID",
+                "state": "Status",
+                "occupied": "Besetzt",
+                "pedelec": "Pedelec (Hersteller ID)"
+            }
+        }
+    },
+    "stationCreate": {
+        "title": "Station anlegen",
+        "subtitle": "Stationsdaten unten eingeben!",
+        "form": {
+            "name": "Name",
+            "manufacturerId": "Hersteller ID",
+            "streetAndHousenumber": "Straße und Hausnummer",
+            "zip": "Postleitzahl",
+            "city": "Stadt",
+            "country": "Land",
+            "coordinates": {
+                "title": "Koordinaten",
+                "locationLatitude": "Breitengrad",
+                "locationLongitude": "Längengrad"
+            },
+            "state": "Stationszustand",
+            "note": "Notiz"
         },
-        "question": "Wenn Sie Fragen zu JHipster haben:",
-        "link": {
-            "homepage": "JHipster Hauptseite",
-            "stackoverflow": "JHipster auf Stack Overflow",
-            "bugtracker": "JHipster Fehlereinträge",
-            "contact": "kontaktieren Sie uns mit @java_hipster auf Twitter"
+        "buttons": {
+            "cancel": "Leeren",
+            "save": "Speichern"
+        }
+    },
+    "stationDetail": {
+        "title": "Station: {{stationName}}",
+        "form": {
+            "manufacturerId": "Hersteller ID",
+            "name": "Name",
+            "address": {
+                "title": "Adresse",
+                "streetAddress": "Straße und Hausnummer",
+                "zip": "Postleitzahl",
+                "city": "Stadt",
+                "country": "Land"
+            },
+            "coordinates": {
+                "title": "Koordinaten",
+                "latitude": "Breitengrad",
+                "longitude": "Längengrad"
+            },
+            "state": "Status",
+            "note": "Notiz"
         },
-        "like": "Wenn Sie JHipster mögen, vergessen Sie nicht uns einen Stern zu geben auf",
-        "github": "Github"
+        "table": {
+            "title": "Stationsstellplätze",
+            "header": {
+                "manufacturerId": "Hersteller ID",
+                "available": "Verfügbar",
+                "state": "Status",
+                "pedelec": "Pedelec (Hersteller ID)"
+            }
+        },
+        "button": {
+            "back": "Zurück",
+            "edit": "Bearbeiten",
+            "cancel": "Abbrechen",
+            "save": "Speichern"
+        }
+    },
+    "customers": {
+        "title": "Kunden",
+        "search": {
+            "searchByName": "Suchen: Max Mustermann",
+            "searchByLogin": "Suchen: customers@email.com",
+            "reset": "Zurücksetzen"
+        },
+        "table": {
+            "header": {
+                "customerId": "Kunden-ID",
+                "name": "Name",
+                "login": "E-Mail",
+                "isActivated": "Aktiviert",
+                "birthday": "Geburtstag"
+            },
+            "body": {
+                "isActivated": "Aktiviert",
+                "details": "Details"
+            }
+        }
+    },
+    "customerDetail": {
+        "title": "Kunde: {{firstname}} {{lastname}}",
+        "buttons": {
+            "back": "Zurück",
+            "edit": "Bearbeiten",
+            "cancel": "Abbrechen",
+            "save": "Speichern"
+        },
+        "table": {
+            "header": {
+                "login": "Login",
+                "name": "Name",
+                "address": "Adresse",
+                "customerId": "Kunden-ID",
+                "cardId": "Karten-ID",
+                "birthday": "Geburtstag",
+                "isActivated": "Aktiviert"
+            },
+            "body": {
+                "address": {
+                    "streetAndHousenumber": "Straße und Hausnummer",
+                    "zip": "Postleitzahl",
+                    "city": "Stadt",
+                    "country": "Land"
+                }
+            }
+        },
+        "transactions": {
+            "title": "Transaktionen:",
+            "numberOfTransactions": "Zeige Anzahl Transaktionen:",
+            "table": {
+                "header": {
+                    "pedelec": "Pedelec",
+                    "startTime": "Anfangszeit",
+                    "endTime": "Endzeit",
+                    "fromLocation": "Von Ort",
+                    "toLocation": "Nach Ort"
+                }
+            }
+        }
+    },
+    "customerCreate": {
+        "title": "Kunden anlegen",
+        "table": {
+            "header": {
+                "customerId": "Kunden-ID",
+                "login": "Login",
+                "cardId": "Karten-ID",
+                "name": "Name",
+                "address": {
+                    "title": "Adresse",
+                    "streetAndHousenumber": "Straße und Hausnummer",
+                    "zip": "Postleitzahl",
+                    "city": "Stadt",
+                    "country": "Land"
+                },
+                "birthday": "Geburtstag",
+                "isActivated": "Aktiviert"
+            },
+            "placeholders": {
+                "customerId": "Kunden-ID...",
+                "login": "customer@velocity.de",
+                "cardId": "Karten-ID...",
+                "firstname": "Max",
+                "lastname": "Mustermann",
+                "streetAndHousenumber": "Straße...",
+                "zip": "Postleitzahl...",
+                "city": "Stadt...",
+                "country": "Land..."
+            }
+        },
+        "buttons": {
+            "cancel": "Abbrechen",
+            "save": "Speichern"
+        }
+    },
+    "fleetmanagers": {
+        "title": "Fuhrparkleiter",
+        "table": {
+            "header": {
+                "login": "Login"
+            },
+            "buttons": {
+                "delete": "Löschen"
+            }
+        },
+        "modal": {
+            "title": "Fuhrparkleiter löschen",
+            "body": "Sind Sie sicher, dass Sie den Fuhrparkleiter <b>{{login}}</b> löschen wollen?",
+            "buttons": {
+                "close": "Schließen",
+                "delete": "Löschen"
+            }
+        }
+    },
+    "fleetmanagerCreate": {
+        "title": "Fuhrparkleiter anlegen",
+        "table": {
+            "header": {
+                "login": "Login",
+                "password": "Passwort"
+            },
+            "placeholders": {
+                "login": "manager@velocity.de",
+                "password": "*******"
+            }
+        },
+        "buttons": {
+            "cancel": "Abbrechen",
+            "save": "Speichern"
+        }
+    },
+    "pedelecs": {
+        "title": "Pedelecs",
+        "table": {
+            "header": {
+                "manufacturerId": "Hersteller-ID",
+                "stateOfCharge": "Ladezustand",
+                "state": "Status",
+                "station": "Station (Stellplatz)",
+                "customer": "Kunde"
+            },
+            "body": {
+                "details": "Details"
+            }
+        }
+    },
+    "pedelecDetail": {
+        "title": "Pedelec: {{ manufacturerId }}",
+        "buttons": {
+            "back": "Zurück",
+            "edit": "Bearbeiten",
+            "cancel": "Abbrechen",
+            "save": "Speichern"
+        },
+        "table": {
+            "header": {
+                "manufacturerId": "Hersteller-ID",
+                "stateOfCharge": "Ladezustand",
+                "state": "Status",
+                "inTransaction": "In Transaktion"
+            }
+        },
+        "transactions": {
+            "title": "Transaktionen:",
+            "numberOfTransactions": "Zeige Anzahl Transaktionen:",
+            "table": {
+                "header": {
+                    "customer": "Kunde",
+                    "pedelec": "Pedelec",
+                    "startTime": "Startzeit",
+                    "endTime": "Endzeit",
+                    "fromLocation": "Von Ort",
+                    "toLocation": "Nach Ort"
+                }
+            }
+        }
+    },
+    "pedelecCreate": {
+        "title": "Pedelec anlegen",
+        "table": {
+            "header": {
+                "manufacturerId": "Hersteller-ID",
+                "state": "Pedelec Status"
+            }
+        },
+        "buttons": {
+            "cancel": "Abbrechen",
+            "save": "Speichern"
+        }
+    },
+    "transactions": {
+        "title": "Transaktionen",
+        "table": {
+            "header": {
+                "customer": "Hersteller",
+                "pedelec": "Pedelec",
+                "startTime": "Startzeit",
+                "endTime": "Endzeit",
+                "fromLocation": "Von Ort",
+                "toLocation": "Nach Ort"
+            }
+        }
     },
     "login": {
         "title": "Anmeldung",

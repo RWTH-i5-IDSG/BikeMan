@@ -62,8 +62,11 @@ velocityApp.controller('StationCreateController', ['$scope', 'CreateEditStation'
 
         // create station
         $scope.create = function () {
-            // stations have state OPERATIVE by default
-            $scope.station.state = "OPERATIVE";
+
+            $scope.$broadcast('show-errors-check-validity');
+
+            if ($scope.form.$invalid) { return; }
+
             CreateEditStation.save($scope.station,
                 function () {
                     $scope.createSuccess = true;

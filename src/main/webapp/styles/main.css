@@ -145,6 +145,12 @@ ul#strength {
 
 /* end Password strength bar style */
 
+/* override for date select */
+
+.dateSelector select {
+    width: 100% !important;
+}
+
 
 /* customizations for stations table view */
 

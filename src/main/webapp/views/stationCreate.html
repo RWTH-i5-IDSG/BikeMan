@@ -5,81 +5,108 @@
         </div>
     </div>
     <form name="form" role="form" novalidate
-          class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength"
+          class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength form-horizontal"
           ng-submit="create()">
 
         <div class="panel-body">
-            <table class="table">
-            <tr>
-                <th><label translate="stationCreate.form.name">Name</label></th>
-                <td><input type="text" class="form-control" name="name"
-                       ng-model="station.name" ng-minlength=1 ng-maxlength=255 required></td>
-            </tr>
+            <div class="form-group" show-errors>
+                <label class="control-label col-md-2" translate="stationCreate.form.name">Name</label>
+                <div class="col-md-10">
+                    <input type="text" class="form-control" name="name"
+                           ng-model="station.name" ng-minlength=1 ng-maxlength=255 required>
+                </div>
+            </div>
 
-            <tr>
-                <th><label translate="stationCreate.form.manufacturerId">Manufacturer ID</label></th>
-                <td><input type="text" class="form-control" name="manufacturerId"
-                       ng-model="station.manufacturerId" ng-minlength=1 ng-maxlength=255 required></td>
-            </tr>
+            <div class="form-group" show-errors>
+                <label class="control-label col-md-2" translate="stationCreate.form.manufacturerId">Manufacturer ID</label>
+                <div class="col-md-10">
+                    <input type="text" class="form-control" name="manufacturerId"
+                           ng-model="station.manufacturerId" ng-minlength=1 ng-maxlength=255 required>
+                </div>
+            </div>
 
-            <tr>
-                <th>Address</th>
-                <td>
-                    <label translate="stationCreate.form.streetAndHousenumber">Street</label>
-                    <input type="text" class="form-control" name="addressStreet"
-                           ng-model="station.address.streetAndHousenumber" ng-minlength=1 ng-maxlength=255 required>
+            <div class="form-group" show-errors>
+                <label class="control-label col-md-2" translate=""> Address</label>
+                <div class="col-md-10">
+                    <div class="form-group" show-errors>
+                        <label class="control-label col-md-2" translate="stationCreate.form.streetAndHousenumber">Street</label>
+                        <div class="col-md-10">
+                            <input type="text" class="form-control" name="addressStreet"
+                                   ng-model="station.address.streetAndHousenumber" ng-minlength=1 ng-maxlength=255 required>
+                        </div>
+                    </div>
 
-                    <label translate="stationCreate.form.zip" class="voffset2">ZIP</label>
-                    <input type="text" class="form-control" name="addressZip"
-                           ng-model="station.address.zip" ng-minlength=1 ng-maxlength=255 required>
+                    <div class="form-group" show-errors>
+                        <label class="control-label col-md-2" translate="stationCreate.form.zip" class="voffset2">ZIP</label>
+                        <div class="col-md-10">
+                            <input type="text" class="form-control" name="addressZip"
+                                   ng-model="station.address.zip" ng-minlength=1 ng-maxlength=255 required>
+                        </div>
+                    </div>
 
-                    <label translate="stationCreate.form.city" class="voffset2">City</label>
-                    <input type="text" class="form-control" name="addressCity"
-                           ng-model="station.address.city" ng-minlength=1 ng-maxlength=255 required>
+                    <div class="form-group" show-errors>
+                        <label class="control-label col-md-2" translate="stationCreate.form.city" class="voffset2">City</label>
+                        <div class="col-md-10">
+                            <input type="text" class="form-control" name="addressCity"
+                                   ng-model="station.address.city" ng-minlength=1 ng-maxlength=255 required>
+                        </div>
+                    </div>
 
-                    <label translate="stationCreate.form.country" class="voffset2">Country</label>
-                    <input type="text" class="form-control" name="addressCountry"
-                           ng-model="station.address.country" ng-minlength=1 ng-maxlength=255 required>
-                </td>
+                    <div class="form-group" show-errors>
+                        <label class="control-label col-md-2" translate="stationCreate.form.country" class="voffset2">Country</label>
+                        <div class="col-md-10">
+                            <input type="text" class="form-control" name="addressCountry"
+                                   ng-model="station.address.country" ng-minlength=1 ng-maxlength=255 required>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-            </tr>
 
+            <div class="form-group" show-errors>
+                <label class="col-md-2 control-label" translate="stationCreate.form.coordinates.title">Coordinates</label>
+                <div class="col-md-10">
+                    <div class="form-group" show-errors>
+                        <label class="control-label col-md-2" translate="stationCreate.form.coordinates.locationLatitude">Latitude:</label>
+                        <div class="col-md-10">
+                            <input type="text" class="form-control" name="locationLatitude"
+                                   ng-model="station.locationLatitude" ng-minlength=1 ng-maxlength=255 required>
+                        </div>
+                    </div>
+                    <div class="form-group" show-errors>
+                        <label class="control-label col-md-2" translate="stationCreate.form.coordinates.locationLongitude" class="voffset2">Longitude</label>
+                        <div class="col-md-10">
+                            <input type="text" class="form-control" name="locationLongitude"
+                                   ng-model="station.locationLongitude" ng-minlength=1 ng-maxlength=255 required>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-            <tr>
-                <th><label translate="stationCreate.form.coordinates.title">Coordinates</label></th>
-                <td>
-                    <label translate="stationCreate.form.coordinates.locationLatitude">Latitude:</label>
-                    <input type="text" class="form-control" name="locationLatitude"
-                           ng-model="station.locationLatitude" ng-minlength=1 ng-maxlength=255 required>
-                    <label translate="stationCreate.form.coordinates.locationLongitude" class="voffset2">Longitude</label>
-                    <input type="text" class="form-control" name="locationLongitude"
-                           ng-model="station.locationLongitude" ng-minlength=1 ng-maxlength=255 required>
-                </td>
-            </tr>
-
-            <tr>
-                <th><label translate="stationCreate.form.state">Station State</label></th>
-                <td>
+            <div class="form-group" show-errors>
+                <label class="control-label col-md-2" translate="stationCreate.form.state">Station State</label>
+                <div class="col-md-10">
                     <select type="text" class="form-control" name="state"
                             ng-model="station.state" required>
                         <option value="" selected disabled>Choose...</option>
                         <option value="OPERATIVE">OPERATIVE</option>
                         <option value="INOPERATIVE">INOPERATIVE</option>
                     </select>
-                </td>
-            </tr>
+                </div>
+            </div>
 
-            <tr>
-                <th><label translate="stationCreate.form.note">Note</label></th>
-                <td><input type="text" class="form-control" name="note"
-                       ng-model="station.note" ng-minlength=1 ng-maxlength=255 required></td>
-            </tr>
-
-        </table>
+            <div class="form-group" show-errors>
+                <label class="control-label col-md-2" translate="stationCreate.form.note">Note</label>
+                <div class="col-md-10">
+                    <input type="text" class="form-control" name="note"
+                           ng-model="station.note" ng-minlength=1 ng-maxlength=255 required>
+                </div>
+            </div>
+        </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-default" ng-click="clear()" translate="stationCreate.buttons.cancel">Clear
             </button>
-            <button type="submit" ng-disabled="form.$invalid" class="btn btn-primary" translate="stationCreate.buttons.save">Save</button>
+            <button type="submit" class="btn btn-primary" translate="stationCreate.buttons.save">Save</button>
         </div>
     </form>
 </div>

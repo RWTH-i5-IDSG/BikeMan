@@ -145,6 +145,10 @@ velocityApp.controller('CustomerCreateController', ['$scope', 'Customer', '$time
         $scope.maxDate = new Date();
 
         $scope.create = function () {
+            $scope.$broadcast('show-errors-check-validity');
+
+            if ($scope.form.$invalid) { return; }
+
             Customer.save($scope.customer,
                 function () {
                     $timeout(function () {

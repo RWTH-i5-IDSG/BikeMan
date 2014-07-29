@@ -113,6 +113,42 @@
             "save": "Save"
         }
     },
+    "stationDetail": {
+        "title": "Station: {{stationName}}",
+        "form": {
+            "manufacturerId": "Manufacturer ID",
+            "name": "Name",
+            "address": {
+                "title": "Address",
+                "streetAddress": "Street Address",
+                "zip": "ZIP",
+                "city": "City",
+                "country": "Country"
+            },
+            "coordinates": {
+                "title": "Coordinates",
+                "latitude": "Latitude",
+                "longitude": "Longitude"
+            },
+            "state": "State",
+            "note": "Note"
+        },
+        "table": {
+            "title": "Station Slots",
+            "header": {
+                "manufacturerId": "Manufacturer ID",
+                "available": "Available",
+                "state": "State",
+                "pedelec": "Pedelec (Manufacturer ID)"
+            }
+        },
+        "button": {
+            "back": "Back",
+            "edit": "Edit Station",
+            "cancel": "Cancel",
+            "save": "Save Station"
+        }
+    },
     "customers": {
         "title": "Customers",
         "search": {

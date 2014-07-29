@@ -83,6 +83,11 @@ velocityApp.controller('PedelecCreateController', ['$scope', 'Pedelec', '$timeou
         $scope.createSuccess = false;
 
         $scope.create = function () {
+
+            $scope.$broadcast('show-errors-check-validity');
+
+            if ($scope.form.$invalid) { return; }
+
             Pedelec.save($scope.pedelec,
                 function () {
                     $scope.createSuccess = true;

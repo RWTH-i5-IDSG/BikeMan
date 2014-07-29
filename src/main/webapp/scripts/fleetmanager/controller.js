@@ -40,16 +40,14 @@ velocityApp.controller('FleetmanagerCreateController', ['$scope', 'Fleetmanager'
         $scope.createSuccess = false;
 
         $scope.create = function () {
+
+            $scope.$broadcast('show-errors-check-validity');
+
+            if ($scope.form.$invalid) { return; }
+
             Fleetmanager.save($scope.fleetmanager,
                 function () {
-
                     $state.go('fleetmanagers');
-
-//                    $scope.createSuccess = true;
-//                    $timeout(function () {
-//                        $scope.createSuccess = false;
-//                        $scope.clear();
-//                    }, 3000);
                 });
         };
 
