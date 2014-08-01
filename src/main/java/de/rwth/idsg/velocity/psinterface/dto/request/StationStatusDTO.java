@@ -1,7 +1,6 @@
 package de.rwth.idsg.velocity.psinterface.dto.request;
 
-import de.rwth.idsg.velocity.psinterface.dto.*;
-import de.rwth.idsg.velocity.psinterface.dto.Error;
+import de.rwth.idsg.velocity.psinterface.dto.ErrorMessage;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -17,13 +16,13 @@ import java.util.List;
 @ToString(includeFieldNames = true)
 public class StationStatusDTO {
     private String stationManufacturerId;
-    private Error stationErrorCode;
+    private ErrorMessage stationErrorCode;
     private String stationInfo;
     private LocalDateTime timestamp;
 
     @Setter private List<SlotDTO> slots;
 
-    public StationStatusDTO(LocalDateTime timestamp, String stationInfo, Error stationErrorCode, String stationManufacturerId) {
+    public StationStatusDTO(LocalDateTime timestamp, String stationInfo, ErrorMessage stationErrorCode, String stationManufacturerId) {
         this.timestamp = timestamp;
         this.stationInfo = stationInfo;
         this.stationErrorCode = stationErrorCode;
