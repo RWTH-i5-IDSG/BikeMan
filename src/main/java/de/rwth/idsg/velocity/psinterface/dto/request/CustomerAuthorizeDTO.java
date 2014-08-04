@@ -8,6 +8,6 @@ import lombok.Data;
 
 @Data
 public class CustomerAuthorizeDTO {
-    private Integer cardId;
+    private String cardId;
     private Integer pin;
 }

@@ -1,9 +1,6 @@
 package de.rwth.idsg.velocity.repository;
 
-import de.rwth.idsg.velocity.domain.Address;
-import de.rwth.idsg.velocity.domain.Pedelec;
-import de.rwth.idsg.velocity.domain.Station;
-import de.rwth.idsg.velocity.domain.StationSlot;
+import de.rwth.idsg.velocity.domain.*;
 import de.rwth.idsg.velocity.web.rest.dto.modify.CreateEditAddressDTO;
 import de.rwth.idsg.velocity.web.rest.dto.modify.CreateEditStationDTO;
 import de.rwth.idsg.velocity.web.rest.dto.view.ViewStationDTO;

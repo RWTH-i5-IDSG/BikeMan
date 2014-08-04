@@ -1,5 +1,6 @@
 package de.rwth.idsg.velocity.repository;
 
+import de.rwth.idsg.velocity.domain.Customer;
 import de.rwth.idsg.velocity.web.rest.exception.DatabaseException;
 import de.rwth.idsg.velocity.web.rest.dto.modify.CreateEditCustomerDTO;
 import de.rwth.idsg.velocity.web.rest.dto.view.ViewCustomerDTO;
@@ -25,6 +26,12 @@ public interface CustomerRepository {
      * Login (aka email) field of each customer is unique
      */
     ViewCustomerDTO findbyLogin(String login) throws DatabaseException;
+
+
+    /**
+     * Find unique customer with card-id and pin
+     */
+    Customer findByCardIdAndCardPin(String cardId, Integer cardPin);
 
     void activate(long userId) throws DatabaseException;
 

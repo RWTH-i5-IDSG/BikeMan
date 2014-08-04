@@ -1,6 +1,6 @@
 package de.rwth.idsg.velocity.psinterface.dto.request;
 
-import de.rwth.idsg.velocity.psinterface.dto.ErrorMessage;
+import de.rwth.idsg.velocity.psinterface.exception.ErrorMessage;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

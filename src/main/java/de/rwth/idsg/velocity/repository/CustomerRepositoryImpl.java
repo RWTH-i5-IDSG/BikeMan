@@ -86,6 +86,16 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public Customer findByCardIdAndCardPin(String cardId, Integer cardPin) {
+
+//        TODO: we need cheeeeeffffffff
+
+        return null;
+
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public void activate(long userId) throws DatabaseException {
         Customer customer = getCustomerEntity(userId);

@@ -1,5 +1,6 @@
 package de.rwth.idsg.velocity.psinterface.dto.response;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.joda.time.LocalDateTime;
 
@@ -9,5 +10,5 @@ import org.joda.time.LocalDateTime;
 
 @Data
 public class HeartbeatDTO {
-    private LocalDateTime timestamp;
+    private Long timestamp;
 }
