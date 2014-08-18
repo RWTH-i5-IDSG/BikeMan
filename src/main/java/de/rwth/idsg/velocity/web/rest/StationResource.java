@@ -1,7 +1,9 @@
 package de.rwth.idsg.velocity.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import de.rwth.idsg.velocity.psinterface.exception.PSInterfaceException;
 import de.rwth.idsg.velocity.repository.StationRepository;
+import de.rwth.idsg.velocity.service.StationStateService;
 import de.rwth.idsg.velocity.web.rest.dto.modify.CreateEditStationDTO;
 import de.rwth.idsg.velocity.web.rest.dto.view.ViewStationDTO;
 import de.rwth.idsg.velocity.web.rest.exception.DatabaseException;
@@ -26,6 +28,9 @@ public class StationResource {
     @Autowired
     private StationRepository stationRepository;
 
+    @Autowired
+    private StationStateService stationStateService;
+
     private static final String BASE_PATH = "/rest/stations";
     private static final String ID_PATH = "/rest/stations/{id}";
 
@@ -38,9 +43,17 @@ public class StationResource {
 
     @Timed
     @RequestMapping(value = BASE_PATH, method = RequestMethod.PUT)
-    public void update(@Valid @RequestBody CreateEditStationDTO dto) throws DatabaseException {
+    public void update(@Valid @RequestBody CreateEditStationDTO dto) throws DatabaseException, PSInterfaceException {
         log.debug("REST request to update Station : {}", dto);
-        stationRepository.update(dto);
+
+        // perform operation state update
+        try {
+            stationStateService.changeOperationState(dto);
+        } catch (PSInterfaceException e) {
+            throw e;
+        }
+
+//        stationRepository.update(dto);
     }
 
     @Timed
