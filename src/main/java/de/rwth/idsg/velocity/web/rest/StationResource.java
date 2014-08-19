@@ -1,6 +1,7 @@
 package de.rwth.idsg.velocity.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import de.rwth.idsg.velocity.psinterface.dto.response.BootConfirmationDTO;
 import de.rwth.idsg.velocity.repository.StationRepository;
 import de.rwth.idsg.velocity.service.StationService;
 import de.rwth.idsg.velocity.web.rest.dto.modify.CreateEditStationDTO;
@@ -53,7 +54,7 @@ public class StationResource {
 
     @Timed
     @RequestMapping(value = ID_PATH + "/config", method = RequestMethod.GET)
-    public StationConfigurationDTO getConfig(@PathVariable long id) throws DatabaseException, RestClientException {
+    public StationConfigurationDTO getConfig(@PathVariable Long id) throws DatabaseException, RestClientException {
         log.debug("REST request to get station configuration for station: {}", id);
 
         return stationService.getStationConfig(id);
@@ -61,7 +62,7 @@ public class StationResource {
 
     @Timed
     @RequestMapping(value = ID_PATH, method = RequestMethod.POST)
-    public void updateConfig(@PathVariable long id, @Valid @RequestBody StationConfigurationDTO dto) throws DatabaseException, RestClientException {
+    public void updateConfig(@PathVariable Long id, @Valid @RequestBody StationConfigurationDTO dto) throws DatabaseException, RestClientException {
         log.debug("REST request to change station configuration: {}", dto);
 
         stationService.changeStationConfiguration(id, dto);
@@ -86,5 +87,13 @@ public class StationResource {
     public void delete(@PathVariable Long id) throws DatabaseException {
         log.debug("REST request to delete Station : {}", id);
         stationRepository.delete(id);
+    }
+
+    @Timed
+    @RequestMapping(value = ID_PATH + "/reboot", method = RequestMethod.POST)
+    public void reboot(@PathVariable Long id) throws RestClientException, DatabaseException {
+        log.debug("REST request to reboot station {}", id);
+
+        stationService.rebootStation(id);
     }
 }

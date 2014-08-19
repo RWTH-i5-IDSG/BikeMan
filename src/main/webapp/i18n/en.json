@@ -164,6 +164,14 @@
             "rebootRetriesPlaceholder": "Reboot Retries",
             "chargingStatusInformInterval": "Charging Status Information Interval",
             "chargingStatusInformIntervalPlaceholder": "Charging Status  Interval"
+        },
+        "rebootModal": {
+            "title": "Reboot Station",
+            "body": "Are you sure you want to reboot this station?",
+            "buttons": {
+                "cancel": "Cancel",
+                "reboot": "Reboot"
+            }
         }
     },
     "customers": {

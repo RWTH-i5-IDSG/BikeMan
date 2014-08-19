@@ -51,7 +51,7 @@ public class PedelecResource {
 
     @Timed
     @RequestMapping(value = ID_PATH + "/config", method = RequestMethod.GET)
-    public PedelecConfigurationDTO getConfig(@PathVariable long id) throws DatabaseException, RestClientException {
+    public PedelecConfigurationDTO getConfig(@PathVariable Long id) throws DatabaseException, RestClientException {
         log.debug("REST request to get station configuration for station: {}", id);
 
         return pedelecService.getPedelecConfig(id);
@@ -59,7 +59,7 @@ public class PedelecResource {
 
     @Timed
     @RequestMapping(value = ID_PATH, method = RequestMethod.POST)
-    public void updateConfig(@PathVariable long id, @Valid @RequestBody PedelecConfigurationDTO dto) throws DatabaseException, RestClientException {
+    public void updateConfig(@PathVariable Long id, @Valid @RequestBody PedelecConfigurationDTO dto) throws DatabaseException, RestClientException {
         log.debug("REST request to change station configuration: {}", dto);
 
         pedelecService.changePedelecConfiguration(id, dto);

@@ -1,6 +1,6 @@
 <div>
 
-    <h2 translate="stationDetail.title" translate-values="{stationName: {{station.name}}}">Station: {{station.name}}</h2>
+    <h2 translate="stationDetail.title" translate-values="{stationName: {{station.name}}}">Station: </h2>
 
     <div ng-switch="isEditing">
         <button type="button" ui-sref="stations" class="btn btn-default" ng-disabled="isEditing">
@@ -28,8 +28,12 @@
             </span>
         </button>
         <button type="button" class="btn btn-default" data-toggle="modal" data-target="#detailModal" ng-click="getConfig()">
-            <span class="glyphicon glyphicon-wrench"></span>
+            <span class="glyphicon glyphicon-cog"></span>
             <span translate="stationDetail.button.changeConfig">Change Configuration</span>
+        </button>
+        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#rebootModal">
+            <span class="glyphicon glyphicon-off"></span>
+            <span translate="stationDetail.button.rebootStation">Reboot Station</span>
         </button>
     </div>
 
@@ -196,6 +200,29 @@
                     <button type="button" class="btn btn-info"  data-dismiss="modal" ng-click="updateConfig()"
                             translate="stationDetail.modal.buttons.update">
                         Update
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <div class="modal fade" id="rebootModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" translate="stationDetail.rebootModal.title">Reboot Station</h4>
+                </div>
+                <div class="modal-body">
+                    <div translate="stationDetail.rebootModal.body">Are you sure you want to reboot station {{ station.name }}?</div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" translate="stationDetail.rebootModal.buttons.cancel">
+                        Cancel
+                    </button>
+                    <button type="button" class="btn btn-danger"  data-dismiss="modal" ng-click="rebootStation()"
+                            translate="stationDetail.rebootModal.buttons.reboot">
+                        Reboot
                     </button>
                 </div>
             </div><!-- /.modal-content -->

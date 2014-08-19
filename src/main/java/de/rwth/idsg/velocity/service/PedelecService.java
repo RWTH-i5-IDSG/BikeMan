@@ -62,7 +62,7 @@ public class PedelecService {
         }
     }
 
-    public PedelecConfigurationDTO getPedelecConfig(long id) throws DatabaseException, RestClientException {
+    public PedelecConfigurationDTO getPedelecConfig(Long id) throws DatabaseException, RestClientException {
         Pedelec pedelec = pedelecRepository.findOne(id);
         String manufacturerId = pedelec.getManufacturerId();
         String stationManufacturerId = pedelec.getStationSlot().getStation().getManufacturerId();
@@ -76,7 +76,7 @@ public class PedelecService {
         return rt.getForObject(uri, PedelecConfigurationDTO.class);
     }
 
-    public void changePedelecConfiguration(long id, PedelecConfigurationDTO dto) throws RestClientException, DatabaseException {
+    public void changePedelecConfiguration(Long id, PedelecConfigurationDTO dto) throws RestClientException, DatabaseException {
         Pedelec pedelec = pedelecRepository.findOne(id);
         String manufacturerId = pedelec.getManufacturerId();
         String stationManufacturerId = pedelec.getStationSlot().getStation().getManufacturerId();
