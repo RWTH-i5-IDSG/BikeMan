@@ -46,11 +46,13 @@ public class PedelecStateService {
 
         final Pedelec pedelec = pedelecRepository.findOne(pedelecId);
         final Station station = pedelec.getStationSlot().getStation();
+        final int stationSlotPosition = pedelec.getStationSlot().getStationSlotPosition();
 
         // states do not match -> notify station of update
         if (!(state.equals(pedelec.getState()))) {
             ChangePedelecOperationStateDTO changeDTO = new ChangePedelecOperationStateDTO();
             changeDTO.setPedelecState(state);
+            changeDTO.setSlotPosition(stationSlotPosition);
 
             RestTemplate rt = new RestTemplate();
 
