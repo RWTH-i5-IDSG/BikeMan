@@ -151,38 +151,38 @@
                     <form name="form" role="from" novalidate class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength form-horizontal"
                           ng-submit="changeConfig()">
                         <div class="panel-body">
-                            <div class="form-group" show-errors>
-                                <label class="control-label col-md-3">CMS URI</label>
+                            <div class="form-group row" show-errors>
+                                <label class="control-label col-md-3" translate="stationDetail.modal.cmsURI">CMS URI</label>
                                 <div class="col-md-9">
-                                    <input class="form-control" type="text" name="cmsURI" placeholder="{{stationDetail.modal.cmsURIInput | translate }}"
+                                    <input class="form-control" type="text" name="cmsURI" placeholder="{{stationDetail.modal.cmsURIPlaceholder | translate }}"
                                            ng-model="stationConfig.cmsURI" ng-minlength="1" ng-maxlength="50" required>
                                 </div>
                             </div>
-                            <div class="form-group" show-errors>
-                                <label class="control-label col-md-3">Heartbeat Interval</label>
+                            <div class="form-group row" show-errors>
+                                <label class="control-label col-md-3" translate="stationDetail.modal.heartbeatInterval">Heartbeat Interval</label>
                                 <div class="col-md-9">
-                                    <input class="form-control" type="number" name="heartbeatInterval" placeholder="{{stationDetail.modal.heartbeatInterval | translate }}"
+                                    <input class="form-control" type="number" name="heartbeatInterval" placeholder="{{stationDetail.modal.heartbeatIntervalPlaceholder | translate }}"
                                            ng-model="stationConfig.heartbeatInterval" ng-minlength="1" ng-maxlength="50" required>
                                 </div>
                             </div>
-                            <div class="form-group" show-errors>
-                                <label class="control-label col-md-3">Open Slot Timeout</label>
+                            <div class="form-group row" show-errors>
+                                <label class="control-label col-md-3" translate="stationDetail.modal.openSlotTimeout">Open Slot Timeout</label>
                                 <div class="col-md-9">
-                                    <input class="form-control" type="number" name="openSlotTimeout" placeholder="{{stationDetail.modal.openSlotTimeout | translate }}"
+                                    <input class="form-control" type="number" name="openSlotTimeout" placeholder="{{stationDetail.modal.openSlotTimeoutPlaceholder | translate }}"
                                            ng-model="stationConfig.openSlotTimeout" ng-minlength="1" ng-maxlength="50" required>
                                 </div>
                             </div>
-                            <div class="form-group" show-errors>
-                                <label class="control-label col-md-3">Reboot Retries</label>
+                            <div class="form-group row" show-errors>
+                                <label class="control-label col-md-3" translate="stationDetail.modal.rebootRetries">Reboot Retries</label>
                                 <div class="col-md-9">
-                                    <input class="form-control" type="number" name="rebootRetries" placeholder="{{stationDetail.modal.rebootRetries | translate }}"
+                                    <input class="form-control" type="number" name="rebootRetries" placeholder="{{stationDetail.modal.rebootRetriesPlaceholder | translate }}"
                                            ng-model="stationConfig.rebootRetries" ng-minlength="1" ng-maxlength="50" required>
                                 </div>
                             </div>
-                            <div class="form-group" show-errors>
-                                <label class="control-label col-md-3">Charging Status Information Interval</label>
+                            <div class="form-group row" show-errors>
+                                <label class="control-label col-md-3" translate="stationDetail.modal.chargingStatusInformInterval">Charging Status Information Interval</label>
                                 <div class="col-md-9">
-                                    <input class="form-control" type="number" name="chargingStatusInformInterval" placeholder="{{stationDetail.modal.chargingStatusInformInterval | translate }}"
+                                    <input class="form-control" type="number" name="chargingStatusInformInterval" placeholder="{{stationDetail.modal.chargingStatusInformIntervalPlaceholder | translate }}"
                                            ng-model="stationConfig.chargingStatusInformInterval" ng-minlength="1" ng-maxlength="50" required>
                                 </div>
                             </div>
@@ -194,8 +194,8 @@
                         Cancel
                     </button>
                     <button type="button" class="btn btn-info"  data-dismiss="modal" ng-click="updateConfig()"
-                            translate="stationDetail.modal.buttons.Update">
-                        Delete
+                            translate="stationDetail.modal.buttons.update">
+                        Update
                     </button>
                 </div>
             </div><!-- /.modal-content -->

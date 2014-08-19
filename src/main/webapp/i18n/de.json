@@ -137,7 +137,24 @@
             "back": "Zurück",
             "edit": "Bearbeiten",
             "cancel": "Abbrechen",
-            "save": "Speichern"
+            "save": "Speichern",
+            "changeConfig": "Konfiguration ändern"
+        },
+        "modal": {
+            "title": "Konfiguration ändern",
+            "buttons": {
+                "cancel": "Abbrechen",
+                "update": "Speichern"
+            },
+            "cmsURI": "CMS URI",
+            "heartbeatInterval": "Lebenszeichen-Intervall",
+            "heartbeatIntervalPlaceholder": "Lebenszeichen-Intervall",
+            "openSlotTimeout": "Timeout für offenen Stellplatz",
+            "openSlotTimeoutPlaceholder": "Stellplatz-Timeout",
+            "rebootRetries": "Neustart Versuche",
+            "rebootRetriesPlaceholder": "Neustart Versuche",
+            "chargingStatusInformInterval": "Informationsintervall Ladezustand",
+            "chargingStatusInformIntervalPlaceholder": "Informationsintervall Ladezustand"
         }
     },
     "customers": {
@@ -294,7 +311,8 @@
             "back": "Zurück",
             "edit": "Bearbeiten",
             "cancel": "Abbrechen",
-            "save": "Speichern"
+            "save": "Speichern",
+            "changeConfig": "Konfiguration ändern"
         },
         "table": {
             "header": {
@@ -316,6 +334,17 @@
                     "fromLocation": "Von Ort",
                     "toLocation": "Nach Ort"
                 }
+            }
+        },
+        "modal": {
+            "title": "Konfiguration ändern",
+            "maxCurrentValue": "Maximale Stromstärke",
+            "maxBatteryLevel": "Maximales Batterieniveau",
+            "maxCurrentValuePlaceholder": "Stromstärke",
+            "maxBatteryLevelPlaceholder": "Batterieniveau",
+            "buttons": {
+                "update": "Speichern",
+                "cancel": "Abbrechen"
             }
         }
     },

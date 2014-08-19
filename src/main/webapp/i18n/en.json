@@ -146,7 +146,24 @@
             "back": "Back",
             "edit": "Edit Station",
             "cancel": "Cancel",
-            "save": "Save Station"
+            "save": "Save Station",
+            "changeConfig": "Change Configuration"
+        },
+        "modal": {
+            "title": "Change Configuration",
+            "buttons": {
+                "cancel": "Cancel",
+                "update": "Update"
+            },
+            "cmsURI": "CMS URI",
+            "heartbeatInterval": "Heartbeat Interval",
+            "heartbeatIntervalPlaceholder": "Heartbeat Interval",
+            "openSlotTimeout": "Open Slot Timeout",
+            "openSlotTimeoutPlaceholder": "Open Slot Timeout",
+            "rebootRetries": "Reboot Retries",
+            "rebootRetriesPlaceholder": "Reboot Retries",
+            "chargingStatusInformInterval": "Charging Status Information Interval",
+            "chargingStatusInformIntervalPlaceholder": "Charging Status  Interval"
         }
     },
     "customers": {
@@ -303,7 +320,8 @@
             "back": "Back",
             "edit": "Edit Pedelec",
             "cancel": "Cancel",
-            "save": "Save Pedelec"
+            "save": "Save Pedelec",
+            "changeConfig": "Change Configuration"
         },
         "table": {
             "header": {
@@ -325,6 +343,17 @@
                     "fromLocation": "From Location",
                     "toLocation": "To Location"
                 }
+            }
+        },
+        "modal": {
+            "title": "Change Configuration",
+            "maxCurrentValue": "Max. Current Value",
+            "maxBatteryLevel": "Max. Battery Level",
+            "maxCurrentValuePlaceholder": "Current",
+            "maxBatteryLevelPlaceholder": "Battery",
+            "buttons": {
+                "update": "Update",
+                "cancel": "Cancel"
             }
         }
     },

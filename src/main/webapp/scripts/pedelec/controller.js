@@ -72,7 +72,20 @@ velocityApp.controller('PedelecDetailController', ['$scope', 'resolvedPedelec', 
             });
         }
 
+        $scope.getConfig = function () {
+            $scope.pedelecConfig = Pedelec.getConfig({id: $scope.pedelec.pedelecId});
+        }
 
+        $scope.updateConfig = function () {
+
+            $scope.updateConfigDTO = {
+                "maxCurrentValue": $scope.pedelecConfig.maxCurrentValue,
+                "maxBatteryLevel": $scope.pedelecConfig.maxBatteryLevel
+            }
+
+            Pedelec.updateConfig({id: $scope.pedelec.pedelecId}, $scope.updateConfigDTO);
+
+        }
 
     }]);
 
