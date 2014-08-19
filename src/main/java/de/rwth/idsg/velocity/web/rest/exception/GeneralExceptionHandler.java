@@ -11,6 +11,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.client.RestClientException;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
@@ -31,6 +32,19 @@ public class GeneralExceptionHandler {
     public void processException(HttpServletResponse response, Exception e) {
         log.error("Exception happened", e);
         response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+    }
+
+    @ExceptionHandler(RestClientException.class)
+    public ResponseEntity<ErrorMessage> processDatabaseException(RestClientException e) {
+        log.error("Exception happened", e);
+
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+        ErrorMessage msg = new ErrorMessage(
+                status.value(),
+                status.getReasonPhrase(),
+                e.getMessage()
+        );
+        return new ResponseEntity<>(msg, status);
     }
 
     @ExceptionHandler(DatabaseException.class)

@@ -10,6 +10,7 @@ import de.rwth.idsg.velocity.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestClientException;
 
 import javax.validation.Valid;
 import javax.ws.rs.Produces;
@@ -43,17 +44,11 @@ public class StationResource {
 
     @Timed
     @RequestMapping(value = BASE_PATH, method = RequestMethod.PUT)
-    public void update(@Valid @RequestBody CreateEditStationDTO dto) throws DatabaseException, PSInterfaceException {
+    public void update(@Valid @RequestBody CreateEditStationDTO dto) throws DatabaseException, RestClientException {
         log.debug("REST request to update Station : {}", dto);
 
         // perform operation state update
-        try {
-            stationStateService.changeOperationState(dto);
-        } catch (PSInterfaceException e) {
-            throw e;
-        }
-
-//        stationRepository.update(dto);
+        stationStateService.changeOperationState(dto);
     }
 
     @Timed

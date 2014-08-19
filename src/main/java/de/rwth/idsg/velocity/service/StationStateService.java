@@ -14,6 +14,7 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.http.converter.json.MappingJacksonHttpMessageConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.inject.Inject;
@@ -33,39 +34,30 @@ public class StationStateService {
 
     private static String baseURL = "http://localhost:8081/";
 
-    public void changeOperationState(CreateEditStationDTO dto) throws PSInterfaceException {
+    public void changeOperationState(CreateEditStationDTO dto) throws DatabaseException, RestClientException {
         long stationId = dto.getStationId();
         OperationState state = dto.getState();
 
-        try {
-            final ViewStationDTO station = stationRepository.findOne(stationId);
+        final ViewStationDTO station = stationRepository.findOne(stationId);
 
-            // states do not match -> notify station of update
-            if (!(state.equals(station.getState()))) {
-                ChangeStationOperationStateDTO changeDTO = new ChangeStationOperationStateDTO();
-                changeDTO.setState(state);
-                changeDTO.setSlotPosition(null);
+        // states do not match -> notify station of update
+        if (!(state.equals(station.getState()))) {
+            ChangeStationOperationStateDTO changeDTO = new ChangeStationOperationStateDTO();
+            changeDTO.setState(state);
+            changeDTO.setSlotPosition(null);
 
-                RestTemplate rt = new RestTemplate();
-                rt.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-                rt.getMessageConverters().add(new StringHttpMessageConverter());
+            RestTemplate rt = new RestTemplate();
+            rt.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+            rt.getMessageConverters().add(new StringHttpMessageConverter());
 
-                String uri = baseURL + station.getManufacturerId() + "/cmsi/state";
+            String uri = baseURL + station.getManufacturerId() + "/cmsi/state";
 
-                log.debug(uri);
-                log.debug(rt.toString());
+            log.debug(uri);
+            log.debug(rt.toString());
 
-                try {
-                    rt.postForObject(uri, changeDTO, String.class);
-                    stationRepository.update(dto);
+            rt.postForObject(uri, changeDTO, String.class);
+            stationRepository.update(dto);
 
-                } catch (HttpClientErrorException e) {
-                    log.error(e.getMessage());
-                    throw new PSInterfaceException("The operation could not be completed!", "undefined");
-                }
-            }
-        }  catch (Exception e) {
-            log.error(e.getMessage());
         }
     }
 }

@@ -16,6 +16,8 @@ import de.rwth.idsg.velocity.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.inject.Inject;
@@ -37,34 +39,25 @@ public class PedelecStateService {
 
     private static String baseURL = "http://localhost:8081/";
 
-    public void changeOperationState(CreateEditPedelecDTO dto) throws PSInterfaceException {
+    public void changeOperationState(CreateEditPedelecDTO dto) throws DatabaseException, RestClientException {
         long pedelecId = dto.getPedelecId();
 
         OperationState state = dto.getState();
 
-        try {
-            final Pedelec pedelec = pedelecRepository.findOne(pedelecId);
-            final Station station = pedelec.getStationSlot().getStation();
+        final Pedelec pedelec = pedelecRepository.findOne(pedelecId);
+        final Station station = pedelec.getStationSlot().getStation();
 
-            // states do not match -> notify station of update
-            if (!(state.equals(pedelec.getState()))) {
-                ChangePedelecOperationStateDTO changeDTO = new ChangePedelecOperationStateDTO();
-                changeDTO.setPedelecState(state);
+        // states do not match -> notify station of update
+        if (!(state.equals(pedelec.getState()))) {
+            ChangePedelecOperationStateDTO changeDTO = new ChangePedelecOperationStateDTO();
+            changeDTO.setPedelecState(state);
 
-                RestTemplate rt = new RestTemplate();
+            RestTemplate rt = new RestTemplate();
 
-                String uri = baseURL + station.getManufacturerId() + "/cmsi/pedelecs/" + pedelec.getManufacturerId() + "/state";
+            String uri = baseURL + station.getManufacturerId() + "/cmsi/pedelecs/" + pedelec.getManufacturerId() + "/state";
 
-                rt.postForObject(uri, changeDTO, String.class);
-                pedelecRepository.update(dto);
-
-
-            }
-        } catch (HttpClientErrorException e) {
-            log.error(e.getMessage());
-            throw new PSInterfaceException("The operation could not be completed", "undefined");
-        } catch (Exception e) {
-            log.error(e.getMessage());
+            rt.postForObject(uri, changeDTO, String.class);
+            pedelecRepository.update(dto);
         }
     }
 }
