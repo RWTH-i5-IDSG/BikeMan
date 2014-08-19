@@ -52,11 +52,19 @@ public class StationResource {
     }
 
     @Timed
-    @RequestMapping(value = BASE_PATH + "/{manufacturerId}", method = RequestMethod.POST)
-    public void updateConfig(@PathVariable String manufacturerId, @Valid @RequestBody StationConfigurationDTO dto) throws RestClientException {
-        log.debug("REST request to change station configurdation: {}", dto);
+    @RequestMapping(value = ID_PATH + "/config", method = RequestMethod.GET)
+    public StationConfigurationDTO getConfig(@PathVariable long id) throws DatabaseException, RestClientException {
+        log.debug("REST request to get station configuration for station: {}", id);
 
-        stationService.changeStationConfiguration(manufacturerId, dto);
+        return stationService.getStationConfig(id);
+    }
+
+    @Timed
+    @RequestMapping(value = ID_PATH, method = RequestMethod.POST)
+    public void updateConfig(@PathVariable long id, @Valid @RequestBody StationConfigurationDTO dto) throws DatabaseException, RestClientException {
+        log.debug("REST request to change station configuration: {}", dto);
+
+        stationService.changeStationConfiguration(id, dto);
     }
 
     @Timed

@@ -16,6 +16,7 @@ velocityApp.factory('CreateEditStation', ['$resource',
             'get': { method: 'GET'},
             'create': { method: 'POST' },
             'update': { method: 'PUT' },
+            'getConfig': { method: 'GET', url: 'app/rest/stations/:id/config', params: {"id": "@id"}},
             'updateConfig': { method: 'POST', params: {"manufacturerId": "@id"}}
         });
     }]);

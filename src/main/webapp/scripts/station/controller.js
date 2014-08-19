@@ -50,6 +50,10 @@ velocityApp.controller('StationDetailController', ['$scope', 'resolvedStation', 
             });
         }
 
+        $scope.getConfig = function () {
+            $scope.stationConfig = CreateEditStation.getConfig({id: $scope.station.stationId});
+        }
+
         $scope.updateConfig = function () {
 
             $scope.updateConfigDTO = {
@@ -60,7 +64,7 @@ velocityApp.controller('StationDetailController', ['$scope', 'resolvedStation', 
                 "chargingStatusInformInterval": $scope.stationConfig.chargingStatusInformInterval
             }
 
-            CreateEditStation.updateConfig({id: $scope.station.manufacturerId}, $scope.updateConfigDTO);
+            CreateEditStation.updateConfig({id: $scope.station.stationId}, $scope.updateConfigDTO);
 
         }
 
