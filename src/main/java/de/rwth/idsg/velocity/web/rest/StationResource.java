@@ -1,10 +1,10 @@
 package de.rwth.idsg.velocity.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import de.rwth.idsg.velocity.psinterface.exception.PSInterfaceException;
 import de.rwth.idsg.velocity.repository.StationRepository;
-import de.rwth.idsg.velocity.service.StationStateService;
+import de.rwth.idsg.velocity.service.StationService;
 import de.rwth.idsg.velocity.web.rest.dto.modify.CreateEditStationDTO;
+import de.rwth.idsg.velocity.web.rest.dto.modify.StationConfigurationDTO;
 import de.rwth.idsg.velocity.web.rest.dto.view.ViewStationDTO;
 import de.rwth.idsg.velocity.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +30,7 @@ public class StationResource {
     private StationRepository stationRepository;
 
     @Autowired
-    private StationStateService stationStateService;
+    private StationService stationService;
 
     private static final String BASE_PATH = "/rest/stations";
     private static final String ID_PATH = "/rest/stations/{id}";
@@ -48,7 +48,15 @@ public class StationResource {
         log.debug("REST request to update Station : {}", dto);
 
         // perform operation state update
-        stationStateService.changeOperationState(dto);
+        stationService.changeOperationState(dto);
+    }
+
+    @Timed
+    @RequestMapping(value = BASE_PATH + "/{manufacturerId}", method = RequestMethod.POST)
+    public void updateConfig(@PathVariable String manufacturerId, @Valid @RequestBody StationConfigurationDTO dto) throws RestClientException {
+        log.debug("REST request to change station configurdation: {}", dto);
+
+        stationService.changeStationConfiguration(manufacturerId, dto);
     }
 
     @Timed

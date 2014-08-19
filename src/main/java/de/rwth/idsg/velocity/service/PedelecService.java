@@ -29,7 +29,7 @@ import javax.transaction.Transactional;
 @Service
 @Transactional
 @Slf4j
-public class PedelecStateService {
+public class PedelecService {
 
     @Inject
     StationRepository stationRepository;

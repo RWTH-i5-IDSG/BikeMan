@@ -50,6 +50,19 @@ velocityApp.controller('StationDetailController', ['$scope', 'resolvedStation', 
             });
         }
 
+        $scope.updateConfig = function () {
+
+            $scope.updateConfigDTO = {
+                "cmsURI": $scope.stationConfig.cmsURI,
+                "heartbeatInterval": $scope.stationConfig.heartbeatInterval,
+                "openSlotTimeout": $scope.stationConfig.openSlotTimeout,
+                "rebootRetries": $scope.stationConfig.rebootRetries,
+                "chargingStatusInformInterval": $scope.stationConfig.chargingStatusInformInterval
+            }
+
+            CreateEditStation.updateConfig({id: $scope.station.manufacturerId}, $scope.updateConfigDTO);
+
+        }
 
     }]);
 

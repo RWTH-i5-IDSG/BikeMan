@@ -27,6 +27,10 @@
                 Save Station
             </span>
         </button>
+        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#detailModal">
+            <span class="glyphicon glyphicon-wrench"></span>
+            <span translate="stationDetail.button.changeConfig">Change Configuration</span>
+        </button>
     </div>
 
     <form name="form" role="form" novalidate
@@ -135,5 +139,67 @@
             </tbody>
         </table>
     </div>
+
+    <div class="modal fade" id="detailModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" translate="stationDetail.modal.title">Change Configuration</h4>
+                </div>
+                <div class="modal-body">
+                    <form name="form" role="from" novalidate class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength form-horizontal"
+                          ng-submit="changeConfig()">
+                        <div class="panel-body">
+                            <div class="form-group" show-errors>
+                                <label class="control-label col-md-3">CMS URI</label>
+                                <div class="col-md-9">
+                                    <input class="form-control" type="text" name="cmsURI" placeholder="{{stationDetail.modal.cmsURIInput | translate }}"
+                                           ng-model="stationConfig.cmsURI" ng-minlength="1" ng-maxlength="50" required>
+                                </div>
+                            </div>
+                            <div class="form-group" show-errors>
+                                <label class="control-label col-md-3">Heartbeat Interval</label>
+                                <div class="col-md-9">
+                                    <input class="form-control" type="number" name="heartbeatInterval" placeholder="{{stationDetail.modal.heartbeatInterval | translate }}"
+                                           ng-model="stationConfig.heartbeatInterval" ng-minlength="1" ng-maxlength="50" required>
+                                </div>
+                            </div>
+                            <div class="form-group" show-errors>
+                                <label class="control-label col-md-3">Open Slot Timeout</label>
+                                <div class="col-md-9">
+                                    <input class="form-control" type="number" name="openSlotTimeout" placeholder="{{stationDetail.modal.openSlotTimeout | translate }}"
+                                           ng-model="stationConfig.openSlotTimeout" ng-minlength="1" ng-maxlength="50" required>
+                                </div>
+                            </div>
+                            <div class="form-group" show-errors>
+                                <label class="control-label col-md-3">Reboot Retries</label>
+                                <div class="col-md-9">
+                                    <input class="form-control" type="number" name="rebootRetries" placeholder="{{stationDetail.modal.rebootRetries | translate }}"
+                                           ng-model="stationConfig.rebootRetries" ng-minlength="1" ng-maxlength="50" required>
+                                </div>
+                            </div>
+                            <div class="form-group" show-errors>
+                                <label class="control-label col-md-3">Charging Status Information Interval</label>
+                                <div class="col-md-9">
+                                    <input class="form-control" type="number" name="chargingStatusInformInterval" placeholder="{{stationDetail.modal.chargingStatusInformInterval | translate }}"
+                                           ng-model="stationConfig.chargingStatusInformInterval" ng-minlength="1" ng-maxlength="50" required>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" translate="stationDetail.modal.buttons.cancel">
+                        Cancel
+                    </button>
+                    <button type="button" class="btn btn-info"  data-dismiss="modal" ng-click="updateConfig()"
+                            translate="stationDetail.modal.buttons.Update">
+                        Delete
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
 
 </div>

@@ -15,6 +15,8 @@ velocityApp.factory('CreateEditStation', ['$resource',
             'query': { method: 'GET', isArray: true},
             'get': { method: 'GET'},
             'create': { method: 'POST' },
-            'update': { method: 'PUT' }
+            'update': { method: 'PUT' },
+            'updateConfig': { method: 'POST', params: {"manufacturerId": "@id"}}
         });
     }]);
+

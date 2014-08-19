@@ -1,9 +1,8 @@
 package de.rwth.idsg.velocity.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import de.rwth.idsg.velocity.psinterface.exception.PSInterfaceException;
 import de.rwth.idsg.velocity.repository.PedelecRepository;
-import de.rwth.idsg.velocity.service.PedelecStateService;
+import de.rwth.idsg.velocity.service.PedelecService;
 import de.rwth.idsg.velocity.web.rest.dto.modify.CreateEditPedelecDTO;
 import de.rwth.idsg.velocity.web.rest.dto.view.ViewPedelecDTO;
 import de.rwth.idsg.velocity.web.rest.exception.DatabaseException;
@@ -30,7 +29,7 @@ public class PedelecResource {
     private PedelecRepository pedelecRepository;
 
     @Autowired
-    private PedelecStateService pedelecStateService;
+    private PedelecService pedelecService;
 
     private static final String BASE_PATH = "/rest/pedelecs";
     private static final String ID_PATH = "/rest/pedelecs/{id}";
@@ -61,7 +60,7 @@ public class PedelecResource {
     public void update(@Valid @RequestBody CreateEditPedelecDTO dto) throws DatabaseException, RestClientException {
         log.debug("REST request to update Pedelec : {}", dto);
 
-        pedelecStateService.changeOperationState(dto);
+        pedelecService.changeOperationState(dto);
     }
 
     @Timed
