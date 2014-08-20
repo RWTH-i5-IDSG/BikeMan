@@ -8,9 +8,9 @@ import lombok.Data;
 
 @Data
 public class BatteryStatusDTO {
-    private Float soc;
-    private Float temperature;
+    private Double soc;
+    private Double temperature;
     private Integer cycleCount;
-    private Float voltage;
-    private Float current;
+    private Double voltage;
+    private Double current;
 }

@@ -30,7 +30,7 @@ velocityApp.controller('StationDetailController', ['$scope', 'resolvedStation', 
         $scope.toggleEdit = function () {
             $scope.station = Station.get({id: $scope.station.stationId});
             $scope.isEditing = !$scope.isEditing;
-        }
+        };
 
         $scope.saveStation = function () {
 
@@ -43,16 +43,16 @@ velocityApp.controller('StationDetailController', ['$scope', 'resolvedStation', 
                 "locationLongitude": $scope.station.locationLongitude,
                 "note": $scope.station.note,
                 "state": $scope.station.state
-            }
+            };
 
             CreateEditStation.update($scope.saveStationDTO, function () {
                 $scope.isEditing = false;
             });
-        }
+        };
 
         $scope.getConfig = function () {
             $scope.stationConfig = CreateEditStation.getConfig({id: $scope.station.stationId});
-        }
+        };
 
         $scope.updateConfig = function () {
             $scope.updateConfigDTO = {
@@ -61,14 +61,14 @@ velocityApp.controller('StationDetailController', ['$scope', 'resolvedStation', 
                 "openSlotTimeout": $scope.stationConfig.openSlotTimeout,
                 "rebootRetries": $scope.stationConfig.rebootRetries,
                 "chargingStatusInformInterval": $scope.stationConfig.chargingStatusInformInterval
-            }
+            };
 
             CreateEditStation.updateConfig({id: $scope.station.stationId}, $scope.updateConfigDTO);
-        }
+        };
 
         $scope.rebootStation = function () {
             CreateEditStation.rebootStation({id: $scope.station.stationId});
-        }
+        };
 
     }]);
 

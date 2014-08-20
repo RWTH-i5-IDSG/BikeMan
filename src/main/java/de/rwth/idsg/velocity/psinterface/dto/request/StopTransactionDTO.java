@@ -12,5 +12,5 @@ public class StopTransactionDTO {
     private String pedelecManufacturerId;
     private String stationManufacturerId;
     private String slotManufacturerId;
-    private LocalDateTime timestamp;
+    private Long timestamp;
 }

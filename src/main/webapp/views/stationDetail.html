@@ -1,6 +1,6 @@
 <div>
 
-    <h2 translate="stationDetail.title" translate-values="{stationName: {{station.name}}}">Station: </h2>
+    <h2 translate="stationDetail.title" translate-values="{stationName: station.name}" />
 
     <div ng-switch="isEditing">
         <button type="button" ui-sref="stations" class="btn btn-default" ng-disabled="isEditing">
@@ -44,39 +44,39 @@
             <div class="form-group" show-errors>
                 <label class="control-label col-md-2" translate="stationDetail.form.manufacturerId">Manufacturer ID</label>
                 <div class="well well-sm col-md-10 remove-margin" ng-switch-when="false">{{station.manufacturerId}}</div>
-                <div ng-switch-when="true" class="col-md-10"><input type="text" class="form-control" ng-model="station.manufacturerId" ng-disabled="true"></div>
+                <div ng-show="isEditing" class="col-md-10"><input name="manufacturerId" type="text" class="form-control" ng-model="station.manufacturerId" ng-disabled="true"></div>
             </div>
             <div class="form-group" show-errors>
                 <label class="control-label col-md-2" translate="stationDetail.form.name">Name</label>
                 <div class="well well-sm col-md-10 remove-margin" ng-switch-when="false">{{station.name}}</div>
-                <div ng-switch-when="true" class="col-md-10"><input type="text" class="form-control" ng-model="station.name"></div>
+                <div ng-show="isEditing" class="col-md-10"><input name="name" type="text" class="form-control" ng-model="station.name"></div>
             </div>
             <div class="form-group" show-errors>
                 <label class="control-label col-md-2" translate="stationDetail.form.address.title">Address</label>
                 <div class="well well-sm col-md-10 remove-margin" ng-switch-when="false">{{station.address.streetAndHousenumber + ', ' + station.address.zip + ', ' + station.address.city + ', ' + station.address.country}}</div>
-                <div ng-switch-when="true" class="col-md-10">
+                <div ng-show="isEditing" class="col-md-10">
                     <div class="form-group" show-errors>
                         <label class="control-label col-md-2" translate="stationDetail.form.address.streetAddress">Street Address</label>
                         <div class="col-md-10">
-                            <input type="text" class="form-control" ng-model="station.address.streetAndHousenumber">
+                            <input name="streetAndHousenumber" type="text" class="form-control" ng-model="station.address.streetAndHousenumber">
                         </div>
                     </div>
                     <div class="form-group" show-errors>
                         <label class="control-label col-md-2" translate="stationDetail.form.address.zip">ZIP</label>
                         <div class="col-md-10">
-                            <input type="text" class="form-control" ng-model="station.address.zip">
+                            <input name="zip" type="text" class="form-control" ng-model="station.address.zip">
                         </div>
                     </div>
                     <div class="form-group" show-errors>
                         <label class="control-label col-md-2" translate="stationDetail.form.address.city">City</label>
                         <div class="col-md-10">
-                            <input type="text" class="form-control" ng-model="station.address.city">
+                            <input name="city" type="text" class="form-control" ng-model="station.address.city">
                         </div>
                     </div>
                     <div class="form-group" show-errors>
                         <label class="control-label col-md-2" translate="stationDetail.form.address.country">Country</label>
                         <div class="col-md-10">
-                            <input type="text" class="form-control" ng-model="station.address.country">
+                            <input name="country" type="text" class="form-control" ng-model="station.address.country">
                         </div>
                     </div>
                 </div>
@@ -84,17 +84,17 @@
             <div class="form-group" show-errors>
                 <label class="control-label col-md-2" translate="stationDetail.form.coordinates.title">Coordinates</label>
                 <div class="well well-sm col-md-10 remove-margin" ng-switch-when="false">{{station.locationLatitude + ', ' + station.locationLongitude}}</div>
-                <div ng-switch-when="true" class="col-md-10">
+                <div ng-show="isEditing" class="col-md-10">
                     <div class="form-group" show-errors>
                         <label class="control-label col-md-2" translate="stationDetail.form.coordinates.latitude">Latitude</label>
                         <div class="col-md-10">
-                            <input type="number" class="form-control" ng-model="station.locationLatitude">
+                            <input name="locationLatitude" type="number" class="form-control" ng-model="station.locationLatitude">
                         </div>
                     </div>
                     <div class="form-group" show-errors>
                         <label class="control-label col-md-2" translate="stationDetail.form.coordinates.longitude">Longitude</label>
                         <div class="col-md-10">
-                            <input type="number" class="form-control" ng-model="station.locationLongitude">
+                            <input name="locationLongitude" type="number" class="form-control" ng-model="station.locationLongitude">
                         </div>
                     </div>
                 </div>
@@ -102,8 +102,8 @@
             <div class="form-group" show-errors>
                 <label class="control-label col-md-2" translate="stationDetail.form.state">State</label>
                 <div class="well well-sm col-md-10 remove-margin" ng-switch-when="false">{{station.state}}</div>
-                <div ng-switch-when="true" class="col-md-10">
-                    <select type="text" class="form-control"
+                <div ng-show="isEditing" class="col-md-10">
+                    <select name="state" type="text" class="form-control"
                             ng-model="station.state">
                         <option value="OPERATIVE">OPERATIVE</option>
                         <option value="INOPERATIVE">INOPERATIVE</option>
@@ -113,7 +113,7 @@
             <div class="form-group" show-errors>
                 <label class="control-label col-md-2" translate="stationDetail.form.note">Note</label>
                 <div class="well well-sm col-md-10 remove-margin" ng-switch-when="false">{{station.note}}</div>
-                <div ng-switch-when="true" class="col-md-10"><input type="text" class="form-control" ng-model="station.note"></div>
+                <div ng-show="isEditing" class="col-md-10"><input name="note" type="text" class="form-control" ng-model="station.note"></div>
             </div>
         </div>
     </form>
@@ -152,41 +152,40 @@
                     <h4 class="modal-title" translate="stationDetail.modal.title">Change Configuration</h4>
                 </div>
                 <div class="modal-body">
-                    <form name="form" role="from" novalidate class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength form-horizontal"
-                          ng-submit="changeConfig()">
+                    <form name="configform" role="from" novalidate class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength form-horizontal">
                         <div class="panel-body">
                             <div class="form-group row" show-errors>
                                 <label class="control-label col-md-3" translate="stationDetail.modal.cmsURI">CMS URI</label>
                                 <div class="col-md-9">
-                                    <input class="form-control" type="text" name="cmsURI" placeholder="{{stationDetail.modal.cmsURIPlaceholder | translate }}"
+                                    <input class="form-control" type="text" name="cmsURI" placeholder="{{'stationDetail.modal.cmsURIPlaceholder' | translate }}"
                                            ng-model="stationConfig.cmsURI" ng-minlength="1" ng-maxlength="50" required>
                                 </div>
                             </div>
                             <div class="form-group row" show-errors>
                                 <label class="control-label col-md-3" translate="stationDetail.modal.heartbeatInterval">Heartbeat Interval</label>
                                 <div class="col-md-9">
-                                    <input class="form-control" type="number" name="heartbeatInterval" placeholder="{{stationDetail.modal.heartbeatIntervalPlaceholder | translate }}"
+                                    <input class="form-control" type="number" name="heartbeatInterval" placeholder="{{'stationDetail.modal.heartbeatIntervalPlaceholder' | translate }}"
                                            ng-model="stationConfig.heartbeatInterval" ng-minlength="1" ng-maxlength="50" required>
                                 </div>
                             </div>
                             <div class="form-group row" show-errors>
                                 <label class="control-label col-md-3" translate="stationDetail.modal.openSlotTimeout">Open Slot Timeout</label>
                                 <div class="col-md-9">
-                                    <input class="form-control" type="number" name="openSlotTimeout" placeholder="{{stationDetail.modal.openSlotTimeoutPlaceholder | translate }}"
+                                    <input class="form-control" type="number" name="openSlotTimeout" placeholder="{{'stationDetail.modal.openSlotTimeoutPlaceholder' | translate }}"
                                            ng-model="stationConfig.openSlotTimeout" ng-minlength="1" ng-maxlength="50" required>
                                 </div>
                             </div>
                             <div class="form-group row" show-errors>
                                 <label class="control-label col-md-3" translate="stationDetail.modal.rebootRetries">Reboot Retries</label>
                                 <div class="col-md-9">
-                                    <input class="form-control" type="number" name="rebootRetries" placeholder="{{stationDetail.modal.rebootRetriesPlaceholder | translate }}"
+                                    <input class="form-control" type="number" name="rebootRetries" placeholder="{{'stationDetail.modal.rebootRetriesPlaceholder' | translate }}"
                                            ng-model="stationConfig.rebootRetries" ng-minlength="1" ng-maxlength="50" required>
                                 </div>
                             </div>
                             <div class="form-group row" show-errors>
                                 <label class="control-label col-md-3" translate="stationDetail.modal.chargingStatusInformInterval">Charging Status Information Interval</label>
                                 <div class="col-md-9">
-                                    <input class="form-control" type="number" name="chargingStatusInformInterval" placeholder="{{stationDetail.modal.chargingStatusInformIntervalPlaceholder | translate }}"
+                                    <input class="form-control" type="number" name="chargingStatusInformInterval" placeholder="{{'stationDetail.modal.chargingStatusInformIntervalPlaceholder' | translate }}"
                                            ng-model="stationConfig.chargingStatusInformInterval" ng-minlength="1" ng-maxlength="50" required>
                                 </div>
                             </div>

@@ -2,7 +2,6 @@ package de.rwth.idsg.velocity.psinterface.dto.request;
 
 import de.rwth.idsg.velocity.psinterface.dto.OperationState;
 import lombok.Data;
-import org.joda.time.LocalDateTime;
 
 /**
  * Created by swam on 31/07/14.

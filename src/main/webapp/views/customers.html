@@ -57,10 +57,10 @@
                 <td>
                     <button ng-if="customer.isActivated" class="btn btn-sm btn-success" type="button"
                             ng-click="toggleActivation(customer.userId, customer.isActivated)">
-                        <span class="glyphicon glyphicon-ok"/> <span translate="customers.table.body.isActivated">Activated</span></button>
+                        <span class="glyphicon glyphicon-ok"/></button>
                     <button ng-if="!customer.isActivated" class="btn btn-sm btn-default" type="button"
                             ng-click="toggleActivation(customer.userId, customer.isActivated)">
-                        <span class="glyphicon glyphicon-remove"/> <span translate="customers.table.body.isActivated">Deactivated</span></button>
+                        <span class="glyphicon glyphicon-remove"/></button>
 
                 </td>
                 <td>{{customer.birthday | date:'mediumDate'}}</td>

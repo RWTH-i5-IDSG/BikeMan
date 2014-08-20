@@ -1,7 +1,6 @@
 package de.rwth.idsg.velocity.psinterface.dto.request;
 
 import lombok.Data;
-import org.joda.time.LocalDateTime;
 
 /**
  * Created by swam on 31/07/14.
@@ -9,9 +8,9 @@ import org.joda.time.LocalDateTime;
 
 @Data
 public class StartTransactionDTO {
-    private Integer userId;
+    private Long userId;
     private String pedelecManufacturerId;
     private String stationManufacturerId;
     private String slotManufacturerId;
-    private LocalDateTime timestamp;
+    private Long timestamp;
 }
