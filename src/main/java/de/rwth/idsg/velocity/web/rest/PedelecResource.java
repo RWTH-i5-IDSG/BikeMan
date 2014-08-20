@@ -4,6 +4,7 @@ import com.codahale.metrics.annotation.Timed;
 import de.rwth.idsg.velocity.repository.PedelecRepository;
 import de.rwth.idsg.velocity.service.PedelecService;
 import de.rwth.idsg.velocity.web.rest.dto.modify.CreateEditPedelecDTO;
+import de.rwth.idsg.velocity.web.rest.dto.modify.PedelecConfigurationDTO;
 import de.rwth.idsg.velocity.web.rest.dto.view.ViewPedelecDTO;
 import de.rwth.idsg.velocity.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
@@ -46,6 +47,22 @@ public class PedelecResource {
     public ViewPedelecDTO get(@PathVariable Long id) throws DatabaseException {
         log.debug("REST request to get Pedelec : {}", id);
         return pedelecRepository.findOneDTO(id);
+    }
+
+    @Timed
+    @RequestMapping(value = ID_PATH + "/config", method = RequestMethod.GET)
+    public PedelecConfigurationDTO getConfig(@PathVariable Long id) throws DatabaseException, RestClientException {
+        log.debug("REST request to get station configuration for station: {}", id);
+
+        return pedelecService.getPedelecConfig(id);
+    }
+
+    @Timed
+    @RequestMapping(value = ID_PATH, method = RequestMethod.POST)
+    public void updateConfig(@PathVariable Long id, @Valid @RequestBody PedelecConfigurationDTO dto) throws DatabaseException, RestClientException {
+        log.debug("REST request to change station configuration: {}", dto);
+
+        pedelecService.changePedelecConfiguration(id, dto);
     }
 
     @Timed

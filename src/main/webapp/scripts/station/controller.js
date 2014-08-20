@@ -55,7 +55,6 @@ velocityApp.controller('StationDetailController', ['$scope', 'resolvedStation', 
         }
 
         $scope.updateConfig = function () {
-
             $scope.updateConfigDTO = {
                 "cmsURI": $scope.stationConfig.cmsURI,
                 "heartbeatInterval": $scope.stationConfig.heartbeatInterval,
@@ -65,7 +64,10 @@ velocityApp.controller('StationDetailController', ['$scope', 'resolvedStation', 
             }
 
             CreateEditStation.updateConfig({id: $scope.station.stationId}, $scope.updateConfigDTO);
+        }
 
+        $scope.rebootStation = function () {
+            CreateEditStation.rebootStation({id: $scope.station.stationId});
         }
 
     }]);

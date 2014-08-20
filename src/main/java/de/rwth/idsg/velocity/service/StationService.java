@@ -2,6 +2,7 @@ package de.rwth.idsg.velocity.service;
 
 import de.rwth.idsg.velocity.domain.OperationState;
 import de.rwth.idsg.velocity.domain.Station;
+import de.rwth.idsg.velocity.psinterface.dto.response.BootConfirmationDTO;
 import de.rwth.idsg.velocity.repository.StationRepository;
 import de.rwth.idsg.velocity.web.rest.dto.modify.ChangeStationOperationStateDTO;
 import de.rwth.idsg.velocity.web.rest.dto.modify.CreateEditStationDTO;
@@ -55,7 +56,7 @@ public class StationService {
         }
     }
 
-    public StationConfigurationDTO getStationConfig(long id) throws DatabaseException, RestClientException {
+    public StationConfigurationDTO getStationConfig(Long id) throws DatabaseException, RestClientException {
         ViewStationDTO station = stationRepository.findOne(id);
         String manufacturerId = station.getManufacturerId();
 
@@ -68,7 +69,7 @@ public class StationService {
         return rt.getForObject(uri, StationConfigurationDTO.class);
     }
 
-    public void changeStationConfiguration(long id, StationConfigurationDTO dto) throws RestClientException, DatabaseException {
+    public void changeStationConfiguration(Long id, StationConfigurationDTO dto) throws RestClientException, DatabaseException {
         ViewStationDTO station = stationRepository.findOne(id);
         String manufacturerId = station.getManufacturerId();
 
@@ -79,5 +80,18 @@ public class StationService {
         String uri = baseURL + manufacturerId + "/cmsi/config";
 
         rt.postForObject(uri, dto, String.class);
+    }
+
+    public void rebootStation(Long id) throws RestClientException, DatabaseException {
+        ViewStationDTO station = stationRepository.findOne(id);
+        String manufacturerId = station.getManufacturerId();
+
+        RestTemplate rt = new RestTemplate();
+        rt.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+        rt.getMessageConverters().add(new StringHttpMessageConverter());
+
+        String uri = baseURL + manufacturerId + "/cmsi/reboot";
+
+        rt.postForObject(uri, null, String.class);
     }
 }
