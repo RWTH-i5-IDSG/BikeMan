@@ -147,7 +147,8 @@
             "edit": "Edit Station",
             "cancel": "Cancel",
             "save": "Save Station",
-            "changeConfig": "Change Configuration"
+            "changeConfig": "Change Configuration",
+            "rebootStation": "Reboot Station"
         },
         "modal": {
             "title": "Change Configuration",
@@ -156,6 +157,7 @@
                 "update": "Update"
             },
             "cmsURI": "CMS URI",
+            "cmsURIPlaceholder": "CMS URI",
             "heartbeatInterval": "Heartbeat Interval",
             "heartbeatIntervalPlaceholder": "Heartbeat Interval",
             "openSlotTimeout": "Open Slot Timeout",
@@ -172,6 +174,17 @@
                 "cancel": "Cancel",
                 "reboot": "Reboot"
             }
+        },
+        "operativeModal": {
+            "title": "Disable Slot",
+            "bodyEnable": "Are you sure you want to enable this slot?",
+            "bodyDisable": "Are you sure you want to disable this slot?",
+            "buttons": {
+                "cancel": "Cancel",
+                "reboot": "Disable"
+            },
+            "enable": "Enable",
+            "disable": "Disable"
         }
     },
     "customers": {

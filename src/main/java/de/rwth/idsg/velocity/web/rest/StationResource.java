@@ -1,9 +1,9 @@
 package de.rwth.idsg.velocity.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import de.rwth.idsg.velocity.psinterface.dto.response.BootConfirmationDTO;
 import de.rwth.idsg.velocity.repository.StationRepository;
 import de.rwth.idsg.velocity.service.StationService;
+import de.rwth.idsg.velocity.web.rest.dto.modify.ChangeStationOperationStateDTO;
 import de.rwth.idsg.velocity.web.rest.dto.modify.CreateEditStationDTO;
 import de.rwth.idsg.velocity.web.rest.dto.modify.StationConfigurationDTO;
 import de.rwth.idsg.velocity.web.rest.dto.view.ViewStationDTO;
@@ -36,6 +36,7 @@ public class StationResource {
     private static final String BASE_PATH = "/rest/stations";
     private static final String ID_PATH = "/rest/stations/{id}";
 
+
     @Timed
     @RequestMapping(value = BASE_PATH, method = RequestMethod.POST)
     public void create(@Valid @RequestBody CreateEditStationDTO dto) throws DatabaseException {
@@ -48,8 +49,29 @@ public class StationResource {
     public void update(@Valid @RequestBody CreateEditStationDTO dto) throws DatabaseException, RestClientException {
         log.debug("REST request to update Station : {}", dto);
 
+        ChangeStationOperationStateDTO changeDTO = new ChangeStationOperationStateDTO();
+        changeDTO.setState(dto.getState());
+        changeDTO.setSlotPosition(null);
+
         // perform operation state update
-        stationService.changeOperationState(dto);
+        if (stationService.changeStationOperationState(dto.getStationId(), changeDTO)) {
+            stationRepository.update(dto);
+        }
+    }
+
+    @Timed
+    @RequestMapping(value = ID_PATH + "/slotState", method = RequestMethod.POST)
+    public void changeSlotState(@PathVariable Long id, @Valid @RequestBody ChangeStationOperationStateDTO dto) throws DatabaseException, RestClientException {
+        log.debug("REST request to change slot state: {}", dto);
+
+        ChangeStationOperationStateDTO changeDTO = new ChangeStationOperationStateDTO();
+        changeDTO.setState(dto.getState());
+        changeDTO.setSlotPosition(dto.getSlotPosition());
+
+        // perform operation state update
+        if (!!stationService.changeStationOperationState(id, changeDTO)) {
+            stationService.updateSlot(id, dto);
+        }
     }
 
     @Timed
@@ -96,4 +118,6 @@ public class StationResource {
 
         stationService.rebootStation(id);
     }
+//
+//    Timed
 }

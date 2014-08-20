@@ -1,9 +1,9 @@
 package de.rwth.idsg.velocity.service;
 
 import de.rwth.idsg.velocity.domain.OperationState;
-import de.rwth.idsg.velocity.domain.Station;
-import de.rwth.idsg.velocity.psinterface.dto.response.BootConfirmationDTO;
+import de.rwth.idsg.velocity.domain.StationSlot;
 import de.rwth.idsg.velocity.repository.StationRepository;
+import de.rwth.idsg.velocity.repository.StationSlotRepository;
 import de.rwth.idsg.velocity.web.rest.dto.modify.ChangeStationOperationStateDTO;
 import de.rwth.idsg.velocity.web.rest.dto.modify.CreateEditStationDTO;
 import de.rwth.idsg.velocity.web.rest.dto.modify.StationConfigurationDTO;
@@ -30,30 +30,26 @@ public class StationService {
     @Inject
     StationRepository stationRepository;
 
+    @Inject
+    StationSlotRepository stationSlotRepository;
+
     private static String baseURL = "http://localhost:8081/";
 
-    public void changeOperationState(CreateEditStationDTO dto) throws DatabaseException, RestClientException {
-        long stationId = dto.getStationId();
-        OperationState state = dto.getState();
+    public boolean changeStationOperationState(Long id, ChangeStationOperationStateDTO changeDTO) throws DatabaseException, RestClientException {
+        long stationId = id;
 
         final ViewStationDTO station = stationRepository.findOne(stationId);
 
         // states do not match -> notify station of update
-        if (!(state.equals(station.getState()))) {
-            ChangeStationOperationStateDTO changeDTO = new ChangeStationOperationStateDTO();
-            changeDTO.setState(state);
-            changeDTO.setSlotPosition(null);
+        RestTemplate rt = new RestTemplate();
+        rt.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+        rt.getMessageConverters().add(new StringHttpMessageConverter());
 
-            RestTemplate rt = new RestTemplate();
-            rt.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-            rt.getMessageConverters().add(new StringHttpMessageConverter());
+        String uri = baseURL + station.getManufacturerId() + "/cmsi/state";
 
-            String uri = baseURL + station.getManufacturerId() + "/cmsi/state";
+        rt.postForObject(uri, changeDTO, String.class);
 
-            rt.postForObject(uri, changeDTO, String.class);
-            stationRepository.update(dto);
-
-        }
+        return true;
     }
 
     public StationConfigurationDTO getStationConfig(Long id) throws DatabaseException, RestClientException {
@@ -93,5 +89,13 @@ public class StationService {
         String uri = baseURL + manufacturerId + "/cmsi/reboot";
 
         rt.postForObject(uri, null, String.class);
+    }
+
+    public void updateSlot(Long id, ChangeStationOperationStateDTO dto) throws DatabaseException {
+        StationSlot slot = stationSlotRepository.findByStationSlotPositionAndStationStationId(dto.getSlotPosition(), id);
+
+        slot.setState(dto.getState());
+
+        stationSlotRepository.save(slot);
     }
 }

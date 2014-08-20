@@ -134,7 +134,13 @@
                 <tr ng-repeat="slot in station.slots | orderBy:'stationSlotId'">
                     <td>{{slot.manufacturerId}}</td>
                     <td>{{slot.isOccupied | occupiedFilter}}</td>
-                    <td>{{slot.state}}</td>
+                    <td>
+                        <button class="btn btn-sm" type="button" data-target="#operativeModal" data-toggle="modal"
+                                ng-click="initSlotToggle(slot.slotPosition, slot.state)" ng-class="{'btn-success': slot.state == 'OPERATIVE'}">
+                            <span class="glyphicon" ng-class="{'glyphicon-ok': slot.state == 'OPERATIVE', 'glyphicon-remove': slot.state != 'OPERATIVE'}"/>
+                            {{ slot.state }}
+                        </button>
+                    </td>
                     <td ng-switch="slot.isOccupied">
                         <a ng-switch-when="true" ui-sref="pedelecDetail({pedelecId: slot.pedelec.pedelecId})">{{slot.pedelec | pedelecViewFilter}}</a>
                         <span ng-switch-when="false" ui-sref="pedelecDetail({pedelecId: slot.pedelec.pedelecId})">{{slot.pedelec | pedelecViewFilter}}</span>
@@ -199,6 +205,30 @@
                     <button type="button" class="btn btn-info"  data-dismiss="modal" ng-click="updateConfig()"
                             translate="stationDetail.modal.buttons.update">
                         Update
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <div class="modal fade" id="operativeModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" translate="stationDetail.operativeModal.title">Disable Station</h4>
+                </div>
+                <div class="modal-body">
+                    <span translate="stationDetail.operativeModal.bodyEnable" ng-show="slot.state == 'INOPERATIVE'">enable slot</span>
+                    <span translate="stationDetail.operativeModal.bodyDisable" ng-show="slot.state == 'OPERATIVE'">disable slot</span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" translate="stationDetail.operativeModal.buttons.cancel">
+                        Cancel
+                    </button>
+                    <button type="button" class="btn" ng-class="{'btn-danger': slot.state == 'OPERATIVE', 'btn-success': slot.state == 'INOPERATIVE'}" data-dismiss="modal" ng-click="toggleSlotState(slot.stationSlotPosition, slot.state)">
+                        <span translate="stationDetail.operativeModal.enable" ng-show="slot.state == 'INOPERATIVE'">enable </span>
+                        <span translate="stationDetail.operativeModal.disable" ng-show="slot.state == 'OPERATIVE'">disable</span>
                     </button>
                 </div>
             </div><!-- /.modal-content -->

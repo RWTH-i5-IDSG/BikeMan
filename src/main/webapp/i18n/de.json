@@ -138,7 +138,8 @@
             "edit": "Bearbeiten",
             "cancel": "Abbrechen",
             "save": "Speichern",
-            "changeConfig": "Konfiguration ändern"
+            "changeConfig": "Konfiguration ändern",
+            "rebootStation": "Station neu starten"
         },
         "modal": {
             "title": "Konfiguration ändern",
@@ -147,6 +148,7 @@
                 "update": "Speichern"
             },
             "cmsURI": "CMS URI",
+            "cmsURIPlaceholder": "CMS URI",
             "heartbeatInterval": "Lebenszeichen-Intervall",
             "heartbeatIntervalPlaceholder": "Lebenszeichen-Intervall",
             "openSlotTimeout": "Timeout für offenen Stellplatz",
@@ -163,6 +165,17 @@
                 "cancel": "Abbrechen",
                 "reboot": "Neu Starten"
             }
+        },
+        "operativeModal": {
+            "title": "Stellplatz deaktivieren",
+            "bodyDisable": "Sind Sie sicher, dass Sie diesen Stellplatz deaktivieren wollen?",
+            "bodyEnable": "Sind Sie sicher, dass Sie diesen Stellplatz aktivieren wollen?",
+            "buttons": {
+                "cancel": "Abbrechen",
+                "reboot": "Deaktivieren"
+            },
+            "enable": "Aktivieren",
+            "disable": "Deaktivieren"
         }
     },
     "customers": {

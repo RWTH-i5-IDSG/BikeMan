@@ -8,4 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface StationSlotRepository extends JpaRepository<StationSlot, Long> {
 
+    public StationSlot findByStationSlotPositionAndStationStationId(Integer stationSlotPosition, Long stationStationId);
+
 }

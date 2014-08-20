@@ -18,7 +18,8 @@ velocityApp.factory('CreateEditStation', ['$resource',
             'update': { method: 'PUT' },
             'getConfig': { method: 'GET', url: 'app/rest/stations/:id/config', params: {"id": "@id"}},
             'updateConfig': { method: 'POST', params: {"id": "@id"}},
-            'rebootStation': { method: 'POST', url: "app/rest/stations/:id/reboot", params: {"id": "@id"}}
+            'rebootStation': { method: 'POST', url: "app/rest/stations/:id/reboot", params: {"id": "@id"}},
+            'slotState': { method: 'POST', url: "app/rest/stations/:id/slotState", params: {"id": "@id"}}
         });
     }]);
 

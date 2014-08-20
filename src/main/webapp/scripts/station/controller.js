@@ -25,6 +25,11 @@ velocityApp.controller('StationDetailController', ['$scope', 'resolvedStation', 
 
         $scope.station = resolvedStation;
 
+        $scope.slot = {
+            "state": null,
+            "stationSlotPosition": null
+        };
+
         $scope.isEditing = false;
 
         $scope.toggleEdit = function () {
@@ -69,6 +74,31 @@ velocityApp.controller('StationDetailController', ['$scope', 'resolvedStation', 
         $scope.rebootStation = function () {
             CreateEditStation.rebootStation({id: $scope.station.stationId});
         };
+
+        $scope.initSlotToggle = function (stationSlotPosition, state) {
+            $scope.slot.stationSlotPosition = stationSlotPosition;
+            $scope.slot.state = state;
+        }
+
+        $scope.toggleSlotState = function (stationSlotPosition, state) {
+            var newState;
+            console.log(stationSlotPosition + " " + state);
+
+            if (state === "INOPERATIVE") {
+                newState = "OPERATIVE";
+            } else {
+                newState = "INOPERATIVE";
+            }
+
+            $scope.changeStateDTO = {
+                "state": newState,
+                "slotPosition": stationSlotPosition
+            }
+
+            CreateEditStation.slotState({id: $scope.station.stationId}, $scope.changeStateDTO, function () {
+                $scope.station = Station.get({id: $scope.station.stationId});
+            });
+        }
 
     }]);
 
