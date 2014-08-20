@@ -17,7 +17,7 @@ import java.util.Set;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @TableGenerator(name="pedelec_gen", initialValue=0, allocationSize=1)
 @EqualsAndHashCode(of = {"pedelecId", "manufacturerId"})
-@ToString(includeFieldNames = true, exclude = {"transactions"})
+@ToString(includeFieldNames = true, exclude = {"transactions", "stationSlot"})
 @Getter
 @Setter
 public class Pedelec implements Serializable {

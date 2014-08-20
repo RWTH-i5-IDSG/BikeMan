@@ -11,6 +11,5 @@ import lombok.Data;
 public class ChangePedelecOperationStateDTO {
 
     private Integer slotPosition;
-//    private String pedelecManufacturerId;
     private OperationState pedelecState;
 }

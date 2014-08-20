@@ -3,6 +3,7 @@ package de.rwth.idsg.velocity.service;
 import de.rwth.idsg.velocity.domain.OperationState;
 import de.rwth.idsg.velocity.domain.Pedelec;
 import de.rwth.idsg.velocity.domain.Station;
+import de.rwth.idsg.velocity.domain.StationSlot;
 import de.rwth.idsg.velocity.psinterface.exception.PSInterfaceException;
 import de.rwth.idsg.velocity.repository.PedelecRepository;
 import de.rwth.idsg.velocity.repository.StationRepository;

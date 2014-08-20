@@ -1,6 +1,7 @@
 <div>
 
-    <h2 translate="pedelecDetail.title" translate-values="{manufacturerId: '{{ pedelec.manufacturerId }}'}">Pedelec: {{pedelec.manufacturerId}}</h2>
+    <h2 translate="pedelecDetail.title" translate-values="{manufacturerId: '{{ pedelec.manufacturerId }}'}">Pedelec:
+        {{pedelec.manufacturerId}}</h2>
 
     <div ng-switch="isEditing">
         <button type="button" ui-sref="pedelecs" class="btn btn-default" ng-disabled="isEditing">
@@ -19,7 +20,8 @@
             <span class="glyphicon glyphicon-pencil"></span>
             <span translate="pedelecDetail.buttons.save">Save Pedelec</span>
         </button>
-        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#detailModal" ng-click="getConfig()">
+        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#detailModal"
+                ng-click="getConfig()">
             <span class="glyphicon glyphicon-wrench"></span>
             <span translate="pedelecDetail.buttons.changeConfig">Change Configuration</span>
         </button>
@@ -29,126 +31,148 @@
           class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength form-horizontal"
           ng-submit="create()" ng-switch="isEditing">
         <div class="panel-body">
-        <div class="form-group" show-errors>
-            <label class="control-label col-md-2" translate="pedelecDetail.table.header.manufacturerId">Manufacturer ID</label>
-            <div class="col-md-10">
-                <div class="well well-sm remove-margin">{{pedelec.manufacturerId}}</div>
+            <div class="form-group">
+                <label class="control-label col-md-2" translate="pedelecDetail.table.header.manufacturerId">Manufacturer
+                    ID</label>
+
+                <div class="col-md-10">
+                    <div class="well well-sm remove-margin">{{pedelec.manufacturerId}}</div>
+                </div>
             </div>
-        </div>
-        <div class="form-group" show-errors>
-            <label class="control-label col-md-2" translate="pedelecDetail.table.header.stateOfCharge">State Of Charge</label>
-            <div class="col-md-10">
-                <div class="progress remove-margin">
-                    <div class="progress-bar" role="progressbar" aria-valuenow="{{pedelec.stateOfCharge*100}}" aria-valuemin="0" aria-valuemax="100" style="width: {{pedelec.stateOfCharge*100}}%;">
-                        {{pedelec.stateOfCharge*100 | number : 0}}%
+            <div class="form-group">
+                <label class="control-label col-md-2" translate="pedelecDetail.table.header.stateOfCharge">State Of
+                    Charge</label>
+
+                <div class="col-md-10">
+                    <div class="progress remove-margin">
+                        <div class="progress-bar" role="progressbar" aria-valuenow="{{pedelec.stateOfCharge*100}}"
+                             aria-valuemin="0" aria-valuemax="100" style="width: {{pedelec.stateOfCharge*100}}%;">
+                            {{pedelec.stateOfCharge*100 | number : 0}}%
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="form-group" show-errors>
-            <label class="control-label col-md-2" translate="pedelecDetail.table.header.state">State</label>
-            <div class="col-md-10">
-                <div class="well well-sm remove-margin" ng-switch-when="false">{{pedelec.state}}</div>
-                <div ng-switch-when="true">
-                    <select type="text" class="form-control"
-                            ng-model="pedelec.state">
-                        <option value="OPERATIVE">OPERATIVE</option>
-                        <option value="INOPERATIVE">INOPERATIVE</option>
-                    </select>
+            <div class="form-group" show-errors>
+                <label class="control-label col-md-2" translate="pedelecDetail.table.header.state">State</label>
+
+                <div class="col-md-10">
+                    <div class="well well-sm remove-margin" ng-switch-when="false">{{pedelec.state}}</div>
+                    <div ng-show="isEditing">
+                        <select name="state" type="text" class="form-control"
+                                ng-model="pedelec.state">
+                            <option value="OPERATIVE">OPERATIVE</option>
+                            <option value="INOPERATIVE">INOPERATIVE</option>
+                        </select>
+                    </div>
                 </div>
             </div>
+            <div class="form-group">
+                <label class="control-label col-md-2" translate="pedelecDetail.table.header.inTransaction">In
+                    Transaction</label>
+                <td>{{pedelec.inTransaction | occupiedFilter}}</td>
+            </div>
         </div>
-        <div class="form-group" show-errors>
-            <label class="control-label col-md-2" translate="pedelecDetail.table.header.inTransaction">In Transaction</label>
-            <td>{{pedelec.inTransaction | occupiedFilter}}</td>
-        </div>
-    </div>
+    </form>
 </div>
 
-    <h3 translate="pedelecDetail.transactions.title">Transactions:</h3>
+<h3 translate="pedelecDetail.transactions.title">Transactions:</h3>
 
-    <div class="form-inline">
+<div class="form-inline">
         <span translate="pedelecDetail.transactions.numberOfTransactions">
             Number of transactions to display:
         </span>
 
-        <select type="text"
-                ng-model="resultSize"
-                ng-options="value for value in resultSizeValues"
-                class="form-control"
-                ng-change="updateTransactions()">
-        </select>
-    </div>
+    <select type="text"
+            ng-model="resultSize"
+            ng-options="value for value in resultSizeValues"
+            class="form-control"
+            ng-change="updateTransactions()">
+    </select>
+</div>
 
-    <div class="table-responsive voffset3">
-        <table class="table table-striped">
-            <thead>
-            <tr>
-                <th translate="pedelecDetail.transactions.table.header.customer">Customer</th>
-                <th translate="pedelecDetail.transactions.table.header.pedelec">Pedelec</th>
-                <th translate="pedelecDetail.transactions.table.header.startTime">Start Time</th>
-                <th translate="pedelecDetail.transactions.table.header.endTime">End Time</th>
-                <th translate="pedelecDetail.transactions.table.header.fromLocation">From Location</th>
-                <th translate="pedelecDetail.transactions.table.header.toLocation">To Location</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr ng-class='{warning:$first && pedelec.inTransaction}'  ng-repeat="transaction in transactions">
-                <td>{{transaction.customer.lastname}}, {{transaction.customer.firstname}}</td>
-                <td>{{transaction.pedelec.manufacturerId}}</td>
-                <td>{{transaction.startDateTime | date:'medium'}}</td>
-                <td><span ng-show="!pedelec.inTransaction || !$first">{{transaction.endDateTime | date:'medium'}}</span></td>
-                <td>{{transaction.fromStation.name}} <span class="badge">{{transaction.fromStation.slotPosition}}</span></td>
-                <td>
+<div class="table-responsive voffset3">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th translate="pedelecDetail.transactions.table.header.customer">Customer</th>
+            <th translate="pedelecDetail.transactions.table.header.pedelec">Pedelec</th>
+            <th translate="pedelecDetail.transactions.table.header.startTime">Start Time</th>
+            <th translate="pedelecDetail.transactions.table.header.endTime">End Time</th>
+            <th translate="pedelecDetail.transactions.table.header.fromLocation">From Location</th>
+            <th translate="pedelecDetail.transactions.table.header.toLocation">To Location</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-class='{warning:$first && pedelec.inTransaction}' ng-repeat="transaction in transactions">
+            <td>{{transaction.customer.lastname}}, {{transaction.customer.firstname}}</td>
+            <td>{{transaction.pedelec.manufacturerId}}</td>
+            <td>{{transaction.startDateTime | date:'medium'}}</td>
+            <td><span ng-show="!pedelec.inTransaction || !$first">{{transaction.endDateTime | date:'medium'}}</span>
+            </td>
+            <td>{{transaction.fromStation.name}} <span class="badge">{{transaction.fromStation.slotPosition}}</span>
+            </td>
+            <td>
                     <span ng-show="!pedelec.inTransaction || !$first">{{transaction.toStation.name}}
                         <span class="badge">{{transaction.toStation.slotPosition}}</span>
                     </span>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
 
 
-    <div class="modal fade" id="detailModal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title" translate="pedelecDetail.modal.title">Change Configuration</h4>
-                </div>
-                <div class="modal-body">
-                    <form name="form" role="from" novalidate class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength form-horizontal"
-                          ng-submit="changeConfig()">
-                        <div class="panel-body">
-                            <div class="form-group row" show-errors>
-                                <label class="control-label col-md-3" translate="pedelecDetail.modal.maxCurrentValue">Max. Current Value</label>
-                                <div class="col-md-9">
-                                    <input class="form-control" type="number" name="maxCurrentValue" placeholder="{{pedelecDetail.modal.maxCurrentValuePlaceholder | translate }}"
-                                           ng-model="pedelecConfig.maxCurrentValue" ng-minlength="1" ng-maxlength="50" required>
-                                </div>
-                            </div>
-                            <div class="form-group row" show-errors>
-                                <label class="control-label col-md-3" translate="pedelecDetail.modal.maxBatteryLevel">Max. Battery Level</label>
-                                <div class="col-md-9">
-                                    <input class="form-control" type="number" name="maxBatteryLevel" placeholder="{{pedelecDetail.modal.maxBatteryLevelPlaceholder | translate }}"
-                                           ng-model="pedelecConfig.maxBatteryLevel" ng-minlength="1" ng-maxlength="50" required>
-                                </div>
+<div class="modal fade" id="detailModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" translate="pedelecDetail.modal.title">Change Configuration</h4>
+            </div>
+            <div class="modal-body">
+                <form name="form" role="from" novalidate
+                      class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength form-horizontal"
+                      ng-submit="changeConfig()">
+                    <div class="panel-body">
+                        <div class="form-group row" show-errors>
+                            <label class="control-label col-md-3" translate="pedelecDetail.modal.maxCurrentValue">Max.
+                                Current Value</label>
+
+                            <div class="col-md-9">
+                                <input class="form-control" type="number" name="maxCurrentValue"
+                                       placeholder="{{'pedelecDetail.modal.maxCurrentValuePlaceholder' | translate }}"
+                                       ng-model="pedelecConfig.maxCurrentValue" ng-minlength="1" ng-maxlength="50"
+                                       required>
                             </div>
                         </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" translate="pedelecDetail.modal.buttons.cancel">
-                        Cancel
-                    </button>
-                    <button type="button" class="btn btn-info"  data-dismiss="modal" ng-click="updateConfig()"
-                            translate="pedelecDetail.modal.buttons.update">
-                        Update
-                    </button>
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
+                        <div class="form-group row" show-errors>
+                            <label class="control-label col-md-3" translate="pedelecDetail.modal.maxBatteryLevel">Max.
+                                Battery Level</label>
+
+                            <div class="col-md-9">
+                                <input class="form-control" type="number" name="maxBatteryLevel"
+                                       placeholder="{{'pedelecDetail.modal.maxBatteryLevelPlaceholder' | translate }}"
+                                       ng-model="pedelecConfig.maxBatteryLevel" ng-minlength="1" ng-maxlength="50"
+                                       required>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal"
+                        translate="pedelecDetail.modal.buttons.cancel">
+                    Cancel
+                </button>
+                <button type="button" class="btn btn-info" data-dismiss="modal" ng-click="updateConfig()"
+                        translate="pedelecDetail.modal.buttons.update">
+                    Update
+                </button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
 </div>
