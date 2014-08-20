@@ -1,10 +1,9 @@
 package de.rwth.idsg.velocity.psinterface.dto.request;
 
-import de.rwth.idsg.velocity.psinterface.exception.ErrorMessage;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.joda.time.LocalDateTime;
 
 import java.util.List;
 
@@ -13,16 +12,17 @@ import java.util.List;
  */
 
 @Getter
-@ToString(includeFieldNames = true)
+@Setter
+@ToString
+@NoArgsConstructor
 public class StationStatusDTO {
     private String stationManufacturerId;
-    private ErrorMessage stationErrorCode;
+    private String stationErrorCode;
     private String stationInfo;
-    private LocalDateTime timestamp;
+    private Long timestamp;
+    private List<SlotDTO> slots;
 
-    @Setter private List<SlotDTO> slots;
-
-    public StationStatusDTO(LocalDateTime timestamp, String stationInfo, ErrorMessage stationErrorCode, String stationManufacturerId) {
+    public StationStatusDTO(Long timestamp, String stationInfo, String stationErrorCode, String stationManufacturerId) {
         this.timestamp = timestamp;
         this.stationInfo = stationInfo;
         this.stationErrorCode = stationErrorCode;

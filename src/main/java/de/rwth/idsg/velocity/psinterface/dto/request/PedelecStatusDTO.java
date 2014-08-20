@@ -1,9 +1,7 @@
 package de.rwth.idsg.velocity.psinterface.dto.request;
 
-import de.rwth.idsg.velocity.psinterface.dto.*;
-import de.rwth.idsg.velocity.psinterface.exception.ErrorMessage;
+import de.rwth.idsg.velocity.psinterface.dto.OperationState;
 import lombok.Data;
-import org.joda.time.LocalDateTime;
 
 /**
  * Created by swam on 31/07/14.
@@ -12,8 +10,8 @@ import org.joda.time.LocalDateTime;
 @Data
 public class PedelecStatusDTO {
     private String pedelecmanufacturerId;
-    private ErrorMessage pedelecErrorCode;
+    private String pedelecErrorCode;
     private String pedelecInfo;
     private OperationState pedelecState;
-    private LocalDateTime timestamp;
+    private Long timestamp;
 }

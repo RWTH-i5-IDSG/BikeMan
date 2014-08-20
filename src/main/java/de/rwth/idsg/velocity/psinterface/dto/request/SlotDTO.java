@@ -1,7 +1,6 @@
 package de.rwth.idsg.velocity.psinterface.dto.request;
 
-import de.rwth.idsg.velocity.psinterface.dto.*;
-import de.rwth.idsg.velocity.psinterface.exception.ErrorMessage;
+import de.rwth.idsg.velocity.psinterface.dto.OperationState;
 import lombok.Data;
 
 /**
@@ -13,7 +12,7 @@ public class SlotDTO {
     private String slotManufacturerId;
     private Integer slotPosition;
     private String pedelecManufacturerId;
-    private ErrorMessage slotErrorCode;
+    private String slotErrorCode;
     private String slotInfo;
     private OperationState slotState;
 }

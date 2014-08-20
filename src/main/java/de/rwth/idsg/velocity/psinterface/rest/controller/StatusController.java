@@ -4,9 +4,12 @@ import com.codahale.metrics.annotation.Timed;
 import de.rwth.idsg.velocity.psinterface.dto.request.*;
 import de.rwth.idsg.velocity.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * Created by swam on 31/07/14.
@@ -26,35 +29,35 @@ public class StatusController {
     @RequestMapping(value = BASE_PATH_STATION,
             method = RequestMethod.POST)
     @Timed
-    public void stationStatusNotification(StationStatusDTO stationStatusDTO) {
-
+    public void stationStatusNotification(@RequestBody StationStatusDTO stationStatusDTO) {
+        log.debug("Received StationStatusDTO: {}", stationStatusDTO);
     }
 
     @RequestMapping(value = BASE_PATH_PEDELEC,
             method = RequestMethod.POST)
     @Timed
-    public void pedelecStatusNotification(PedelecStatusDTO pedelecStatusDTO) {
-
+    public void pedelecStatusNotification(@RequestBody List<PedelecStatusDTO> pedelecStatusDTOs) {
+        log.debug("Received Pedelec Status: {}", pedelecStatusDTOs);
     }
 
     @RequestMapping(value = BASE_PATH_CHARGING,
             method = RequestMethod.POST)
     @Timed
-    public void chargingStatusNotification(ChargingStatusDTO chargingStatusDTO) {
-
+    public void chargingStatusNotification(@RequestBody List<ChargingStatusDTO> chargingStatusDTOs) {
+        log.debug("Received Charging Status: {}", chargingStatusDTOs);
     }
 
     @RequestMapping(value = BASE_PATH_FIRMWARE,
             method = RequestMethod.POST)
     @Timed
-    public void firmwareStatusNotification(FirmwareStatusDTO firmwareStatusDTO) {
+    public void firmwareStatusNotification(@RequestBody FirmwareStatusDTO firmwareStatusDTO) {
 
     }
 
     @RequestMapping(value = BASE_PATH_LOGS,
             method = RequestMethod.POST)
     @Timed
-    public void logsStatusNotification(LogsStatusDTO logsStatusDTO) {
+    public void logsStatusNotification(@RequestBody LogsStatusDTO logsStatusDTO) {
 
     }
 

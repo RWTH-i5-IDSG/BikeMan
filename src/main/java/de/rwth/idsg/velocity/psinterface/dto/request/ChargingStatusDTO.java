@@ -12,8 +12,8 @@ import org.joda.time.LocalDateTime;
 public class ChargingStatusDTO {
     private String pedelecManufacturerId;
     private String slotManufacturerId;
-    private LocalDateTime timestamp;
+    private Long timestamp;
     private OperationState charginState; //?
-    private Float meterValue;
+    private Double meterValue;
     private BatteryStatusDTO battery;
 }

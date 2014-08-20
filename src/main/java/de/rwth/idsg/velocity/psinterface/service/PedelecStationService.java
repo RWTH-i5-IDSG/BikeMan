@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
+import java.util.Date;
 
 /**
  * Created by swam on 04/08/14.
@@ -32,7 +33,7 @@ public class PedelecStationService {
         // TODO: service to update all values from bootNotification
 
         BootConfirmationDTO bootConfirmationDTO = new BootConfirmationDTO();
-        bootConfirmationDTO.setTimestamp(LocalDateTime.now());
+        bootConfirmationDTO.setTimestamp(new Date().getTime());
         bootConfirmationDTO.setHeartbeatInterval(HEARTBEAT_INTERVAL_IN_SECONDS);
 
         return bootConfirmationDTO;

@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,7 +42,9 @@ public class PedelecStationController {
     @RequestMapping(value = BASE_PATH_BOOTNOTIFICATION,
             method = RequestMethod.POST)
     @Timed
-    public BootConfirmationDTO bootNotification(BootNotificationDTO bootNotificationDTO){
+    public BootConfirmationDTO bootNotification(@RequestBody BootNotificationDTO bootNotificationDTO){
+
+        log.debug(bootNotificationDTO.toString());
 
         return pedelecStationService.handleBootNotification(bootNotificationDTO);
     }
@@ -49,7 +52,7 @@ public class PedelecStationController {
     @RequestMapping(value = BASE_PATH_AUTHORIZE,
             method = RequestMethod.POST)
     @Timed
-    public AuthorizeConfirmationDTO authorize(CustomerAuthorizeDTO customerAuthorizeDTO, HttpServletResponse response) {
+    public AuthorizeConfirmationDTO authorize(@RequestBody CustomerAuthorizeDTO customerAuthorizeDTO, HttpServletResponse response) {
 
         return pedelecStationService.handleAuthorize(customerAuthorizeDTO);
     }
@@ -60,7 +63,7 @@ public class PedelecStationController {
     public HeartbeatDTO heartbeat() {
 
         HeartbeatDTO heartbeatDTO = new HeartbeatDTO();
-        heartbeatDTO.setTimestamp(DateTime.now().getMillis());
+        heartbeatDTO.setTimestamp(new Date().getTime());
 
         return heartbeatDTO;
     }

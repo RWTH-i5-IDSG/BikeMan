@@ -1,14 +1,16 @@
 package de.rwth.idsg.velocity.psinterface.dto.response;
 
-import lombok.Data;
+import lombok.*;
 import org.joda.time.LocalDateTime;
+
+import java.io.Serializable;
 
 /**
  * Created by swam on 31/07/14.
  */
 
 @Data
-public class BootConfirmationDTO {
-    private LocalDateTime timestamp;
+public class BootConfirmationDTO implements Serializable {
+    private Long timestamp;
     private Integer heartbeatInterval;
 }

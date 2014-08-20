@@ -5,6 +5,7 @@ import de.rwth.idsg.velocity.psinterface.dto.request.StartTransactionDTO;
 import de.rwth.idsg.velocity.psinterface.dto.request.StopTransactionDTO;
 import de.rwth.idsg.velocity.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,14 +26,14 @@ public class TransactionControlController {
     @RequestMapping(value = BASE_PATH_TRANSACTION_START,
             method = RequestMethod.POST)
     @Timed
-    public void startTransaction(StartTransactionDTO startTransactionDTO) {
+    public void startTransaction(@RequestBody StartTransactionDTO startTransactionDTO) {
 
     }
 
     @RequestMapping(value = BASE_PATH_TRANSACTION_STOP,
             method = RequestMethod.POST)
     @Timed
-    public void stopTransaction(StopTransactionDTO stopTransactionDTO) {
+    public void stopTransaction(@RequestBody StopTransactionDTO stopTransactionDTO) {
 
     }
 }

@@ -69,4 +69,11 @@ public class PedelecResource {
         log.debug("REST request to delete Pedelec : {}", id);
         pedelecRepository.delete(id);
     }
+
+    @Timed
+    @RequestMapping(value = ID_PATH, method = RequestMethod.POST)
+    public void changeOperationState(@PathVariable Long id) throws  DatabaseException {
+        log.debug("Change Operation State from pedelec with id: {}", id);
+
+    }
 }
