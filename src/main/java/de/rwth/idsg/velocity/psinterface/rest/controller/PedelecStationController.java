@@ -52,7 +52,7 @@ public class PedelecStationController {
     @RequestMapping(value = BASE_PATH_AUTHORIZE,
             method = RequestMethod.POST)
     @Timed
-    public AuthorizeConfirmationDTO authorize(@RequestBody CustomerAuthorizeDTO customerAuthorizeDTO, HttpServletResponse response) {
+    public AuthorizeConfirmationDTO authorize(@RequestBody CustomerAuthorizeDTO customerAuthorizeDTO) throws DatabaseException {
 
         return pedelecStationService.handleAuthorize(customerAuthorizeDTO);
     }

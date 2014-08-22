@@ -1,6 +1,8 @@
 package de.rwth.idsg.velocity.repository;
 
 import de.rwth.idsg.velocity.domain.*;
+import de.rwth.idsg.velocity.psinterface.dto.request.StartTransactionDTO;
+import de.rwth.idsg.velocity.psinterface.dto.request.StopTransactionDTO;
 import de.rwth.idsg.velocity.web.rest.exception.DatabaseException;
 import de.rwth.idsg.velocity.web.rest.dto.view.ViewTransactionDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -134,13 +136,13 @@ public class TransactionRepositoryImpl implements TransactionRepository {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void start(Transaction transaction) {
+    public void start(StartTransactionDTO startTransactionDTO) {
         // TODO
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void stop(Transaction transaction) {
+    public void stop(StopTransactionDTO stopTransactionDTO) {
         // TODO
     }
 

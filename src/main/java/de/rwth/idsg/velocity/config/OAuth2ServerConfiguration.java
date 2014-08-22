@@ -58,6 +58,8 @@ public class OAuth2ServerConfiguration {
                     .authorizeRequests()
                     .antMatchers("/views/**").permitAll()
                     .antMatchers("/app/rest/authenticate").permitAll()
+                    // TODO: currently station access is unprotected.
+                    .antMatchers("/psi*").permitAll()
                     .antMatchers("/app/rest/logs/**").hasAnyAuthority(AuthoritiesConstants.ADMIN)
                     .antMatchers("/app/rest/audits*").hasAuthority(AuthoritiesConstants.MANAGER)
                     .antMatchers("/app/rest/audits/**").hasAuthority(AuthoritiesConstants.MANAGER)
