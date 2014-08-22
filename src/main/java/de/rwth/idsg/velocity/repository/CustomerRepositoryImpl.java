@@ -87,12 +87,26 @@ public class CustomerRepositoryImpl implements CustomerRepository {
 
     @Override
     @Transactional(readOnly = true)
-    public Long findByCardIdAndCardPin(String cardId, Integer cardPin) {
+    public String findByCardIdAndCardPin(String cardId, Integer cardPin) throws DatabaseException {
+        try {
+            CriteriaBuilder builder = em.getCriteriaBuilder();
+            CriteriaQuery<String> criteria = builder.createQuery(String.class);
+            Root<Customer> root = criteria.from(Customer.class);
 
-//        TODO: we need cheeeeeffffffff
+            criteria.select(root.<String>get("customerId"))
+                    .where(builder.and(
+                            builder.equal(root.get("cardId"), cardId),
+                            builder.equal(root.get("cardPin"), cardPin)
+                    ));
 
-        return null;
+            return em.createQuery(criteria).getSingleResult();
 
+        } catch (NoResultException e) {
+            throw new DatabaseException("No customer found with cardId " + cardId + " and cardPin " + cardPin, e);
+
+        } catch (Exception e) {
+            throw new DatabaseException("Failed during database operation.", e);
+        }
     }
 
     @Override

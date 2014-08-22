@@ -30,8 +30,10 @@ public interface CustomerRepository {
 
     /**
      * Find unique customer with card-id and pin
+     *
+     * @return customerId
      */
-    Long findByCardIdAndCardPin(String cardId, Integer cardPin);
+    String findByCardIdAndCardPin(String cardId, Integer cardPin) throws DatabaseException;
 
     void activate(long userId) throws DatabaseException;
 
