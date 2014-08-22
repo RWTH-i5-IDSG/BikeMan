@@ -87,7 +87,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
 
     @Override
     @Transactional(readOnly = true)
-    public Customer findByCardIdAndCardPin(String cardId, Integer cardPin) {
+    public Long findByCardIdAndCardPin(String cardId, Integer cardPin) {
 
 //        TODO: we need cheeeeeffffffff
 

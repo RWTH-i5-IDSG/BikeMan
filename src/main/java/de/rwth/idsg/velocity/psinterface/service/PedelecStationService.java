@@ -41,14 +41,14 @@ public class PedelecStationService {
 
     public AuthorizeConfirmationDTO handleAuthorize(CustomerAuthorizeDTO customerAuthorizeDTO) {
         // TODO: this function is not implemented right now
-        Customer customer = customerRepository.findByCardIdAndCardPin(customerAuthorizeDTO.getCardId(), customerAuthorizeDTO.getPin());
+        Long customerId = customerRepository.findByCardIdAndCardPin(customerAuthorizeDTO.getCardId(), customerAuthorizeDTO.getPin());
 
-        if (customer == null) {
+        if (customerId == null) {
             // TODO: throw exception here
         }
 
         AuthorizeConfirmationDTO authorizeConfirmationDTO = new AuthorizeConfirmationDTO();
-        authorizeConfirmationDTO.setUserId(customer.getUserId());
+        authorizeConfirmationDTO.setUserId(customerId);
 
         return authorizeConfirmationDTO;
     }
