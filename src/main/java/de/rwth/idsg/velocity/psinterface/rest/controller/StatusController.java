@@ -36,8 +36,8 @@ public class StatusController {
     @RequestMapping(value = BASE_PATH_PEDELEC,
             method = RequestMethod.POST)
     @Timed
-    public void pedelecStatusNotification(@RequestBody List<PedelecStatusDTO> pedelecStatusDTOs) {
-        log.debug("Received Pedelec Status: {}", pedelecStatusDTOs);
+    public void pedelecStatusNotification(@RequestBody PedelecStatusDTO pedelecStatusDTO) {
+        log.debug("Received Pedelec Status: {}", pedelecStatusDTO);
     }
 
     @RequestMapping(value = BASE_PATH_CHARGING,
