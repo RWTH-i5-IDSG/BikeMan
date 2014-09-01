@@ -40,31 +40,30 @@ public class PedelecStationController {
     private static final String BASE_PATH_HEARTBEAT = "/heartbeat";
 
     @RequestMapping(value = BASE_PATH_BOOTNOTIFICATION,
-            method = RequestMethod.POST)
+                    method = RequestMethod.POST)
     @Timed
-    public BootConfirmationDTO bootNotification(@RequestBody BootNotificationDTO bootNotificationDTO){
+    public BootConfirmationDTO bootNotification(@RequestBody BootNotificationDTO bootNotificationDTO)
+            throws DatabaseException {
 
         log.debug(bootNotificationDTO.toString());
-
         return pedelecStationService.handleBootNotification(bootNotificationDTO);
     }
 
     @RequestMapping(value = BASE_PATH_AUTHORIZE,
-            method = RequestMethod.POST)
+                    method = RequestMethod.POST)
     @Timed
-    public AuthorizeConfirmationDTO authorize(@RequestBody CustomerAuthorizeDTO customerAuthorizeDTO) throws DatabaseException {
+    public AuthorizeConfirmationDTO authorize(@RequestBody CustomerAuthorizeDTO customerAuthorizeDTO)
+            throws DatabaseException {
 
         return pedelecStationService.handleAuthorize(customerAuthorizeDTO);
     }
 
     @RequestMapping(value = BASE_PATH_HEARTBEAT,
-            method = RequestMethod.GET)
+                    method = RequestMethod.GET)
     @Timed
     public HeartbeatDTO heartbeat() {
-
         HeartbeatDTO heartbeatDTO = new HeartbeatDTO();
         heartbeatDTO.setTimestamp(new Date().getTime());
-
         return heartbeatDTO;
     }
 

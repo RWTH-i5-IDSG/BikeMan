@@ -21,8 +21,7 @@ import java.util.List;
 @Slf4j
 public class PedelecRepositoryImpl implements PedelecRepository {
 
-    @PersistenceContext
-    EntityManager em;
+    @PersistenceContext private EntityManager em;
 
     @Override
     @Transactional(readOnly = true)

@@ -1,6 +1,7 @@
 package de.rwth.idsg.velocity.repository;
 
 import de.rwth.idsg.velocity.domain.*;
+import de.rwth.idsg.velocity.psinterface.dto.request.BootNotificationDTO;
 import de.rwth.idsg.velocity.web.rest.dto.modify.CreateEditAddressDTO;
 import de.rwth.idsg.velocity.web.rest.dto.modify.CreateEditStationDTO;
 import de.rwth.idsg.velocity.web.rest.dto.view.ViewStationDTO;
@@ -26,8 +27,7 @@ public class StationRepositoryImpl implements StationRepository {
 
     private enum Operation { CREATE, UPDATE };
 
-    @PersistenceContext
-    EntityManager em;
+    @PersistenceContext private EntityManager em;
 
     @Override
     @Transactional(readOnly = true)
@@ -140,6 +140,21 @@ public class StationRepositoryImpl implements StationRepository {
         } catch (Exception e) {
             throw new DatabaseException("Failed to delete station with stationId " + stationId, e);
         }
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void updateAfterBoot(BootNotificationDTO dto) throws DatabaseException {
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery<Station> criteria = builder.createQuery(Station.class);
+        Root<Station> root = criteria.from(Station.class);
+
+        criteria.select(root).where(
+                builder.equal(root.get("manufacturerId"), dto.getStationManufacturerId())
+        );
+
+        Station station = em.createQuery(criteria).getSingleResult();
+        // TODO update station and slots
     }
 
     /**

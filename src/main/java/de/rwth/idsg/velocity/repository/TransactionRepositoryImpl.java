@@ -24,8 +24,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
 
     private enum FindType { ALL, CLOSED, BY_PEDELEC_ID, BY_LOGIN };
 
-    @PersistenceContext
-    EntityManager em;
+    @PersistenceContext private EntityManager em;
 
     @Override
     @Transactional(readOnly = true)

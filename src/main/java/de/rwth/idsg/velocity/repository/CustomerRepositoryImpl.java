@@ -30,8 +30,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     private enum Operation { CREATE, UPDATE };
     private enum FindType { ALL, BY_NAME, BY_LOGIN };
 
-    @PersistenceContext
-    EntityManager em;
+    @PersistenceContext private EntityManager em;
 
     @Override
     @Transactional(readOnly = true)

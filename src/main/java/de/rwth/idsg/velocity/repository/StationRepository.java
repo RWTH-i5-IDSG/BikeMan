@@ -1,8 +1,9 @@
 package de.rwth.idsg.velocity.repository;
 
-import de.rwth.idsg.velocity.web.rest.exception.DatabaseException;
+import de.rwth.idsg.velocity.psinterface.dto.request.BootNotificationDTO;
 import de.rwth.idsg.velocity.web.rest.dto.modify.CreateEditStationDTO;
 import de.rwth.idsg.velocity.web.rest.dto.view.ViewStationDTO;
+import de.rwth.idsg.velocity.web.rest.exception.DatabaseException;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -18,6 +19,7 @@ public interface StationRepository {
     void create(CreateEditStationDTO dto) throws DatabaseException;
     void update(CreateEditStationDTO dto) throws DatabaseException;
     void delete(long stationId) throws DatabaseException;
+    void updateAfterBoot(BootNotificationDTO dto) throws DatabaseException;
 
 //    @Query("SELECT bs FROM Station bs ORDER BY ((6371 * 2 * ASIN(SQRT(POWER(SIN((bs.locationLatitude - abs(:latitude)) * pi()/180 / 2),2) +" +
 //            "COS(bs.locationLatitude * pi()/180 ) * COS(abs(:latitude) * pi()/180) *" +

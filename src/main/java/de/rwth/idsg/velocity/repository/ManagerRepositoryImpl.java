@@ -30,11 +30,8 @@ public class ManagerRepositoryImpl implements ManagerRepository {
 
     private enum Operation { CREATE, UPDATE };
 
-    @PersistenceContext
-    EntityManager em;
-
-    @Inject
-    PasswordEncoder passwordEncoder;
+    @PersistenceContext private EntityManager em;
+    @Inject private PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional(readOnly = true)
