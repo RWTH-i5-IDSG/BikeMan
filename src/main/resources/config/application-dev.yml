@@ -52,7 +52,8 @@ hotReload:
       domain: de.rwth.idsg.velocity.domain
       restdto: de.rwth.idsg.velocity.web.rest.dto
     liquibase:
-      defaultCatalogName: 
+      defaultCatalogName:
       defaultSchema: public
+      excludeTables: T_AUTHORITY,T_PERSISTENT_AUDIT_EVENT,T_PERSISTENT_AUDIT_EVENT_DATA,T_PERSISTENT_TOKEN,T_USER,T_USER_AUTHORITY,OAUTH_ACCESS_TOKEN,OAUTH_APPROVALS,OAUTH_CLIENT_DETAILS,OAUTH_CLIENT_TOKEN,OAUTH_CODE,OAUTH_REFRESH_TOKEN
     watchdir:
       - target/classes

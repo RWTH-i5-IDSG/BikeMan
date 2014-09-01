@@ -59,4 +59,7 @@ public class Station implements Serializable {
     @Enumerated(EnumType.STRING)
     private OperationState state;
 
+    @Column(name = "firmware_version")
+    private String firmwareVersion;
+
 }
