@@ -1,7 +1,11 @@
 package de.rwth.idsg.velocity.repository;
 
-import de.rwth.idsg.velocity.domain.*;
+import de.rwth.idsg.velocity.domain.Address;
+import de.rwth.idsg.velocity.domain.Pedelec;
+import de.rwth.idsg.velocity.domain.Station;
+import de.rwth.idsg.velocity.domain.StationSlot;
 import de.rwth.idsg.velocity.psinterface.dto.request.BootNotificationDTO;
+import de.rwth.idsg.velocity.psinterface.dto.request.SlotDTO;
 import de.rwth.idsg.velocity.web.rest.dto.modify.CreateEditAddressDTO;
 import de.rwth.idsg.velocity.web.rest.dto.modify.CreateEditStationDTO;
 import de.rwth.idsg.velocity.web.rest.dto.view.ViewStationDTO;
@@ -14,8 +18,14 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Root;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -145,16 +155,64 @@ public class StationRepositoryImpl implements StationRepository {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateAfterBoot(BootNotificationDTO dto) throws DatabaseException {
-        CriteriaBuilder builder = em.getCriteriaBuilder();
-        CriteriaQuery<Station> criteria = builder.createQuery(Station.class);
-        Root<Station> root = criteria.from(Station.class);
+        String stationManufacturerId = dto.getStationManufacturerId();
 
-        criteria.select(root).where(
-                builder.equal(root.get("manufacturerId"), dto.getStationManufacturerId())
-        );
+        // -------------------------------------------------------------------------
+        // 1. Update station table
+        // -------------------------------------------------------------------------
 
-        Station station = em.createQuery(criteria).getSingleResult();
-        // TODO update station and slots
+        final String sQuery = "UPDATE Station " +
+                              "SET firmwareVersion = :fwVersion " +
+                              "WHERE manufacturerId = :manufacturerId";
+
+        int updateCount = em.createQuery(sQuery)
+                            .setParameter("fwVersion", dto.getFirmwareVersion())
+                            .setParameter("manufacturerId", stationManufacturerId)
+                            .executeUpdate();
+
+        if (updateCount == 1) {
+            log.debug("[StationId: {}] Station info is updated", stationManufacturerId);
+        } else {
+            log.error("[StationId: {}] Station info update FAILED", stationManufacturerId);
+        }
+
+        // -------------------------------------------------------------------------
+        // 2. Batch update station slot table
+        //
+        // TODO: Find out how to batch update with JPA. Current version is BS.
+        // -------------------------------------------------------------------------
+
+        final String ssQuery = "UPDATE StationSlot " +
+                               "SET state = :slotState, " +
+                               "pedelec = (SELECT p FROM Pedelec p WHERE p.manufacturerId = :pedelecManufacturerId), " +
+                               "isOccupied = CASE WHEN :pedelecManufacturerId IS NULL THEN false ELSE true END " +
+                               "WHERE manufacturerId = :slotManufacturerId " +
+                               "AND stationSlotPosition = :slotPosition";
+
+        List<SlotDTO> slotDTOs = dto.getSlotDTOs();
+        List<String> failedSlots = new ArrayList<>();
+        for (SlotDTO temp : slotDTOs) {
+            String id = temp.getSlotManufacturerId();
+            int tempCount = em.createQuery(ssQuery)
+                              .setParameter("slotState", temp.getSlotState())
+                              .setParameter("pedelecManufacturerId", temp.getPedelecManufacturerId())
+                              .setParameter("slotManufacturerId", id)
+                              .setParameter("slotPosition", temp.getSlotPosition())
+                              .executeUpdate();
+
+            if (tempCount != 1) {
+                failedSlots.add(id);
+            }
+        }
+
+        int slotsCount = slotDTOs.size();
+        if (failedSlots.size() == 0) {
+            log.debug("[StationId: {}] {} slots to update, ALL are updated.",
+                    stationManufacturerId, slotsCount);
+        } else {
+            log.error("[StationId: {}] {} slots to update, but there are failed updates. List of failed slotIds: {}",
+                    stationManufacturerId, slotsCount, failedSlots);
+        }
     }
 
     /**
