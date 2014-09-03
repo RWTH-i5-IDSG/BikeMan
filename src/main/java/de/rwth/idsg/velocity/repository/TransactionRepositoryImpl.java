@@ -1,18 +1,27 @@
 package de.rwth.idsg.velocity.repository;
 
-import de.rwth.idsg.velocity.domain.*;
+import de.rwth.idsg.velocity.domain.Customer;
+import de.rwth.idsg.velocity.domain.Pedelec;
+import de.rwth.idsg.velocity.domain.Station;
+import de.rwth.idsg.velocity.domain.StationSlot;
+import de.rwth.idsg.velocity.domain.Transaction;
 import de.rwth.idsg.velocity.psinterface.dto.request.StartTransactionDTO;
 import de.rwth.idsg.velocity.psinterface.dto.request.StopTransactionDTO;
-import de.rwth.idsg.velocity.web.rest.exception.DatabaseException;
 import de.rwth.idsg.velocity.web.rest.dto.view.ViewTransactionDTO;
+import de.rwth.idsg.velocity.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
+import org.joda.time.LocalDateTime;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Root;
 import java.util.List;
 
 /**
@@ -135,14 +144,107 @@ public class TransactionRepositoryImpl implements TransactionRepository {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void start(StartTransactionDTO startTransactionDTO) {
-        // TODO
+    public void start(StartTransactionDTO dto) throws DatabaseException {
+
+        // -------------------------------------------------------------------------
+        // 1. Start transaction
+        // -------------------------------------------------------------------------
+
+        final String startQuery = "SELECT p FROM Pedelec p WHERE p.manufacturerId = :pedelecManufacturerId";
+
+        Pedelec pedelec = (Pedelec) em.createQuery(startQuery)
+                                      .setParameter("pedelecManufacturerId", dto.getPedelecManufacturerId())
+                                      .getSingleResult();
+
+        Customer customer = em.find(Customer.class, dto.getUserId());
+        StationSlot slot = pedelec.getStationSlot();
+
+        // Check integrity of station slot
+        String entitySlotManId = slot.getManufacturerId();
+        String dtoSlotManId = dto.getSlotManufacturerId();
+        boolean slotOK = entitySlotManId.equalsIgnoreCase(dtoSlotManId);
+        if (!slotOK) {
+            throw new DatabaseException("Integrity check of station slot manufacturerId failed: FromDTO[" +
+                    dtoSlotManId + "] != FromDB[" + entitySlotManId + "]");
+        }
+
+        // Check integrity of station
+        String entityStationManId = slot.getStation().getManufacturerId();
+        String dtoStationManId = dto.getStationManufacturerId();
+        boolean stationOK = entityStationManId.equalsIgnoreCase(dtoStationManId);
+        if (!stationOK) {
+            throw new DatabaseException("Integrity check of station manufacturerId failed: FromDTO[" +
+                    dtoStationManId + "] != FromDB[" + entityStationManId + "]");
+        }
+
+        Transaction transaction = new Transaction();
+        transaction.setStartDateTime(new LocalDateTime(dto.getTimestamp()));
+        transaction.setCustomer(customer);
+        transaction.setPedelec(pedelec);
+        transaction.setFromSlot(slot);
+        em.persist(transaction);
+
+        // -------------------------------------------------------------------------
+        // 2. Update related entities
+        // -------------------------------------------------------------------------
+
+        customer.setInTransaction(true);
+        pedelec.setInTransaction(true);
+        pedelec.setStationSlot(null);
+        slot.setIsOccupied(false);
+        slot.setPedelec(null);
+
+        em.merge(customer);
+        em.merge(pedelec);
+        em.merge(slot);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void stop(StopTransactionDTO stopTransactionDTO) {
-        // TODO
+    public void stop(StopTransactionDTO dto) throws DatabaseException {
+
+        // -------------------------------------------------------------------------
+        // 1. End transaction
+        // -------------------------------------------------------------------------
+
+        final String endQuery = "SELECT t FROM Transaction t " +
+                                "WHERE t.pedelec = (SELECT p FROM Pedelec p WHERE p.manufacturerId = :pedelecManufacturerId) " +
+                                "AND t.toSlot IS NULL " +
+                                "AND t.endDateTime IS NULL";
+
+        final String slotQuery = "SELECT ss FROM StationSlot ss " +
+                                 "WHERE ss.manufacturerId = :slotManufacturerId " +
+                                 "AND ss.station = (SELECT s FROM Station s WHERE s.manufacturerId = :stationManufacturerId)";
+
+        Transaction transaction = (Transaction) em.createQuery(endQuery)
+                                                  .setParameter("pedelecManufacturerId", dto.getPedelecManufacturerId())
+                                                  .getSingleResult();
+
+        StationSlot slot = (StationSlot) em.createQuery(slotQuery)
+                                           .setParameter("slotManufacturerId", dto.getSlotManufacturerId())
+                                           .setParameter("stationManufacturerId", dto.getStationManufacturerId())
+                                           .getSingleResult();
+
+        transaction.setEndDateTime(new LocalDateTime(dto.getTimestamp()));
+        transaction.setToSlot(slot);
+        em.merge(transaction);
+
+        // -------------------------------------------------------------------------
+        // 2. Update related entities
+        // -------------------------------------------------------------------------
+
+        Customer customer = transaction.getCustomer();
+        Pedelec pedelec = transaction.getPedelec();
+
+        customer.setInTransaction(false);
+        pedelec.setInTransaction(false);
+        pedelec.setStationSlot(slot);
+        slot.setIsOccupied(true);
+        slot.setPedelec(pedelec);
+
+        em.merge(customer);
+        em.merge(pedelec);
+        em.merge(slot);
     }
 
     private CriteriaQuery<ViewTransactionDTO> getTransactionQuery(FindType findType, Long pedelecId, String login) {

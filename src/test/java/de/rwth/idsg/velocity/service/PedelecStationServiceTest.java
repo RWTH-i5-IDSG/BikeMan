@@ -4,11 +4,15 @@ import de.rwth.idsg.velocity.Application;
 import de.rwth.idsg.velocity.domain.OperationState;
 import de.rwth.idsg.velocity.psinterface.dto.request.BootNotificationDTO;
 import de.rwth.idsg.velocity.psinterface.dto.request.SlotDTO;
+import de.rwth.idsg.velocity.psinterface.dto.request.StartTransactionDTO;
+import de.rwth.idsg.velocity.psinterface.dto.request.StopTransactionDTO;
 import de.rwth.idsg.velocity.psinterface.dto.response.BootConfirmationDTO;
 import de.rwth.idsg.velocity.psinterface.service.PedelecStationService;
 import de.rwth.idsg.velocity.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.RandomStringUtils;
+import org.joda.time.DateTime;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.SpringApplicationConfiguration;
@@ -36,12 +40,14 @@ public class PedelecStationServiceTest {
 
     @Inject private PedelecStationService service;
 
-    @Test
+    /**
+     * The values are from my DB, so they are not really generic tests
+     */
+    @Ignore
     public void test1_handleBootNotification() {
 
         // -------------------------------------------------------------------------
         // Prepare slotDTOs
-        // The values are from my DB, so they are not really generic tests
         // -------------------------------------------------------------------------
 
         List<OperationState> states = new ArrayList<>();
@@ -76,6 +82,45 @@ public class PedelecStationServiceTest {
             log.info("Request: {}", bootDTO);
             BootConfirmationDTO confirmDTO = service.handleBootNotification(bootDTO);
             log.info("Response: {}", confirmDTO);
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * The values are from my DB, so they are not really generic tests
+     */
+    @Ignore
+    public void test2_handleStartTransaction() {
+        StartTransactionDTO dto = new StartTransactionDTO();
+        dto.setUserId(1L);
+        dto.setPedelecManufacturerId("25d19d2a-7310-4d7c-b2bf-c39bc61753e6");
+        dto.setStationManufacturerId("da76e18e-61e0-4458-b57f-a39ef2dd87a6");
+        dto.setSlotManufacturerId("sdfgh");
+        dto.setTimestamp(new DateTime().getMillis());
+
+        try {
+            log.info("Request: {}", dto);
+            service.handleStartTransaction(dto);
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * The values are from my DB, so they are not really generic tests
+     */
+    @Test
+    public void test3_handleStopTransaction() {
+        StopTransactionDTO dto = new StopTransactionDTO();
+        dto.setPedelecManufacturerId("25d19d2a-7310-4d7c-b2bf-c39bc61753e6");
+        dto.setTimestamp(new DateTime().getMillis());
+        dto.setStationManufacturerId("da76e18e-61e0-4458-b57f-a39ef2dd87a6");
+        dto.setSlotManufacturerId("asdfghfd");
+
+        try {
+            log.info("Request: {}", dto);
+            service.handleStopTransaction(dto);
         } catch (DatabaseException e) {
             e.printStackTrace();
         }

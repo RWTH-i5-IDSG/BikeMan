@@ -50,12 +50,10 @@ public class PedelecStationService {
 
     public void handleStartTransaction(StartTransactionDTO startTransactionDTO) throws DatabaseException {
         transactionRepository.start(startTransactionDTO);
-        // TODO update pedelec, slot, user
     }
 
     public void handleStopTransaction(StopTransactionDTO stopTransactionDTO) throws DatabaseException {
         transactionRepository.stop(stopTransactionDTO);
-        // TODO update pedelec, slot, user
     }
 
 }

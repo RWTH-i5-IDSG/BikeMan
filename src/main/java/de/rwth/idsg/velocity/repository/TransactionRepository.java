@@ -58,13 +58,13 @@ public interface TransactionRepository {
     *
     * Important: This is for internal use to start a transaction, and NOT for the Web UI
     */
-    void start(StartTransactionDTO startTransactionDTO);
+    void start(StartTransactionDTO dto) throws DatabaseException;
 
     /*
     *
     * Important: This is for internal use to stop a transaction, and NOT for the Web UI
     */
-    void stop(StopTransactionDTO stopTransactionDTO);
+    void stop(StopTransactionDTO dto) throws DatabaseException;
 
 
 }
