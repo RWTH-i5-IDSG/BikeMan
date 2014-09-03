@@ -16,7 +16,13 @@ import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Root;
 import java.util.HashSet;
 import java.util.List;
 
@@ -87,19 +93,14 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     @Override
     @Transactional(readOnly = true)
     public String findByCardIdAndCardPin(String cardId, Integer cardPin) throws DatabaseException {
+
+        final String query = "SELECT customerId FROM Customer WHERE cardId = :cardId AND cardPin = :cardPin";
+
         try {
-            CriteriaBuilder builder = em.getCriteriaBuilder();
-            CriteriaQuery<String> criteria = builder.createQuery(String.class);
-            Root<Customer> root = criteria.from(Customer.class);
-
-            criteria.select(root.<String>get("customerId"))
-                    .where(builder.and(
-                            builder.equal(root.get("cardId"), cardId),
-                            builder.equal(root.get("cardPin"), cardPin)
-                    ));
-
-            return em.createQuery(criteria).getSingleResult();
-
+            return (String) em.createQuery(query)
+                              .setParameter("cardId", cardId)
+                              .setParameter("cardPin", cardPin)
+                              .getSingleResult();
         } catch (NoResultException e) {
             throw new DatabaseException("No customer found with cardId " + cardId + " and cardPin " + cardPin, e);
 
