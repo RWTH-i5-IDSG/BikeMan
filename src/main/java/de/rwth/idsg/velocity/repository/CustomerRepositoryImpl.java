@@ -92,12 +92,12 @@ public class CustomerRepositoryImpl implements CustomerRepository {
 
     @Override
     @Transactional(readOnly = true)
-    public String findByCardIdAndCardPin(String cardId, Integer cardPin) throws DatabaseException {
+    public long findByCardIdAndCardPin(String cardId, Integer cardPin) throws DatabaseException {
 
-        final String query = "SELECT customerId FROM Customer WHERE cardId = :cardId AND cardPin = :cardPin";
+        final String query = "SELECT userId FROM Customer WHERE cardId = :cardId AND cardPin = :cardPin";
 
         try {
-            return (String) em.createQuery(query)
+            return (long) em.createQuery(query)
                               .setParameter("cardId", cardId)
                               .setParameter("cardPin", cardPin)
                               .getSingleResult();

@@ -31,6 +31,7 @@ public class StatusController {
     @Timed
     public void stationStatusNotification(@RequestBody StationStatusDTO stationStatusDTO) {
         log.debug("Received StationStatusDTO: {}", stationStatusDTO);
+        // TODO
     }
 
     @RequestMapping(value = BASE_PATH_PEDELEC,
@@ -38,6 +39,7 @@ public class StatusController {
     @Timed
     public void pedelecStatusNotification(@RequestBody PedelecStatusDTO pedelecStatusDTO) {
         log.debug("Received Pedelec Status: {}", pedelecStatusDTO);
+        // TODO
     }
 
     @RequestMapping(value = BASE_PATH_CHARGING,
@@ -45,20 +47,21 @@ public class StatusController {
     @Timed
     public void chargingStatusNotification(@RequestBody List<ChargingStatusDTO> chargingStatusDTOs) {
         log.debug("Received Charging Status: {}", chargingStatusDTOs);
+        // TODO
     }
 
     @RequestMapping(value = BASE_PATH_FIRMWARE,
             method = RequestMethod.POST)
     @Timed
     public void firmwareStatusNotification(@RequestBody FirmwareStatusDTO firmwareStatusDTO) {
-
+        // TODO
     }
 
     @RequestMapping(value = BASE_PATH_LOGS,
             method = RequestMethod.POST)
     @Timed
     public void logsStatusNotification(@RequestBody LogsStatusDTO logsStatusDTO) {
-
+        // TODO
     }
 
 }

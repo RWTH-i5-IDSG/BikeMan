@@ -40,10 +40,10 @@ public class PedelecStationService {
     }
 
     public AuthorizeConfirmationDTO handleAuthorize(CustomerAuthorizeDTO customerAuthorizeDTO) throws DatabaseException {
-        String customerId = customerRepository.findByCardIdAndCardPin(customerAuthorizeDTO.getCardId(), customerAuthorizeDTO.getPin());
+        long userId = customerRepository.findByCardIdAndCardPin(customerAuthorizeDTO.getCardId(), customerAuthorizeDTO.getPin());
 
         AuthorizeConfirmationDTO authorizeConfirmationDTO = new AuthorizeConfirmationDTO();
-        authorizeConfirmationDTO.setCustomerId(customerId);
+        authorizeConfirmationDTO.setUserId(userId);
 
         return authorizeConfirmationDTO;
     }
