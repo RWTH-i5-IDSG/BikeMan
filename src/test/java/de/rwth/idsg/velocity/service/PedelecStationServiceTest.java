@@ -1,7 +1,7 @@
 package de.rwth.idsg.velocity.service;
 
 import de.rwth.idsg.velocity.Application;
-import de.rwth.idsg.velocity.domain.OperationState;
+import de.rwth.idsg.velocity.psinterface.dto.OperationState;
 import de.rwth.idsg.velocity.psinterface.dto.request.BootNotificationDTO;
 import de.rwth.idsg.velocity.psinterface.dto.request.SlotDTO;
 import de.rwth.idsg.velocity.psinterface.dto.request.StartTransactionDTO;
