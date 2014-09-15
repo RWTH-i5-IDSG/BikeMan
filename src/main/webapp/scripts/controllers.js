@@ -2,7 +2,7 @@
 
 /* Controllers */
 
-velocityApp.controller('MainController', ['$scope', '$timeout',
+bikeManApp.controller('MainController', ['$scope', '$timeout',
     function ($scope, $timeout) {
 
         $scope.errorAlerts = [
@@ -37,22 +37,22 @@ velocityApp.controller('MainController', ['$scope', '$timeout',
 
     }]);
 
-velocityApp.controller('AdminController', ['$scope',
+bikeManApp.controller('AdminController', ['$scope',
     function ($scope) {
     }]);
 
-velocityApp.controller('LanguageController', ['$scope', '$translate',
+bikeManApp.controller('LanguageController', ['$scope', '$translate',
     function ($scope, $translate) {
         $scope.changeLanguage = function (languageKey) {
             $translate.use(languageKey);
         };
     }]);
 
-velocityApp.controller('MenuController', ['$scope',
+bikeManApp.controller('MenuController', ['$scope',
     function ($scope) {
     }]);
 
-velocityApp.controller('LoginController', ['$scope', '$location', 'AuthenticationSharedService',
+bikeManApp.controller('LoginController', ['$scope', '$location', 'AuthenticationSharedService',
     function ($scope, $location, AuthenticationSharedService) {
         $scope.rememberMe = true;
         $scope.login = function () {
@@ -64,12 +64,12 @@ velocityApp.controller('LoginController', ['$scope', '$location', 'Authenticatio
         }
     }]);
 
-velocityApp.controller('LogoutController', ['$location', 'AuthenticationSharedService',
+bikeManApp.controller('LogoutController', ['$location', 'AuthenticationSharedService',
     function ($location, AuthenticationSharedService) {
         AuthenticationSharedService.logout();
     }]);
 
-velocityApp.controller('SettingsController', ['$scope', 'Account',
+bikeManApp.controller('SettingsController', ['$scope', 'Account',
     function ($scope, Account) {
         $scope.success = null;
         $scope.error = null;
@@ -89,7 +89,7 @@ velocityApp.controller('SettingsController', ['$scope', 'Account',
         };
     }]);
 
-velocityApp.controller('PasswordController', ['$scope', 'Password',
+bikeManApp.controller('PasswordController', ['$scope', 'Password',
     function ($scope, Password) {
         $scope.success = null;
         $scope.error = null;
@@ -112,7 +112,7 @@ velocityApp.controller('PasswordController', ['$scope', 'Password',
         };
     }]);
 
-velocityApp.controller('SessionsController', ['$scope', 'resolvedSessions', 'Sessions',
+bikeManApp.controller('SessionsController', ['$scope', 'resolvedSessions', 'Sessions',
     function ($scope, resolvedSessions, Sessions) {
         $scope.success = null;
         $scope.error = null;
@@ -131,7 +131,7 @@ velocityApp.controller('SessionsController', ['$scope', 'resolvedSessions', 'Ses
         };
     }]);
 
- velocityApp.controller('MetricsController', ['$scope', 'MetricsService', 'HealthCheckService', 'ThreadDumpService',
+ bikeManApp.controller('MetricsController', ['$scope', 'MetricsService', 'HealthCheckService', 'ThreadDumpService',
     function ($scope, MetricsService, HealthCheckService, ThreadDumpService) {
 
         $scope.refresh = function() {
@@ -208,7 +208,7 @@ velocityApp.controller('SessionsController', ['$scope', 'resolvedSessions', 'Ses
         };
     }]);
 
-velocityApp.controller('LogsController', ['$scope', 'resolvedLogs', 'LogsService',
+bikeManApp.controller('LogsController', ['$scope', 'resolvedLogs', 'LogsService',
     function ($scope, resolvedLogs, LogsService) {
         $scope.loggers = resolvedLogs;
 
@@ -219,7 +219,7 @@ velocityApp.controller('LogsController', ['$scope', 'resolvedLogs', 'LogsService
         }
     }]);
 
-velocityApp.controller('AuditsController', ['$scope', '$translate', '$filter', 'AuditsService',
+bikeManApp.controller('AuditsController', ['$scope', '$translate', '$filter', 'AuditsService',
     function ($scope, $translate, $filter, AuditsService) {
         $scope.onChangeDate = function() {
             AuditsService.findByDates($scope.fromDate, $scope.toDate).then(function(data){

@@ -1,2 +1,2 @@
-README for velocity
+README for BikeMan
 ==========================

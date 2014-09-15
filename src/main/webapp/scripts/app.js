@@ -3,10 +3,10 @@
 /* App Module */
 var httpHeaders;
 
-var velocityApp = angular.module('velocityApp', ['http-auth-interceptor', 'tmh.dynamicLocale',
-    'ngResource', 'ngCookies', 'velocityAppUtils', 'pascalprecht.translate', 'truncate', 'ui.router', 'ui.bootstrap', 'ui.bootstrap.showErrors']);
+var bikeManApp = angular.module('bikeManApp', ['http-auth-interceptor', 'tmh.dynamicLocale',
+    'ngResource', 'ngCookies', 'bikeManAppUtils', 'pascalprecht.translate', 'truncate', 'ui.router', 'ui.bootstrap', 'ui.bootstrap.showErrors']);
 
-velocityApp
+bikeManApp
     .config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$translateProvider',  'tmhDynamicLocaleProvider', 'USER_ROLES', '$compileProvider',
         function ($stateProvider, $urlRouterProvider, $httpProvider, $translateProvider, tmhDynamicLocaleProvider, USER_ROLES, $compileProvider) {
             $stateProvider

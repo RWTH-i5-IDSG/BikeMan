@@ -1,6 +1,6 @@
 'use strict';
 
-velocityApp.factory('Station', ['$resource',
+bikeManApp.factory('Station', ['$resource',
     function ($resource) {
         return $resource('app/rest/stations/:id', {}, {
             'query': { method: 'GET', isArray: true},
@@ -9,7 +9,7 @@ velocityApp.factory('Station', ['$resource',
         });
     }]);
 
-velocityApp.factory('CreateEditStation', ['$resource',
+bikeManApp.factory('CreateEditStation', ['$resource',
     function ($resource) {
         return $resource('app/rest/stations/:id', {}, {
             'query': { method: 'GET', isArray: true},

@@ -1,6 +1,6 @@
 'use strict';
 
-velocityApp.controller('AddressController', ['$scope', 'resolvedAddress', 'Address',
+bikeManApp.controller('AddressController', ['$scope', 'resolvedAddress', 'Address',
     function ($scope, resolvedAddress, Address) {
 
         $scope.addresss = resolvedAddress;

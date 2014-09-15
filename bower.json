@@ -1,5 +1,5 @@
 {
-  "name": "velocity",
+  "name": "bikeman",
   "version": "0.0.0",
   "dependencies": {
     "bootstrap-sass": "twbs/bootstrap-sass#~3.1.1",

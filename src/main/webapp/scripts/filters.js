@@ -3,7 +3,7 @@
  */
 'use strict';
 
-angular.module('velocityApp')
+angular.module('bikeManApp')
     .filter('usernameFilter', function() {
         return function(input) {
             if (null == input) return 'Account'

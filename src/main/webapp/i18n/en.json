@@ -1,6 +1,6 @@
 {
     "global": {
-        "title": "velocity",
+        "title": "bikeman",
         "browsehappy": "You are using an <strong>outdated</strong> browser. Please <a href=\"http://browsehappy.com/?locale=en\">upgrade your browser</a> to improve your experience.",
         "menu": {
             "home": "Home",
@@ -52,7 +52,7 @@
         }
     },
     "main": {
-        "title": "Welcome to Velocity!",
+        "title": "Welcome to BikeMan!",
         "subtitle": "This is your homepage",
         "logged": {
             "message": "You are logged in as user \"{{username}}\".",
@@ -269,7 +269,7 @@
             },
             "placeholders": {
                 "customerId": "Customer ID...",
-                "login": "customer@velocity.de",
+                "login": "customer@bikeman.de",
                 "cardId": "Card ID...",
                 "firstname": "Max",
                 "lastname": "Mustermann",
@@ -311,7 +311,7 @@
                 "password": "Password"
             },
             "placeholders": {
-                "login": "manager@velocity.de",
+                "login": "manager@bikeman.de",
                 "password": "*******"
             }
         },

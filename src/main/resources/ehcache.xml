@@ -17,27 +17,27 @@
             overflowToDisk="false"
             />
 
-    <cache name="de.rwth.idsg.velocity.domain.login.User"
+    <cache name="de.rwth.idsg.bikeman.domain.login.User"
            timeToLiveSeconds="3600">
     </cache>
 
-    <cache name="de.rwth.idsg.velocity.domain.login.Authority"
+    <cache name="de.rwth.idsg.bikeman.domain.login.Authority"
            timeToLiveSeconds="3600">
     </cache>
 
-    <cache name="de.rwth.idsg.velocity.domain.login.User.authorities"
+    <cache name="de.rwth.idsg.bikeman.domain.login.User.authorities"
            timeToLiveSeconds="3600">
     </cache>
    
-    <cache name="de.rwth.idsg.velocity.domain.login.PersistentToken"
+    <cache name="de.rwth.idsg.bikeman.domain.login.PersistentToken"
            timeToLiveSeconds="3600">
     </cache>
 
-    <cache name="de.rwth.idsg.velocity.domain.login.User.persistentTokens"
+    <cache name="de.rwth.idsg.bikeman.domain.login.User.persistentTokens"
            timeToLiveSeconds="3600">
     </cache>
 
-    <cache name="de.rwth.idsg.velocity.domain.login.PersistentAuditEvent"
+    <cache name="de.rwth.idsg.bikeman.domain.login.PersistentAuditEvent"
            timeToLiveSeconds="3600">
     </cache>
 </ehcache>

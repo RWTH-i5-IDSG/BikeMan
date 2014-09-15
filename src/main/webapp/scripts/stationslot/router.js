@@ -1,6 +1,6 @@
 'use strict';
 
-velocityApp
+bikeManApp
     .config(['$stateProvider', '$httpProvider', '$translateProvider',
         function ($stateProvider, $httpProvider, $translateProvider) {
             $stateProvider

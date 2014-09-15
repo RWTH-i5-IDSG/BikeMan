@@ -1,6 +1,6 @@
 'use strict';
 
-velocityApp.controller('FleetmanagerController', ['$scope', 'resolvedFleetmanagers', 'Fleetmanager',
+bikeManApp.controller('FleetmanagerController', ['$scope', 'resolvedFleetmanagers', 'Fleetmanager',
     function ($scope, resolvedFleetmanagers, Fleetmanager) {
 
         $scope.fleetmanagers = resolvedFleetmanagers;
@@ -33,7 +33,7 @@ velocityApp.controller('FleetmanagerController', ['$scope', 'resolvedFleetmanage
 
     }]);
 
-velocityApp.controller('FleetmanagerCreateController', ['$scope', 'Fleetmanager', '$timeout', '$state',
+bikeManApp.controller('FleetmanagerCreateController', ['$scope', 'Fleetmanager', '$timeout', '$state',
     function ($scope, Fleetmanager, $timeout, $state)  {
 
         $scope.fleetmanager = null;

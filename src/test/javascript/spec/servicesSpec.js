@@ -2,7 +2,7 @@
 
 describe('Services Tests ', function () {
 
-    beforeEach(module('velocityApp'));
+    beforeEach(module('bikeManApp'));
 
     describe('AuthenticationSharedService', function () {
         var serviceTested,

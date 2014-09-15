@@ -7,9 +7,9 @@ spring:
     datasource:
         dataSourceClassName: org.postgresql.ds.PGSimpleDataSource
         url: 
-        databaseName: velocity
+        databaseName: bikeman
         serverName: localhost
-        username: velocity
+        username: bikeman
         password:
 
     jpa:

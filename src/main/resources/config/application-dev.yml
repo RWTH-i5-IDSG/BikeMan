@@ -7,9 +7,9 @@ spring:
     datasource:
         dataSourceClassName: org.postgresql.ds.PGSimpleDataSource
         url: 
-        databaseName: velocity
+        databaseName: bikeman
         serverName: localhost
-        username: velocity
+        username: bikeman
         password:
 
     jpa:
@@ -48,9 +48,9 @@ cache:
 hotReload:
     enabled: true
     package:
-      project: de.rwth.idsg.velocity
-      domain: de.rwth.idsg.velocity.domain
-      restdto: de.rwth.idsg.velocity.web.rest.dto
+      project: de.rwth.idsg.bikeman
+      domain: de.rwth.idsg.bikemandomain
+      restdto: de.rwth.idsg.bikemanweb.rest.dto
     liquibase:
       defaultCatalogName:
       defaultSchema: public

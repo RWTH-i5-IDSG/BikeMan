@@ -1,8 +1,8 @@
 {
   "generator-jhipster": {
-    "baseName": "velocity",
-    "packageName": "de.rwth.idsg.velocity",
-    "packageFolder": "de/rwth/idsg/velocity",
+    "baseName": "bikeman",
+    "packageName": "de.rwth.idsg.bikeman",
+    "packageFolder": "de/rwth/idsg/bikeman",
     "authenticationType": "token",
     "hibernateCache": "ehcache",
     "clusteredHttpSession": "no",

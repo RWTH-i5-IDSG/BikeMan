@@ -1,6 +1,6 @@
 'use strict';
 
-velocityApp.controller('PedelecController', ['$scope', 'resolvedPedelec', 'Pedelec',
+bikeManApp.controller('PedelecController', ['$scope', 'resolvedPedelec', 'Pedelec',
     function ($scope, resolvedPedelec, Pedelec) {
 
         $scope.pedelecs = resolvedPedelec;
@@ -33,7 +33,7 @@ velocityApp.controller('PedelecController', ['$scope', 'resolvedPedelec', 'Pedel
     }]);
 
 
-velocityApp.controller('PedelecDetailController', ['$scope', 'resolvedPedelec', 'Pedelec', 'Transaction', '$stateParams',
+bikeManApp.controller('PedelecDetailController', ['$scope', 'resolvedPedelec', 'Pedelec', 'Transaction', '$stateParams',
     function ($scope, resolvedPedelec, Pedelec, Transaction, $stateParams) {
 
         $scope.pedelec = resolvedPedelec;
@@ -89,7 +89,7 @@ velocityApp.controller('PedelecDetailController', ['$scope', 'resolvedPedelec', 
 
     }]);
 
-velocityApp.controller('PedelecCreateController', ['$scope', 'Pedelec', '$timeout',
+bikeManApp.controller('PedelecCreateController', ['$scope', 'Pedelec', '$timeout',
     function ($scope, Pedelec, $timeout)  {
 
         $scope.pedelec = null;

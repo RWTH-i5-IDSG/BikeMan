@@ -4,7 +4,7 @@ server:
 
 
 # security configuration (this key should be unique for your application, and kept secret)
-jhipster.security.rememberme.key: velocity
+jhipster.security.rememberme.key: bikeman
 
 async:
     corePoolSize: 2
@@ -16,7 +16,7 @@ spring:
     
     datasource:
         dataSourceClassName: org.h2.jdbcx.JdbcDataSource
-        url: jdbc:h2:mem:velocity
+        url: jdbc:h2:mem:bikeman
         databaseName:
         serverName:
         username:

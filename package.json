@@ -1,7 +1,7 @@
 {
-  "name": "velocity",
+  "name": "bikeman",
   "version": "0.0.0",
-  "description": "Description for velocity",
+  "description": "Description for bikeman",
   "dependencies": {},
   "devDependencies": {
     "grunt": "0.4.4",

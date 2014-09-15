@@ -1,6 +1,6 @@
 'use strict';
 
-velocityApp.controller('TransactionController', ['$scope', 'resolvedTransaction', 'Transaction',
+bikeManApp.controller('TransactionController', ['$scope', 'resolvedTransaction', 'Transaction',
     function ($scope, resolvedTransaction, Transaction) {
 
         $scope.transactions = resolvedTransaction;

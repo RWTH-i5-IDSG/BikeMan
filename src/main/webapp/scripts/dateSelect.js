@@ -1,7 +1,7 @@
 /**
  * Created by max on 15/07/14.
  */
-angular.module('velocityApp')
+angular.module('bikeManApp')
     .factory('dateSelectUtils', function() {
 
         function range(start, end) {

@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('velocityApp')
+angular.module('bikeManApp')
     .directive('activeMenu', ['$translate', '$locale', 'tmhDynamicLocale', function($translate, $locale, tmhDynamicLocale) {
         return {
             restrict: 'A',

@@ -1,6 +1,6 @@
 'use strict';
 
-velocityApp.controller('StationSlotController', ['$scope', 'resolvedStationSlot', 'StationSlot',
+bikeManApp.controller('StationSlotController', ['$scope', 'resolvedStationSlot', 'StationSlot',
     function ($scope, resolvedStationSlot, StationSlot) {
 
         $scope.stationslots = resolvedStationSlot;

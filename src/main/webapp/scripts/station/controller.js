@@ -1,6 +1,6 @@
 'use strict';
 
-velocityApp.controller('StationController', ['$scope', 'resolvedStation', 'Station', 'CreateEditStation', 'StationSlot',
+bikeManApp.controller('StationController', ['$scope', 'resolvedStation', 'Station', 'CreateEditStation', 'StationSlot',
     function ($scope, resolvedStation, Station, CreateEditStation, StationSlot) {
 
         $scope.stations = resolvedStation;
@@ -20,7 +20,7 @@ velocityApp.controller('StationController', ['$scope', 'resolvedStation', 'Stati
     }]);
 
 
-velocityApp.controller('StationDetailController', ['$scope', 'resolvedStation', 'Station', 'CreateEditStation',
+bikeManApp.controller('StationDetailController', ['$scope', 'resolvedStation', 'Station', 'CreateEditStation',
     function ($scope, resolvedStation, Station, CreateEditStation) {
 
         $scope.station = resolvedStation;
@@ -102,7 +102,7 @@ velocityApp.controller('StationDetailController', ['$scope', 'resolvedStation', 
 
     }]);
 
-velocityApp.controller('StationCreateController', ['$scope', 'CreateEditStation', '$timeout',
+bikeManApp.controller('StationCreateController', ['$scope', 'CreateEditStation', '$timeout',
     function ($scope, CreateEditStation, $timeout)  {
 
         $scope.station = null;

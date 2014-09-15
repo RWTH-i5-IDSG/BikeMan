@@ -1,6 +1,6 @@
 'use strict';
 
-velocityApp.controller('CustomerController', ['$scope', 'resolvedCustomer', 'Customer',
+bikeManApp.controller('CustomerController', ['$scope', 'resolvedCustomer', 'Customer',
     function ($scope, resolvedCustomer, Customer) {
 
         $scope.customers = resolvedCustomer;
@@ -64,7 +64,7 @@ velocityApp.controller('CustomerController', ['$scope', 'resolvedCustomer', 'Cus
         };
     }]);
 
-velocityApp.controller('CustomerDetailController', ['$scope', 'resolvedCustomer', 'Customer', 'Transaction', '$stateParams',
+bikeManApp.controller('CustomerDetailController', ['$scope', 'resolvedCustomer', 'Customer', 'Transaction', '$stateParams',
     function($scope, resolvedCustomer, Customer, Transaction, $stateParams) {
 
         $scope.customer = resolvedCustomer;
@@ -126,7 +126,7 @@ velocityApp.controller('CustomerDetailController', ['$scope', 'resolvedCustomer'
 
     }]);
 
-velocityApp.controller('CustomerCreateController', ['$scope', 'Customer', '$timeout', '$filter',
+bikeManApp.controller('CustomerCreateController', ['$scope', 'Customer', '$timeout', '$filter',
     function($scope, Customer, $timeout, $filter) {
 
         // open the datepicker control

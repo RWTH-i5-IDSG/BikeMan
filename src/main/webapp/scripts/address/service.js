@@ -1,6 +1,6 @@
 'use strict';
 
-velocityApp.factory('Address', ['$resource',
+bikeManApp.factory('Address', ['$resource',
     function ($resource) {
         return $resource('app/rest/addresss/:id', {}, {
             'query': { method: 'GET', isArray: true},

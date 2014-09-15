@@ -2,33 +2,33 @@
 
 /* Services */
 
-velocityApp.factory('Account', ['$resource',
+bikeManApp.factory('Account', ['$resource',
     function ($resource) {
         return $resource('app/rest/account', {}, {
         });
     }]);
 
-velocityApp.factory('Password', ['$resource',
+bikeManApp.factory('Password', ['$resource',
     function ($resource) {
         return $resource('app/rest/account/change_password', {}, {
         });
     }]);
 
-velocityApp.factory('Sessions', ['$resource',
+bikeManApp.factory('Sessions', ['$resource',
     function ($resource) {
         return $resource('app/rest/account/sessions/:series', {}, {
             'get': { method: 'GET', isArray: true}
         });
     }]);
 
-velocityApp.factory('MetricsService', ['$resource',
+bikeManApp.factory('MetricsService', ['$resource',
     function ($resource) {
         return $resource('metrics/metrics', {}, {
             'get': { method: 'GET'}
         });
     }]);
 
-velocityApp.factory('ThreadDumpService', ['$http',
+bikeManApp.factory('ThreadDumpService', ['$http',
     function ($http) {
         return {
             dump: function() {
@@ -40,7 +40,7 @@ velocityApp.factory('ThreadDumpService', ['$http',
         };
     }]);
 
-velocityApp.factory('HealthCheckService', ['$rootScope', '$http',
+bikeManApp.factory('HealthCheckService', ['$rootScope', '$http',
     function ($rootScope, $http) {
         return {
             check: function() {
@@ -52,7 +52,7 @@ velocityApp.factory('HealthCheckService', ['$rootScope', '$http',
         };
     }]);
 
-velocityApp.factory('LogsService', ['$resource',
+bikeManApp.factory('LogsService', ['$resource',
     function ($resource) {
         return $resource('app/rest/logs', {}, {
             'findAll': { method: 'GET', isArray: true},
@@ -60,7 +60,7 @@ velocityApp.factory('LogsService', ['$resource',
         });
     }]);
 
-velocityApp.factory('AuditsService', ['$http',
+bikeManApp.factory('AuditsService', ['$http',
     function ($http) {
         return {
             findAll: function() {
@@ -78,7 +78,7 @@ velocityApp.factory('AuditsService', ['$http',
         }
     }]);
 
-velocityApp.factory('Session', [
+bikeManApp.factory('Session', [
     function () {
         this.create = function (login, firstName, lastName, email, userRoles) {
             this.login = login;
@@ -97,23 +97,23 @@ velocityApp.factory('Session', [
         return this;
     }]);
 
-velocityApp.constant('USER_ROLES', {
+bikeManApp.constant('USER_ROLES', {
         all: '*',
         admin: 'ROLE_ADMIN',
         manager: 'ROLE_MANAGER',
         customer: 'ROLE_CUSTOMER'
     });
 
-velocityApp.factory('AuthenticationSharedService', ['$rootScope', '$http', 'authService', 'Session', 'Account', 'Base64Service', 'AccessToken', '$q',
+bikeManApp.factory('AuthenticationSharedService', ['$rootScope', '$http', 'authService', 'Session', 'Account', 'Base64Service', 'AccessToken', '$q',
     function ($rootScope, $http, authService, Session, Account, Base64Service, AccessToken, $q) {
         return {
             login: function (param) {
-                var data = "username=" + param.username + "&password=" + param.password + "&grant_type=password&scope=read%20write&client_secret=mySecretOAuthSecret&client_id=velocityapp";
+                var data = "username=" + param.username + "&password=" + param.password + "&grant_type=password&scope=read%20write&client_secret=mySecretOAuthSecret&client_id=bikeManApp";
                 $http.post('oauth/token', data, {
                     headers: {
                         "Content-Type": "application/x-www-form-urlencoded",
                         "Accept": "application/json",
-                        "Authorization": "Basic " + Base64Service.encode("velocityapp" + ':' + "mySecretOAuthSecret")
+                        "Authorization": "Basic " + Base64Service.encode("bikeManApp" + ':' + "mySecretOAuthSecret")
                     },
                     ignoreAuthModule: 'ignoreAuthModule'
                 }).success(function (data, status, headers, config) {

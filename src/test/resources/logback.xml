@@ -7,7 +7,7 @@
             <Pattern>[%p] %c - %m%n</Pattern>
         </encoder>
     </appender>
-    <logger name="de.rwth.idsg.velocity" level="DEBUG"/>
+    <logger name="de.rwth.idsg.bikeman" level="DEBUG"/>
     <logger name="com.jayway" level="WARN"/>
     <logger name="ch.qos.logback" level="WARN"/>
     <logger name="com.codahale.metrics" level="WARN"/>
