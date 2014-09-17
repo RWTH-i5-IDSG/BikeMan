@@ -55,7 +55,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     @Override
     @Transactional(readOnly = true)
     public List<ViewCustomerDTO> findbyName(String name) throws DatabaseException {
-        List<ViewCustomerDTO> list = null;
+        List<ViewCustomerDTO> list;
         try {
             CriteriaBuilder builder = em.getCriteriaBuilder();
             list = em.createQuery(
