@@ -1,6 +1,7 @@
 package de.rwth.idsg.bikeman.psinterface.rest.controller;
 
 import com.codahale.metrics.annotation.Timed;
+import de.rwth.idsg.bikeman.psinterface.Utils;
 import de.rwth.idsg.bikeman.psinterface.dto.request.BootNotificationDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.CustomerAuthorizeDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.response.AuthorizeConfirmationDTO;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 
 /**
@@ -33,29 +35,30 @@ public class PedelecStationController {
     private static final String BASE_PATH_AUTHORIZE = "/authorize";
     private static final String BASE_PATH_HEARTBEAT = "/heartbeat";
 
-    @RequestMapping(value = BASE_PATH_BOOTNOTIFICATION,
-                    method = RequestMethod.POST)
     @Timed
-    public BootConfirmationDTO bootNotification(@RequestBody BootNotificationDTO bootNotificationDTO)
-            throws DatabaseException {
-
-        log.debug(bootNotificationDTO.toString());
+    @RequestMapping(value = BASE_PATH_BOOTNOTIFICATION, method = RequestMethod.POST)
+    public BootConfirmationDTO bootNotification(@RequestBody BootNotificationDTO bootNotificationDTO,
+                                                HttpServletRequest request) throws DatabaseException {
+        log.debug("[From: {}] Received bootNotification", Utils.getFrom(request));
         return pedelecStationService.handleBootNotification(bootNotificationDTO);
     }
 
-    @RequestMapping(value = BASE_PATH_AUTHORIZE,
-                    method = RequestMethod.POST)
     @Timed
-    public AuthorizeConfirmationDTO authorize(@RequestBody CustomerAuthorizeDTO customerAuthorizeDTO)
-            throws DatabaseException {
-
-        return pedelecStationService.handleAuthorize(customerAuthorizeDTO);
+    @RequestMapping(value = BASE_PATH_AUTHORIZE, method = RequestMethod.POST)
+    public AuthorizeConfirmationDTO authorize(@RequestBody CustomerAuthorizeDTO customerAuthorizeDTO,
+                                              HttpServletRequest request) throws DatabaseException {
+        String cardId = customerAuthorizeDTO.getCardId();
+        log.info("[From: {}] Received authorization request for card id '{}'", Utils.getFrom(request), cardId);
+        AuthorizeConfirmationDTO dto = pedelecStationService.handleAuthorize(customerAuthorizeDTO);
+        log.info("User with card id '{}' is authorized", cardId);
+        return dto;
     }
 
-    @RequestMapping(value = BASE_PATH_HEARTBEAT,
-                    method = RequestMethod.GET)
     @Timed
-    public HeartbeatDTO heartbeat() {
+    @RequestMapping(value = BASE_PATH_HEARTBEAT, method = RequestMethod.GET)
+    public HeartbeatDTO heartbeat(HttpServletRequest request) {
+        log.debug("[From: {}] Received heartbeat", Utils.getFrom(request));
+
         HeartbeatDTO heartbeatDTO = new HeartbeatDTO();
         heartbeatDTO.setTimestamp(new Date().getTime());
         return heartbeatDTO;

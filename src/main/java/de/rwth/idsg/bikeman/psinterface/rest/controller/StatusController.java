@@ -1,13 +1,19 @@
 package de.rwth.idsg.bikeman.psinterface.rest.controller;
 
 import com.codahale.metrics.annotation.Timed;
-import de.rwth.idsg.bikeman.psinterface.dto.request.*;
+import de.rwth.idsg.bikeman.psinterface.Utils;
+import de.rwth.idsg.bikeman.psinterface.dto.request.ChargingStatusDTO;
+import de.rwth.idsg.bikeman.psinterface.dto.request.FirmwareStatusDTO;
+import de.rwth.idsg.bikeman.psinterface.dto.request.LogsStatusDTO;
+import de.rwth.idsg.bikeman.psinterface.dto.request.PedelecStatusDTO;
+import de.rwth.idsg.bikeman.psinterface.dto.request.StationStatusDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -25,41 +31,38 @@ public class StatusController {
     private static final String BASE_PATH_FIRMWARE = "/firmware";
     private static final String BASE_PATH_LOGS = "/logs";
 
-    @RequestMapping(value = BASE_PATH_STATION,
-            method = RequestMethod.POST)
     @Timed
-    public void stationStatusNotification(@RequestBody StationStatusDTO stationStatusDTO) {
-        log.debug("Received StationStatusDTO: {}", stationStatusDTO);
+    @RequestMapping(value = BASE_PATH_STATION, method = RequestMethod.POST)
+    public void stationStatusNotification(@RequestBody StationStatusDTO stationStatusDTO, HttpServletRequest request) {
+        log.debug("[From: {}] Received stationStatusNotification: {}", Utils.getFrom(request), stationStatusDTO);
         // TODO
     }
 
-    @RequestMapping(value = BASE_PATH_PEDELEC,
-            method = RequestMethod.POST)
     @Timed
-    public void pedelecStatusNotification(@RequestBody PedelecStatusDTO pedelecStatusDTO) {
-        log.debug("Received Pedelec Status: {}", pedelecStatusDTO);
+    @RequestMapping(value = BASE_PATH_PEDELEC, method = RequestMethod.POST)
+    public void pedelecStatusNotification(@RequestBody PedelecStatusDTO pedelecStatusDTO, HttpServletRequest request) {
+        log.debug("[From: {}] Received pedelecStatusNotification: {}", Utils.getFrom(request), pedelecStatusDTO);
         // TODO
     }
 
-    @RequestMapping(value = BASE_PATH_CHARGING,
-            method = RequestMethod.POST)
     @Timed
-    public void chargingStatusNotification(@RequestBody List<ChargingStatusDTO> chargingStatusDTOs) {
-        log.debug("Received Charging Status: {}", chargingStatusDTOs);
+    @RequestMapping(value = BASE_PATH_CHARGING, method = RequestMethod.POST)
+    public void chargingStatusNotification(@RequestBody List<ChargingStatusDTO> chargingStatusDTOs, HttpServletRequest request) {
+        log.debug("[From: {}] Received chargingStatusNotification: {}", Utils.getFrom(request), chargingStatusDTOs);
         // TODO
     }
 
-    @RequestMapping(value = BASE_PATH_FIRMWARE,
-            method = RequestMethod.POST)
     @Timed
-    public void firmwareStatusNotification(@RequestBody FirmwareStatusDTO firmwareStatusDTO) {
+    @RequestMapping(value = BASE_PATH_FIRMWARE, method = RequestMethod.POST)
+    public void firmwareStatusNotification(@RequestBody FirmwareStatusDTO firmwareStatusDTO, HttpServletRequest request) {
+        log.debug("[From: {}] Received firmwareStatusNotification: {}", Utils.getFrom(request), firmwareStatusDTO);
         // TODO
     }
 
-    @RequestMapping(value = BASE_PATH_LOGS,
-            method = RequestMethod.POST)
     @Timed
-    public void logsStatusNotification(@RequestBody LogsStatusDTO logsStatusDTO) {
+    @RequestMapping(value = BASE_PATH_LOGS, method = RequestMethod.POST)
+    public void logsStatusNotification(@RequestBody LogsStatusDTO logsStatusDTO, HttpServletRequest request) {
+        log.debug("[From: {}] Received logsStatusNotification: {}", Utils.getFrom(request), logsStatusDTO);
         // TODO
     }
 

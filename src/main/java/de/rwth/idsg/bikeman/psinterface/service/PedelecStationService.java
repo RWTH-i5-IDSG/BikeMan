@@ -41,10 +41,8 @@ public class PedelecStationService {
 
     public AuthorizeConfirmationDTO handleAuthorize(CustomerAuthorizeDTO customerAuthorizeDTO) throws DatabaseException {
         long userId = customerRepository.findByCardIdAndCardPin(customerAuthorizeDTO.getCardId(), customerAuthorizeDTO.getPin());
-
         AuthorizeConfirmationDTO authorizeConfirmationDTO = new AuthorizeConfirmationDTO();
         authorizeConfirmationDTO.setUserId(userId);
-
         return authorizeConfirmationDTO;
     }
 
@@ -55,5 +53,4 @@ public class PedelecStationService {
     public void handleStopTransaction(StopTransactionDTO stopTransactionDTO) throws DatabaseException {
         transactionRepository.stop(stopTransactionDTO);
     }
-
 }

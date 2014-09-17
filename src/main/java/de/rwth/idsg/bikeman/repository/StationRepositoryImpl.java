@@ -177,7 +177,13 @@ public class StationRepositoryImpl implements StationRepository {
         }
 
         // -------------------------------------------------------------------------
-        // 2. Batch update station slot table
+        // 2. Insert new and unknown slots
+        // -------------------------------------------------------------------------
+
+        //TODO
+
+        // -------------------------------------------------------------------------
+        // 3. Batch update station slot table
         //
         // TODO: Find out how to batch update with JPA. Current version is BS.
         // -------------------------------------------------------------------------

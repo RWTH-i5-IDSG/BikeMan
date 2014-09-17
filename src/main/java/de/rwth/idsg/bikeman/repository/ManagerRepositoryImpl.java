@@ -3,9 +3,9 @@ package de.rwth.idsg.bikeman.repository;
 import de.rwth.idsg.bikeman.domain.Manager;
 import de.rwth.idsg.bikeman.domain.login.Authority;
 import de.rwth.idsg.bikeman.security.AuthoritiesConstants;
-import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditManagerDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.view.ViewManagerDTO;
+import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
@@ -15,9 +15,6 @@ import javax.inject.Inject;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 import java.util.HashSet;
 import java.util.List;
 
@@ -36,22 +33,13 @@ public class ManagerRepositoryImpl implements ManagerRepository {
     @Override
     @Transactional(readOnly = true)
     public List<ViewManagerDTO> findAll() throws DatabaseException {
+
+        final String q = "SELECT new de.rwth.idsg.bikeman.web.rest.dto.view." +
+                         "ViewManagerDTO(m.userId, m.login) " +
+                         "FROM Manager m";
         try {
-            CriteriaBuilder builder = em.getCriteriaBuilder();
-
-            CriteriaQuery<ViewManagerDTO> criteria = builder.createQuery(ViewManagerDTO.class);
-            Root<Manager> root = criteria.from(Manager.class);
-
-            criteria.select(
-                    builder.construct(
-                            ViewManagerDTO.class,
-                            root.get("userId"),
-                            root.get("login")
-                    )
-            );
-
-            return em.createQuery(criteria).getResultList();
-
+            return em.createQuery(q, ViewManagerDTO.class)
+                     .getResultList();
         } catch (Exception e) {
             throw new DatabaseException("Failed during database operation.", e);
         }

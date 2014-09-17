@@ -87,25 +87,16 @@ public class PedelecRepositoryImpl implements PedelecRepository {
     @Override
     @Transactional(readOnly = true)
     public ViewPedelecDTO findOneDTO(Long pedelecId) throws DatabaseException {
-        CriteriaBuilder builder = em.getCriteriaBuilder();
+
+        final String q = "SELECT new de.rwth.idsg.bikeman.web.rest.dto.view." +
+                         "ViewPedelecDTO(p.pedelecId, p.manufacturerId, p.stateOfCharge, p.state, p.inTransaction) " +
+                         "FROM Pedelec p " +
+                         "WHERE p.pedelecId = :pedelecId";
+
         try {
-            // Get the pedelecs in transaction
-            CriteriaQuery<ViewPedelecDTO> criteria = builder.createQuery(ViewPedelecDTO.class);
-            Root<Pedelec> root = criteria.from(Pedelec.class);
-
-            criteria.select(
-                    builder.construct(
-                            ViewPedelecDTO.class,
-                            root.get("pedelecId"),
-                            root.get("manufacturerId"),
-                            root.get("stateOfCharge"),
-                            root.get("state"),
-                            root.get("inTransaction")
-                    )
-            ).where(builder.equal(root.get("pedelecId"), pedelecId));
-
-            return em.createQuery(criteria).getSingleResult();
-
+            return em.createQuery(q, ViewPedelecDTO.class)
+                    .setParameter("pedelecId", pedelecId)
+                    .getSingleResult();
         } catch (Exception e) {
             throw new DatabaseException("Failed to find pedelec with pedelecId " + pedelecId, e);
         }
@@ -192,4 +183,3 @@ public class PedelecRepositoryImpl implements PedelecRepository {
         pedelec.setManufacturerId(dto.getManufacturerId());
     }
 }
-
