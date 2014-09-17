@@ -4,15 +4,15 @@ BikeMan is a **Bike** Sharing Scheme (http://en.wikipedia.org/wiki/Bicycle_shari
 
 This application was generated with [JHipster](http://jhipster.github.io/) 8.0 with OAuth2.0 Authentication and PostgreSQL (as dev and prod db).
 
-** Requirements
+## Requirements
 
 To build BikeMan you need at least the latest version of Maven, PostgreSQL, and Java JDK 7.
 
-** Configuration
+## Configuration
 
 Database tablename and user is by default `bikeman` (no password required). 
 
-** Start BikeMan
+## Start BikeMan
 
 With `mvn spring-boot:run` the application will start with an embedded Tomcat and port *8080*.
 
@@ -21,6 +21,6 @@ Default User: `Login:``user@bikeman.com` & `Password`:`user`
 
 For more information about technology stack and using in production take a look at the JHipster Documentation.
 
-** Demo Station for Testing Purpose
+## Demo Station for Testing Purpose
 
 BikeMan can tested with the [Bikesharing-Station-Demo Application](https://github.com/RWTH-i5-IDSG/Bikesharing-Station-Demo).
