@@ -16,8 +16,8 @@ Database tablename and user is by default `bikeman` (no password required).
 
 With `mvn spring-boot:run` the application will start with an embedded Tomcat and port *8080* and default users:
 
-* Admin (`Login:``admin@bikeman.com` & `Password`:`admin`)
-* User (`Login:``user@bikeman.com` & `Password`:`user`)
+* Admin (`admin@bikeman.com` `password: admin`)
+* User (`user@bikeman.com` `password: user`)
 
 For more information about technology stack and using in production take a look at the JHipster Documentation.
 
