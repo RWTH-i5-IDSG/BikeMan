@@ -46,6 +46,12 @@ public class Pedelec implements Serializable {
     @OneToOne(mappedBy = "pedelec")
     private StationSlot stationSlot;
 
+    @Column(name = "error_code")
+    private String errorCode;
+
+    @Column(name = "error_info")
+    private String errorInfo;
+
     @PrePersist
     public void prePersist() {
         if (stateOfCharge == null) {

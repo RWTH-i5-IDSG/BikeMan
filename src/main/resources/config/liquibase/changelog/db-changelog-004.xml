@@ -5,4 +5,39 @@
             <column name="firmware_version" type="varchar(255)"/>
         </addColumn>
     </changeSet>
+    
+    <changeSet author="jhipster" id="1409564974607-9" logicalFilePath="none">
+        <addColumn tableName="T_STATION">
+            <column name="error_code" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="jhipster" id="1409564974607-10" logicalFilePath="none">
+        <addColumn tableName="T_STATION">
+            <column name="error_info" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="jhipster" id="1409564974607-11" logicalFilePath="none">
+        <addColumn tableName="T_PEDELEC">
+            <column name="error_code" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="jhipster" id="1409564974607-12" logicalFilePath="none">
+        <addColumn tableName="T_PEDELEC">
+            <column name="error_info" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="jhipster" id="1409564974607-13" logicalFilePath="none">
+        <addColumn tableName="T_STATION_SLOT">
+            <column name="error_code" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="jhipster" id="1409564974607-14" logicalFilePath="none">
+        <addColumn tableName="T_STATION_SLOT">
+            <column name="error_info" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+
+
 </databaseChangeLog>

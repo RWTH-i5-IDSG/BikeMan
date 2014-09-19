@@ -62,4 +62,10 @@ public class Station implements Serializable {
     @Column(name = "firmware_version")
     private String firmwareVersion;
 
+    @Column(name = "error_code")
+    private String errorCode;
+
+    @Column(name = "error_info")
+    private String errorInfo;
+
 }

@@ -49,4 +49,10 @@ public class StationSlot implements Serializable {
     @ManyToOne
     @JoinColumn(name = "station_id")
     private Station station;
+
+    @Column(name = "error_code")
+    private String errorCode;
+
+    @Column(name = "error_info")
+    private String errorInfo;
 }
