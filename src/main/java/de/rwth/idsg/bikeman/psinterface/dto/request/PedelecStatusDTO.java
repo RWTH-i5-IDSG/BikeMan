@@ -11,7 +11,7 @@ import lombok.Data;
 public class PedelecStatusDTO {
     private String pedelecmanufacturerId;
     private String pedelecErrorCode;
-    private String pedelecInfo;
+    private String pedelecErrorInfo;
     private OperationState pedelecState;
     private Long timestamp;
 }

@@ -12,7 +12,7 @@ public class ChargingStatusDTO {
     private String pedelecManufacturerId;
     private String slotManufacturerId;
     private Long timestamp;
-    private ChargingState charginState; //?
+    private ChargingState chargingState;
     private Double meterValue;
     private BatteryStatusDTO battery;
 }

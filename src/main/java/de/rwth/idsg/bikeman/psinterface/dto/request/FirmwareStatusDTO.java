@@ -9,5 +9,5 @@ import lombok.Data;
 
 @Data
 public class FirmwareStatusDTO {
-private FirmwareUpdateState status;
+    private FirmwareUpdateState status;
 }

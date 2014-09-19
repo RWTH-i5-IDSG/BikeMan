@@ -13,6 +13,6 @@ public class SlotDTO {
     private Integer slotPosition;
     private String pedelecManufacturerId;
     private String slotErrorCode;
-    private String slotInfo;
+    private String slotErrorInfo;
     private OperationState slotState;
 }
