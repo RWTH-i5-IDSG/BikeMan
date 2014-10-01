@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<jaxb:bindings xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+               xmlns:xs="http://www.w3.org/2001/XMLSchema"
+               xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+               jaxb:version="2.1">
+
+    <jaxb:globalBindings choiceContentProperty="true" mapSimpleTypeDef="true" />
+
+    <jaxb:bindings schemaLocation="IXSI.xsd" node="/xs:schema/xs:complexType[@name='IxsiMessageType']/xs:choice">
+        <jaxb:property name="MessageList"/>
+    </jaxb:bindings>
+
+    <jaxb:bindings schemaLocation="IXSI.xsd" node="/xs:schema/xs:complexType[@name='QueryRequestType']//xs:choice">
+        <jaxb:property name="ActualRequest"/>
+    </jaxb:bindings>
+
+    <jaxb:bindings schemaLocation="IXSI.xsd" node="/xs:schema/xs:complexType[@name='QueryResponseType']//xs:choice">
+        <jaxb:property name="ActualResponse"/>
+    </jaxb:bindings>
+
+    <jaxb:bindings schemaLocation="IXSI.xsd" node="/xs:schema/xs:complexType[@name='SubscriptionRequestType']//xs:choice">
+        <jaxb:property name="SubscriptionRequest"/>
+    </jaxb:bindings>
+
+    <jaxb:bindings schemaLocation="IXSI.xsd" node="/xs:schema/xs:complexType[@name='SubscriptionResponseType']//xs:choice">
+        <jaxb:property name="SubscriptionResponse"/>
+    </jaxb:bindings>
+
+    <jaxb:bindings schemaLocation="IXSI.xsd" node="/xs:schema/xs:complexType[@name='SubscriptionMessageType']//xs:choice">
+        <jaxb:property name="PushMessage"/>
+    </jaxb:bindings>
+
+    <!--<jaxb:bindings schemaLocation="IXSI.xsd" node="/xs:schema/xs:complexType[@name='BookingChangeType']//xs:choice">-->
+        <!--<xjc:superClass name=""/>-->
+    <!--</jaxb:bindings>-->
+
+</jaxb:bindings>

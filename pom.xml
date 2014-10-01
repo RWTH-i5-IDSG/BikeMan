@@ -402,9 +402,9 @@
             <version>${spring-security-oauth2.version}</version>
         </dependency>
         <dependency>
-        <groupId>io.github.jhipster.loaded</groupId>
-        <artifactId>core</artifactId>
-        <version>${jhipsterloaded.version}</version>
+            <groupId>io.github.jhipster.loaded</groupId>
+            <artifactId>core</artifactId>
+            <version>${jhipsterloaded.version}</version>
         </dependency>
         <!--<dependency>-->
             <!--<groupId>io.github.jhipster.loaded</groupId>-->
@@ -417,6 +417,16 @@
             <groupId>com.mangofactory</groupId>
             <artifactId>swagger-springmvc</artifactId>
             <version>0.8.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-websocket</artifactId>
+            <version>4.1.0.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-websocket</artifactId>
+            <version>7.0.54</version>
         </dependency>
 
         <!-- Database dependencies-->
@@ -568,6 +578,30 @@
                                     <destFileName>springloaded-jhipster.jar</destFileName>
                                 </artifactItem>
                             </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.jvnet.jaxb2.maven2</groupId>
+                <artifactId>maven-jaxb2-plugin</artifactId>
+                <version>0.9.1</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <schemaDirectory>src/main/resources/ixsi</schemaDirectory>
+                            <generateDirectory>${project.build.directory}/generated-sources</generateDirectory>
+                            <bindingDirectory>src/main/resources/ixsi</bindingDirectory>
+                            <bindingIncludes><value>IXSI.xjb</value></bindingIncludes>
+                            <schemaIncludes>
+                                <include>IXSI.xsd</include>
+                            </schemaIncludes>
+                            <generatePackage>de.rwth.idsg.bikeman.ixsi.schema</generatePackage>
+                            <removeOldOutput>true</removeOldOutput>
+                            <extension>true</extension>
                         </configuration>
                     </execution>
                 </executions>

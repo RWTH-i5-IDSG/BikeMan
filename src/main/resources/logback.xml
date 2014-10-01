@@ -7,8 +7,9 @@
             <Pattern>%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n</Pattern>
         </encoder>
     </appender>
+
+    <!-- External dependencies -->
     <logger name="javax.activation" level="warn"/>
-    <logger name="de.rwth.idsg.bikeman" level="${logback.loglevel}"/>
     <logger name="ch.qos.logback" level="WARN"/>
     <logger name="com.codahale.metrics" level="WARN"/>
     <logger name="com.ryantenney" level="WARN"/>
@@ -21,13 +22,17 @@
     <logger name="org.hibernate.type" level="DEBUG"/>
     <logger name="org.atmosphere" level="WARN"/>
     <logger name="org.springframework" level="WARN"/>
-    <logger name="org.springframework.web" level="WARN"/>
+    <logger name="org.springframework.web" level="DEBUG"/>
     <logger name="org.springframework.security" level="WARN"/>
     <logger name="org.springframework.cache" level="WARN"/>
     <logger name="org.thymeleaf" level="WARN"/>
     <logger name="com.mangofactory.swagger" level="warn"/>
     <logger name="com.wordnik.swagger" level="warn"/>
     <logger name="liquibase" level="warn"/>
+
+    <!-- Application -->
+    <logger name="de.rwth.idsg.bikeman" level="${logback.loglevel}"/>
+    <logger name="de.rwth.idsg.bikeman.ixsi" level="trace"/>
 
     <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
         <resetJUL>true</resetJUL>
