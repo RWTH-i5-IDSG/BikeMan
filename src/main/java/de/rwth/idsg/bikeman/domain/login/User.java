@@ -31,6 +31,7 @@ import java.util.Set;
 @Getter
 @Setter
 public class User implements Serializable {
+    private static final long serialVersionUID = 9070882912934376688L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE, generator = "user_gen")

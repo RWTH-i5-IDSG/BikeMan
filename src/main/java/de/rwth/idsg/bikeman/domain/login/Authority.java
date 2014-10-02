@@ -1,8 +1,13 @@
 package de.rwth.idsg.bikeman.domain.login;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -22,6 +27,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 public class Authority implements Serializable {
+    private static final long serialVersionUID = -9117880235041725893L;
 
     @NotNull
     @Size(min = 0, max = 50)

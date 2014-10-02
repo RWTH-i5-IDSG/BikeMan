@@ -9,7 +9,6 @@ import org.hibernate.annotations.Type;
 import org.joda.time.LocalDate;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.Set;
 
 
@@ -23,7 +22,8 @@ import java.util.Set;
 @ToString(includeFieldNames = true, exclude = {"address", "transactions"})
 @Getter
 @Setter
-public class Customer extends User implements Serializable {
+public class Customer extends User {
+    private static final long serialVersionUID = -9218087801102094634L;
 
     @Column(name = "customer_id")
     private String customerId;

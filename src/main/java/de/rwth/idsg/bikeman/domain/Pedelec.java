@@ -21,6 +21,7 @@ import java.util.Set;
 @Getter
 @Setter
 public class Pedelec implements Serializable {
+    private static final long serialVersionUID = 7187208000731589081L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE, generator = "pedelec_gen")

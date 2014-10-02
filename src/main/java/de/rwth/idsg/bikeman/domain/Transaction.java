@@ -27,6 +27,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 public class Transaction implements Serializable {
+    private static final long serialVersionUID = 7444900986847008432L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE, generator = "transaction_gen")

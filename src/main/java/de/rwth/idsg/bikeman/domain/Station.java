@@ -25,6 +25,7 @@ import java.util.Set;
 @Getter
 @Setter
 public class Station implements Serializable {
+    private static final long serialVersionUID = 4263316848138899690L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE, generator = "station_gen")

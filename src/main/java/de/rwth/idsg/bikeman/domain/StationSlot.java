@@ -23,6 +23,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 public class StationSlot implements Serializable {
+    private static final long serialVersionUID = -1341816716937219400L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE, generator = "slot_gen")
