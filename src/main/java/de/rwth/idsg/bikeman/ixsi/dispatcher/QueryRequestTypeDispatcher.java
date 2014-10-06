@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.Duration;
@@ -24,20 +25,42 @@ public class QueryRequestTypeDispatcher extends AbstractRequestDispatcher {
 
     @Autowired private Producer producer;
 
-    private final DatatypeFactory factory;
+    @Autowired
+    private BookingTargetsInfoRequestProcessor bookingTargetsInfoRequestProcessor;
+    @Autowired
+    private ChangedProvidersRequestProcessor changedProvidersRequestProcessor;
+    @Autowired
+    private OpenSessionRequestProcessor openSessionRequestProcessor;
+    @Autowired
+    private CloseSessionRequestProcessor closeSessionRequestProcessor;
+    @Autowired
+    private TokenGenerationRequestProcessor tokenGenerationRequestProcessor;
+    @Autowired
+    private AvailabilityRequestProcessor availabilityRequestProcessor;
+    @Autowired
+    private PlaceAvailabilityRequestProcessor placeAvailabilityRequestProcessor;
+    @Autowired
+    private PriceInformationRequestProcessor priceInformationRequestProcessor;
+    @Autowired
+    private BookingRequestProcessor bookingRequestProcessor;
+    @Autowired
+    private ChangeBookingRequestProcessor changeBookingRequestProcessor;
 
-    public QueryRequestTypeDispatcher() throws DatatypeConfigurationException {
+    private static DatatypeFactory factory;
+
+    @PostConstruct
+    public void initProcessors() throws DatatypeConfigurationException {
         map = new HashMap<>();
-        map.put(BookingTargetsInfoRequestType.class, new BookingTargetsInfoRequestProcessor());
-        map.put(ChangedProvidersRequestType.class, new ChangedProvidersRequestProcessor());
-        map.put(OpenSessionRequestType.class, new OpenSessionRequestProcessor());
-        map.put(CloseSessionRequestType.class, new CloseSessionRequestProcessor());
-        map.put(TokenGenerationRequestType.class, new TokenGenerationRequestProcessor());
-        map.put(AvailabilityRequestType.class, new AvailabilityRequestProcessor());
-        map.put(PlaceAvailabilityRequestType.class, new PlaceAvailabilityRequestProcessor());
-        map.put(PriceInformationRequestType.class, new PriceInformationRequestProcessor());
-        map.put(BookingRequestType.class, new BookingRequestProcessor());
-        map.put(ChangeBookingRequestType.class, new ChangeBookingRequestProcessor());
+        map.put(BookingTargetsInfoRequestType.class, bookingTargetsInfoRequestProcessor);
+        map.put(ChangedProvidersRequestType.class, changedProvidersRequestProcessor);
+        map.put(OpenSessionRequestType.class, openSessionRequestProcessor);
+        map.put(CloseSessionRequestType.class, closeSessionRequestProcessor);
+        map.put(TokenGenerationRequestType.class, tokenGenerationRequestProcessor);
+        map.put(AvailabilityRequestType.class, availabilityRequestProcessor);
+        map.put(PlaceAvailabilityRequestType.class, placeAvailabilityRequestProcessor);
+        map.put(PriceInformationRequestType.class, priceInformationRequestProcessor);
+        map.put(BookingRequestType.class, bookingRequestProcessor);
+        map.put(ChangeBookingRequestType.class, changeBookingRequestProcessor);
 
         factory = DatatypeFactory.newInstance(); // This is expensive to init
         log.debug("Ready");
