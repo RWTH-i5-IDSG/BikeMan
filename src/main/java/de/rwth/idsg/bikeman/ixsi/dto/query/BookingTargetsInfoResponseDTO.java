@@ -15,7 +15,7 @@ public class BookingTargetsInfoResponseDTO {
     private XMLGregorianCalendar timestamp;
     private List<PedelecDTO> pedelecs;
     private List<StationDTO> stations;
-    // TODO implement PlaceGroup equivalent
+    // TODO implement PlaceGroup equivalent ("Großkunden")
     private List<Object> placeGroups;
     // TODO implement Provider equivalent
     private List<Object> providers;
