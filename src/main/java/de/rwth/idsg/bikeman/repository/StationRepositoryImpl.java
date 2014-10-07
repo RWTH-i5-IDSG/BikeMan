@@ -1,11 +1,16 @@
 package de.rwth.idsg.bikeman.repository;
 
 import de.rwth.idsg.bikeman.domain.Address;
+import de.rwth.idsg.bikeman.domain.Address_;
 import de.rwth.idsg.bikeman.domain.Pedelec;
+import de.rwth.idsg.bikeman.domain.Pedelec_;
 import de.rwth.idsg.bikeman.domain.Station;
 import de.rwth.idsg.bikeman.domain.StationSlot;
+import de.rwth.idsg.bikeman.domain.StationSlot_;
+import de.rwth.idsg.bikeman.domain.Station_;
 import de.rwth.idsg.bikeman.psinterface.dto.request.BootNotificationDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.SlotDTO;
+import de.rwth.idsg.bikeman.psinterface.dto.request.StationStatusDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditAddressDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditStationDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.view.ViewStationDTO;
@@ -27,6 +32,7 @@ import javax.persistence.criteria.Root;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by sgokay on 26.05.14.
@@ -56,7 +62,6 @@ public class StationRepositoryImpl implements StationRepository {
     @Transactional(readOnly = true)
     public List<ViewStationDTO> findByLocation(BigDecimal latitude, BigDecimal longitude)  throws DatabaseException {
         // TODO
-
         return null;
     }
 
@@ -76,21 +81,21 @@ public class StationRepositoryImpl implements StationRepository {
 
         // get slots for the station
         CriteriaQuery<ViewStationSlotDTO> slotCriteria = builder.createQuery(ViewStationSlotDTO.class);
-        Root<StationSlot> rootSlot = slotCriteria.from(StationSlot.class);
-        Join<StationSlot, Pedelec> pedelecJoin = rootSlot.join("pedelec", JoinType.LEFT);
+        Root<StationSlot> stationSlot = slotCriteria.from(StationSlot.class);
+        Join<StationSlot, Pedelec> pedelec = stationSlot.join(StationSlot_.pedelec, JoinType.LEFT);
 
         slotCriteria.select(
                 builder.construct(
                         ViewStationSlotDTO.class,
-                        rootSlot.get("stationSlotId"),
-                        rootSlot.get("manufacturerId"),
-                        rootSlot.get("stationSlotPosition"),
-                        rootSlot.get("state"),
-                        rootSlot.get("isOccupied"),
-                        pedelecJoin.get("pedelecId"),
-                        pedelecJoin.get("manufacturerId")
+                        stationSlot.get(StationSlot_.stationSlotId),
+                        stationSlot.get(StationSlot_.manufacturerId),
+                        stationSlot.get(StationSlot_.stationSlotPosition),
+                        stationSlot.get(StationSlot_.state),
+                        stationSlot.get(StationSlot_.isOccupied),
+                        pedelec.get(Pedelec_.pedelecId),
+                        pedelec.get(Pedelec_.manufacturerId)
                 )
-        ).where(builder.equal(rootSlot.get("station").get("stationId"), stationId));
+        ).where(builder.equal(stationSlot.get(StationSlot_.station).get(Station_.stationId), stationId));
 
         try {
             List<ViewStationSlotDTO> list = em.createQuery(slotCriteria).getResultList();
@@ -180,6 +185,12 @@ public class StationRepositoryImpl implements StationRepository {
         // 2. Insert new and unknown slots
         // -------------------------------------------------------------------------
 
+        List<SlotDTO> slotDTOs = dto.getSlotDTOs();
+
+        Station station = (Station) em.createQuery("SELECT s FROM Station s WHERE s.manufacturerId = :manufacturerId")
+                .setParameter("manufacturerId", stationManufacturerId)
+                .getSingleResult();
+
         //TODO
 
         // -------------------------------------------------------------------------
@@ -195,7 +206,6 @@ public class StationRepositoryImpl implements StationRepository {
                                "WHERE manufacturerId = :slotManufacturerId " +
                                "AND stationSlotPosition = :slotPosition";
 
-        List<SlotDTO> slotDTOs = dto.getSlotDTOs();
         List<String> failedSlots = new ArrayList<>();
         for (SlotDTO temp : slotDTOs) {
             String id = temp.getSlotManufacturerId();
@@ -220,6 +230,34 @@ public class StationRepositoryImpl implements StationRepository {
                     stationManufacturerId, slotsCount, failedSlots);
         }
     }
+
+//    @Override
+//    public void updateStatus(StationStatusDTO dto) {
+//        Station station = (Station) em.createQuery("SELECT s FROM Station s WHERE s.manufacturerId = :manufacturerId")
+//                .setParameter("manufacturerId", dto.getStationManufacturerId())
+//                .getSingleResult();
+//
+//
+//        Station station = null;
+//        try {
+//            station = getStationEntity(1);
+//            log.info("Got station: {}", station);
+//
+//            Set<StationSlot> slots = station.getStationSlots();
+//            log.info("Got slots: {}", slots);
+//
+//        } catch (DatabaseException e) {
+//            e.printStackTrace();
+//        }
+//
+//
+//
+//        StationSlot ss = (StationSlot) em.createQuery("SELECT ss FROM StationSlot ss WHERE ss.manufacturerId IN :manufacturerId")
+//                .setParameter("manufacturerId", dto.getStationManufacturerId())
+//                .getSingleResult();
+//
+//
+//    }
 
     /**
      * Returns a station, or throws exception when no station exists.
@@ -279,25 +317,26 @@ public class StationRepositoryImpl implements StationRepository {
     private CriteriaQuery<ViewStationDTO> getStationQuery(CriteriaBuilder builder, Long stationId) {
         CriteriaQuery<ViewStationDTO> criteria = builder.createQuery(ViewStationDTO.class);
 
-        Root<Station> root = criteria.from(Station.class);
-        Join<Station, StationSlot> slot = root.join("stationSlots", JoinType.LEFT);
-        Join<Station, Address> add = root.join("address", JoinType.LEFT);
-        Path<Boolean> occ = slot.get("isOccupied");
+        Root<Station> station = criteria.from(Station.class);
+        Join<Station, StationSlot> stationSlot = station.join(Station_.stationSlots, JoinType.LEFT);
+        Join<Station, Address> address = station.join(Station_.address, JoinType.LEFT);
+
+        Path<Boolean> occ = stationSlot.get(StationSlot_.isOccupied);
 
         criteria.select(
                 builder.construct(
                         ViewStationDTO.class,
-                        root.get("stationId"),
-                        root.get("manufacturerId"),
-                        root.get("name"),
-                        add.get("streetAndHousenumber"),
-                        add.get("zip"),
-                        add.get("city"),
-                        add.get("country"),
-                        root.get("locationLatitude"),
-                        root.get("locationLongitude"),
-                        root.get("note"),
-                        root.get("state"),
+                        station.get(Station_.stationId),
+                        station.get(Station_.manufacturerId),
+                        station.get(Station_.name),
+                        address.get(Address_.streetAndHousenumber),
+                        address.get(Address_.zip),
+                        address.get(Address_.city),
+                        address.get(Address_.country),
+                        station.get(Station_.locationLatitude),
+                        station.get(Station_.locationLongitude),
+                        station.get(Station_.note),
+                        station.get(Station_.state),
                         builder.sum(builder.<Integer>selectCase()
                                         .when(builder.isFalse(occ), 1)
                                         .otherwise(0)
@@ -307,10 +346,10 @@ public class StationRepositoryImpl implements StationRepository {
         );
 
         if (stationId != null) {
-            criteria.where(builder.equal(root.get("stationId"), stationId));
+            criteria.where(builder.equal(station.get(Station_.stationId), stationId));
         }
 
-        criteria.groupBy(root.get("stationId"), add.get("addressId"));
+        criteria.groupBy(station.get(Station_.stationId), address.get(Address_.addressId));
 
         return criteria;
     }

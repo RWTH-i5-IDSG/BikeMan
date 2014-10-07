@@ -1,7 +1,9 @@
 package de.rwth.idsg.bikeman.repository;
 
 import de.rwth.idsg.bikeman.domain.Address;
+import de.rwth.idsg.bikeman.domain.Address_;
 import de.rwth.idsg.bikeman.domain.Customer;
+import de.rwth.idsg.bikeman.domain.Customer_;
 import de.rwth.idsg.bikeman.domain.login.Authority;
 import de.rwth.idsg.bikeman.security.AuthoritiesConstants;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditAddressDTO;
@@ -253,24 +255,24 @@ public class CustomerRepositoryImpl implements CustomerRepository {
                                                     String name,
                                                     String login) {
         CriteriaQuery<ViewCustomerDTO> criteria = builder.createQuery(ViewCustomerDTO.class);
-        Root<Customer> root = criteria.from(Customer.class);
-        Join<Customer, Address> addressJoin = root.join("address", JoinType.LEFT);
+        Root<Customer> customer = criteria.from(Customer.class);
+        Join<Customer, Address> address = customer.join(Customer_.address, JoinType.LEFT);
 
         criteria.select(
                 builder.construct(
                         ViewCustomerDTO.class,
-                        root.get("userId"),
-                        root.get("login"),
-                        root.get("customerId"),
-                        root.get("firstname"),
-                        root.get("lastname"),
-                        root.get("isActivated"),
-                        root.get("birthday"),
-                        root.get("cardId"),
-                        addressJoin.get("streetAndHousenumber"),
-                        addressJoin.get("zip"),
-                        addressJoin.get("city"),
-                        addressJoin.get("country")
+                        customer.get(Customer_.userId),
+                        customer.get(Customer_.login),
+                        customer.get(Customer_.customerId),
+                        customer.get(Customer_.firstname),
+                        customer.get(Customer_.lastname),
+                        customer.get(Customer_.isActivated),
+                        customer.get(Customer_.birthday),
+                        customer.get(Customer_.cardId),
+                        address.get(Address_.streetAndHousenumber),
+                        address.get(Address_.zip),
+                        address.get(Address_.city),
+                        address.get(Address_.country)
                 )
         );
 
@@ -280,10 +282,10 @@ public class CustomerRepositoryImpl implements CustomerRepository {
 
             // Case insensitive search
             case BY_NAME:
-                Path<String> firstPath = root.get("firstname");
+                Path<String> firstPath = customer.get(Customer_.firstname);
                 Expression<String> firstLower = builder.lower(firstPath);
 
-                Path<String> lastPath = root.get("lastname");
+                Path<String> lastPath = customer.get(Customer_.lastname);
                 Expression<String> lastLower = builder.lower(lastPath);
 
                 /*
@@ -310,7 +312,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
 
             // Case insensitive search
             case BY_LOGIN:
-                Path<String> loginPath = root.get("login");
+                Path<String> loginPath = customer.get(Customer_.login);
                 Expression<String> loginLower = builder.lower(loginPath);
 
                 criteria.where(

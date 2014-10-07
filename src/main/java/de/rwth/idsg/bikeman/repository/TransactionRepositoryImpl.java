@@ -1,10 +1,11 @@
 package de.rwth.idsg.bikeman.repository;
 
-import de.rwth.idsg.bikeman.domain.Customer;
-import de.rwth.idsg.bikeman.domain.Pedelec;
-import de.rwth.idsg.bikeman.domain.Station;
-import de.rwth.idsg.bikeman.domain.StationSlot;
-import de.rwth.idsg.bikeman.domain.Transaction;
+import de.rwth.idsg.bikeman.domain.*;
+import de.rwth.idsg.bikeman.domain.Customer_;
+import de.rwth.idsg.bikeman.domain.Pedelec_;
+import de.rwth.idsg.bikeman.domain.StationSlot_;
+import de.rwth.idsg.bikeman.domain.Station_;
+import de.rwth.idsg.bikeman.domain.Transaction_;
 import de.rwth.idsg.bikeman.psinterface.dto.request.StartTransactionDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.StopTransactionDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.view.ViewTransactionDTO;
@@ -99,32 +100,32 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         CriteriaBuilder builder = em.getCriteriaBuilder();
 
         CriteriaQuery<ViewTransactionDTO> criteria = builder.createQuery(ViewTransactionDTO.class);
-        Root<Transaction> root = criteria.from(Transaction.class);
+        Root<Transaction> transaction = criteria.from(Transaction.class);
 
-        Join<Transaction, Pedelec> pedelecJoin = root.join("pedelec", JoinType.LEFT);
-        Join<Transaction, Customer> customerJoin = root.join("customer", JoinType.LEFT);
+        Join<Transaction, Pedelec> pedelec = transaction.join(Transaction_.pedelec, JoinType.LEFT);
+        Join<Transaction, Customer> customer = transaction.join(Transaction_.customer, JoinType.LEFT);
 
-        Join<Transaction, StationSlot> fromSlotJoin = root.join("fromSlot", JoinType.LEFT);
-        Join<StationSlot, Station> fromStation = fromSlotJoin.join("station", JoinType.LEFT);
+        Join<Transaction, StationSlot> fromStationSlot = transaction.join(Transaction_.fromSlot, JoinType.LEFT);
+        Join<StationSlot, Station> fromStation = fromStationSlot.join(StationSlot_.station, JoinType.LEFT);
 
         criteria.select(
                 builder.construct(
                         ViewTransactionDTO.class,
-                        root.get("transactionId"),
-                        root.get("startDateTime"),
-                        fromStation.get("stationId"),
-                        fromStation.get("name"),
-                        fromSlotJoin.get("stationSlotPosition"),
-                        customerJoin.get("customerId"),
-                        customerJoin.get("firstname"),
-                        customerJoin.get("lastname"),
-                        pedelecJoin.get("pedelecId"),
-                        pedelecJoin.get("manufacturerId")
+                        transaction.get(Transaction_.transactionId),
+                        transaction.get(Transaction_.startDateTime),
+                        fromStation.get(Station_.stationId),
+                        fromStation.get(Station_.name),
+                        fromStationSlot.get(StationSlot_.stationSlotPosition),
+                        customer.get(Customer_.customerId),
+                        customer.get(Customer_.firstname),
+                        customer.get(Customer_.lastname),
+                        pedelec.get(Pedelec_.pedelecId),
+                        pedelec.get(Pedelec_.manufacturerId)
                 )
         ).where(
                 builder.and(
-                        builder.isNull(root.get("toSlot")),
-                        builder.isNull(root.get("endDateTime"))
+                        builder.isNull(transaction.get(Transaction_.toSlot)),
+                        builder.isNull(transaction.get(Transaction_.endDateTime))
                 )
         );
 
@@ -250,37 +251,37 @@ public class TransactionRepositoryImpl implements TransactionRepository {
     private CriteriaQuery<ViewTransactionDTO> getTransactionQuery(FindType findType, Long pedelecId, String login) {
         CriteriaBuilder builder = em.getCriteriaBuilder();
         CriteriaQuery<ViewTransactionDTO> criteria = builder.createQuery(ViewTransactionDTO.class);
-        Root<Transaction> root = criteria.from(Transaction.class);
+        Root<Transaction> transaction = criteria.from(Transaction.class);
 
-        Join<Transaction, Pedelec> pedelecJoin = root.join("pedelec", JoinType.LEFT);
-        Join<Transaction, Customer> customerJoin = root.join("customer", JoinType.LEFT);
+        Join<Transaction, Pedelec> pedelec = transaction.join(Transaction_.pedelec, JoinType.LEFT);
+        Join<Transaction, Customer> customer = transaction.join(Transaction_.customer, JoinType.LEFT);
 
-        Join<Transaction, StationSlot> fromSlotJoin = root.join("fromSlot", JoinType.LEFT);
-        Join<StationSlot, Station> fromStation = fromSlotJoin.join("station", JoinType.LEFT);
+        Join<Transaction, StationSlot> fromStationSlot = transaction.join(Transaction_.fromSlot, JoinType.LEFT);
+        Join<StationSlot, Station> fromStation = fromStationSlot.join(StationSlot_.station, JoinType.LEFT);
 
-        Join<Transaction, StationSlot> toSlotJoin = root.join("toSlot", JoinType.LEFT);
-        Join<StationSlot, Station> toStation = toSlotJoin.join("station", JoinType.LEFT);
+        Join<Transaction, StationSlot> toStationSlot = transaction.join(Transaction_.toSlot, JoinType.LEFT);
+        Join<StationSlot, Station> toStation = toStationSlot.join(StationSlot_.station, JoinType.LEFT);
 
         criteria.select(
                 builder.construct(
                         ViewTransactionDTO.class,
-                        root.get("transactionId"),
-                        root.get("startDateTime"),
-                        root.get("endDateTime"),
-                        fromStation.get("stationId"),
-                        fromStation.get("name"),
-                        fromSlotJoin.get("stationSlotPosition"),
-                        toStation.get("stationId"),
-                        toStation.get("name"),
-                        toSlotJoin.get("stationSlotPosition"),
-                        customerJoin.get("customerId"),
-                        customerJoin.get("firstname"),
-                        customerJoin.get("lastname"),
-                        pedelecJoin.get("pedelecId"),
-                        pedelecJoin.get("manufacturerId")
+                        transaction.get(Transaction_.transactionId),
+                        transaction.get(Transaction_.startDateTime),
+                        transaction.get(Transaction_.endDateTime),
+                        fromStation.get(Station_.stationId),
+                        fromStation.get(Station_.name),
+                        fromStationSlot.get(StationSlot_.stationSlotPosition),
+                        toStation.get(Station_.stationId),
+                        toStation.get(Station_.name),
+                        toStationSlot.get(StationSlot_.stationSlotPosition),
+                        customer.get(Customer_.customerId),
+                        customer.get(Customer_.firstname),
+                        customer.get(Customer_.lastname),
+                        pedelec.get(Pedelec_.pedelecId),
+                        pedelec.get(Pedelec_.manufacturerId)
                 )
         ).orderBy(
-                builder.desc(root.get("endDateTime"))
+                builder.desc(transaction.get(Transaction_.endDateTime))
         );
 
         switch (findType) {
@@ -290,21 +291,21 @@ public class TransactionRepositoryImpl implements TransactionRepository {
             case CLOSED:
                 criteria.where(
                         builder.and(
-                                builder.isNotNull(root.get("toSlot")),
-                                builder.isNotNull(root.get("endDateTime"))
+                                builder.isNotNull(transaction.get(Transaction_.toSlot)),
+                                builder.isNotNull(transaction.get(Transaction_.endDateTime))
                         )
                 );
                 break;
 
             case BY_PEDELEC_ID:
                 criteria.where(
-                        builder.equal(pedelecJoin.get("pedelecId"), pedelecId)
+                        builder.equal(pedelec.get(Pedelec_.pedelecId), pedelecId)
                 );
                 break;
 
             case BY_LOGIN:
                 criteria.where(
-                        builder.equal(customerJoin.get("login"), login)
+                        builder.equal(customer.get(Customer_.login), login)
                 );
                 break;
         }
