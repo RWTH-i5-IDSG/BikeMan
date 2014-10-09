@@ -12,7 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 public class BookingTargetsInfoResponseDTO {
-    private XMLGregorianCalendar timestamp;
+    private long timestamp;
     private List<PedelecDTO> pedelecs;
     private List<StationDTO> stations;
     // TODO implement PlaceGroup equivalent ("Großkunden")

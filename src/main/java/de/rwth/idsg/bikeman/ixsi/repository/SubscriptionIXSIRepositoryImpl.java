@@ -31,15 +31,15 @@ public class SubscriptionIXSIRepositoryImpl implements SubscriptionIXSIRepositor
         return null;
     }
 
-    @Override
-    public BookingAlertSubscriptionResponseDTO bookingAlertSubscription() {
-        return null;
-    }
-
-    @Override
-    public BookingAlertSubscriptionStatusResponseDTO bookingAlertSubscriptionStatus() {
-        return null;
-    }
+//    @Override
+//    public BookingAlertSubscriptionResponseDTO bookingAlertSubscription() {
+//        return null;
+//    }
+//
+//    @Override
+//    public BookingAlertSubscriptionStatusResponseDTO bookingAlertSubscriptionStatus() {
+//        return null;
+//    }
 
     @Override
     public CompleteAvailabilityResponseDTO completeAvailability() {
@@ -51,8 +51,8 @@ public class SubscriptionIXSIRepositoryImpl implements SubscriptionIXSIRepositor
         return null;
     }
 
-    @Override
-    public CompleteBookingAlertResponseDTO completeBookingAlert() {
-        return null;
-    }
+//    @Override
+//    public CompleteBookingAlertResponseDTO completeBookingAlert() {
+//        return null;
+//    }
 }

@@ -13,8 +13,9 @@ public interface QueryIXSIRepository {
 
     // User triggered data
     public AvailabilityResponseDTO availability();
-    public BookingResponseDTO booking();
-    public ChangeBookingResponseDTO changeBooking();
+    // we do not need booking for velocity
+//    public BookingResponseDTObooking();
+//    public ChangeBookingResponseDTO changeBooking();
     public CloseSessionResponseDTO closeSession();
     public OpenSessionResponseDTO openSession();
     public PlaceAvailabilityResponseDTO placeAvailability();

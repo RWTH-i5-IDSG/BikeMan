@@ -11,8 +11,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 /**
@@ -37,7 +41,14 @@ public class BookingTargetsInfoRequestProcessor implements
         List<ProbabilityPlaceIDType> placeIds = new ArrayList<>();
 
         // response timestamp
-        response.setTimestamp(responseDTO.getTimestamp());
+        try {
+            GregorianCalendar c = new GregorianCalendar();
+            c.setTime(new Date(responseDTO.getTimestamp()));
+            response.setTimestamp(DatatypeFactory.newInstance().newXMLGregorianCalendar(c));
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
+
 
         // BEGIN response pedelecs
         List<PedelecDTO> pedelecs = responseDTO.getPedelecs();
