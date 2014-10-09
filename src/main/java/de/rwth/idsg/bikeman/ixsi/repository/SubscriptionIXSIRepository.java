@@ -14,11 +14,11 @@ public interface SubscriptionIXSIRepository {
     public AvailabilitySubscriptionStatusResponseDTO availabilitySubscriptionStatus();
     public PlaceAvailabilitySubscriptionResponseDTO placeAvailabilitySubscription();
     public PlaceAvailabilitySubscriptionStatusResponseDTO placeAvailabilitySubscriptionStatus();
-    public BookingAlertSubscriptionResponseDTO bookingAlertSubscription();
-    public BookingAlertSubscriptionStatusResponseDTO bookingAlertSubscriptionStatus();
+//    public BookingAlertSubscriptionResponseDTO bookingAlertSubscription();
+//    public BookingAlertSubscriptionStatusResponseDTO bookingAlertSubscriptionStatus();
 
     // Response Message
     public CompleteAvailabilityResponseDTO completeAvailability();
     public CompletePlaceAvailabilityResponseDTO completePlaceAvailability();
-    public CompleteBookingAlertResponseDTO completeBookingAlert();
+//    public CompleteBookingAlertResponseDTO completeBookingAlert();
 }
