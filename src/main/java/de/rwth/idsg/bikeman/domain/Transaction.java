@@ -58,4 +58,9 @@ public class Transaction implements Serializable {
     @JoinColumn(name = "to_slot_id")
     private StationSlot toSlot;
 
+    @ManyToOne
+    @JoinColumn(name = "card_account_id")
+    private CardAccount cardAccount;
+
+
 }

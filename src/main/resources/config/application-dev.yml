@@ -49,8 +49,8 @@ hotReload:
     enabled: true
     package:
       project: de.rwth.idsg.bikeman
-      domain: de.rwth.idsg.bikemandomain
-      restdto: de.rwth.idsg.bikemanweb.rest.dto
+      domain: de.rwth.idsg.bikeman.domain
+      restdto: de.rwth.idsg.bikeman.web.rest.dto
     liquibase:
       defaultCatalogName:
       defaultSchema: public

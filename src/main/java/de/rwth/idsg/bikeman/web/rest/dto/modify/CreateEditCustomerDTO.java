@@ -27,7 +27,6 @@ public class CreateEditCustomerDTO {
     @NotBlank
     private String customerId;
 
-    // TODO @CreditCardNumber
     @NotBlank
     private String cardId;
 

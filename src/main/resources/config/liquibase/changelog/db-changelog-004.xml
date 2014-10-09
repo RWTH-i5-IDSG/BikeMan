@@ -39,5 +39,45 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="1409564974607-15" author="wkluth" logicalFilePath="none">
+        <createTable tableName="T_CARD_ACCOUNT">
+            <column name="card_account_id" type="INT8">
+                <constraints nullable="false"/>
+            </column>
+            <column name="card_id" type="varchar(255)"></column>
+            <column name="card_pin" type="INT"></column>
+            <column name="in_transaction" type="BOOLEAN"></column>
+            <column name="user_id" type="INT8"></column>
+
+        </createTable>
+
+        <addColumn tableName="T_TRANSACTION">
+            <column name="card_account_id" type="INT8"></column>
+        </addColumn>
+
+        <addPrimaryKey columnNames="card_account_id" constraintName="T_CARDACCPK" schemaName="public" tableName="T_CARD_ACCOUNT"/>
+
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="T_CARD_ACCOUNT" baseTableSchemaName="public" constraintName="FK_USER_CARDACC" deferrable="false" initiallyDeferred="false" referencedColumnNames="user_id" referencedTableCatalogName="" referencedTableName="T_USER" referencedTableSchemaName="public"/>
+
+        <addForeignKeyConstraint baseColumnNames="card_account_id" baseTableName="T_TRANSACTION" baseTableSchemaName="public" constraintName="FK_CARDACC_TRANSACTION" deferrable="false" initiallyDeferred="false" referencedColumnNames="card_account_id" referencedTableCatalogName="" referencedTableName="T_CARD_ACCOUNT" referencedTableSchemaName="public"/>
+
+
+    </changeSet>
+    
+    <changeSet id="1409564974607-16" author="wkluth">
+        <addColumn tableName="T_STATION">
+            <column name="ip_address" type="varchar(255)"></column>
+        </addColumn>
+        
+        <createTable tableName="T_MAJOR_CUSTOMER">
+            <column name="user_id" type="INT8"></column>
+        </createTable>
+
+        <addPrimaryKey tableName="T_MAJOR_CUSTOMER" columnNames="user_id"></addPrimaryKey>
+        <addForeignKeyConstraint baseTableName="T_MAJOR_CUSTOMER" baseColumnNames="user_id" constraintName="FK_MAJORCUSTOMER_MANAGER"
+                                 referencedTableName="T_MANAGER"
+                                 referencedColumnNames="user_id"></addForeignKeyConstraint>
+    </changeSet>
+
 
 </databaseChangeLog>

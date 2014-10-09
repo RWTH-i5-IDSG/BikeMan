@@ -1,6 +1,8 @@
 package de.rwth.idsg.bikeman.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import de.rwth.idsg.bikeman.domain.CardAccount;
+import de.rwth.idsg.bikeman.domain.Customer;
 import de.rwth.idsg.bikeman.domain.login.Authority;
 import de.rwth.idsg.bikeman.domain.login.PersistentToken;
 import de.rwth.idsg.bikeman.domain.login.User;
@@ -10,6 +12,7 @@ import de.rwth.idsg.bikeman.security.AuthoritiesConstants;
 import de.rwth.idsg.bikeman.security.SecurityUtils;
 import de.rwth.idsg.bikeman.service.UserService;
 import de.rwth.idsg.bikeman.web.rest.dto.UserDTO;
+import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -137,7 +140,7 @@ public class AccountResource {
     public void invalidateSession(@PathVariable String series, HttpServletRequest request) throws UnsupportedEncodingException {
         String decodedSeries = URLDecoder.decode(series, "UTF-8");
 
-        User user = userRepository.findOne(SecurityUtils.getCurrentLogin());
+        User user = userRepository.findByLogin(SecurityUtils.getCurrentLogin());
         List<PersistentToken> persistentTokens = persistentTokenRepository.findByUser(user);
         for (PersistentToken persistentToken : persistentTokens) {
 		    if (StringUtils.equals(persistentToken.getSeries(), decodedSeries)) {

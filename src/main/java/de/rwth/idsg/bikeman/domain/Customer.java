@@ -19,7 +19,7 @@ import java.util.Set;
                 @Index(columnList="address_id", unique = true),
                 @Index(columnList="customer_id", unique = true)})
 @EqualsAndHashCode(of = {"customerId"}, callSuper = false)
-@ToString(includeFieldNames = true, exclude = {"address", "transactions"})
+@ToString(includeFieldNames = true, exclude = {"address", "transactions", "cardAccount"})
 @Getter
 @Setter
 public class Customer extends User {
@@ -56,6 +56,9 @@ public class Customer extends User {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "customer", orphanRemoval = true)
     private Set<Transaction> transactions;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
+    private CardAccount cardAccount;
 
     @PrePersist
     public void prePersist() {
