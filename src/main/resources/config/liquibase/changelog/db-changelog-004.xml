@@ -66,7 +66,7 @@
     
     <changeSet id="1409564974607-16" author="wkluth">
         <addColumn tableName="T_STATION">
-            <column name="ip_address" type="varchar(255)"></column>
+            <column name="endpoint_address" type="varchar(255)"></column>
         </addColumn>
         
         <createTable tableName="T_MAJOR_CUSTOMER">

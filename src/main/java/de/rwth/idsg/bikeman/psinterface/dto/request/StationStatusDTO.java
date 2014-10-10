@@ -1,5 +1,6 @@
 package de.rwth.idsg.bikeman.psinterface.dto.request;
 
+import de.rwth.idsg.bikeman.psinterface.dto.OperationState;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,6 +22,7 @@ public class StationStatusDTO {
     private String stationManufacturerId;
     private String stationErrorCode;
     private String stationErrorInfo;
+    private OperationState stationState;
     private Long timestamp;
     private List<SlotDTO> slots;
 

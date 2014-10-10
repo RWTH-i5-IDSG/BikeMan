@@ -69,7 +69,7 @@ public class BookingTargetsInfoRequestProcessor implements
             target.getName().add(name);
 
             // set placeGroupId
-            target.setPlaceIDOrPlaceGroupIDOrAreaID(ped.getPlaceGroupId());
+            target.setPlaceIDOrPlaceGroupIDOrAreaID(IXSIConstants.PlaceGroup.id);
 
             // set maxDistance
             target.setMaxDistance(ped.getMaxDistance());

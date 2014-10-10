@@ -2,6 +2,7 @@ package de.rwth.idsg.bikeman.repository;
 
 import de.rwth.idsg.bikeman.domain.Address;
 import de.rwth.idsg.bikeman.domain.Address_;
+import de.rwth.idsg.bikeman.domain.OperationState;
 import de.rwth.idsg.bikeman.domain.Pedelec;
 import de.rwth.idsg.bikeman.domain.Pedelec_;
 import de.rwth.idsg.bikeman.domain.Station;
@@ -9,14 +10,15 @@ import de.rwth.idsg.bikeman.domain.StationSlot;
 import de.rwth.idsg.bikeman.domain.StationSlot_;
 import de.rwth.idsg.bikeman.domain.Station_;
 import de.rwth.idsg.bikeman.psinterface.dto.request.BootNotificationDTO;
-import de.rwth.idsg.bikeman.psinterface.dto.request.SlotDTO;
-import de.rwth.idsg.bikeman.psinterface.dto.request.StationStatusDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditAddressDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditStationDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.view.ViewStationDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.view.ViewStationSlotDTO;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.criterion.Example;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,9 +32,7 @@ import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Root;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by sgokay on 26.05.14.
@@ -108,6 +108,32 @@ public class StationRepositoryImpl implements StationRepository {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public String getEndpointAddress(long stationId) throws DatabaseException {
+        final String q = "SELECT s.endpointAddress FROM Station s WHERE s.stationId = :stationId";
+        try {
+            return em.createQuery(q, String.class)
+                     .setParameter("stationId", stationId)
+                     .getSingleResult();
+        } catch (Exception e) {
+            throw new DatabaseException("Failed to find station with stationId " + stationId, e);
+        }
+    }
+
+    @Override
+    public void updateEndpointAddress(long stationId, String endpointAddress) throws DatabaseException {
+        final String q = "UPDATE Station s SET s.endpointAddress = :endpointAddress WHERE s.stationId = :stationId";
+        try {
+            em.createQuery(q)
+              .setParameter("stationId", stationId)
+              .setParameter("endpointAddress", endpointAddress)
+              .getSingleResult();
+        } catch (Exception e) {
+            throw new DatabaseException("Failed to update endpointAddress of station with stationId " + stationId, e);
+        }
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public void create(CreateEditStationDTO dto) throws DatabaseException {
         Station station = new Station();
@@ -160,75 +186,98 @@ public class StationRepositoryImpl implements StationRepository {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateAfterBoot(BootNotificationDTO dto) throws DatabaseException {
-        String stationManufacturerId = dto.getStationManufacturerId();
+//        String stationManufacturerId = dto.getStationManufacturerId();
+//
+//        Station s = new Station();
+//        s.setManufacturerId(stationManufacturerId);
+//
+//        Session session = (Session) em.getDelegate();
+//        Criteria criteria = session.createCriteria(Station.class).add(Example.create(s));
+//        List results = criteria.list();
+//        Station station = (Station) results.get(0);
 
-        // -------------------------------------------------------------------------
-        // 1. Update station table
-        // -------------------------------------------------------------------------
+//        Set<StationSlot> slots = station.getStationSlots();
+//        for (StationSlot ss : slots) {
+//            log.info("Slot: {}", ss);
+//        }
+//
+//        log.info("Station: {}", station);
 
-        final String sQuery = "UPDATE Station " +
-                              "SET firmwareVersion = :fwVersion " +
-                              "WHERE manufacturerId = :manufacturerId";
+//        // -------------------------------------------------------------------------
+//        // 1. Update station table
+//        // -------------------------------------------------------------------------
+//
+//        final String sQuery = "UPDATE Station " +
+//                              "SET firmwareVersion = :fwVersion " +
+//                              "WHERE manufacturerId = :manufacturerId";
+//
+//        int updateCount = em.createQuery(sQuery)
+//                            .setParameter("fwVersion", dto.getFirmwareVersion())
+//                            .setParameter("manufacturerId", stationManufacturerId)
+//                            .executeUpdate();
+//
+//        if (updateCount == 1) {
+//            log.debug("[StationId: {}] Station info is updated", stationManufacturerId);
+//        } else {
+//            log.error("[StationId: {}] Station info update FAILED", stationManufacturerId);
+//        }
+//
+//        // -------------------------------------------------------------------------
+//        // 2. Insert new and unknown slots
+//        // -------------------------------------------------------------------------
+//
+//        List<SlotDTO> slotDTOs = dto.getSlotDTOs();
+//
+//        List results = em.createQuery("SELECT ss FROM StationSlot ss " +
+//                "WHERE ss.station = (SELECT s FROM Station s WHERE s.manufacturerId = :stationManufacturerId)")
+//                .setParameter("stationManufacturerId", stationManufacturerId)
+//                .getResultList();
+//
+//        for (Object result : results) {
+//            StationSlot ss = (StationSlot) result;
+//            log.info("StationSlot: {}", ss);
+//        }
 
-        int updateCount = em.createQuery(sQuery)
-                            .setParameter("fwVersion", dto.getFirmwareVersion())
-                            .setParameter("manufacturerId", stationManufacturerId)
-                            .executeUpdate();
 
-        if (updateCount == 1) {
-            log.debug("[StationId: {}] Station info is updated", stationManufacturerId);
-        } else {
-            log.error("[StationId: {}] Station info update FAILED", stationManufacturerId);
-        }
-
-        // -------------------------------------------------------------------------
-        // 2. Insert new and unknown slots
-        // -------------------------------------------------------------------------
-
-        List<SlotDTO> slotDTOs = dto.getSlotDTOs();
-
-        Station station = (Station) em.createQuery("SELECT s FROM Station s WHERE s.manufacturerId = :manufacturerId")
-                .setParameter("manufacturerId", stationManufacturerId)
-                .getSingleResult();
-
-        //TODO
-
-        // -------------------------------------------------------------------------
-        // 3. Batch update station slot table
-        //
-        // TODO: Find out how to batch update with JPA. Current version is BS.
-        // -------------------------------------------------------------------------
-
-        final String ssQuery = "UPDATE StationSlot " +
-                               "SET state = :slotState, " +
-                               "pedelec = (SELECT p FROM Pedelec p WHERE p.manufacturerId = :pedelecManufacturerId), " +
-                               "isOccupied = CASE WHEN :pedelecManufacturerId IS NULL THEN false ELSE true END " +
-                               "WHERE manufacturerId = :slotManufacturerId " +
-                               "AND stationSlotPosition = :slotPosition";
-
-        List<String> failedSlots = new ArrayList<>();
-        for (SlotDTO temp : slotDTOs) {
-            String id = temp.getSlotManufacturerId();
-            int tempCount = em.createQuery(ssQuery)
-                              .setParameter("slotState", temp.getSlotState())
-                              .setParameter("pedelecManufacturerId", temp.getPedelecManufacturerId())
-                              .setParameter("slotManufacturerId", id)
-                              .setParameter("slotPosition", temp.getSlotPosition())
-                              .executeUpdate();
-
-            if (tempCount != 1) {
-                failedSlots.add(id);
-            }
-        }
-
-        int slotsCount = slotDTOs.size();
-        if (failedSlots.size() == 0) {
-            log.debug("[StationId: {}] {} slots to update, ALL are updated.",
-                    stationManufacturerId, slotsCount);
-        } else {
-            log.error("[StationId: {}] {} slots to update, but there are failed updates. List of failed slotIds: {}",
-                    stationManufacturerId, slotsCount, failedSlots);
-        }
+//
+//        //TODO
+//
+//        // -------------------------------------------------------------------------
+//        // 3. Batch update station slot table
+//        //
+//        // TODO: Find out how to batch update with JPA. Current version is BS.
+//        // -------------------------------------------------------------------------
+//
+//        final String ssQuery = "UPDATE StationSlot " +
+//                               "SET state = :slotState, " +
+//                               "pedelec = (SELECT p FROM Pedelec p WHERE p.manufacturerId = :pedelecManufacturerId), " +
+//                               "isOccupied = CASE WHEN :pedelecManufacturerId IS NULL THEN false ELSE true END " +
+//                               "WHERE manufacturerId = :slotManufacturerId " +
+//                               "AND stationSlotPosition = :slotPosition";
+//
+//        List<String> failedSlots = new ArrayList<>();
+//        for (SlotDTO temp : slotDTOs) {
+//            String id = temp.getSlotManufacturerId();
+//            int tempCount = em.createQuery(ssQuery)
+//                              .setParameter("slotState", temp.getSlotState())
+//                              .setParameter("pedelecManufacturerId", temp.getPedelecManufacturerId())
+//                              .setParameter("slotManufacturerId", id)
+//                              .setParameter("slotPosition", temp.getSlotPosition())
+//                              .executeUpdate();
+//
+//            if (tempCount != 1) {
+//                failedSlots.add(id);
+//            }
+//        }
+//
+//        int slotsCount = slotDTOs.size();
+//        if (failedSlots.size() == 0) {
+//            log.debug("[StationId: {}] {} slots to update, ALL are updated.",
+//                    stationManufacturerId, slotsCount);
+//        } else {
+//            log.error("[StationId: {}] {} slots to update, but there are failed updates. List of failed slotIds: {}",
+//                    stationManufacturerId, slotsCount, failedSlots);
+//        }
     }
 
 //    @Override
@@ -258,6 +307,27 @@ public class StationRepositoryImpl implements StationRepository {
 //
 //
 //    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void changeSlotState(long stationId, int slotPosition, OperationState state) {
+        final String query = "UPDATE StationSlot ss " +
+                             "SET ss.state = :state " +
+                             "WHERE ss.stationSlotPosition = :slotPosition " +
+                             "AND ss.station = (SELECT s FROM Station s WHERE s.stationId = :stationId)";
+
+        int count = em.createQuery(query)
+                      .setParameter("state", state)
+                      .setParameter("slotPosition", slotPosition)
+                      .setParameter("stationId", stationId)
+                      .executeUpdate();
+
+        if (count == 1) {
+            log.debug("[StationId: {}] Slot with position {} is updated", stationId, slotPosition);
+        } else {
+            log.error("[StationId: {}] Slot with position {} update FAILED", stationId, slotPosition);
+        }
+    }
 
     /**
      * Returns a station, or throws exception when no station exists.

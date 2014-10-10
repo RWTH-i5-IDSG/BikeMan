@@ -3,7 +3,9 @@ package de.rwth.idsg.bikeman.ixsi;
 /**
  * Created by max on 07/10/14.
  */
-public class IXSIConstants {
+public final class IXSIConstants {
+    private IXSIConstants() {}
+
     public static final String bookeeClassType = "bike";
     public static final String engineType = "electric";
 

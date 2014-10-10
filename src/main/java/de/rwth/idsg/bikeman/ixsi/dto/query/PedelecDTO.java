@@ -12,6 +12,5 @@ import lombok.Getter;
 public class PedelecDTO {
     private long pedelecId;
     private String manufacturerId;
-    private String placeGroupId;
     private NonNegativeInteger maxDistance;
 }

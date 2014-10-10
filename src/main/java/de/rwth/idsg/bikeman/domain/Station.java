@@ -38,8 +38,8 @@ public class Station implements Serializable {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "ip_address")
-    private String ipAddress;
+    @Column(name = "endpoint_address")
+    private String endpointAddress;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id")

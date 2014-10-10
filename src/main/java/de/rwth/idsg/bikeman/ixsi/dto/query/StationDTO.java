@@ -1,6 +1,5 @@
 package de.rwth.idsg.bikeman.ixsi.dto.query;
 
-import de.rwth.idsg.bikeman.ixsi.schema.NonNegativeInteger;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -18,6 +17,5 @@ public class StationDTO {
     private BigDecimal location_latitude;
     private BigInteger slotCount;
     private String name;
-    private String providerId;
     private String description;
 }
