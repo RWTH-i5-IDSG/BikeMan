@@ -1,6 +1,7 @@
 package de.rwth.idsg.bikeman.domain.login;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import de.rwth.idsg.bikeman.domain.AbstractTimestampClass;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,10 +28,10 @@ import java.util.Set;
 @TableGenerator(name="user_gen", initialValue=0, allocationSize=1)
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @ToString(includeFieldNames = true)
-@EqualsAndHashCode(of = {"userId", "login"})
+@EqualsAndHashCode(callSuper = false, of = {"userId", "login"})
 @Getter
 @Setter
-public class User implements Serializable {
+public class User extends AbstractTimestampClass implements Serializable {
     private static final long serialVersionUID = 9070882912934376688L;
 
     @Id

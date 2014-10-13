@@ -9,7 +9,7 @@ import lombok.Data;
  * @version 15.07.2014
  */
 @Data
-class ViewAddressDTO {
+public class ViewAddressDTO {
     private final String streetAndHousenumber;
     private final String zip;
     private final String city;

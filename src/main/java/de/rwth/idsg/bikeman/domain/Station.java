@@ -13,18 +13,17 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Set;
 
-
 @Entity
 @Table(name = "T_STATION",
         indexes = {
                 @Index(columnList="address_id", unique = true) })
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @TableGenerator(name="station_gen", initialValue=0, allocationSize=1)
-@EqualsAndHashCode(of = {"stationId", "manufacturerId"})
+@EqualsAndHashCode(callSuper = false, of = {"stationId", "manufacturerId"})
 @ToString(includeFieldNames = true, exclude = {"stationSlots"})
 @Getter
 @Setter
-public class Station implements Serializable {
+public class Station extends AbstractTimestampClass implements Serializable {
     private static final long serialVersionUID = 4263316848138899690L;
 
     @Id
@@ -71,5 +70,4 @@ public class Station implements Serializable {
 
     @Column(name = "error_info")
     private String errorInfo;
-
 }

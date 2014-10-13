@@ -11,14 +11,13 @@ import org.joda.time.LocalDate;
 import javax.persistence.*;
 import java.util.Set;
 
-
 @Entity
 @DiscriminatorValue("customer")
 @Table(name="T_CUSTOMER",
         indexes = {
                 @Index(columnList="address_id", unique = true),
                 @Index(columnList="customer_id", unique = true)})
-@EqualsAndHashCode(of = {"customerId"}, callSuper = false)
+@EqualsAndHashCode(callSuper = false, of = {"customerId"})
 @ToString(includeFieldNames = true, exclude = {"address", "transactions", "cardAccount"})
 @Getter
 @Setter
@@ -70,5 +69,4 @@ public class Customer extends User {
             isActivated = false;
         }
     }
-
 }

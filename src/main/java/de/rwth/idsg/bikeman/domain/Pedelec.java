@@ -11,16 +11,15 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Set;
 
-
 @Entity
 @Table(name = "T_PEDELEC")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @TableGenerator(name="pedelec_gen", initialValue=0, allocationSize=1)
-@EqualsAndHashCode(of = {"pedelecId", "manufacturerId"})
+@EqualsAndHashCode(callSuper = false, of = {"pedelecId", "manufacturerId"})
 @ToString(includeFieldNames = true, exclude = {"transactions", "stationSlot"})
 @Getter
 @Setter
-public class Pedelec implements Serializable {
+public class Pedelec extends AbstractTimestampClass implements Serializable {
     private static final long serialVersionUID = 7187208000731589081L;
 
     @Id
@@ -63,5 +62,4 @@ public class Pedelec implements Serializable {
             inTransaction = false;
         }
     }
-
 }

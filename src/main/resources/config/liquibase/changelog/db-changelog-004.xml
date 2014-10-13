@@ -44,15 +44,15 @@
             <column name="card_account_id" type="INT8">
                 <constraints nullable="false"/>
             </column>
-            <column name="card_id" type="varchar(255)"></column>
-            <column name="card_pin" type="INT"></column>
-            <column name="in_transaction" type="BOOLEAN"></column>
-            <column name="user_id" type="INT8"></column>
+            <column name="card_id" type="varchar(255)"/>
+            <column name="card_pin" type="INT"/>
+            <column name="in_transaction" type="BOOLEAN"/>
+            <column name="user_id" type="INT8"/>
 
         </createTable>
 
         <addColumn tableName="T_TRANSACTION">
-            <column name="card_account_id" type="INT8"></column>
+            <column name="card_account_id" type="INT8"/>
         </addColumn>
 
         <addPrimaryKey columnNames="card_account_id" constraintName="T_CARDACCPK" schemaName="public" tableName="T_CARD_ACCOUNT"/>
@@ -66,17 +66,44 @@
     
     <changeSet id="1409564974607-16" author="wkluth">
         <addColumn tableName="T_STATION">
-            <column name="endpoint_address" type="varchar(255)"></column>
+            <column name="endpoint_address" type="varchar(255)"/>
         </addColumn>
         
         <createTable tableName="T_MAJOR_CUSTOMER">
-            <column name="user_id" type="INT8"></column>
+            <column name="user_id" type="INT8"/>
         </createTable>
 
-        <addPrimaryKey tableName="T_MAJOR_CUSTOMER" columnNames="user_id"></addPrimaryKey>
+        <addPrimaryKey tableName="T_MAJOR_CUSTOMER" columnNames="user_id"/>
         <addForeignKeyConstraint baseTableName="T_MAJOR_CUSTOMER" baseColumnNames="user_id" constraintName="FK_MAJORCUSTOMER_MANAGER"
                                  referencedTableName="T_MANAGER"
-                                 referencedColumnNames="user_id"></addForeignKeyConstraint>
+                                 referencedColumnNames="user_id"/>
+    </changeSet>
+
+    <changeSet author="jhipster" id="1409564974607-17" logicalFilePath="none">
+        <addColumn tableName="T_USER">
+            <column name="created" type="timestamp"/>
+        </addColumn>
+        <addColumn tableName="T_USER">
+            <column name="updated" type="timestamp"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="jhipster" id="1409564974607-18" logicalFilePath="none">
+        <addColumn tableName="T_PEDELEC">
+            <column name="created" type="timestamp"/>
+        </addColumn>
+        <addColumn tableName="T_PEDELEC">
+            <column name="updated" type="timestamp"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="jhipster" id="1409564974607-19" logicalFilePath="none">
+        <addColumn tableName="T_STATION">
+            <column name="created" type="timestamp"/>
+        </addColumn>
+        <addColumn tableName="T_STATION">
+            <column name="updated" type="timestamp"/>
+        </addColumn>
     </changeSet>
 
 

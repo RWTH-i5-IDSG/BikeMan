@@ -28,8 +28,7 @@ import java.util.List;
 public class BookingTargetsInfoRequestProcessor implements
         Processor<BookingTargetsInfoRequestType, BookingTargetsInfoResponseType> {
 
-    @Inject
-    private QueryIXSIRepository queryIXSIRepository;
+    @Inject private QueryIXSIRepository queryIXSIRepository;
 
     @Override
     public BookingTargetsInfoResponseType process(BookingTargetsInfoRequestType request) {
@@ -72,7 +71,9 @@ public class BookingTargetsInfoRequestProcessor implements
             target.setPlaceIDOrPlaceGroupIDOrAreaID(IXSIConstants.PlaceGroup.id);
 
             // set maxDistance
-            target.setMaxDistance(ped.getMaxDistance());
+            NonNegativeInteger nni = new NonNegativeInteger();
+            nni.setValue(BigInteger.valueOf(ped.getMaxDistance()));
+            target.setMaxDistance(nni);
 
             // set class
             ClassType clazz = new ClassType();
@@ -102,7 +103,7 @@ public class BookingTargetsInfoRequestProcessor implements
             // set placeID
             PlaceIDType id = new PlaceIDType();
             NMTOKEN token = new NMTOKEN();
-            token.setValue(stat.getStationId());
+            token.setValue(String.valueOf(stat.getStationId()));
             id.setValue(token);
             place.setID(id);
 
@@ -119,7 +120,7 @@ public class BookingTargetsInfoRequestProcessor implements
 
             // set place capacity
             NonNegativeInteger capacityValue = new NonNegativeInteger();
-            capacityValue.setValue(stat.getSlotCount());
+            capacityValue.setValue(BigInteger.valueOf(stat.getSlotCount()));
             place.setCapacity(capacityValue);
 
             // set place name
@@ -136,7 +137,10 @@ public class BookingTargetsInfoRequestProcessor implements
 
             // set place description
             TextType desc = new TextType();
-            desc.setText(stat.getDescription());
+
+            // TODO for max: compose description from dto.note and dto.address
+            //desc.setText(stat.getDescription());
+
             place.getDescription().add(desc);
 
             places.add(place);
