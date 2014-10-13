@@ -1,7 +1,6 @@
 package de.rwth.idsg.bikeman.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import de.rwth.idsg.bikeman.repository.PedelecRepository;
 import de.rwth.idsg.bikeman.service.PedelecService;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditPedelecDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.PedelecConfigurationDTO;
@@ -26,57 +25,37 @@ import java.util.List;
 @Slf4j
 public class PedelecResource {
 
-    @Autowired
-    private PedelecRepository pedelecRepository;
-
-    @Autowired
-    private PedelecService pedelecService;
+    @Autowired private PedelecService pedelecService;
 
     private static final String BASE_PATH = "/rest/pedelecs";
     private static final String ID_PATH = "/rest/pedelecs/{id}";
+    private static final String CONFIG_PATH = "/rest/pedelecs/{id}/config";
 
     @Timed
     @RequestMapping(value = BASE_PATH, method = RequestMethod.GET)
     public List<ViewPedelecDTO> getAll() throws DatabaseException {
-        log.info("REST request to get all Pedelecs");
-        return pedelecRepository.findAll();
+        log.debug("REST request to get all Pedelecs");
+        return pedelecService.getAll();
     }
 
     @Timed
     @RequestMapping(value = ID_PATH, method = RequestMethod.GET)
     public ViewPedelecDTO get(@PathVariable Long id) throws DatabaseException {
         log.debug("REST request to get Pedelec : {}", id);
-        return pedelecRepository.findOneDTO(id);
-    }
-
-    @Timed
-    @RequestMapping(value = ID_PATH + "/config", method = RequestMethod.GET)
-    public PedelecConfigurationDTO getConfig(@PathVariable Long id) throws DatabaseException, RestClientException {
-        log.debug("REST request to get station configuration for station: {}", id);
-
-        return pedelecService.getPedelecConfig(id);
-    }
-
-    @Timed
-    @RequestMapping(value = ID_PATH, method = RequestMethod.POST)
-    public void updateConfig(@PathVariable Long id, @Valid @RequestBody PedelecConfigurationDTO dto) throws DatabaseException, RestClientException {
-        log.debug("REST request to change station configuration: {}", dto);
-
-        pedelecService.changePedelecConfiguration(id, dto);
+        return pedelecService.get(id);
     }
 
     @Timed
     @RequestMapping(value = BASE_PATH, method = RequestMethod.POST)
     public void create(@Valid @RequestBody CreateEditPedelecDTO pedelec) throws DatabaseException {
         log.debug("REST request to save Pedelec : {}", pedelec);
-        pedelecRepository.create(pedelec);
+        pedelecService.create(pedelec);
     }
 
     @Timed
     @RequestMapping(value = BASE_PATH, method = RequestMethod.PUT)
     public void update(@Valid @RequestBody CreateEditPedelecDTO dto) throws DatabaseException, RestClientException {
         log.debug("REST request to update Pedelec : {}", dto);
-
         pedelecService.changeOperationState(dto);
     }
 
@@ -84,6 +63,20 @@ public class PedelecResource {
     @RequestMapping(value = ID_PATH, method = RequestMethod.DELETE)
     public void delete(@PathVariable Long id) throws DatabaseException {
         log.debug("REST request to delete Pedelec : {}", id);
-        pedelecRepository.delete(id);
+        pedelecService.delete(id);
+    }
+
+    @Timed
+    @RequestMapping(value = CONFIG_PATH, method = RequestMethod.GET)
+    public PedelecConfigurationDTO getConfig(@PathVariable Long id) throws DatabaseException, RestClientException {
+        log.debug("REST request to get station configuration for station: {}", id);
+        return pedelecService.getConfig(id);
+    }
+
+    @Timed
+    @RequestMapping(value = ID_PATH, method = RequestMethod.POST)
+    public void updateConfig(@PathVariable Long id, @Valid @RequestBody PedelecConfigurationDTO dto) throws DatabaseException, RestClientException {
+        log.debug("REST request to change station configuration: {}", dto);
+        pedelecService.changeConfig(id, dto);
     }
 }

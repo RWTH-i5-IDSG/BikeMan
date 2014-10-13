@@ -55,7 +55,7 @@ public class StationResource {
     @Timed
     @RequestMapping(value = BASE_PATH, method = RequestMethod.GET)
     public List<ViewStationDTO> getAll() throws DatabaseException {
-        log.info("REST request to get all Stations");
+        log.debug("REST request to get all Stations");
         return stationService.getAll();
     }
 

@@ -3,86 +3,81 @@ package de.rwth.idsg.bikeman.service;
 import de.rwth.idsg.bikeman.domain.OperationState;
 import de.rwth.idsg.bikeman.domain.Pedelec;
 import de.rwth.idsg.bikeman.domain.Station;
+import de.rwth.idsg.bikeman.domain.StationSlot;
+import de.rwth.idsg.bikeman.psinterface.PedelecClient;
 import de.rwth.idsg.bikeman.repository.PedelecRepository;
 import de.rwth.idsg.bikeman.repository.StationRepository;
-import de.rwth.idsg.bikeman.web.rest.dto.modify.*;
+import de.rwth.idsg.bikeman.web.rest.dto.modify.ChangePedelecOperationStateDTO;
+import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditPedelecDTO;
+import de.rwth.idsg.bikeman.web.rest.dto.modify.PedelecConfigurationDTO;
+import de.rwth.idsg.bikeman.web.rest.dto.view.ViewPedelecDTO;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.converter.StringHttpMessageConverter;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
 
-import javax.inject.Inject;
-import javax.transaction.Transactional;
+import java.util.List;
 
 /**
  * Created by max on 18/08/14.
  */
 @Service
-@Transactional
 @Slf4j
 public class PedelecService {
 
-    @Inject
-    StationRepository stationRepository;
+    @Autowired private PedelecClient pedelecClient;
+    @Autowired private PedelecRepository pedelecRepository;
 
-    @Inject
-    PedelecRepository pedelecRepository;
+    public List<ViewPedelecDTO> getAll() throws DatabaseException {
+        return pedelecRepository.findAll();
+    }
 
-    private static String baseURL = "http://localhost:8081/";
+    public ViewPedelecDTO get(Long pedelecId) throws DatabaseException {
+        return pedelecRepository.findOneDTO(pedelecId);
+    }
+
+    public void create(CreateEditPedelecDTO dto) throws DatabaseException {
+        pedelecRepository.create(dto);
+    }
+
+    public void delete(Long pedelecId) throws DatabaseException {
+        pedelecRepository.delete(pedelecId);
+    }
 
     public void changeOperationState(CreateEditPedelecDTO dto) throws DatabaseException, RestClientException {
-        long pedelecId = dto.getPedelecId();
+        Pedelec pedelec = pedelecRepository.findOne(dto.getPedelecId());
 
-        OperationState state = dto.getState();
+        OperationState inputState = dto.getState();
 
-        final Pedelec pedelec = pedelecRepository.findOne(pedelecId);
-        final Station station = pedelec.getStationSlot().getStation();
-        final int stationSlotPosition = pedelec.getStationSlot().getStationSlotPosition();
+        // states do match -> early exit
+        if (inputState.equals(pedelec.getState())) {
+            return;
+        }
 
-        // states do not match -> notify station of update
-        if (!(state.equals(pedelec.getState()))) {
-            ChangePedelecOperationStateDTO changeDTO = new ChangePedelecOperationStateDTO();
-            changeDTO.setPedelecState(state);
-            changeDTO.setSlotPosition(stationSlotPosition);
+        StationSlot slot = pedelec.getStationSlot();
+        int stationSlotPosition = slot.getStationSlotPosition();
+        Station station = slot.getStation();
 
-            RestTemplate rt = new RestTemplate();
+        ChangePedelecOperationStateDTO changeDto = new ChangePedelecOperationStateDTO();
+        changeDto.setPedelecState(inputState);
+        changeDto.setSlotPosition(stationSlotPosition);
 
-            String uri = baseURL + station.getManufacturerId() + "/cmsi/pedelecs/" + pedelec.getManufacturerId() + "/state";
-
-            rt.postForObject(uri, changeDTO, String.class);
+        boolean success = pedelecClient.changeOperationState(station.getEndpointAddress(), pedelec.getManufacturerId(), changeDto);
+        if (success) {
             pedelecRepository.update(dto);
         }
     }
 
-    public PedelecConfigurationDTO getPedelecConfig(Long id) throws DatabaseException, RestClientException {
-        Pedelec pedelec = pedelecRepository.findOne(id);
-        String manufacturerId = pedelec.getManufacturerId();
-        String stationManufacturerId = pedelec.getStationSlot().getStation().getManufacturerId();
-
-        RestTemplate rt = new RestTemplate();
-        rt.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-        rt.getMessageConverters().add(new StringHttpMessageConverter());
-
-        String uri = baseURL + stationManufacturerId + "/cmsi/pedelecs/" + manufacturerId + "/config";
-
-        return rt.getForObject(uri, PedelecConfigurationDTO.class);
+    public PedelecConfigurationDTO getConfig(Long pedelecId) throws DatabaseException, RestClientException {
+        Pedelec pedelec = pedelecRepository.findOne(pedelecId);
+        Station station = pedelec.getStationSlot().getStation();
+        return pedelecClient.getConfig(station.getEndpointAddress(), pedelec.getManufacturerId());
     }
 
-    public void changePedelecConfiguration(Long id, PedelecConfigurationDTO dto) throws RestClientException, DatabaseException {
-        Pedelec pedelec = pedelecRepository.findOne(id);
-        String manufacturerId = pedelec.getManufacturerId();
-        String stationManufacturerId = pedelec.getStationSlot().getStation().getManufacturerId();
-
-
-        RestTemplate rt = new RestTemplate();
-        rt.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-        rt.getMessageConverters().add(new StringHttpMessageConverter());
-
-        String uri = baseURL + stationManufacturerId + "/cmsi/pedelecs/" + manufacturerId + "/config";
-
-        rt.postForObject(uri, dto, String.class);
+    public void changeConfig(Long pedelecId, PedelecConfigurationDTO dto) throws RestClientException, DatabaseException {
+        Pedelec pedelec = pedelecRepository.findOne(pedelecId);
+        Station station = pedelec.getStationSlot().getStation();
+        pedelecClient.changeConfig(station.getEndpointAddress(), pedelec.getManufacturerId(), dto);
     }
 }
