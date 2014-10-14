@@ -3,6 +3,7 @@ package de.rwth.idsg.bikeman.web.rest.dto.modify;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 
 /**
@@ -16,6 +17,7 @@ public class CreateEditManagerDTO {
     private Long userId;
 
     @NotBlank
+    @Email
     private String login;
 
     @NotBlank

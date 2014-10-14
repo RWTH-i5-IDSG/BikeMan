@@ -60,7 +60,7 @@ public class GeneralExceptionHandler {
         return new ResponseEntity<>(msg, status);
     }
 
-    /*
+   /**
     * Catches the controller path errors of the Rest API.
     *
     * Example: If a controller declares an integer in the path, but frontend sends anything but an integer.
@@ -78,7 +78,7 @@ public class GeneralExceptionHandler {
         return new ResponseEntity<>(msg, status);
     }
 
-    /*
+   /**
     * Catches the Hibernate validation errors and
     * responds with an error message in appropriate language.
     */

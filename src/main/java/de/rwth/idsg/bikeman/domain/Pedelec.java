@@ -54,6 +54,8 @@ public class Pedelec extends AbstractTimestampClass implements Serializable {
 
     @PrePersist
     public void prePersist() {
+        super.prePersist();
+
         if (stateOfCharge == null) {
             stateOfCharge = 0.0f;
         }
