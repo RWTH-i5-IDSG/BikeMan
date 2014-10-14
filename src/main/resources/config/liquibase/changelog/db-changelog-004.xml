@@ -61,7 +61,6 @@
 
         <addForeignKeyConstraint baseColumnNames="card_account_id" baseTableName="T_TRANSACTION" baseTableSchemaName="public" constraintName="FK_CARDACC_TRANSACTION" deferrable="false" initiallyDeferred="false" referencedColumnNames="card_account_id" referencedTableCatalogName="" referencedTableName="T_CARD_ACCOUNT" referencedTableSchemaName="public"/>
 
-
     </changeSet>
     
     <changeSet id="1409564974607-16" author="wkluth">
@@ -103,6 +102,32 @@
         </addColumn>
         <addColumn tableName="T_STATION">
             <column name="updated" type="timestamp"/>
+        </addColumn>
+    </changeSet>
+    
+    <changeSet id="1409564974607-20" author="wkluth">
+        <addColumn tableName="T_CARD_ACCOUNT">
+            <column name="owner_type" type="VARCHAR(255)"></column>
+        </addColumn>
+
+        <dropTable tableName="T_MAJOR_CUSTOMER"></dropTable>
+
+        <createTable tableName="T_MAJOR_CUSTOMER">
+            <column name="user_id" type="INT8">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)"></column>
+        </createTable>
+
+        <addPrimaryKey columnNames="user_id" constraintName="T_MAJORCUSTOMERPK" schemaName="public" tableName="T_MAJOR_CUSTOMER"/>
+        <addForeignKeyConstraint baseTableName="T_MAJOR_CUSTOMER" baseColumnNames="user_id" constraintName="FK_MAJORCUSTOMER_USER"
+                                 referencedTableName="T_USER"
+                                 referencedColumnNames="user_id"/>
+    </changeSet>
+
+    <changeSet id="1409564974607-21" author="wkluth">
+        <addColumn tableName="T_CARD_ACCOUNT">
+            <column name="operation_state" type="VARCHAR(255)"></column>
         </addColumn>
     </changeSet>
 

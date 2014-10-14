@@ -21,15 +21,27 @@ public interface TransactionRepository {
     */
     List<ViewTransactionDTO> findAll() throws DatabaseException;
 
+    List<ViewTransactionDTO> findAllCustomerTransactions() throws DatabaseException;
+
+    List<ViewTransactionDTO> findAllMajorCustomerTransactions() throws DatabaseException;
+
     /*
     * Find OPEN (ONGOING) transactions.
     */
     List<ViewTransactionDTO> findOpen() throws DatabaseException;
 
+    List<ViewTransactionDTO> findOpenCustomerTransactions() throws DatabaseException;
+
+    List<ViewTransactionDTO> findOpenMajorCustomerTransactions() throws DatabaseException;
+
     /*
     * Find CLOSED transactions.
     */
     List<ViewTransactionDTO> findClosed() throws DatabaseException;
+
+    List<ViewTransactionDTO> findClosedCustomerTransactions() throws DatabaseException;
+
+    List<ViewTransactionDTO> findClosedMajorCustomerTransactions() throws DatabaseException;
 
     /*
     * Find OPEN and CLOSED transactions for ONE pedelec.
@@ -39,6 +51,10 @@ public interface TransactionRepository {
     */
     List<ViewTransactionDTO> findByPedelecId(Long pedelecId, Integer resultSize) throws DatabaseException;
 
+    List<ViewTransactionDTO> findCustomerTransactionsByPedelecId(Long pedelecId, Integer resultSize) throws DatabaseException;
+
+    List<ViewTransactionDTO> findMajorCustomerTransactionsByPedelecId(Long pedelecId, Integer resultSize) throws DatabaseException;
+
     /*
     * Find OPEN and CLOSED transactions for ONE user.
     *
@@ -47,12 +63,20 @@ public interface TransactionRepository {
     */
     List<ViewTransactionDTO> findByLogin(String login, Integer resultSize) throws DatabaseException;
 
+    List<ViewTransactionDTO> findCustomerTransactionsByLogin(String login, Integer resultSize) throws DatabaseException;
+
+    List<ViewTransactionDTO> findMajorCustomerTransactionsByLogin(String login, Integer resultSize) throws DatabaseException;
+
     /*
     * Find the OPEN (ONGOING) transaction for ONE pedelec.
     *
     * Important: This is for internal use to close a transaction, and NOT for the Web UI
     */
     Transaction findOpenByPedelecId(Long pedelecId);
+
+//    Transaction findOpenCustomerTransactionsByPedelecId(Long pedelecId);
+//
+//    Transaction findOpenMajorCustomerTransactionsByPedelecId(Long pedelecId);
 
     /*
     *

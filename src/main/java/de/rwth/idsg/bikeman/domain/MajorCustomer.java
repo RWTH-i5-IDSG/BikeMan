@@ -1,11 +1,8 @@
 package de.rwth.idsg.bikeman.domain;
 
-import javax.persistence.CascadeType;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import de.rwth.idsg.bikeman.domain.login.User;
+
+import javax.persistence.*;
 import java.util.Set;
 
 /**
@@ -14,8 +11,11 @@ import java.util.Set;
 @Entity
 @DiscriminatorValue("majorCustomer")
 @Table(name="T_MAJOR_CUSTOMER")
-public class MajorCustomer extends Manager {
+public class MajorCustomer extends User {
     private static final long serialVersionUID = 1724868961860110834L;
+
+    @Column(name = "name")
+    private String name;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user", orphanRemoval = true)
     private Set<CardAccount> cardAccounts;

@@ -87,42 +87,42 @@ public class PedelecStationServiceTest {
         }
     }
 
-    /**
-     * The values are from my DB, so they are not really generic tests
-     */
-    @Ignore
-    public void test2_handleStartTransaction() {
-        StartTransactionDTO dto = new StartTransactionDTO();
-        dto.setUserId(1L);
-        dto.setPedelecManufacturerId("25d19d2a-7310-4d7c-b2bf-c39bc61753e6");
-        dto.setStationManufacturerId("da76e18e-61e0-4458-b57f-a39ef2dd87a6");
-        dto.setSlotManufacturerId("sdfgh");
-        dto.setTimestamp(new DateTime().getMillis());
+//    /**
+//     * The values are from my DB, so they are not really generic tests
+//     */
+//    @Ignore
+//    public void test2_handleStartTransaction() {
+//        StartTransactionDTO dto = new StartTransactionDTO();
+//        dto.setUserId(1L);
+//        dto.setPedelecManufacturerId("25d19d2a-7310-4d7c-b2bf-c39bc61753e6");
+//        dto.setStationManufacturerId("da76e18e-61e0-4458-b57f-a39ef2dd87a6");
+//        dto.setSlotManufacturerId("sdfgh");
+//        dto.setTimestamp(new DateTime().getMillis());
+//
+//        try {
+//            log.info("Request: {}", dto);
+//            service.handleStartTransaction(dto);
+//        } catch (DatabaseException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
-        try {
-            log.info("Request: {}", dto);
-            service.handleStartTransaction(dto);
-        } catch (DatabaseException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * The values are from my DB, so they are not really generic tests
-     */
-    @Test
-    public void test3_handleStopTransaction() {
-        StopTransactionDTO dto = new StopTransactionDTO();
-        dto.setPedelecManufacturerId("25d19d2a-7310-4d7c-b2bf-c39bc61753e6");
-        dto.setTimestamp(new DateTime().getMillis());
-        dto.setStationManufacturerId("da76e18e-61e0-4458-b57f-a39ef2dd87a6");
-        dto.setSlotManufacturerId("asdfghfd");
-
-        try {
-            log.info("Request: {}", dto);
-            service.handleStopTransaction(dto);
-        } catch (DatabaseException e) {
-            e.printStackTrace();
-        }
-    }
+//    /**
+//     * The values are from my DB, so they are not really generic tests
+//     */
+//    @Test
+//    public void test3_handleStopTransaction() {
+//        StopTransactionDTO dto = new StopTransactionDTO();
+//        dto.setPedelecManufacturerId("25d19d2a-7310-4d7c-b2bf-c39bc61753e6");
+//        dto.setTimestamp(new DateTime().getMillis());
+//        dto.setStationManufacturerId("da76e18e-61e0-4458-b57f-a39ef2dd87a6");
+//        dto.setSlotManufacturerId("asdfghfd");
+//
+//        try {
+//            log.info("Request: {}", dto);
+//            service.handleStopTransaction(dto);
+//        } catch (DatabaseException e) {
+//            e.printStackTrace();
+//        }
+//    }
 }

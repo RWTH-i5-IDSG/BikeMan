@@ -18,7 +18,10 @@ public class ViewTransactionDTO {
     private TransactionStationDTO fromStation;
     private TransactionStationDTO toStation;
     private CustomerDTO customer;
+    private String majorCustomerName;
+    private String cardId;
     private TransactionPedelecDTO pedelec;
+
 
     @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
     private LocalDateTime startDateTime;
@@ -26,15 +29,16 @@ public class ViewTransactionDTO {
     @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
     private LocalDateTime endDateTime;
 
-    // All and closed transactions
+    // All and closed transactions related to a customer
     public ViewTransactionDTO(Long transactionId, LocalDateTime startDateTime, LocalDateTime endDateTime,
                               Long fromStationId, String fromStationName, Integer fromStationSlotPosition,
                               Long toStationId, String toStationName, Integer toStationSlotPosition,
-                              String customerId, String customerFirstname, String customerLastname,
+                              String cardId, String customerId, String customerFirstname, String customerLastname,
                               Long pedelecId, String pedelecManufacturerId) {
         this.transactionId = transactionId;
         this.startDateTime = startDateTime;
         this.endDateTime = endDateTime;
+        this.cardId = cardId;
         this.customer = new CustomerDTO(customerId, customerFirstname, customerLastname);
 
         this.fromStation = new TransactionStationDTO(fromStationId, fromStationName, fromStationSlotPosition);
@@ -43,14 +47,48 @@ public class ViewTransactionDTO {
         this.pedelec = new TransactionPedelecDTO(pedelecId, pedelecManufacturerId);
     }
 
-    // Open transactions
-    public ViewTransactionDTO(Long transactionId, LocalDateTime startDateTime,
+    // All and closed transactions related to a major customer
+    public ViewTransactionDTO(Long transactionId, LocalDateTime startDateTime, LocalDateTime endDateTime,
                               Long fromStationId, String fromStationName, Integer fromStationSlotPosition,
+                              Long toStationId, String toStationName, Integer toStationSlotPosition,
+                              String cardId, String majorCustomerName,
+                              Long pedelecId, String pedelecManufacturerId) {
+        this.transactionId = transactionId;
+        this.startDateTime = startDateTime;
+        this.endDateTime = endDateTime;
+        this.cardId = cardId;
+        this.majorCustomerName = majorCustomerName;
+
+        this.fromStation = new TransactionStationDTO(fromStationId, fromStationName, fromStationSlotPosition);
+        this.toStation = new TransactionStationDTO(toStationId, toStationName, toStationSlotPosition);
+
+        this.pedelec = new TransactionPedelecDTO(pedelecId, pedelecManufacturerId);
+    }
+
+    // Open transactions related to customer
+    public ViewTransactionDTO(Long transactionId, LocalDateTime startDateTime,
+                              Long fromStationId, String fromStationName, Integer fromStationSlotPosition, String cardId,
                               String customerId, String customerFirstname, String customerLastname,
                               Long pedelecId, String pedelecManufacturerId) {
         this.transactionId = transactionId;
         this.startDateTime = startDateTime;
+        this.cardId = cardId;
         this.customer = new CustomerDTO(customerId, customerFirstname, customerLastname);
+
+        this.fromStation = new TransactionStationDTO(fromStationId, fromStationName, fromStationSlotPosition);
+
+        this.pedelec = new TransactionPedelecDTO(pedelecId, pedelecManufacturerId);
+    }
+
+    // Open transactions related to major customer
+    public ViewTransactionDTO(Long transactionId, LocalDateTime startDateTime,
+                              Long fromStationId, String fromStationName, Integer fromStationSlotPosition, String cardId,
+                              String majorCustomerName,
+                              Long pedelecId, String pedelecManufacturerId) {
+        this.transactionId = transactionId;
+        this.startDateTime = startDateTime;
+        this.cardId = cardId;
+        this.majorCustomerName = majorCustomerName;
 
         this.fromStation = new TransactionStationDTO(fromStationId, fromStationName, fromStationSlotPosition);
 

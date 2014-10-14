@@ -1,7 +1,10 @@
 package de.rwth.idsg.bikeman.domain;
 
 import de.rwth.idsg.bikeman.domain.login.User;
-import lombok.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -38,12 +41,20 @@ public class CardAccount implements Serializable {
     @Column(name = "in_transaction")
     private Boolean inTransaction;
 
+    @Column(name = "owner_type")
+    @Enumerated(EnumType.STRING)
+    private CustomerType ownerType;
+
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "cardAccount", orphanRemoval = true)
     private Set<Transaction> transactions;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @Column(name = "operation_state")
+    @Enumerated(EnumType.STRING)
+    private OperationState operationState;
 
     @PrePersist
     public void prePersist() {
