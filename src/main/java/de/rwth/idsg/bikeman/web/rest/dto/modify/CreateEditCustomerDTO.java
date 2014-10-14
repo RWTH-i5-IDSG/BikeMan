@@ -5,10 +5,12 @@ import com.fasterxml.jackson.datatype.joda.deser.LocalDateDeserializer;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 import org.joda.time.LocalDate;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 
 /**
@@ -22,6 +24,7 @@ public class CreateEditCustomerDTO {
     private Long userId;
 
     @NotBlank
+    @Email
     private String login;
 
     @NotBlank
