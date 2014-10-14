@@ -61,6 +61,8 @@ public class Customer extends User {
 
     @PrePersist
     public void prePersist() {
+        super.prePersist();
+
         if (inTransaction == null) {
             inTransaction = false;
         }
