@@ -9,7 +9,7 @@ public interface QueryIXSIRepository {
 
     // Static data
     public BookingTargetsInfoResponseDTO bookingTargetInfos();
-    public ChangedProvidersResponseDTO changedProviders();
+    public ChangedProvidersResponseDTO changedProviders(long requestTimestamp);
 
     // User triggered data
     public AvailabilityResponseDTO availability();

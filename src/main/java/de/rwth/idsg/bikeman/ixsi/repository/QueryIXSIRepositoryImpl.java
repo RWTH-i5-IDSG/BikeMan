@@ -1,5 +1,6 @@
 package de.rwth.idsg.bikeman.ixsi.repository;
 
+import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
 import de.rwth.idsg.bikeman.ixsi.dto.query.AvailabilityResponseDTO;
 import de.rwth.idsg.bikeman.ixsi.dto.query.BookingTargetsInfoResponseDTO;
 import de.rwth.idsg.bikeman.ixsi.dto.query.ChangedProvidersResponseDTO;
@@ -9,11 +10,14 @@ import de.rwth.idsg.bikeman.ixsi.dto.query.PedelecDTO;
 import de.rwth.idsg.bikeman.ixsi.dto.query.PlaceAvailabilityResponseDTO;
 import de.rwth.idsg.bikeman.ixsi.dto.query.StationDTO;
 import de.rwth.idsg.bikeman.ixsi.dto.query.TokenGenerationResponseDTO;
+import de.rwth.idsg.bikeman.ixsi.schema.NMTOKEN;
+import de.rwth.idsg.bikeman.ixsi.schema.ProviderIDType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -66,8 +70,28 @@ public class QueryIXSIRepositoryImpl implements QueryIXSIRepository {
     }
 
     @Override
-    public ChangedProvidersResponseDTO changedProviders() {
-        return null;
+    public ChangedProvidersResponseDTO changedProviders(long requestTimestamp) {
+        Date pedelecUpdated = em.createQuery("SELECT max(p.updated) FROM Pedelec p", Date.class)
+                .getSingleResult();
+
+        Date stationUpdated = em.createQuery("SELECT max(s.updated) FROM Station s", Date.class)
+                .getSingleResult();
+
+        ChangedProvidersResponseDTO responseDTO = new ChangedProvidersResponseDTO();
+        long timestamp = Math.max(pedelecUpdated.getTime(), stationUpdated.getTime());
+        if (requestTimestamp < timestamp) {
+            // update necessary!
+            ProviderIDType id = new ProviderIDType();
+            NMTOKEN token = new NMTOKEN();
+            token.setValue(IXSIConstants.Provider.id);
+            id.setValue(token);
+
+            responseDTO.setProviders(new ArrayList<ProviderIDType>());
+            responseDTO.getProviders().add(id);
+        }
+        responseDTO.setTimestamp(timestamp);
+
+        return responseDTO;
     }
 
     @Override

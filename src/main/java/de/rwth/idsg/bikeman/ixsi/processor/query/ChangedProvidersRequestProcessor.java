@@ -22,10 +22,11 @@ public class ChangedProvidersRequestProcessor implements
 
     @Override
     public ChangedProvidersResponseType process(ChangedProvidersRequestType request) {
-        ChangedProvidersResponseDTO responseDTO = queryIXSIRepository.changedProviders();
+        long timestamp = request.getTimestamp().toGregorianCalendar().getTimeInMillis();
+        ChangedProvidersResponseDTO responseDTO = queryIXSIRepository.changedProviders(timestamp);
 
         ChangedProvidersResponseType response = new ChangedProvidersResponseType();
-//        response.getProvider().addAll(responseDTO.getProviders());
+        response.getProvider().addAll(responseDTO.getProviders());
 
         return response;
     }
