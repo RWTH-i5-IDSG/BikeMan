@@ -233,7 +233,8 @@ public class CustomerRepositoryImpl implements CustomerRepository {
                 CardAccount newCardAccount = new CardAccount();
                 newCardAccount.setOwnerType(CustomerType.CUSTOMER);
                 newCardAccount.setCardId(dto.getCardId());
-                //TODO:newCardAccount.setCardPin(dto.getCardPin());
+                newCardAccount.setCardPin(dto.getCardPin());
+                newCardAccount.setUser(customer);
                 customer.setCardAccount(newCardAccount);
 
                 HashSet<Authority> authorities = new HashSet<>();
@@ -253,7 +254,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
                 CardAccount cardAccount = new CardAccount();
                 cardAccount.setOwnerType(CustomerType.CUSTOMER);
                 cardAccount.setCardId(dto.getCardId());
-                //TODO:newCardAccount.setCardPin(dto.getCardPin());
+                cardAccount.setCardPin(dto.getCardPin());
                 break;
         }
     }

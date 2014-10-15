@@ -33,6 +33,8 @@ public class CreateEditCustomerDTO {
     @NotBlank
     private String cardId;
 
+    private int cardPin;
+
     @NotBlank
     private String firstname;
 
