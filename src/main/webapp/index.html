@@ -228,6 +228,31 @@
                         <!-- /.nav-second-level -->
                     </li>
 
+
+                    <li>
+                        <a href="#"><i class="fa fa-book fa-fw"></i>
+                            <span translate="global.menu.majorcustomerlog.title">Majorcustomer's Logbook</span>
+                            <span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                            <li ui-sref-active="selectedNavItem">
+                                <a ui-sref="majorcustomer_transaction">
+                                    <span translate="global.menu.driverlog.allTransactions">All Transactions</span>
+                                </a>
+                            </li>
+                            <li ui-sref-active="selectedNavItem">
+                                <a ui-sref="majorcustomer_closedTransaction">
+                                    <span translate="global.menu.driverlog.closedTransactions">Closed Transactions</span>
+                                </a>
+                            </li>
+                            <li ui-sref-active="selectedNavItem">
+                                <a ui-sref="majorcustomer_openTransaction">
+                                    <span translate="global.menu.driverlog.openTransactions">Open Transactions</span>
+                                </a>
+                            </li>
+                        </ul>
+                        <!-- /.nav-second-level -->
+                    </li>
+
                 </ul>
                 <!-- /#side-menu -->
             </div>

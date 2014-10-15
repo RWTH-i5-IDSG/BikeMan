@@ -40,6 +40,9 @@
                 "closedTransactions": "Closed Transactions",
                 "openTransactions": "Open Transactions"
             },
+            "majorcustomerlog" : {
+                "title": "Majorcustomer's Logbook"
+            },
             "admin": "Administration",
             "language": "Language"
         },

@@ -585,19 +585,19 @@ public class TransactionRepositoryImpl implements TransactionRepository {
                         pedelec.get(Pedelec_.pedelecId),
                         pedelec.get(Pedelec_.manufacturerId)
                 )
-        ).where(
-                builder.equal(cardAccount.get(CardAccount_.ownerType), CustomerType.CUSTOMER)
         ).orderBy(
                 builder.desc(transaction.get(Transaction_.endDateTime))
         );
 
         switch (findType) {
             case ALL:
+                criteria.where(builder.equal(cardAccount.get(CardAccount_.ownerType), CustomerType.CUSTOMER));
                 break;
 
             case CLOSED:
                 criteria.where(
                         builder.and(
+                                builder.equal(cardAccount.get(CardAccount_.ownerType), CustomerType.CUSTOMER),
                                 builder.isNotNull(transaction.get(Transaction_.toSlot)),
                                 builder.isNotNull(transaction.get(Transaction_.endDateTime))
                         )
@@ -606,13 +606,19 @@ public class TransactionRepositoryImpl implements TransactionRepository {
 
             case BY_PEDELEC_ID:
                 criteria.where(
-                        builder.equal(pedelec.get(Pedelec_.pedelecId), pedelecId)
+                        builder.and(
+                                builder.equal(cardAccount.get(CardAccount_.ownerType), CustomerType.CUSTOMER),
+                                builder.equal(pedelec.get(Pedelec_.pedelecId), pedelecId)
+                        )
                 );
                 break;
 
             case BY_LOGIN:
                 criteria.where(
-                        builder.equal(customer.get(Customer_.login), login)
+                        builder.and(
+                                builder.equal(cardAccount.get(CardAccount_.ownerType), CustomerType.CUSTOMER),
+                                builder.equal(customer.get(Customer_.login), login)
+                        )
                 );
                 break;
         }
@@ -652,34 +658,42 @@ public class TransactionRepositoryImpl implements TransactionRepository {
                         pedelec.get(Pedelec_.pedelecId),
                         pedelec.get(Pedelec_.manufacturerId)
                 )
-        ).where(
-                builder.equal(cardAccount.get(CardAccount_.ownerType), CustomerType.MAJOR_CUSTOMER)
         ).orderBy(
                 builder.desc(transaction.get(Transaction_.endDateTime))
         );
 
         switch (findType) {
             case ALL:
+                criteria.where(
+                        builder.equal(cardAccount.get(CardAccount_.ownerType), CustomerType.MAJOR_CUSTOMER)
+                );
                 break;
 
             case CLOSED:
                 criteria.where(
                         builder.and(
                                 builder.isNotNull(transaction.get(Transaction_.toSlot)),
-                                builder.isNotNull(transaction.get(Transaction_.endDateTime))
+                                builder.isNotNull(transaction.get(Transaction_.endDateTime)),
+                                builder.equal(cardAccount.get(CardAccount_.ownerType), CustomerType.MAJOR_CUSTOMER)
                         )
                 );
                 break;
 
             case BY_PEDELEC_ID:
                 criteria.where(
-                        builder.equal(pedelec.get(Pedelec_.pedelecId), pedelecId)
+                        builder.and(
+                        builder.equal(pedelec.get(Pedelec_.pedelecId), pedelecId),
+                        builder.equal(cardAccount.get(CardAccount_.ownerType), CustomerType.MAJOR_CUSTOMER)
+                        )
                 );
                 break;
 
             case BY_LOGIN:
                 criteria.where(
-                        builder.equal(majorCustomer.get(MajorCustomer_.login), login)
+                        builder.and(
+                        builder.equal(majorCustomer.get(MajorCustomer_.login), login),
+                        builder.equal(cardAccount.get(CardAccount_.ownerType), CustomerType.MAJOR_CUSTOMER)
+                        )
                 );
                 break;
         }

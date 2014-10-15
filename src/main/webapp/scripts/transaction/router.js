@@ -43,4 +43,44 @@ bikeManApp
                         authorizedRoles: [USER_ROLES.all]
                     }
                 })
+                .state('majorcustomer_transaction', {
+                    url: '/majorcustomer-transactions',
+                    templateUrl: 'views/transactions-majorcustomer.html',
+                    controller: 'TransactionController',
+                    resolve:{
+                        resolvedTransaction: ['Transaction', function (Transaction) {
+                            return Transaction.queryMajorCustomerTransactions();
+                        }]
+                    },
+                    access: {
+                        authorizedRoles: [USER_ROLES.all]
+                    }
+                })
+
+                .state('majorcustomer_closedTransaction', {
+                    url: '/majorcustomer-closed-transaction',
+                    templateUrl: 'views/transactions-majorcustomer.html',
+                    controller: 'TransactionController',
+                    resolve:{
+                        resolvedTransaction: ['Transaction', function (Transaction) {
+                            return Transaction.queryClosedMajorCustomerTransactions();
+                        }]
+                    },
+                    access: {
+                        authorizedRoles: [USER_ROLES.all]
+                    }
+                })
+                .state('majorcustomer_openTransaction', {
+                    url: '/majorcustomer-open-transaction',
+                    templateUrl: 'views/transactions-majorcustomer.html',
+                    controller: 'TransactionController',
+                    resolve:{
+                        resolvedTransaction: ['Transaction', function (Transaction) {
+                            return Transaction.queryOpenMajorCustomerTransactions();
+                        }]
+                    },
+                    access: {
+                        authorizedRoles: [USER_ROLES.all]
+                    }
+                })
         }]);
