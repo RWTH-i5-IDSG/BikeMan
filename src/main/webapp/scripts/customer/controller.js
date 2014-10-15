@@ -129,18 +129,10 @@ bikeManApp.controller('CustomerDetailController', ['$scope', 'resolvedCustomer',
 bikeManApp.controller('CustomerCreateController', ['$scope', 'Customer', '$timeout', '$filter',
     function($scope, Customer, $timeout, $filter) {
 
-        // open the datepicker control
-        $scope.open = function ($event) {
-            $event.preventDefault();
-            $event.stopPropagation();
-
-            $scope.opened = true;
-        }
-
-        $scope.dateOptions = {
-            formatYear: 'yyyy',
-            startingDay: 1
-        };
+//        $scope.dateOptions = {
+//            formatYear: 'yyyy',
+//            startingDay: 1
+//        };
 
         $scope.maxDate = new Date();
 
@@ -158,6 +150,7 @@ bikeManApp.controller('CustomerCreateController', ['$scope', 'Customer', '$timeo
         };
 
         $scope.clear = function () {
+            $scope.$broadcast('show-errors-reset');
             $scope.customer = {
                 userId: null,
                 login: null,

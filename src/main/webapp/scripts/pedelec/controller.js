@@ -112,6 +112,7 @@ bikeManApp.controller('PedelecCreateController', ['$scope', 'Pedelec', '$timeout
         };
 
         $scope.clear = function () {
+            $scope.$broadcast('show-errors-reset');
             $scope.pedelec = null;
         };
 

@@ -127,6 +127,7 @@ bikeManApp.controller('StationCreateController', ['$scope', 'CreateEditStation',
         };
 
         $scope.clear = function () {
+            $scope.$broadcast('show-errors-reset');
             $scope.station = null;
         };
 

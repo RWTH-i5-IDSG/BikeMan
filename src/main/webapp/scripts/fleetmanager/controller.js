@@ -52,7 +52,8 @@ bikeManApp.controller('FleetmanagerCreateController', ['$scope', 'Fleetmanager',
         };
 
         $scope.clear = function () {
-            $scope.pedelec = null;
+            $scope.$broadcast('show-errors-reset');
+            $scope.fleetmanager = null
         };
 
     }]);
