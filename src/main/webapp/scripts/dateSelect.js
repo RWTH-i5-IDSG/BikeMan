@@ -66,7 +66,7 @@ angular.module('bikeManApp')
 
 
                 $scope.dateFields = {};
-                $scope.$watch('model', function ( newDate) {
+                $scope.$watch('model', function (newDate) {
                     $scope.dateFields.day = new Date(newDate).getUTCDate();
                     $scope.dateFields.month = new Date(newDate).getUTCMonth();
                     $scope.dateFields.year = new Date(newDate).getUTCFullYear();
@@ -82,6 +82,16 @@ angular.module('bikeManApp')
                         $scope.model = $scope.formatDate($scope.dateFields);
                     }
                 }
+
+                $scope.reset = function () {
+                    $scope.dateFields.day = new Date().getUTCDate();
+                    $scope.dateFields.month = new Date().getUTCMonth();
+                    $scope.dateFields.year = new Date().getUTCFullYear();
+                    $scope.model = $scope.formatDate($scope.dateFields);
+                }
+
+                // init
+                $scope.reset();
             }],
             templateUrl: 'views/templates/dateSelect.html'
            }

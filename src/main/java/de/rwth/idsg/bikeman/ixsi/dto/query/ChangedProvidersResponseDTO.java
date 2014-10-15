@@ -1,17 +1,15 @@
 package de.rwth.idsg.bikeman.ixsi.dto.query;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import de.rwth.idsg.bikeman.ixsi.schema.ProviderIDType;
+import lombok.Data;
 
-import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.List;
 
 /**
  * Created by max on 06/10/14.
  */
-@AllArgsConstructor
-@Getter
+@Data
 public class ChangedProvidersResponseDTO {
-    private XMLGregorianCalendar timestamp;
-    private List<Object> providers;
+    private long timestamp;
+    private boolean providersChanged;
 }

@@ -45,18 +45,7 @@ public class QueryIXSIRepositoryImpl implements QueryIXSIRepository {
         List<PedelecDTO> pedelecList = em.createQuery(pedelecQuery, PedelecDTO.class).getResultList();
         List<StationDTO> stationList = em.createQuery(stationQuery, StationDTO.class).getResultList();
 
-        Date pedelecUpdated = em.createQuery("SELECT max(p.updated) FROM Pedelec p", Date.class)
-                                .getSingleResult();
-
-        Date stationUpdated = em.createQuery("SELECT max(s.updated) FROM Station s", Date.class)
-                                .getSingleResult();
-
-        long timestamp;
-        if (pedelecUpdated.after(stationUpdated)) {
-            timestamp = pedelecUpdated.getTime();
-        } else {
-            timestamp = stationUpdated.getTime();
-        }
+        long timestamp = getMaxUpdateTimestamp();
 
         BookingTargetsInfoResponseDTO dto = new BookingTargetsInfoResponseDTO();
         dto.setPedelecs(pedelecList);
@@ -66,8 +55,29 @@ public class QueryIXSIRepositoryImpl implements QueryIXSIRepository {
     }
 
     @Override
-    public ChangedProvidersResponseDTO changedProviders() {
-        return null;
+    public ChangedProvidersResponseDTO changedProviders(long requestTimestamp) {
+        ChangedProvidersResponseDTO responseDTO = new ChangedProvidersResponseDTO();
+
+        long timestamp = getMaxUpdateTimestamp();
+        if (requestTimestamp < timestamp) {
+            // update necessary!
+            responseDTO.setProvidersChanged(true);
+        } else {
+            responseDTO.setProvidersChanged(false);
+        }
+        responseDTO.setTimestamp(timestamp);
+
+        return responseDTO;
+    }
+
+    private long getMaxUpdateTimestamp() {
+        Date pedelecUpdated = em.createQuery("SELECT max(p.updated) FROM Pedelec p", Date.class)
+                .getSingleResult();
+
+        Date stationUpdated = em.createQuery("SELECT max(s.updated) FROM Station s", Date.class)
+                .getSingleResult();
+
+        return Math.max(pedelecUpdated.getTime(), stationUpdated.getTime());
     }
 
     @Override
