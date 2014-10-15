@@ -1,8 +1,8 @@
 package de.rwth.idsg.bikeman.repository;
 
-import de.rwth.idsg.bikeman.domain.Address;
+import de.rwth.idsg.bikeman.domain.*;
 import de.rwth.idsg.bikeman.domain.Address_;
-import de.rwth.idsg.bikeman.domain.Customer;
+import de.rwth.idsg.bikeman.domain.CardAccount_;
 import de.rwth.idsg.bikeman.domain.Customer_;
 import de.rwth.idsg.bikeman.domain.login.Authority;
 import de.rwth.idsg.bikeman.security.AuthoritiesConstants;
@@ -96,7 +96,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     @Transactional(readOnly = true)
     public long findByCardIdAndCardPin(String cardId, Integer cardPin) throws DatabaseException {
 
-        final String query = "SELECT userId FROM Customer WHERE cardId = :cardId AND cardPin = :cardPin";
+        final String query = "SELECT c.userId FROM Customer c WHERE c.cardAccount.cardId = :cardId AND c.cardAccount.cardPin = :cardPin";
 
         try {
             return (long) em.createQuery(query)
@@ -230,6 +230,12 @@ public class CustomerRepositoryImpl implements CustomerRepository {
                 newAdd.setCountry(newDtoAdd.getCountry());
                 customer.setAddress(newAdd);
 
+                CardAccount newCardAccount = new CardAccount();
+                newCardAccount.setOwnerType(CustomerType.CUSTOMER);
+                newCardAccount.setCardId(dto.getCardId());
+                //TODO:newCardAccount.setCardPin(dto.getCardPin());
+                customer.setCardAccount(newCardAccount);
+
                 HashSet<Authority> authorities = new HashSet<>();
                 authorities.add(new Authority(AuthoritiesConstants.CUSTOMER));
                 customer.setAuthorities(authorities);
@@ -243,6 +249,11 @@ public class CustomerRepositoryImpl implements CustomerRepository {
                 add.setZip(dtoAdd.getZip());
                 add.setCity(dtoAdd.getCity());
                 add.setCountry(dtoAdd.getCountry());
+
+                CardAccount cardAccount = new CardAccount();
+                cardAccount.setOwnerType(CustomerType.CUSTOMER);
+                cardAccount.setCardId(dto.getCardId());
+                //TODO:newCardAccount.setCardPin(dto.getCardPin());
                 break;
         }
     }
@@ -257,6 +268,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
         CriteriaQuery<ViewCustomerDTO> criteria = builder.createQuery(ViewCustomerDTO.class);
         Root<Customer> customer = criteria.from(Customer.class);
         Join<Customer, Address> address = customer.join(Customer_.address, JoinType.LEFT);
+        Join<Customer, CardAccount> cardAccount = customer.join(Customer_.cardAccount, JoinType.LEFT);
 
         criteria.select(
                 builder.construct(
@@ -268,7 +280,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
                         customer.get(Customer_.lastname),
                         customer.get(Customer_.isActivated),
                         customer.get(Customer_.birthday),
-                        customer.get(Customer_.cardId),
+                        cardAccount.get(CardAccount_.cardId),
                         address.get(Address_.streetAndHousenumber),
                         address.get(Address_.zip),
                         address.get(Address_.city),
