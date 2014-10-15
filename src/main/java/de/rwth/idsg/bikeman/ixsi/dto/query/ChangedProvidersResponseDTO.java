@@ -11,5 +11,5 @@ import java.util.List;
 @Data
 public class ChangedProvidersResponseDTO {
     private long timestamp;
-    private List<ProviderIDType> providers;
+    private boolean providersChanged;
 }
