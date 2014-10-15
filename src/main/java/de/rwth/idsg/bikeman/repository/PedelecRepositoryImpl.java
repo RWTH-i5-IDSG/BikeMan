@@ -1,7 +1,9 @@
 package de.rwth.idsg.bikeman.repository;
 
 import de.rwth.idsg.bikeman.domain.*;
+import de.rwth.idsg.bikeman.domain.CardAccount_;
 import de.rwth.idsg.bikeman.domain.Customer_;
+import de.rwth.idsg.bikeman.domain.MajorCustomer_;
 import de.rwth.idsg.bikeman.domain.Pedelec_;
 import de.rwth.idsg.bikeman.domain.StationSlot_;
 import de.rwth.idsg.bikeman.domain.Station_;
@@ -37,17 +39,21 @@ public class PedelecRepositoryImpl implements PedelecRepository {
     public List<ViewPedelecDTO> findAll() throws DatabaseException {
         CriteriaBuilder builder = em.getCriteriaBuilder();
 
-        List<ViewPedelecDTO> list = findPedelecsInTransaction(builder);
+        List<ViewPedelecDTO> list = findPedelecsInTransactionWithCustomer(builder);
+        list.addAll(findPedelecsInTransactionWithMajorCustomer(builder));
         list.addAll(findStationaryPedelecs(builder));
         return list;
     }
 
-    private List<ViewPedelecDTO> findPedelecsInTransaction(CriteriaBuilder builder) {
+    private List<ViewPedelecDTO> findPedelecsInTransactionWithCustomer(CriteriaBuilder builder) {
         CriteriaQuery<ViewPedelecDTO> criteria = builder.createQuery(ViewPedelecDTO.class);
 
         Root<Pedelec> pedelec = criteria.from(Pedelec.class);
         Join<Pedelec, Transaction> transaction = pedelec.join(Pedelec_.transactions, JoinType.LEFT);
-        Join<Transaction, Customer> customer = transaction.join(Transaction_.customer, JoinType.LEFT);
+
+        Join<Transaction, CardAccount> cardAccount = transaction.join(Transaction_.cardAccount, JoinType.LEFT);
+        Join customer = cardAccount.join(CardAccount_.user, JoinType.LEFT);
+
         Join<Transaction, StationSlot> fromStationSlot = transaction.join(Transaction_.fromSlot, JoinType.LEFT);
         Join<StationSlot, Station> fromStation = fromStationSlot.join(StationSlot_.station, JoinType.LEFT);
 
@@ -59,6 +65,7 @@ public class PedelecRepositoryImpl implements PedelecRepository {
                         pedelec.get(Pedelec_.stateOfCharge),
                         pedelec.get(Pedelec_.state),
                         pedelec.get(Pedelec_.inTransaction),
+                        cardAccount.get(CardAccount_.cardId),
                         customer.get(Customer_.customerId),
                         customer.get(Customer_.firstname),
                         customer.get(Customer_.lastname),
@@ -67,6 +74,42 @@ public class PedelecRepositoryImpl implements PedelecRepository {
                         transaction.get(Transaction_.startDateTime)
                 )
         ).where(builder.and(
+                builder.equal(cardAccount.get(CardAccount_.ownerType), CustomerType.CUSTOMER),
+                builder.equal(pedelec.get(Pedelec_.inTransaction), true),
+                builder.isNull(transaction.get(Transaction_.endDateTime)),
+                builder.isNull(transaction.get(Transaction_.toSlot))
+        ));
+
+        return em.createQuery(criteria).getResultList();
+    }
+
+    private List<ViewPedelecDTO> findPedelecsInTransactionWithMajorCustomer(CriteriaBuilder builder) {
+        CriteriaQuery<ViewPedelecDTO> criteria = builder.createQuery(ViewPedelecDTO.class);
+
+        Root<Pedelec> pedelec = criteria.from(Pedelec.class);
+        Join<Pedelec, Transaction> transaction = pedelec.join(Pedelec_.transactions, JoinType.LEFT);
+        Join<Transaction, CardAccount> cardAccount = transaction.join(Transaction_.cardAccount, JoinType.LEFT);
+        Join majorCustomer = cardAccount.join(CardAccount_.user, JoinType.LEFT);
+
+        Join<Transaction, StationSlot> fromStationSlot = transaction.join(Transaction_.fromSlot, JoinType.LEFT);
+        Join<StationSlot, Station> fromStation = fromStationSlot.join(StationSlot_.station, JoinType.LEFT);
+
+        criteria.select(
+                builder.construct(
+                        ViewPedelecDTO.class,
+                        pedelec.get(Pedelec_.pedelecId),
+                        pedelec.get(Pedelec_.manufacturerId),
+                        pedelec.get(Pedelec_.stateOfCharge),
+                        pedelec.get(Pedelec_.state),
+                        pedelec.get(Pedelec_.inTransaction),
+                        cardAccount.get(CardAccount_.cardId),
+                        majorCustomer.get(MajorCustomer_.name),
+                        fromStation.get(Station_.stationId),
+                        fromStationSlot.get(StationSlot_.stationSlotPosition),
+                        transaction.get(Transaction_.startDateTime)
+                )
+        ).where(builder.and(
+                builder.equal(cardAccount.get(CardAccount_.ownerType), CustomerType.MAJOR_CUSTOMER),
                 builder.equal(pedelec.get(Pedelec_.inTransaction), true),
                 builder.isNull(transaction.get(Transaction_.endDateTime)),
                 builder.isNull(transaction.get(Transaction_.toSlot))

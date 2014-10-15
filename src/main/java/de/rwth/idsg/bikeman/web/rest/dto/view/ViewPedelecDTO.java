@@ -23,6 +23,7 @@ public class ViewPedelecDTO {
     private ViewStationDTO station;
     private ViewTransactionDTO transaction;
 
+
     // Basic
     public ViewPedelecDTO(Long pedelecId, String manufacturerId, Float stateOfCharge,
                           OperationState state, Boolean inTransaction) {
@@ -46,9 +47,9 @@ public class ViewPedelecDTO {
         this.station = new ViewStationDTO(stationId, stationManufacturerId, stationSlotPosition);
     }
 
-    // Constructor for pedelecs in transaction
+    // Constructor for pedelecs in transaction with customer
     public ViewPedelecDTO(Long pedelecId, String manufacturerId, Float stateOfCharge,
-                          OperationState state, Boolean inTransaction,
+                          OperationState state, Boolean inTransaction, String cardId,
                           String customerId, String customerFirstname, String customerLastname,
                           Long stationId, Integer stationSlotPosition, LocalDateTime startDateTime) {
         this.pedelecId = pedelecId;
@@ -57,8 +58,24 @@ public class ViewPedelecDTO {
         this.state = state;
         this.inTransaction = inTransaction;
 
-        this.transaction = new ViewTransactionDTO(customerId,
+        this.transaction = new ViewTransactionDTO(cardId, null, customerId,
                 customerFirstname, customerLastname,
+                stationId, stationSlotPosition, startDateTime);
+    }
+
+    // Constructor for pedelecs in transaction with major customer
+    public ViewPedelecDTO(Long pedelecId, String manufacturerId, Float stateOfCharge,
+                          OperationState state, Boolean inTransaction, String cardId,
+                          String name,
+                          Long stationId, Integer stationSlotPosition, LocalDateTime startDateTime) {
+        this.pedelecId = pedelecId;
+        this.manufacturerId = manufacturerId;
+        this.stateOfCharge = stateOfCharge;
+        this.state = state;
+        this.inTransaction = inTransaction;
+
+        this.transaction = new ViewTransactionDTO(cardId, name, null,
+                null, null,
                 stationId, stationSlotPosition, startDateTime);
     }
 
@@ -71,6 +88,8 @@ public class ViewPedelecDTO {
 
     @Data
     private class ViewTransactionDTO {
+        private final String cardId;
+        private final String majorCustomerName;
         private final String customerId;
         private final String firstname;
         private final String lastname;
