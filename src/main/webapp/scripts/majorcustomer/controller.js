@@ -33,6 +33,39 @@ bikeManApp.controller('MajorcustomerController', ['$scope', 'resolvedMajorcustom
 
     }]);
 
+bikeManApp.controller('MajorcustomerDetailController', ['$scope', 'resolvedMajorcustomer', 'Majorcustomer', '$stateParams',
+    function($scope, resolvedMajorcustomer, Majorcustomer, Transaction, $stateParams) {
+
+        $scope.majorcustomer = resolvedMajorcustomer;
+
+        $scope.resultSizeValues = [10, 20, 50, 100, "all"];
+
+        // set initial resultSize to 10
+        $scope.resultSize = 10;
+
+        // TODO: card accounts
+//        $scope.transactions = Transaction.queryTransactionsOfMajorcustomerWithSize({login : $stateParams.login, resultSize : $scope.resultSize});
+
+        $scope.isEditing = false;
+
+        $scope.toggleEdit = function () {
+            $scope.majorcustomer = Majorcustomer.searchByLogin({login: $scope.majorcustomer.login});
+            $scope.isEditing = !$scope.isEditing;
+        }
+
+
+        $scope.saveMajorcustomer = function () {
+            $scope.saveMajorcustomerDTO = {
+                // TODO
+            }
+
+            Majorcustomer.update($scope.saveMajorcustomerDTO, function() {
+                $scope.isEditing = false;
+            })
+        }
+
+    }]);
+
 bikeManApp.controller('MajorcustomerCreateController', ['$scope', 'Majorcustomer', '$timeout', '$state',
     function ($scope, Majorcustomer, $timeout, $state)  {
 
