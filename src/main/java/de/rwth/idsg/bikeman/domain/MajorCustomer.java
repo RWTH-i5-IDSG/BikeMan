@@ -1,6 +1,8 @@
 package de.rwth.idsg.bikeman.domain;
 
 import de.rwth.idsg.bikeman.domain.login.User;
+import lombok.Data;
+import lombok.Getter;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -8,6 +10,7 @@ import java.util.Set;
 /**
  * Created by swam on 09/10/14.
  */
+@Data
 @Entity
 @DiscriminatorValue("majorCustomer")
 @Table(name="T_MAJOR_CUSTOMER")

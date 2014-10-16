@@ -20,7 +20,7 @@ import java.util.Set;
 @Table(name = "T_CARD_ACCOUNT")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @TableGenerator(name="card_account_gen", initialValue=0, allocationSize=1)
-@EqualsAndHashCode(of = {"cardAccountId"})
+@EqualsAndHashCode(of = {"cardId, cardAccountId"})
 @ToString(includeFieldNames = true, exclude = {})
 @Getter
 @Setter
