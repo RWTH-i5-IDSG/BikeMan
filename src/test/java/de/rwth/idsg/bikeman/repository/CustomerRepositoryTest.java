@@ -62,7 +62,7 @@ public class CustomerRepositoryTest {
         newCustomer.setLogin(new Date().getTime() + "@test.com");
         String generatedCardId = UUID.randomUUID().toString();
         newCustomer.setCardId(generatedCardId);
-        newCustomer.setCardPin(new Random().nextInt(9000));
+        newCustomer.setCardPin(String.valueOf(new Random().nextInt(9000)));
 
         try {
             customerRepository.create(newCustomer);

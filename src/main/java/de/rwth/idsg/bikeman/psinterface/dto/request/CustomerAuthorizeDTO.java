@@ -9,5 +9,5 @@ import lombok.Data;
 @Data
 public class CustomerAuthorizeDTO {
     private String cardId;
-    private Integer pin;
+    private String pin;
 }

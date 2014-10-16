@@ -36,7 +36,7 @@ public class CardAccount implements Serializable {
     private String cardId;
 
     @Column(name = "card_pin")
-    private Integer cardPin;
+    private String cardPin;
 
     @Column(name = "in_transaction")
     private Boolean inTransaction;

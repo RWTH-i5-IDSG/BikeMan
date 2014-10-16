@@ -94,7 +94,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
 
     @Override
     @Transactional(readOnly = true)
-    public long findByCardIdAndCardPin(String cardId, Integer cardPin) throws DatabaseException {
+    public long findByCardIdAndCardPin(String cardId, String cardPin) throws DatabaseException {
 
         final String query = "SELECT c.userId FROM Customer c WHERE c.cardAccount.cardId = :cardId AND c.cardAccount.cardPin = :cardPin";
 
@@ -251,7 +251,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
                 add.setCity(dtoAdd.getCity());
                 add.setCountry(dtoAdd.getCountry());
 
-                CardAccount cardAccount = new CardAccount();
+                CardAccount cardAccount = customer.getCardAccount();
                 cardAccount.setOwnerType(CustomerType.CUSTOMER);
                 cardAccount.setCardId(dto.getCardId());
                 cardAccount.setCardPin(dto.getCardPin());
@@ -282,6 +282,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
                         customer.get(Customer_.isActivated),
                         customer.get(Customer_.birthday),
                         cardAccount.get(CardAccount_.cardId),
+                        cardAccount.get(CardAccount_.cardPin),
                         address.get(Address_.streetAndHousenumber),
                         address.get(Address_.zip),
                         address.get(Address_.city),

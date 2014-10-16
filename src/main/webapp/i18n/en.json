@@ -226,6 +226,7 @@
                 "address": "Address",
                 "customerId": "Customer ID",
                 "cardId": "Card ID",
+                "cardPin": "Card PIN",
                 "birthday": "Birthday",
                 "isActivated": "Activated"
             },
@@ -259,6 +260,7 @@
                 "customerId": "Customer ID",
                 "login": "Login",
                 "cardId": "Card ID",
+                "cardPin": "Card PIN",
                 "name": "Name",
                 "address": {
                     "title": "Address",
@@ -274,6 +276,7 @@
                 "customerId": "Customer ID...",
                 "login": "customer@bikeman.de",
                 "cardId": "Card ID...",
+                "cardPin": "Card PIN...",
                 "firstname": "Max",
                 "lastname": "Mustermann",
                 "streetAndHousenumber": "Street...",

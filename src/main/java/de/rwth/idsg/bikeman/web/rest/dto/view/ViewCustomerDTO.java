@@ -20,13 +20,14 @@ public class ViewCustomerDTO {
     private String lastname;
     private Boolean isActivated;
     private String cardId;
+    private String cardPin;
     private ViewAddressDTO address;
 
     @JsonSerialize(using = CustomLocalDateSerializer.class)
     private LocalDate birthday;
 
     public ViewCustomerDTO(Long userId, String login, String customerId, String firstname, String lastname,
-                           Boolean isActivated, LocalDate birthday, String cardId,
+                           Boolean isActivated, LocalDate birthday, String cardId, String cardPin,
                            String streetAndHousenumber, String zip, String city, String country) {
         this.userId = userId;
         this.login = login;
@@ -36,6 +37,7 @@ public class ViewCustomerDTO {
         this.isActivated = isActivated;
         this.birthday = birthday;
         this.cardId = cardId;
+        this.cardPin = cardPin;
 
         if (streetAndHousenumber != null) {
             this.address = new ViewAddressDTO(streetAndHousenumber, zip, city, country);

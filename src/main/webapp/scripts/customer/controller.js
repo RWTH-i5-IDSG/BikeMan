@@ -116,6 +116,7 @@ bikeManApp.controller('CustomerDetailController', ['$scope', 'resolvedCustomer',
                 "address": $scope.customer.address,
                 "birthday": $scope.customer.birthday,
                 "cardId": $scope.customer.cardId,
+                "cardPin": $scope.customer.cardPin,
                 "isActivated": true
             }
 
@@ -156,6 +157,7 @@ bikeManApp.controller('CustomerCreateController', ['$scope', 'Customer', '$timeo
                 login: null,
                 customerId: null,
                 cardId: null,
+                cardPin: null,
                 firstname: null,
                 lastname: null,
                 address: null,

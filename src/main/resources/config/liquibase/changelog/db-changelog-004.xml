@@ -132,4 +132,9 @@
     </changeSet>
 
 
+    <changeSet id="1409564974607-22" author="wkluth">
+        <modifyDataType tableName="T_CARD_ACCOUNT" columnName="card_pin" newDataType="VARCHAR(255)"/>
+    </changeSet>
+
+
 </databaseChangeLog>

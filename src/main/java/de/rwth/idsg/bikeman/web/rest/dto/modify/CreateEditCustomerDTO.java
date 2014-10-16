@@ -12,6 +12,8 @@ import org.joda.time.LocalDate;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 /**
  * Created by swam on 05/06/14.
@@ -33,7 +35,9 @@ public class CreateEditCustomerDTO {
     @NotBlank
     private String cardId;
 
-    private int cardPin;
+    // check if cardPin has only four digits, e.g., '0034'
+    @Pattern(regexp = "^([0-9]{4})?$")
+    private String cardPin;
 
     @NotBlank
     private String firstname;

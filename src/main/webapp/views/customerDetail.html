@@ -46,6 +46,15 @@
                 </div>
             </div>
             <div class="form-group" show-errors>
+                <label class="control-label col-md-2" translate="customerCreate.table.header.cardPin">Card PIN</label>
+                <div class="col-md-10">
+                    <div class="well well-sm remove-margin" ng-switch-when="false" name="cardPinValue">{{customer.cardPin}}</div>
+                    <input type="text" class="form-control" name="cardPin"
+                           placeholder="{{'customerCreate.table.placeholders.cardPin' | translate}}"
+                           ng-model="customer.cardPin" ng-minlength=4 ng-maxlength=4 required ng-switch-when="true">
+                </div>
+            </div>
+            <div class="form-group" show-errors>
                 <label class="control-label col-md-2" translate="customerCreate.table.header.name">Name</label>
                 <div class="col-md-10">
                     <div class="well well-sm remove-margin" ng-switch-when="false" name="firstnameValue">{{customer.firstname}}</div>
