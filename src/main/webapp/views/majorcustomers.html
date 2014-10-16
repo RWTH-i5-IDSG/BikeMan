@@ -1,0 +1,53 @@
+<div>
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header" translate="majorcustomers.title">Fleetmanagers</h1>
+        </div>
+    </div>
+
+    <div class="modal fade" id="deleteModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" translate="majorcustomers.modal.title">Delete Fleetmanager</h4>
+                </div>
+                <div class="modal-body"  translate="majorcustomers.modal.body" translate-values="{login: '{{managerToDelete.login}}'}">
+                    Are you sure to delete <b>{{managerToDelete.login}}?</b>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" translate="majorcustomers.modal.buttons.close">
+                        Close
+                    </button>
+                    <button type="button" class="btn btn-danger"  data-dismiss="modal" ng-click="delete(managerToDelete.userId)"
+                            translate="majorcustomers.modal.buttons.delete">
+                        Delete
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th translate="majorcustomers.table.header.login">Login</th>
+                <th translate="majorcustomers.table.header.name">Name</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="majorcustomer in majorcustomers">
+                <td>{{ majorcustomer.login }}</td>
+                <td>{{ majorcustomer.name }}</td>
+                <td>
+                    <button class="btn btn-danger btn-sm pull-right" type="button" ng-click="deleteModal(majorcustomer)"
+                            data-toggle="modal" data-target="#deleteModal"><span class="glyphicon glyphicon-remove"></span>
+                        <span translate="majorcustomers.table.buttons.delete">Delete</span></button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

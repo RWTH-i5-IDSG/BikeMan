@@ -1,0 +1,52 @@
+<div>
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header" translate="majorcustomerCreate.title">Create Fleetmanager</h1>
+        </div>
+    </div>
+
+    <form name="form" role="form" novalidate
+          class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength form-horizontal"
+          ng-submit="create()">
+
+        <div class="panel-body">
+            <div class="form-group" show-errors>
+                <label class="col-md-2 control-label" translate="majorcustomerCreate.table.header.login">Login</label>
+                <div class="col-md-10">
+                    <input type="text" class="col-md-10 form-control" name="login"
+                           ng-model="fleetmanager.login" ng-minlength=3 ng-maxlength=50
+                           placeholder="{{ 'majorcustomerCreate.table.placeholders.login' | translate }}" required>
+                </div>
+            </div>
+
+            <div class="form-group" show-errors>
+                <label class="col-md-2 control-label" translate="majorcustomerCreate.table.header.name">Name</label>
+                <div class="col-md-10">
+                    <input type="text" class="col-md-10 form-control" name="name"
+                           ng-model="fleetmanager.name" ng-minlength=1 ng-maxlength=50
+                           placeholder="{{ 'majorcustomerCreate.table.placeholders.name' | translate }}" required>
+                </div>
+            </div>
+
+            <div class="form-group" show-errors>
+                <label class="col-md-2 control-label" translate="majorcustomerCreate.table.header.password">Password</label>
+                <div class="col-md-10">
+                    <input type="password" class="col-md-10 form-control" name="password"
+                           ng-model="fleetmanager.password" ng-minlength=1 ng-maxlength=50
+                           placeholder="{{ 'majorcustomerCreate.table.placeholders.password' | translate }}" required>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clear()">
+                    <span class="glyphicon glyphicon-ban-circle"></span>
+                    <span translate="majorcustomerCreate.buttons.cancel">Cancel</span>
+                </button>
+                <button type="submit"  class="btn btn-primary">
+                    <span class="glyphicon glyphicon-save"></span>
+                    <span translate="majorcustomerCreate.buttons.save">Save</span>
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
