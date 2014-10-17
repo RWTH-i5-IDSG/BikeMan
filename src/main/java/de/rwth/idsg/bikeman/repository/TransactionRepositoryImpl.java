@@ -327,6 +327,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         return list;
     }
 
+    @SuppressWarnings("unchecked")
     private List<ViewTransactionDTO> findCustomerTransactions(CriteriaBuilder builder) throws DatabaseException {
 
         CriteriaQuery<ViewTransactionDTO> criteria = builder.createQuery(ViewTransactionDTO.class);
@@ -371,6 +372,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private List<ViewTransactionDTO> findMajorCustomerTransactions(CriteriaBuilder builder) throws DatabaseException {
 
         CriteriaQuery<ViewTransactionDTO> criteria = builder.createQuery(ViewTransactionDTO.class);
@@ -551,6 +553,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         em.merge(slot);
     }
 
+    @SuppressWarnings("unchecked")
     private CriteriaQuery<ViewTransactionDTO> getCustomerTransactionQuery(CriteriaBuilder builder, FindType findType, Long pedelecId, String login) {
         CriteriaQuery<ViewTransactionDTO> criteria = builder.createQuery(ViewTransactionDTO.class);
         Root<Transaction> transaction = criteria.from(Transaction.class);
@@ -626,6 +629,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         return criteria;
     }
 
+    @SuppressWarnings("unchecked")
     private CriteriaQuery<ViewTransactionDTO> getMajorCustomerTransactionQuery(CriteriaBuilder builder, FindType findType, Long pedelecId, String login) {
         CriteriaQuery<ViewTransactionDTO> criteria = builder.createQuery(ViewTransactionDTO.class);
         Root<Transaction> transaction = criteria.from(Transaction.class);

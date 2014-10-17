@@ -1,9 +1,9 @@
 'use strict';
 
-bikeManApp.controller('MajorcustomerController', ['$scope', 'resolvedMajorcustomer', 'Majorcustomer',
-    function ($scope, resolvedMajorcustomer, Majorcustomer) {
+bikeManApp.controller('MajorcustomerController', ['$scope', 'resolvedMajorcustomers', 'Majorcustomer',
+    function ($scope, resolvedMajorcustomers, Majorcustomer) {
 
-        $scope.majorcustomer = resolvedMajorcustomer;
+        $scope.majorcustomers = resolvedMajorcustomers;
 
         $scope.create = function () {
             Majorcustomer.save($scope.majorcustomer,

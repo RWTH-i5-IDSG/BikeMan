@@ -1,6 +1,5 @@
 package de.rwth.idsg.bikeman.web.rest.dto.view;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.Set;

@@ -152,6 +152,18 @@
                                     <span translate="global.menu.management.custCreate">Create Customer</span>
                                 </a>
                             </li>
+
+                            <li ui-sref-active="selectedNavItem">
+                                <a ui-sref="majorcustomers">
+                                    <span translate="global.menu.management.majorcustomerOverview">Majorcustomer Overview</span>
+                                </a>
+                            </li>
+                            <li ng-show="isAuthorized(userRoles.admin)" ui-sref-active="selectedNavItem">
+                                <a ui-sref="majorcustomerCreate">
+                                    <span translate="global.menu.management.custCreate">Create Majorcustomer</span>
+                                </a>
+                            </li>
+
                             <li ng-show="isAuthorized(userRoles.admin)" ui-sref-active="selectedNavItem">
                                 <a ui-sref="fleetmanagers">
                                     <span translate="global.menu.management.fleetOverview">Fleetmanager Overview</span>
@@ -327,6 +339,9 @@
 <script src="scripts/customer/router.js"></script>
 <script src="scripts/customer/controller.js"></script>
 <script src="scripts/customer/service.js"></script>
+<script src="scripts/majorcustomer/router.js"></script>
+<script src="scripts/majorcustomer/controller.js"></script>
+<script src="scripts/majorcustomer/service.js"></script>
 <script src="scripts/pedelec/router.js"></script>
 <script src="scripts/pedelec/controller.js"></script>
 <script src="scripts/pedelec/service.js"></script>

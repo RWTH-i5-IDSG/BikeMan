@@ -2,6 +2,7 @@ package de.rwth.idsg.bikeman.domain;
 
 import de.rwth.idsg.bikeman.domain.login.User;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import javax.persistence.*;
@@ -12,6 +13,7 @@ import java.util.Set;
  */
 @Data
 @Entity
+@EqualsAndHashCode(callSuper = false, of = {"name", "userId"})
 @DiscriminatorValue("majorCustomer")
 @Table(name="T_MAJOR_CUSTOMER")
 public class MajorCustomer extends User {
