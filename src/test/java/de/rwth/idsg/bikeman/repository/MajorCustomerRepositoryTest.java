@@ -45,7 +45,7 @@ public class MajorCustomerRepositoryTest {
     private MajorCustomerRepository majorCustomerRepository;
 
     @Inject
-    private CardAccountRepository cardAccountRepository;
+    private CardAccountRepositoryTest cardAccountRepository;
 
     @Inject
     private UserRepository userRepository;
