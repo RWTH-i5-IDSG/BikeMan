@@ -1,8 +1,7 @@
 package de.rwth.idsg.bikeman.repository;
 
-import de.rwth.idsg.bikeman.domain.CardAccount;
+import de.rwth.idsg.bikeman.domain.*;
 import de.rwth.idsg.bikeman.domain.CardAccount_;
-import de.rwth.idsg.bikeman.domain.MajorCustomer;
 import de.rwth.idsg.bikeman.domain.MajorCustomer_;
 import de.rwth.idsg.bikeman.domain.login.Authority;
 import de.rwth.idsg.bikeman.domain.login.User_;
@@ -20,9 +19,7 @@ import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -58,15 +55,48 @@ public class MajorCustomerRepositoryImpl implements MajorCustomerRepository {
     @Override
     @Transactional(readOnly = true)
     public ViewMajorCustomerDTO findByLogin(String login) throws DatabaseException {
-        try {
-            CriteriaBuilder builder = em.getCriteriaBuilder();
-            return em.createQuery(
-                    getMajorCustomerQuery(builder, FindType.BY_LOGIN, login, null)
-            ).getSingleResult();
 
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+
+        CriteriaQuery<ViewMajorCustomerDTO> criteria = this.getMajorCustomerQuery(builder, FindType.BY_LOGIN, login, null);
+        ViewMajorCustomerDTO majorCustomerDTO;
+
+        try {
+            majorCustomerDTO = em.createQuery(criteria).getSingleResult();
         } catch (Exception e) {
-            throw new DatabaseException("Failed during database operation.", e);
+            throw new DatabaseException("Failed to find majorcustomer with majorCustomer login: " + login, e);
         }
+
+        CriteriaQuery<ViewCardAccountDTO> cardAccountCriteria = builder.createQuery(ViewCardAccountDTO.class);
+        Root<CardAccount> cardAccount = cardAccountCriteria.from(CardAccount.class);
+
+        cardAccountCriteria.select(
+                builder.construct(
+                        ViewCardAccountDTO.class,
+                        cardAccount.get(CardAccount_.cardId),
+                        cardAccount.get(CardAccount_.cardPin),
+                        cardAccount.get(CardAccount_.inTransaction),
+                        cardAccount.get(CardAccount_.operationState)
+                )
+        ).where(builder.equal(cardAccount.get(CardAccount_.user).get(User_.login), login));
+
+        List<ViewCardAccountDTO> list;
+
+        try {
+            list = em.createQuery(cardAccountCriteria).getResultList();
+        } catch (Exception e) {
+            throw new DatabaseException("Failed to get cards for major customer", e);
+        }
+
+        if (list == null) {
+            majorCustomerDTO.setCardAccountDTOs(new HashSet<ViewCardAccountDTO>());
+            return majorCustomerDTO;
+        }
+
+        Set<ViewCardAccountDTO> set = new HashSet<>(list);
+        majorCustomerDTO.setCardAccountDTOs(set);
+
+        return majorCustomerDTO;
     }
 
     @Override
@@ -227,7 +257,12 @@ public class MajorCustomerRepositoryImpl implements MajorCustomerRepository {
                 break;
 
             case BY_LOGIN:
-                criteria.where(builder.equal(majorCustomer.get(MajorCustomer_.login), login));
+                Path<String> loginPath = majorCustomer.get(MajorCustomer_.login);
+                Expression<String> loginLower = builder.lower(loginPath);
+
+                criteria.where(
+                        builder.equal(loginLower, login.toLowerCase())
+                );
                 break;
 
             case BY_ID:
