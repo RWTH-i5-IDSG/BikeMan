@@ -21,6 +21,8 @@
                 "title": "Management",
                 "custOverview": "Customer Overview",
                 "custCreate": "Create Customer",
+                "majorcustomerOverview": "Major Customer Overview",
+                "majorcustomerCreate": "Create Major Customer",
                 "fleetOverview": "Fleetmanager Overview",
                 "fleetCreate": "Create Fleetmanager"
             },
@@ -283,6 +285,81 @@
                 "zip": "ZIP...",
                 "city": "City...",
                 "country": "Country..."
+            }
+        },
+        "buttons": {
+            "cancel": "Cancel",
+            "save": "Save"
+        }
+    },
+    "majorcustomers": {
+        "title": "Customers",
+        "search": {
+            "searchByName": "Search: Max Mustermann",
+            "searchByLogin": "Search: majorcustomers@email.com",
+            "reset": "Reset"
+        },
+        "table": {
+            "header": {
+                "majorcustomerId": "Major Customer ID",
+                "name": "Name",
+                "login": "E-Mail",
+                "isActivated": "Activated",
+                "birthday": "Birthday"
+            },
+            "body": {
+                "isActivated": "Activated",
+                "details": "Details"
+            }
+        }
+    },
+    "majorcustomerDetail": {
+        "title": "Major Customer: {{ name }}",
+        "buttons": {
+            "back": "Back",
+            "edit": "Edit Customer",
+            "cancel": "Cancel",
+            "save": "Save Customer"
+        },
+        "table": {
+            "header": {
+                "login": "Login",
+                "name": "Name",
+                "majorcustomerId": "Customer ID",
+                "cardId": "Card ID",
+                "cardPin": "Card PIN"
+            }
+        },
+        "cardaccounts": {
+            "title": "Card Accounts",
+            "numberOfCardaccounts": "Number of card accounts to display:",
+            "table": {
+                "header": {
+                    "cardId": "Card ID",
+                    "cardPin": "Card PIN",
+                    "inTransaction": "In Transaction",
+                    "operationState": "Operation State"
+                },
+                "buttons": {
+                    "edit": "Edit"
+                }
+            }
+        }
+    },
+    "majorcustomerCreate": {
+        "title": "Create Major Customer",
+        "table": {
+            "header": {
+                "majorcustomerId": "Major Customer ID",
+                "login": "Login",
+                "password": "Password",
+                "name": "Name"
+            },
+            "placeholders": {
+                "majorcustomerId": "Major Customer ID...",
+                "login": "majorcustomer@bikeman.de",
+                "password": "*******",
+                "name": "Major Customer Name"
             }
         },
         "buttons": {

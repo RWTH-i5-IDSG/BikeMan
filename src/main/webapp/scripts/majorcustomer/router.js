@@ -8,7 +8,7 @@ bikeManApp
                     url: '/majorcustomers',
                     templateUrl: 'views/majorcustomers.html',
                     controller: 'MajorcustomerController',
-                    resolve:{
+                    resolve: {
                         resolvedMajorcustomers: ['Majorcustomer', function (Majorcustomer) {
                             return Majorcustomer.query();
                         }]
@@ -25,4 +25,17 @@ bikeManApp
                         authorizedRoles: [USER_ROLES.all]
                     }
                 })
+                .state('majorcustomerDetail', {
+                    url: '/majorcustomers/{login}/',
+                    templateUrl: 'views/majorcustomerDetail.html',
+                    controller: 'MajorcustomerDetailController',
+                    resolve:{
+                        resolvedMajorcustomer: function (Majorcustomer, $stateParams) {
+                            return Majorcustomer.searchByLogin({login: $stateParams.login});
+                        }
+                    },
+                    access: {
+                        authorizedRoles: [USER_ROLES.all]
+                    }
+                });
         }]);

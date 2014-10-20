@@ -17,7 +17,7 @@ bikeManApp.controller('MajorcustomerController', ['$scope', 'resolvedMajorcustom
         };
 
         $scope.delete = function (id) {
-            Majorcustomer.delete({id: id},
+            Majorcustomer.delete({userId: id},
                 function () {
                     $scope.majorcustomer = Majorcustomer.query();
                 });
@@ -86,7 +86,12 @@ bikeManApp.controller('MajorcustomerCreateController', ['$scope', 'Majorcustomer
 
         $scope.clear = function () {
             $scope.$broadcast('show-errors-reset');
-            $scope.majorcustomer = null
+            $scope.majorcustomer = {
+                userId: null,
+                login: null,
+                password: null,
+                name: null
+            }
         };
 
     }]);
