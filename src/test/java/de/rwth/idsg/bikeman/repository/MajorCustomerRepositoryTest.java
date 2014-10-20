@@ -6,7 +6,9 @@ import de.rwth.idsg.bikeman.domain.CustomerType;
 import de.rwth.idsg.bikeman.domain.MajorCustomer;
 import de.rwth.idsg.bikeman.domain.OperationState;
 import de.rwth.idsg.bikeman.domain.login.User;
+import de.rwth.idsg.bikeman.service.CardAccountService;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditMajorCustomerDTO;
+import de.rwth.idsg.bikeman.web.rest.dto.view.ViewCardAccountDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.view.ViewMajorCustomerDTO;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
@@ -45,7 +47,13 @@ public class MajorCustomerRepositoryTest {
     private MajorCustomerRepository majorCustomerRepository;
 
     @Inject
+    private CardAccountRepository cardAccountRepository;
+
+    @Inject
     private UserRepository userRepository;
+
+    @Inject
+    private CardAccountService cardAccountService;
 
     @Test
     public void test1_createMajorCustomers() {
@@ -126,10 +134,16 @@ public class MajorCustomerRepositoryTest {
 
             ViewMajorCustomerDTO mcByLogin = majorCustomerRepository.findByLogin(newMajorCustomer.getLogin());
             Assert.assertEquals(newMajorCustomer.getLogin(), mcByLogin.getLogin());
-            log.debug("Successfully created majorCustomer and found by login: ", newMajorCustomer);
+            log.debug("Successfully created majorCustomer and fo: ", newMajorCustomer);
         } catch (DatabaseException ex) {
             log.error("Creating a new majorcustomer failed: ", ex);
         }
+    }
+
+    @Test
+    public void test5_checkCurrentUserCardAccounts() {
+
+        List<ViewCardAccountDTO> cardAccountList = cardAccountService.getCardAccountsOfCurrentUser();
 
     }
 

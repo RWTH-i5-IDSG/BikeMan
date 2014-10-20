@@ -140,7 +140,7 @@ public class AccountResource {
     public void invalidateSession(@PathVariable String series, HttpServletRequest request) throws UnsupportedEncodingException {
         String decodedSeries = URLDecoder.decode(series, "UTF-8");
 
-        User user = userRepository.findByLogin(SecurityUtils.getCurrentLogin());
+        User user = userRepository.findByLoginIgnoreCase(SecurityUtils.getCurrentLogin());
         List<PersistentToken> persistentTokens = persistentTokenRepository.findByUser(user);
         for (PersistentToken persistentToken : persistentTokens) {
 		    if (StringUtils.equals(persistentToken.getSeries(), decodedSeries)) {

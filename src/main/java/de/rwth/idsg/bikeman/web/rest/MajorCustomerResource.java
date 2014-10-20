@@ -29,6 +29,7 @@ public class MajorCustomerResource {
 
     private static final String BASE_PATH = "/rest/majorcustomers";
     private static final String ID_PATH = "/rest/majorcustomers/{login:.+}";
+    private static final String CARD_ACCOUNT_PATH = "/rest/majorcustomers/{login.+}/card-accounts";
 
     @Timed
     @RequestMapping(value = BASE_PATH, method = RequestMethod.GET)
@@ -42,6 +43,13 @@ public class MajorCustomerResource {
     public ViewMajorCustomerDTO getOne(@PathVariable String login) throws DatabaseException {
         log.debug("REST request to get Customer with login: {}", login);
         return majorCustomerRepository.findByLogin(login);
+    }
+
+    @Timed
+    @RequestMapping(value = CARD_ACCOUNT_PATH, method = RequestMethod.GET)
+    public ViewMajorCustomerDTO getCardAccounts() throws DatabaseException {
+        log.debug("REST request to get majorcustomers cardAccounts");
+        return null;
     }
 
     @Timed

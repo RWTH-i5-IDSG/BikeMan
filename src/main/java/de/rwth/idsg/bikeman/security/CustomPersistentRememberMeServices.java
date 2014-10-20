@@ -105,7 +105,7 @@ public class CustomPersistentRememberMeServices extends
         String login = successfulAuthentication.getName();
 
         log.debug("Creating new persistent login for user {}", login);
-        User user = userRepository.findByLogin(login);
+        User user = userRepository.findByLoginIgnoreCase(login);
 
         PersistentToken token = new PersistentToken();
         token.setSeries(generateSeriesData());
