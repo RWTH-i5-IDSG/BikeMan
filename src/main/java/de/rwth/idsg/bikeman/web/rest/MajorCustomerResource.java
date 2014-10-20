@@ -39,9 +39,9 @@ public class MajorCustomerResource {
 
     @Timed
     @RequestMapping(value = ID_PATH, method = RequestMethod.GET)
-    public ViewMajorCustomerDTO getById(@PathVariable Long id) throws DatabaseException {
-        log.debug("REST request to get Customer with id: {}", id);
-        return majorCustomerRepository.findOne(id);
+    public ViewMajorCustomerDTO getOne(@PathVariable String login) throws DatabaseException {
+        log.debug("REST request to get Customer with login: {}", login);
+        return majorCustomerRepository.findByLogin(login);
     }
 
     @Timed

@@ -45,9 +45,6 @@ public class MajorCustomerRepositoryTest {
     private MajorCustomerRepository majorCustomerRepository;
 
     @Inject
-    private CardAccountRepositoryTest cardAccountRepository;
-
-    @Inject
     private UserRepository userRepository;
 
     @Test
@@ -70,7 +67,6 @@ public class MajorCustomerRepositoryTest {
 
         }
     }
-
 
     @Test
     public void test2_findAll() {
@@ -112,6 +108,25 @@ public class MajorCustomerRepositoryTest {
 
             ViewMajorCustomerDTO viewMajorCustomerDTO = majorCustomerRepository.findOne(user.getUserId());
             log.debug("Successfully found one majorCustomer: ", viewMajorCustomerDTO);
+        } catch (DatabaseException ex) {
+            log.error("Creating a new majorcustomer failed: ", ex);
+        }
+    }
+
+    @Test
+    public void test4_findByLogin() {
+
+        CreateEditMajorCustomerDTO newMajorCustomer = new CreateEditMajorCustomerDTO();
+        newMajorCustomer.setLogin(RandomStringUtils.randomAlphabetic(6) + "@testmail.de");
+        newMajorCustomer.setPassword(RandomStringUtils.randomAlphabetic(12));
+        newMajorCustomer.setName(RandomStringUtils.randomAlphabetic(8));
+
+        try {
+            majorCustomerRepository.create(newMajorCustomer);
+
+            ViewMajorCustomerDTO mcByLogin = majorCustomerRepository.findByLogin(newMajorCustomer.getLogin());
+            Assert.assertEquals(newMajorCustomer.getLogin(), mcByLogin.getLogin());
+            log.debug("Successfully created majorCustomer and found by login: ", newMajorCustomer);
         } catch (DatabaseException ex) {
             log.error("Creating a new majorcustomer failed: ", ex);
         }

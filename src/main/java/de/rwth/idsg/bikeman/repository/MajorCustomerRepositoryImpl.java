@@ -9,6 +9,7 @@ import de.rwth.idsg.bikeman.domain.login.User_;
 import de.rwth.idsg.bikeman.security.AuthoritiesConstants;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditMajorCustomerDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.view.ViewCardAccountDTO;
+import de.rwth.idsg.bikeman.web.rest.dto.view.ViewCustomerDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.view.ViewMajorCustomerDTO;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -34,6 +36,7 @@ import java.util.Set;
 public class MajorCustomerRepositoryImpl implements MajorCustomerRepository {
 
     private enum Operation { CREATE, UPDATE };
+    private enum FindType { ALL, BY_ID, BY_LOGIN };
 
     @PersistenceContext
     private EntityManager em;
@@ -44,8 +47,22 @@ public class MajorCustomerRepositoryImpl implements MajorCustomerRepository {
         try {
             CriteriaBuilder builder = em.getCriteriaBuilder();
             return em.createQuery(
-                    getMajorCustomerQuery(builder, null)
+                    getMajorCustomerQuery(builder, FindType.ALL, null, null)
             ).getResultList();
+
+        } catch (Exception e) {
+            throw new DatabaseException("Failed during database operation.", e);
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ViewMajorCustomerDTO findByLogin(String login) throws DatabaseException {
+        try {
+            CriteriaBuilder builder = em.getCriteriaBuilder();
+            return em.createQuery(
+                    getMajorCustomerQuery(builder, FindType.BY_LOGIN, login, null)
+            ).getSingleResult();
 
         } catch (Exception e) {
             throw new DatabaseException("Failed during database operation.", e);
@@ -58,7 +75,7 @@ public class MajorCustomerRepositoryImpl implements MajorCustomerRepository {
 
         CriteriaBuilder builder = em.getCriteriaBuilder();
 
-        CriteriaQuery<ViewMajorCustomerDTO> criteria = this.getMajorCustomerQuery(builder, majorCustomerId);
+        CriteriaQuery<ViewMajorCustomerDTO> criteria = this.getMajorCustomerQuery(builder, FindType.BY_ID, null, majorCustomerId);
         ViewMajorCustomerDTO majorCustomerDTO;
 
         try {
@@ -192,7 +209,7 @@ public class MajorCustomerRepositoryImpl implements MajorCustomerRepository {
      * This method returns the query to get information of customers for various lookup cases
      *
      */
-    private CriteriaQuery<ViewMajorCustomerDTO> getMajorCustomerQuery(CriteriaBuilder builder, Long majorCustomerId) {
+    private CriteriaQuery<ViewMajorCustomerDTO> getMajorCustomerQuery(CriteriaBuilder builder, FindType findType, String login, Long majorCustomerId) {
         CriteriaQuery<ViewMajorCustomerDTO> criteria = builder.createQuery(ViewMajorCustomerDTO.class);
         Root<MajorCustomer> majorCustomer = criteria.from(MajorCustomer.class);
 
@@ -205,8 +222,17 @@ public class MajorCustomerRepositoryImpl implements MajorCustomerRepository {
                 )
         );
 
-        if (majorCustomerId != null) {
-            criteria.where(builder.equal(majorCustomer.get(MajorCustomer_.userId), majorCustomerId));
+        switch (findType) {
+            case ALL:
+                break;
+
+            case BY_LOGIN:
+                criteria.where(builder.equal(majorCustomer.get(MajorCustomer_.login), login));
+                break;
+
+            case BY_ID:
+                criteria.where(builder.equal(majorCustomer.get(MajorCustomer_.userId), majorCustomerId));
+                break;
         }
 
         return criteria;

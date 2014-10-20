@@ -21,6 +21,11 @@ public interface MajorCustomerRepository {
 
     ViewMajorCustomerDTO findOne(long majorCustomerId) throws DatabaseException;
 
+    /**
+     * Login (aka email) field of each majorcustomer is unique
+     */
+    ViewMajorCustomerDTO findByLogin(String login) throws DatabaseException;
+
     void create(CreateEditMajorCustomerDTO dto) throws DatabaseException;
 
     void update(CreateEditMajorCustomerDTO dto) throws DatabaseException;
