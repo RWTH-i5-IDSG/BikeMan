@@ -33,8 +33,8 @@ bikeManApp.controller('MajorcustomerController', ['$scope', 'resolvedMajorcustom
 
     }]);
 
-bikeManApp.controller('MajorcustomerDetailController', ['$scope', 'resolvedMajorcustomer', 'Majorcustomer', '$stateParams',
-    function($scope, resolvedMajorcustomer, Majorcustomer, Transaction, $stateParams) {
+bikeManApp.controller('MajorcustomerDetailController', ['$scope', 'resolvedMajorcustomer', 'Majorcustomer', '$stateParams', 'CardAccount',
+    function($scope, resolvedMajorcustomer, Majorcustomer, $stateParams, CardAccount) {
 
         $scope.majorcustomer = resolvedMajorcustomer;
 
@@ -56,12 +56,23 @@ bikeManApp.controller('MajorcustomerDetailController', ['$scope', 'resolvedMajor
 
         $scope.saveMajorcustomer = function () {
             $scope.saveMajorcustomerDTO = {
-                // TODO
+                "userId": $scope.majorcustomer.userId,
+                "login": $scope.majorcustomer.login,
+                "name": $scope.majorcustomer.name
             }
 
             Majorcustomer.update($scope.saveMajorcustomerDTO, function() {
                 $scope.isEditing = false;
             })
+        }
+
+        $scope.updateCardAccount = function (cardAcc) {
+            if (cardAcc.operationState === "OPERATIVE") {
+                CardAccount.disable({'cardId': cardAcc.cardId});
+            } else {
+                CardAccount.enable({'cardId': cardAcc.cardId});
+            }
+            $scope.majorcustomer = Majorcustomer.searchByLogin({login: $scope.majorcustomer.login});
         }
 
     }]);

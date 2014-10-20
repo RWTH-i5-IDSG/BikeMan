@@ -1,0 +1,98 @@
+<div>
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header" translate="cardaccounts.title">Card Accounts</h1>
+        </div>
+    </div>
+
+    <div>
+        <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#addModal">
+            <span class="glyphicon glyphicon-flash"></span>
+            <span translate="cardaccounts.buttons.add">Add Card Account</span>
+        </button>
+    </div>
+
+    <div class="modal fade" id="deleteModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" translate="cardaccounts.deleteModal.title">Delete Card Account</h4>
+                </div>
+                <div class="modal-body"  translate="cardaccounts.deleteModal.body" translate-values="{login: '{{cardaccountToDelete.cardId}}'}">
+                    Are you sure to delete <b>{{cardaccountToDelete.cardId}}?</b>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" translate="cardaccounts.deleteModal.buttons.cancel">
+                        Cancel
+                    </button>
+                    <button type="button" class="btn btn-danger"  data-dismiss="modal" ng-click="delete(cardaccountToDelete.userId)"
+                            translate="cardaccounts.deleteModal.buttons.delete">
+                        Delete
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <div class="modal fade" id="addModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form name="form" role="form" novalidate
+                      class="form-horizontal ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength"
+                      ng-submit="create()">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" translate="cardaccounts.addModal.title">Add Card Account</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label class="control-label" translate="cardaccounts.addModal.cardId">Card ID</label>
+                            <input type="text" class="form-control" ng-model="newCardaccount.cardId" ng-minlength="1">
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" translate="cardaccounts.addModal.cardPin">Card PIN</label>
+                            <input type="text" class="form-control" ng-model="newCardaccount.cardPin" ng-minlength="4" ng-maxlength="4">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clear()" translate="cardaccounts.addModal.buttons.cancel">
+                            Cancel
+                        </button>
+                        <button type="submit" class="btn btn-primary"  data-dismiss="modal"
+                                translate="cardaccounts.addModal.buttons.add">
+                            Add
+                        </button>
+                    </div>
+                </form>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th translate="majorcustomerDetail.cardaccounts.table.header.cardId">Card ID</th>
+                <th translate="majorcustomerDetail.cardaccounts.table.header.cardPin">Card PIN</th>
+                <th translate="majorcustomerDetail.cardaccounts.table.header.inTransaction">In Transaction</th>
+                <th translate="majorcustomerDetail.cardaccounts.table.header.operationState">Operation State</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="cardaccount in cardaccounts">
+                <td>{{cardaccount.cardId}}</td>
+                <td>{{cardaccount.cardPin}}</td>
+                <td>{{cardaccount.inTransaction | occupiedFilter}}</td>
+                <td><button ng-click="toggleCardAccount(cardaccount)">{{cardaccount.operationState}}</button></td>
+                <td>
+                <button class="btn btn-danger btn-sm pull-right" type="button" ng-click="deleteModal(cardaccount)"
+                data-toggle="modal" data-target="#deleteModal"><span class="glyphicon glyphicon-remove"></span>
+                <span translate="cardaccounts.table.buttons.delete">Delete</span></button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -101,7 +101,8 @@ bikeManApp.constant('USER_ROLES', {
         all: '*',
         admin: 'ROLE_ADMIN',
         manager: 'ROLE_MANAGER',
-        customer: 'ROLE_CUSTOMER'
+        customer: 'ROLE_CUSTOMER',
+        majorcustomer: 'ROLE_MAJORCUSTOMER'
     });
 
 bikeManApp.factory('AuthenticationSharedService', ['$rootScope', '$http', 'authService', 'Session', 'Account', 'Base64Service', 'AccessToken', '$q',
