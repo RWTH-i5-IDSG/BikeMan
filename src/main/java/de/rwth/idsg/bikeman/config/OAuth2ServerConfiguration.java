@@ -73,6 +73,7 @@ public class OAuth2ServerConfiguration {
                     .antMatchers("/app/rest/stations/**").hasAuthority(AuthoritiesConstants.MANAGER)
                     .antMatchers("/app/rest/transactions*").hasAuthority(AuthoritiesConstants.MANAGER)
                     .antMatchers("/app/rest/transactions/**").hasAuthority(AuthoritiesConstants.MANAGER)
+                    .antMatchers("/app/rest/cardaccount/**").hasAuthority(AuthoritiesConstants.MANAGER)
                     .antMatchers("/app/**").authenticated()
                     .antMatchers("/websocket/tracker").hasAuthority(AuthoritiesConstants.ADMIN)
                     .antMatchers("/websocket/**").permitAll()

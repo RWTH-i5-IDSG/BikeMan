@@ -17,6 +17,6 @@ public interface CardAccountRepository extends JpaRepository<CardAccount, Long> 
 
     @Transactional
     @Modifying(clearAutomatically = true)
-    @Query("update CardAccount c set c.operationState = ?1 where c.cardAccountId = ?2")
-    int setOperationStateFor(OperationState operationState, Long cardAccountId);
+    @Query("update CardAccount c set c.operationState = ?1 where c.cardId = ?2")
+    int setOperationStateForCardId(OperationState operationState, String cardId);
 }

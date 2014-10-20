@@ -38,7 +38,7 @@ public class CardAccountRepositoryTest {
         List<CardAccount> cardAccountList = cardAccountRepository.findAll();
         CardAccount cardAccount = cardAccountList.get(0);
 
-        int numberChangedRows = cardAccountRepository.setOperationStateFor(OperationState.INOPERATIVE, 6l);
+        int numberChangedRows = cardAccountRepository.setOperationStateForCardId(OperationState.INOPERATIVE, cardAccount.getCardId());
 
         cardAccount = cardAccountRepository.findOne(cardAccount.getCardAccountId());
         Assert.assertEquals(OperationState.INOPERATIVE, cardAccount.getOperationState());
