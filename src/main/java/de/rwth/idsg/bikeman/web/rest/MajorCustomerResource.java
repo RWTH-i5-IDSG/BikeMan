@@ -28,7 +28,7 @@ public class MajorCustomerResource {
     private MajorCustomerRepository majorCustomerRepository;
 
     private static final String BASE_PATH = "/rest/majorcustomers";
-    private static final String ID_PATH = "/rest/majorcustomers/{id}";
+    private static final String ID_PATH = "/rest/majorcustomers/{login:.+}";
 
     @Timed
     @RequestMapping(value = BASE_PATH, method = RequestMethod.GET)
