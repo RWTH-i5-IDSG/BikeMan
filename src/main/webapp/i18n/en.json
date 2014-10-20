@@ -26,6 +26,7 @@
                 "fleetOverview": "Fleetmanager Overview",
                 "fleetCreate": "Create Fleetmanager"
             },
+            "cardaccounts": "Card Accounts",
             "station": {
                 "title": "Station Control",
                 "overview": "Station Overview",
@@ -72,6 +73,38 @@
         },
         "like": "If you like JHipster, don't forget to give us a star on",
         "github": "Github"
+    },
+    "cardaccounts": {
+        "title": "Card Accounts",
+        "addModal": {
+            "title": "Add Card Account",
+            "cardId": "Card ID",
+            "cardPin": "Card PIN",
+            "buttons": {
+                "cancel": "Cancel",
+                "add": "Add"
+            }
+        },
+        "deleteModal": {
+            "title": "Delete Card Account",
+            "body": "Are you sure to delete <b>{{cardaccountToDelete.cardId}}?</b>",
+            "cancel": "Cancel",
+            "delete": "Delete"
+        },
+        "table": {
+            "header": {
+                "cardId": "Card ID",
+                "cardPin": "Card PIN",
+                "inTransaction": "In Transaction",
+                "operationState": "Operation State"
+            },
+            "buttons": {
+                "delete": "Delete"
+            }
+        },
+        "buttons": {
+            "add": "Add Card Account"
+        }
     },
     "stations": {
         "title": "Stations",

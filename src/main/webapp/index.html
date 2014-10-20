@@ -177,6 +177,12 @@
                         </ul>
                         <!-- /.nav-second-level -->
                     </li>
+                    <li ng-show="isAuthorized(userRoles.admin)" ui-sref-active="selectedNavItem">
+                        <a ui-sref="cardaccounts">
+                            <i class="glyphicon glyphicon-barcode"></i>
+                            <span translate="global.menu.cardaccounts"></span>
+                        </a>
+                    </li>
                     <li ui-sref-active="active">
                         <a href="#"><i class="glyphicon glyphicon-record fa-fw"></i>
                             <span translate="global.menu.station.title">Station Control</span>
@@ -348,6 +354,9 @@
 <script src="scripts/fleetmanager/router.js"></script>
 <script src="scripts/fleetmanager/controller.js"></script>
 <script src="scripts/fleetmanager/service.js"></script>
+<script src="scripts/cardaccount/service.js"></script>
+<script src="scripts/cardaccount/router.js"></script>
+<script src="scripts/cardaccount/controller.js"></script>
 <script src="bower_components/metisMenu/jquery.metisMenu.js"></script>
 <script src="bower_components/angular-bootstrap/ui-bootstrap.min.js"></script>
 <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>

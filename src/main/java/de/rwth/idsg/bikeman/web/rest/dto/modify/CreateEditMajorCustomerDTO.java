@@ -17,7 +17,6 @@ public class CreateEditMajorCustomerDTO {
     @Email
     private String login;
 
-    @NotBlank
     private String password;
 
     @NotBlank

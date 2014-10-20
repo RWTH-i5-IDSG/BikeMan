@@ -41,19 +41,6 @@
 
     <h3 translate="majorcustomerDetail.cardaccounts.title">Card Accounts:</h3>
 
-    <div class="form-inline">
-        <span translate="majorcustomerDetail.cardaccounts.numberOfCardaccounts">
-            Number of card accounts to display:
-        </span>
-
-        <select type="text"
-                ng-model="resultSize"
-                ng-options="value for value in resultSizeValues"
-                class="form-control"
-                ng-change="updateCardaccounts()">
-        </select>
-    </div>
-
     <div class="table-responsive voffset3">
         <table class="table table-striped">
             <thead>
@@ -66,15 +53,15 @@
             </tr>
             </thead>
             <tbody>
-            <tr ng-class='{warning:transaction.toStation.stationId == null}'  ng-repeat="transaction in transactions">
+            <tr ng-class='{warning:transaction.toStation.stationId == null}'  ng-repeat="cardaccount in majorcustomer.cardAccountDTOs">
                 <td>{{cardaccount.cardId}}</td>
-                <td>{{cardaccount.pinId}}</td>
+                <td>{{cardaccount.cardPin}}</td>
                 <td>{{cardaccount.inTransaction | occupiedFilter}}</td>
                 <td>{{cardaccount.operationState}}</td>
                 <td>
-                    <button type="button" class="btn btn-sm"><span class="glyphicon glyphicon-wrench"></span>
-                        <span translate="majorCustomerDetail.cardaccounts.table.buttons.edit">Edit</span>
-                    </button>
+                    <!--<button type="button" class="btn btn-sm" ng-click="updateCardAccount(cardaccount)"><span class="glyphicon glyphicon-wrench"></span>-->
+                        <!--<span translate="majorCustomerDetail.cardaccounts.table.buttons.edit">Edit</span>-->
+                    <!--</button>-->
                 </td>
             </tr>
             </tbody>
