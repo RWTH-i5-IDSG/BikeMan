@@ -23,7 +23,7 @@ bikeManApp
                     templateUrl: 'views/main.html',
                     controller: 'MainController',
                     access: {
-                        authorizedRoles: [USER_ROLES.admin]
+                        authorizedRoles: [USER_ROLES.all]
                     }
                 })
                 .state('error', {
