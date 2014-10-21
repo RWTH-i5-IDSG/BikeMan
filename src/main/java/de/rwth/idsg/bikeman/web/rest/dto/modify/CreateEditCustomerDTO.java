@@ -10,10 +10,7 @@ import org.hibernate.validator.constraints.NotBlank;
 import org.joda.time.LocalDate;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Past;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 /**
  * Created by swam on 05/06/14.
@@ -36,7 +33,8 @@ public class CreateEditCustomerDTO {
     private String cardId;
 
     // check if cardPin has only four digits, e.g., '0034'
-    @Pattern(regexp = "^([0-9]{4})?$")
+    @NotBlank
+    @Digits(integer = 4, fraction = 0)
     private String cardPin;
 
     @NotBlank

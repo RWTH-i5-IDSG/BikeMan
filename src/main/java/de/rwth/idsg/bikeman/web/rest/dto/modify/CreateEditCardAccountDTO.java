@@ -1,7 +1,7 @@
 package de.rwth.idsg.bikeman.web.rest.dto.modify;
 
 import lombok.Data;
-import org.hibernate.validator.constraints.NotEmpty;
+import org.hibernate.validator.constraints.NotBlank;
 
 import javax.validation.constraints.Digits;
 
@@ -12,11 +12,11 @@ import javax.validation.constraints.Digits;
 @Data
 public class CreateEditCardAccountDTO {
 
-    @NotEmpty
+    @NotBlank
     private String cardId;
 
     // check if cardPin has only four digits, e.g., '0034'
-    @NotEmpty
+    @NotBlank
     @Digits(integer = 4, fraction = 0)
     private String cardPin;
 }

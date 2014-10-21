@@ -81,7 +81,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="cardaccount in cardaccounts">
+            <tr ng-repeat="cardaccount in cardaccounts | orderBy:'cardId'">
                 <td>{{cardaccount.cardId}}</td>
                 <td>{{cardaccount.cardPin}}</td>
                 <td>{{cardaccount.inTransaction | occupiedFilter}}</td>
