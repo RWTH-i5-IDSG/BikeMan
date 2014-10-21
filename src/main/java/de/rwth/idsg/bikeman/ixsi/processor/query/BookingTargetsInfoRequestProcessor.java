@@ -4,20 +4,16 @@ import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
 import de.rwth.idsg.bikeman.ixsi.dto.query.BookingTargetsInfoResponseDTO;
 import de.rwth.idsg.bikeman.ixsi.dto.query.PedelecDTO;
 import de.rwth.idsg.bikeman.ixsi.dto.query.StationDTO;
-import de.rwth.idsg.bikeman.ixsi.processor.Processor;
 import de.rwth.idsg.bikeman.ixsi.repository.QueryIXSIRepository;
 import de.rwth.idsg.bikeman.ixsi.schema.*;
 import de.rwth.idsg.bikeman.web.rest.dto.view.ViewAddressDTO;
 import lombok.extern.slf4j.Slf4j;
+import org.joda.time.DateTime;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 /**
@@ -27,7 +23,7 @@ import java.util.List;
 @Slf4j
 @Component
 public class BookingTargetsInfoRequestProcessor implements
-        Processor<BookingTargetsInfoRequestType, BookingTargetsInfoResponseType> {
+        StaticRequestProcessor<BookingTargetsInfoRequestType, BookingTargetsInfoResponseType> {
 
     @Inject private QueryIXSIRepository queryIXSIRepository;
 
@@ -38,13 +34,8 @@ public class BookingTargetsInfoRequestProcessor implements
         BookingTargetsInfoResponseDTO responseDTO = queryIXSIRepository.bookingTargetInfos();
 
         // response timestamp
-        try {
-            GregorianCalendar c = new GregorianCalendar();
-            c.setTime(new Date(responseDTO.getTimestamp()));
-            response.setTimestamp(DatatypeFactory.newInstance().newXMLGregorianCalendar(c));
-        } catch (DatatypeConfigurationException e) {
-            log.error(e.getMessage());
-        }
+        long timestamp = responseDTO.getTimestamp();
+        response.setTimestamp(new DateTime(timestamp));
 
         // BEGIN response pedelecs
         List<PedelecDTO> pedelecs = responseDTO.getPedelecs();
@@ -63,9 +54,7 @@ public class BookingTargetsInfoRequestProcessor implements
 
         // set providerId
         ProviderIDType providerId = new ProviderIDType();
-        NMTOKEN providerIdToken = new NMTOKEN();
-        providerIdToken.setValue(IXSIConstants.Provider.id);
-        providerId.setValue(providerIdToken);
+        providerId.setValue(IXSIConstants.Provider.id);
         provider.setID(providerId);
 
         // set provider name
@@ -86,9 +75,7 @@ public class BookingTargetsInfoRequestProcessor implements
 
         // set placegroupId
         PlaceGroupIDType placeGroupId = new PlaceGroupIDType();
-        NMTOKEN placeGroupIdToken = new NMTOKEN();
-        placeGroupIdToken.setValue(IXSIConstants.PlaceGroup.id);
-        placeGroupId.setValue(placeGroupIdToken);
+        placeGroupId.setValue(IXSIConstants.PlaceGroup.id);
         placegroup.setID(placeGroupId);
 
         // set placegroup placeIds
@@ -115,9 +102,7 @@ public class BookingTargetsInfoRequestProcessor implements
 
             // set pedelecId
             BookeeIDType id = new BookeeIDType();
-            NMTOKEN token = new NMTOKEN();
-            token.setValue(String.valueOf(ped.getPedelecId()));
-            id.setValue(token);
+            id.setValue(String.valueOf(ped.getPedelecId()));
             target.setID(id);
 
             // set manufacturerId
@@ -126,7 +111,9 @@ public class BookingTargetsInfoRequestProcessor implements
             target.getName().add(name);
 
             // set placeGroupId
-            target.setPlaceIDOrPlaceGroupIDOrAreaID(IXSIConstants.PlaceGroup.id);
+            PlaceGroupIDType placeGroupID = new PlaceGroupIDType();
+            placeGroupID.setValue(IXSIConstants.PlaceGroup.id);
+            target.setPlaceGroupID(placeGroupID);
 
             // set maxDistance
             NonNegativeInteger nni = new NonNegativeInteger();
@@ -135,16 +122,12 @@ public class BookingTargetsInfoRequestProcessor implements
 
             // set class
             ClassType clazz = new ClassType();
-            NMTOKEN clazzToken = new NMTOKEN();
-            clazzToken.setValue(IXSIConstants.bookeeClassType);
-            clazz.setValue(clazzToken);
+            clazz.setValue(IXSIConstants.bookeeClassType);
             target.setClazz(clazz);
 
             // set engine
             EngineType engine = new EngineType();
-            NMTOKEN engineToken = new NMTOKEN();
-            engineToken.setValue(IXSIConstants.engineType);
-            engine.setValue(engineToken);
+            engine.setValue(IXSIConstants.engineType);
             target.setEngine(engine);
 
             bookingTargets.add(target);
@@ -173,9 +156,7 @@ public class BookingTargetsInfoRequestProcessor implements
 
             // set placeID
             PlaceIDType id = new PlaceIDType();
-            NMTOKEN token = new NMTOKEN();
-            token.setValue(String.valueOf(stat.getStationId()));
-            id.setValue(token);
+            id.setValue(String.valueOf(stat.getStationId()));
             place.setID(id);
 
             // set place coordinates
@@ -196,9 +177,7 @@ public class BookingTargetsInfoRequestProcessor implements
 
             // set place providerId
             ProviderIDType provId = new ProviderIDType();
-            NMTOKEN provToken = new NMTOKEN();
-            provToken.setValue(IXSIConstants.Provider.id);
-            provId.setValue(provToken);
+            provId.setValue(IXSIConstants.Provider.id);
             place.setProviderID(provId);
 
             // set place description
@@ -214,6 +193,6 @@ public class BookingTargetsInfoRequestProcessor implements
     }
 
     private String formatAddress(ViewAddressDTO dto) {
-        return String.format("%s, %s %s, %s", dto.getStreetAndHousenumber(), dto.getZip(), dto.getCity(),dto.getCountry());
+        return String.format("%s, %s %s, %s", dto.getStreetAndHousenumber(), dto.getZip(), dto.getCity(), dto.getCountry());
     }
 }

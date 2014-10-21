@@ -1,6 +1,5 @@
 package de.rwth.idsg.bikeman.ixsi.processor.subscription;
 
-import de.rwth.idsg.bikeman.ixsi.processor.Processor;
 import de.rwth.idsg.bikeman.ixsi.schema.PlaceAvailabilitySubscriptionRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.PlaceAvailabilitySubscriptionResponseType;
 import org.springframework.stereotype.Component;
@@ -11,7 +10,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class PlaceAvailabilitySubscriptionRequestProcessor implements
-        Processor<PlaceAvailabilitySubscriptionRequestType, PlaceAvailabilitySubscriptionResponseType> {
+        SubscriptionRequestProcessor<PlaceAvailabilitySubscriptionRequestType, PlaceAvailabilitySubscriptionResponseType> {
 
     @Override
     public PlaceAvailabilitySubscriptionResponseType process(PlaceAvailabilitySubscriptionRequestType request) {

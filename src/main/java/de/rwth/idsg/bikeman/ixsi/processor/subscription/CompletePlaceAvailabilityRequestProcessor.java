@@ -1,6 +1,5 @@
 package de.rwth.idsg.bikeman.ixsi.processor.subscription;
 
-import de.rwth.idsg.bikeman.ixsi.processor.Processor;
 import de.rwth.idsg.bikeman.ixsi.schema.CompletePlaceAvailabilityRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.CompletePlaceAvailabilityResponseType;
 import org.springframework.stereotype.Component;
@@ -11,7 +10,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class CompletePlaceAvailabilityRequestProcessor implements
-        Processor<CompletePlaceAvailabilityRequestType, CompletePlaceAvailabilityResponseType> {
+        SubscriptionRequestMessageProcessor<CompletePlaceAvailabilityRequestType, CompletePlaceAvailabilityResponseType> {
 
     @Override
     public CompletePlaceAvailabilityResponseType process(CompletePlaceAvailabilityRequestType request) {

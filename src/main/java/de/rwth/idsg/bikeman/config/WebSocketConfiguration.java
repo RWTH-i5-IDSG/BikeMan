@@ -13,6 +13,8 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
 
 /**
  * Created by max on 23/09/14.
@@ -34,5 +36,11 @@ public class WebSocketConfiguration implements WebSocketConfigurer {
     public JAXBContext jaxbContext() throws JAXBException {
         // is thread-safe
         return JAXBContext.newInstance(ApplicationConfig.IXSI.JAXB_CONTEXT_PATH);
+    }
+
+    @Bean()
+    public DatatypeFactory datatypeFactory() throws DatatypeConfigurationException {
+        // This is expensive to init
+        return DatatypeFactory.newInstance();
     }
 }

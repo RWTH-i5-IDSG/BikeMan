@@ -2,16 +2,13 @@ package de.rwth.idsg.bikeman.ixsi.processor.query;
 
 import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
 import de.rwth.idsg.bikeman.ixsi.dto.query.ChangedProvidersResponseDTO;
-import de.rwth.idsg.bikeman.ixsi.processor.Processor;
 import de.rwth.idsg.bikeman.ixsi.repository.QueryIXSIRepository;
 import de.rwth.idsg.bikeman.ixsi.schema.ChangedProvidersRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.ChangedProvidersResponseType;
-import de.rwth.idsg.bikeman.ixsi.schema.NMTOKEN;
 import de.rwth.idsg.bikeman.ixsi.schema.ProviderIDType;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
 
 /**
  * @author Sevket Goekay <goekay@dbis.rwth-aachen.de>
@@ -19,24 +16,20 @@ import java.util.ArrayList;
  */
 @Component
 public class ChangedProvidersRequestProcessor implements
-        Processor<ChangedProvidersRequestType, ChangedProvidersResponseType> {
+        StaticRequestProcessor<ChangedProvidersRequestType, ChangedProvidersResponseType> {
 
-    @Inject
-    private QueryIXSIRepository queryIXSIRepository;
+    @Inject private QueryIXSIRepository queryIXSIRepository;
 
     @Override
     public ChangedProvidersResponseType process(ChangedProvidersRequestType request) {
-        long timestamp = request.getTimestamp().toGregorianCalendar().getTimeInMillis();
+        long timestamp = request.getTimestamp().getMillis();
         ChangedProvidersResponseDTO responseDTO = queryIXSIRepository.changedProviders(timestamp);
 
         ChangedProvidersResponseType response = new ChangedProvidersResponseType();
 
         if (responseDTO.isProvidersChanged()) {
             ProviderIDType id = new ProviderIDType();
-            NMTOKEN token = new NMTOKEN();
-            token.setValue(IXSIConstants.Provider.id);
-            id.setValue(token);
-
+            id.setValue(IXSIConstants.Provider.id);
             response.getProvider().add(id);
         }
 
