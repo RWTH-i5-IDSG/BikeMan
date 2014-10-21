@@ -1,14 +1,14 @@
 package de.rwth.idsg.bikeman.domain;
 
 import de.rwth.idsg.bikeman.domain.login.User;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
+import lombok.experimental.Builder;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
+import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Set;
 
@@ -17,6 +17,9 @@ import java.util.Set;
  */
 
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "T_CARD_ACCOUNT")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @TableGenerator(name="card_account_gen", initialValue=0, allocationSize=1)
@@ -32,10 +35,12 @@ public class CardAccount implements Serializable {
     @Column(name = "card_account_id")
     private Long cardAccountId;
 
-    @Column(name = "card_id")
+    @Column(name = "card_id", unique = true)
     private String cardId;
 
     @Column(name = "card_pin")
+    @NotEmpty
+    @Digits(integer = 4, fraction = 0)
     private String cardPin;
 
     @Column(name = "in_transaction")

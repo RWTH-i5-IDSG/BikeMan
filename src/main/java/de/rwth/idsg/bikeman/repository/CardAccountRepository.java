@@ -20,6 +20,8 @@ public interface CardAccountRepository extends JpaRepository<CardAccount, Long> 
 
     List<CardAccount> findByUser(User user);
 
+    CardAccount findByCardId(String cardId);
+
     @Query("select c from CardAccount c where UPPER(c.user.login) = UPPER(?1)")
     List<CardAccount> findByUserLogin(String login);
 

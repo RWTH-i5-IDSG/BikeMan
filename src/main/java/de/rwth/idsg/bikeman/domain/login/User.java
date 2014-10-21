@@ -42,6 +42,7 @@ public class User extends AbstractTimestampClass implements Serializable {
     @NotNull
     @Email
     @Size(min = 0, max = 100)
+    @Column(name = "login", unique = true)
     private String login;
 
     @JsonIgnore

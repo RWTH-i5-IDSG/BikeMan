@@ -3,11 +3,10 @@ package de.rwth.idsg.bikeman.domain;
 import de.rwth.idsg.bikeman.domain.login.User;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.ToString;
 
 import javax.persistence.*;
-import java.util.Set;
+import java.util.List;
 
 /**
  * Created by swam on 09/10/14.
@@ -25,6 +24,6 @@ public class MajorCustomer extends User {
     private String name;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user", orphanRemoval = true)
-    private Set<CardAccount> cardAccounts;
+    private List<CardAccount> cardAccounts;
 
 }

@@ -45,6 +45,7 @@ public class PedelecRepositoryImpl implements PedelecRepository {
         return list;
     }
 
+    @SuppressWarnings("unchecked")
     private List<ViewPedelecDTO> findPedelecsInTransactionWithCustomer(CriteriaBuilder builder) {
         CriteriaQuery<ViewPedelecDTO> criteria = builder.createQuery(ViewPedelecDTO.class);
 
@@ -83,6 +84,7 @@ public class PedelecRepositoryImpl implements PedelecRepository {
         return em.createQuery(criteria).getResultList();
     }
 
+    @SuppressWarnings("unchecked")
     private List<ViewPedelecDTO> findPedelecsInTransactionWithMajorCustomer(CriteriaBuilder builder) {
         CriteriaQuery<ViewPedelecDTO> criteria = builder.createQuery(ViewPedelecDTO.class);
 
