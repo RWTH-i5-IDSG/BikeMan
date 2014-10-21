@@ -602,6 +602,16 @@
                             <generatePackage>de.rwth.idsg.bikeman.ixsi.schema</generatePackage>
                             <removeOldOutput>true</removeOldOutput>
                             <extension>true</extension>
+                            <args>
+                                <arg>-Xinheritance</arg>
+                            </args>
+                            <plugins>
+                                <plugin>
+                                    <groupId>org.jvnet.jaxb2_commons</groupId>
+                                    <artifactId>jaxb2-basics</artifactId>
+                                    <version>0.9.0</version>
+                                </plugin>
+                            </plugins>
                         </configuration>
                     </execution>
                 </executions>

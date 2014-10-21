@@ -1,18 +1,22 @@
 package de.rwth.idsg.bikeman.ixsi.dispatcher;
 
+import com.google.common.base.Optional;
 import de.rwth.idsg.bikeman.ixsi.CommunicationContext;
-import de.rwth.idsg.bikeman.ixsi.api.Producer;
-import de.rwth.idsg.bikeman.ixsi.processor.query.*;
-import de.rwth.idsg.bikeman.ixsi.schema.*;
+import de.rwth.idsg.bikeman.ixsi.processor.query.UserResponseParams;
+import de.rwth.idsg.bikeman.ixsi.schema.AuthType;
+import de.rwth.idsg.bikeman.ixsi.schema.Language;
+import de.rwth.idsg.bikeman.ixsi.schema.QueryRequestType;
+import de.rwth.idsg.bikeman.ixsi.schema.QueryResponseType;
+import de.rwth.idsg.bikeman.ixsi.schema.SessionIDType;
+import de.rwth.idsg.bikeman.ixsi.schema.StaticDataRequestGroup;
+import de.rwth.idsg.bikeman.ixsi.schema.StaticDataResponseGroup;
+import de.rwth.idsg.bikeman.ixsi.schema.UserTriggeredRequestChoice;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
-import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.Duration;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -23,96 +27,97 @@ import java.util.List;
 @Component
 public class QueryRequestTypeDispatcher extends AbstractRequestDispatcher {
 
-    @Autowired private Producer producer;
-
-    @Autowired
-    private BookingTargetsInfoRequestProcessor bookingTargetsInfoRequestProcessor;
-    @Autowired
-    private ChangedProvidersRequestProcessor changedProvidersRequestProcessor;
-    @Autowired
-    private OpenSessionRequestProcessor openSessionRequestProcessor;
-    @Autowired
-    private CloseSessionRequestProcessor closeSessionRequestProcessor;
-    @Autowired
-    private TokenGenerationRequestProcessor tokenGenerationRequestProcessor;
-    @Autowired
-    private AvailabilityRequestProcessor availabilityRequestProcessor;
-    @Autowired
-    private PlaceAvailabilityRequestProcessor placeAvailabilityRequestProcessor;
-    @Autowired
-    private PriceInformationRequestProcessor priceInformationRequestProcessor;
-    @Autowired
-    private BookingRequestProcessor bookingRequestProcessor;
-    @Autowired
-    private ChangeBookingRequestProcessor changeBookingRequestProcessor;
-
-    private static DatatypeFactory factory;
-
-    @PostConstruct
-    public void initProcessors() throws DatatypeConfigurationException {
-        map = new HashMap<>();
-        map.put(BookingTargetsInfoRequestType.class, bookingTargetsInfoRequestProcessor);
-        map.put(ChangedProvidersRequestType.class, changedProvidersRequestProcessor);
-        map.put(OpenSessionRequestType.class, openSessionRequestProcessor);
-        map.put(CloseSessionRequestType.class, closeSessionRequestProcessor);
-        map.put(TokenGenerationRequestType.class, tokenGenerationRequestProcessor);
-        map.put(AvailabilityRequestType.class, availabilityRequestProcessor);
-        map.put(PlaceAvailabilityRequestType.class, placeAvailabilityRequestProcessor);
-        map.put(PriceInformationRequestType.class, priceInformationRequestProcessor);
-        map.put(BookingRequestType.class, bookingRequestProcessor);
-        map.put(ChangeBookingRequestType.class, changeBookingRequestProcessor);
-
-        factory = DatatypeFactory.newInstance(); // This is expensive to init
-        log.debug("Ready");
-    }
+    @Autowired private QueryUserRequestMap userRequestMap;
+    @Autowired private QueryStaticRequestMap staticRequestMap;
+    @Autowired private DatatypeFactory factory;
 
     @Override
     public void handle(CommunicationContext context) {
         log.trace("Entered handle...");
 
-        List<Object> inMessageList = context.getIncomingIxsi().getMessageList();
-        List<Object> outMessageList = context.getOutgoingIxsi().getMessageList();
-        log.trace("QueryRequestType size: {}", inMessageList.size());
+        List<QueryRequestType> requestList = context.getIncomingIxsi().getRequest();
+        List<QueryResponseType> responseList = context.getOutgoingIxsi().getResponse();
+        log.trace("QueryRequestType size: {}", requestList.size());
 
-        // There can be multiple QueryRequestTypes (maxOccurs="unbounded") in a IXSI message
-        for (Object message : inMessageList) {
-            QueryRequestType requestContainer = (QueryRequestType) message;
-
-            if (!isSystemIdValid(requestContainer.getSystemID())) {
-                // TODO: Set an error object and early exit this iteration (or something)
-            }
-
-            Object actualRequest = requestContainer.getActualRequest().get(0);
-
-            // -------------------------------------------------------------------------
-            // Start processing
-            // -------------------------------------------------------------------------
-
-            long startTime = System.currentTimeMillis();
-
-            Object actualResponse = super.delegate(actualRequest);
-
-            long stopTime = System.currentTimeMillis();
-
-            // -------------------------------------------------------------------------
-            // End processing
-            // -------------------------------------------------------------------------
-
-            Duration calcTime = factory.newDuration(stopTime - startTime);
-
-            QueryResponseType responseContainer = new QueryResponseType();
-            responseContainer.setTransaction(requestContainer.getTransaction());
-            responseContainer.setCalcTime(calcTime);
-            responseContainer.getActualResponse().add(actualResponse);
-
-            outMessageList.add(responseContainer);
+        for (QueryRequestType request : requestList) {
+            responseList.add(handle(request));
         }
-
-        producer.send(context);
     }
 
-    private boolean isSystemIdValid(SystemIDType systemID) {
-        // TODO
-        return false;
+    private QueryResponseType handle(QueryRequestType request) {
+        boolean isAllowed = validateSender(request.getSystemID());
+        if (!isAllowed) {
+            // TODO: Set an error object and early exit this iteration (or something)
+        }
+
+        // -------------------------------------------------------------------------
+        // Start processing
+        // -------------------------------------------------------------------------
+
+        long startTime = System.currentTimeMillis();
+        QueryResponseType response = delegate(request);
+        long stopTime = System.currentTimeMillis();
+
+        // -------------------------------------------------------------------------
+        // End processing
+        // -------------------------------------------------------------------------
+
+        Duration calcTime = factory.newDuration(stopTime - startTime);
+        response.setCalcTime(calcTime);
+        response.setTransaction(request.getTransaction());
+        return response;
+    }
+
+    private QueryResponseType delegate(QueryRequestType request) {
+        if (request.isSetStaticDataRequestGroup()) {
+            return buildStaticResponse(request);
+
+        } else if (request.isSetUserTriggeredRequestChoice()) {
+            return buildUserResponse(request);
+
+        } else {
+            throw new IllegalArgumentException("Unknown incoming message: " + request);
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // Choice content
+    // -------------------------------------------------------------------------
+
+    @SuppressWarnings("unchecked")
+    private QueryResponseType buildStaticResponse(QueryRequestType request) {
+        log.trace("Entered buildStaticResponse...");
+
+        StaticDataRequestGroup req = request.getStaticDataRequestGroup();
+        StaticDataResponseGroup res = staticRequestMap.find(req).process(req);
+
+        QueryResponseType response = new QueryResponseType();
+        response.setStaticDataResponseGroup(res);
+        return response;
+    }
+
+    @SuppressWarnings("unchecked")
+    private QueryResponseType buildUserResponse(QueryRequestType request) {
+        log.trace("Entered buildUserResponse...");
+
+        Optional<Language> lan = Optional.fromNullable(request.getLanguage());
+        AuthType auth = request.getAuth();
+        UserTriggeredRequestChoice c = request.getUserTriggeredRequestChoice();
+
+        UserResponseParams res = userRequestMap.find(c).process(lan, auth, c);
+
+        QueryResponseType response = new QueryResponseType();
+        response.setUserTriggeredResponseGroup(res.getResponse());
+
+        SessionIDType sessionID = res.getSessionID();
+        if (sessionID != null ) {
+            response.setSessionID(sessionID);
+        }
+
+        Duration duration = res.getSessionTimeout();
+        if (duration != null) {
+            response.setSessionTimeout(duration);
+        }
+        return response;
     }
 }

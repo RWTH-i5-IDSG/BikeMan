@@ -1,6 +1,5 @@
 package de.rwth.idsg.bikeman.ixsi.processor.subscription;
 
-import de.rwth.idsg.bikeman.ixsi.processor.Processor;
 import de.rwth.idsg.bikeman.ixsi.schema.BookingAlertSubscriptionRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.BookingAlertSubscriptionResponseType;
 import org.springframework.stereotype.Component;
@@ -11,7 +10,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class BookingAlertSubscriptionRequestProcessor implements
-        Processor<BookingAlertSubscriptionRequestType, BookingAlertSubscriptionResponseType> {
+        SubscriptionRequestProcessor<BookingAlertSubscriptionRequestType, BookingAlertSubscriptionResponseType> {
 
     @Override
     public BookingAlertSubscriptionResponseType process(BookingAlertSubscriptionRequestType request) {

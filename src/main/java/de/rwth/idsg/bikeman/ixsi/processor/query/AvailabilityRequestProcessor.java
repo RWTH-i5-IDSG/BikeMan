@@ -1,10 +1,17 @@
 package de.rwth.idsg.bikeman.ixsi.processor.query;
 
-import de.rwth.idsg.bikeman.ixsi.processor.Processor;
+import com.google.common.base.Optional;
+import de.rwth.idsg.bikeman.ixsi.schema.AuthType;
 import de.rwth.idsg.bikeman.ixsi.schema.AvailabilityRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.AvailabilityResponseType;
+import de.rwth.idsg.bikeman.ixsi.schema.Language;
+import de.rwth.idsg.bikeman.ixsi.schema.SessionIDType;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.Duration;
 
 /**
  * @author Sevket Goekay <goekay@dbis.rwth-aachen.de>
@@ -12,12 +19,24 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @Component
-public class AvailabilityRequestProcessor implements
-        Processor<AvailabilityRequestType, AvailabilityResponseType> {
+public class AvailabilityRequestProcessor implements UserRequestProcessor<AvailabilityRequestType, AvailabilityResponseType> {
+
+    @Autowired private DatatypeFactory factory;
 
     @Override
-    public AvailabilityResponseType process(AvailabilityRequestType request) {
-        log.trace("Message is routed to me");
-        return new AvailabilityResponseType();
+    public UserResponseParams<AvailabilityResponseType> process(Optional<Language> lan, AuthType auth, AvailabilityRequestType request) {
+        log.trace("Entered process");
+
+        UserResponseParams<AvailabilityResponseType> u = new UserResponseParams<>();
+
+        SessionIDType id = new SessionIDType();
+        id.setValue("hello-from-server");
+
+        Duration d = factory.newDuration(5656L);
+
+        u.setSessionID(id);
+        u.setSessionTimeout(d);
+        u.setResponse(new AvailabilityResponseType());
+        return u;
     }
 }

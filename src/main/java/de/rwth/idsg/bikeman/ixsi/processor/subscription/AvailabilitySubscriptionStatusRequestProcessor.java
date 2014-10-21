@@ -1,6 +1,5 @@
 package de.rwth.idsg.bikeman.ixsi.processor.subscription;
 
-import de.rwth.idsg.bikeman.ixsi.processor.Processor;
 import de.rwth.idsg.bikeman.ixsi.schema.AvailabilitySubscriptionStatusRequest;
 import de.rwth.idsg.bikeman.ixsi.schema.AvailabilitySubscriptionStatusResponse;
 import org.springframework.stereotype.Component;
@@ -11,7 +10,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class AvailabilitySubscriptionStatusRequestProcessor implements
-        Processor<AvailabilitySubscriptionStatusRequest, AvailabilitySubscriptionStatusResponse> {
+        SubscriptionRequestProcessor<AvailabilitySubscriptionStatusRequest, AvailabilitySubscriptionStatusResponse> {
 
     @Override
     public AvailabilitySubscriptionStatusResponse process(AvailabilitySubscriptionStatusRequest request) {

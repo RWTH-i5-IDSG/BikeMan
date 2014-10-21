@@ -10,16 +10,16 @@ public final class IXSIConstants {
     public static final String engineType = "electric";
 
     public final class Provider {
-        public static final String id = "ASEAG";
-        public static final String name = "ASEAG";
-        public static final String shortName = "ASEAG";
-        public static final String url = "http://www.aseag.de/";
+        public static final String id = "Velocity";
+        public static final String name = "Velocity Aachen";
+        public static final String shortName = "Velocity";
+        public static final String url = "http://www.velocity-aachen.de/";
         public static final String logoUrl = "";
         public static final String interAppBaseUrl = "";
         public static final String webAppBaseUrl = "";
     }
 
     public final class PlaceGroup {
-        public static final String id = "ASEAG Pedelecs";
+        public static final String id = "Velocity-Aachen";
     }
 }

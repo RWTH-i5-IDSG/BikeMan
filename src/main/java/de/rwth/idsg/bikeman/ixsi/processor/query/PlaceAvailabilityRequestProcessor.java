@@ -1,6 +1,8 @@
 package de.rwth.idsg.bikeman.ixsi.processor.query;
 
-import de.rwth.idsg.bikeman.ixsi.processor.Processor;
+import com.google.common.base.Optional;
+import de.rwth.idsg.bikeman.ixsi.schema.AuthType;
+import de.rwth.idsg.bikeman.ixsi.schema.Language;
 import de.rwth.idsg.bikeman.ixsi.schema.PlaceAvailabilityRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.PlaceAvailabilityResponseType;
 import org.springframework.stereotype.Component;
@@ -10,11 +12,10 @@ import org.springframework.stereotype.Component;
  * @since 26.09.2014
  */
 @Component
-public class PlaceAvailabilityRequestProcessor implements
-        Processor<PlaceAvailabilityRequestType, PlaceAvailabilityResponseType> {
+public class PlaceAvailabilityRequestProcessor implements UserRequestProcessor<PlaceAvailabilityRequestType, PlaceAvailabilityResponseType> {
 
     @Override
-    public PlaceAvailabilityResponseType process(PlaceAvailabilityRequestType request) {
+    public UserResponseParams<PlaceAvailabilityResponseType> process(Optional<Language> lan, AuthType auth, PlaceAvailabilityRequestType request) {
         return null;
     }
 }

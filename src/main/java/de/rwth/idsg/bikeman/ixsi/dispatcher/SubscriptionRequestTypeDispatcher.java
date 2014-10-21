@@ -1,12 +1,19 @@
 package de.rwth.idsg.bikeman.ixsi.dispatcher;
 
 import de.rwth.idsg.bikeman.ixsi.CommunicationContext;
-import de.rwth.idsg.bikeman.ixsi.processor.subscription.*;
-import de.rwth.idsg.bikeman.ixsi.schema.*;
+import de.rwth.idsg.bikeman.ixsi.schema.HeartBeatResponseType;
+import de.rwth.idsg.bikeman.ixsi.schema.RequestMessageGroup;
+import de.rwth.idsg.bikeman.ixsi.schema.ResponseMessageGroup;
+import de.rwth.idsg.bikeman.ixsi.schema.SubscriptionRequestGroup;
+import de.rwth.idsg.bikeman.ixsi.schema.SubscriptionRequestType;
+import de.rwth.idsg.bikeman.ixsi.schema.SubscriptionResponseGroup;
+import de.rwth.idsg.bikeman.ixsi.schema.SubscriptionResponseType;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.Duration;
 
 /**
  * @author Sevket Goekay <goekay@dbis.rwth-aachen.de>
@@ -16,31 +23,91 @@ import java.util.HashMap;
 @Component
 public class SubscriptionRequestTypeDispatcher extends AbstractRequestDispatcher {
 
-    public SubscriptionRequestTypeDispatcher() {
-        map = new HashMap<>();
-        map.put(HeartBeatRequestType.class, new HeartBeatRequestProcessor());
-        map.put(AvailabilitySubscriptionRequestType.class, new AvailabilitySubscriptionRequestProcessor());
-        map.put(AvailabilitySubscriptionStatusRequest.class, new AvailabilitySubscriptionStatusRequestProcessor());
-        map.put(PlaceAvailabilitySubscriptionRequestType.class, new PlaceAvailabilitySubscriptionRequestProcessor());
-        map.put(PlaceAvailabilitySubscriptionStatusRequest.class, new PlaceAvailabilitySubscriptionStatusRequestProcessor());
-        map.put(BookingAlertSubscriptionRequestType.class, new BookingAlertSubscriptionRequestProcessor());
-        map.put(BookingAlertSubscriptionStatusRequestType.class, new BookingAlertSubscriptionStatusRequestProcessor());
-        map.put(CompleteAvailabilityRequestType.class, new CompleteAvailabilityRequestProcessor());
-        map.put(CompletePlaceAvailabilityRequestType.class, new CompletePlaceAvailabilityRequestProcessor());
-        map.put(CompleteBookingAlertRequestType.class, new CompleteBookingAlertRequestProcessor());
-        log.debug("Ready");
-    }
+    @Autowired private SubscriptionRequestMap requestMap;
+    @Autowired private SubscriptionRequestMessageMap requestMessageMap;
+    @Autowired private DatatypeFactory factory;
 
     @Override
     public void handle(CommunicationContext context) {
         log.trace("Entered handle...");
 
-        // There is only one SubscriptionRequestType in a IXSI message, hence the "get(0)"
-        SubscriptionRequestType requestContainer = (SubscriptionRequestType) context.getIncomingIxsi().getMessageList().get(0);
+        SubscriptionRequestType request = context.getIncomingIxsi().getSubscriptionRequest();
+        SubscriptionResponseType response = handle(request);
+        context.getOutgoingIxsi().setSubscriptionResponse(response);
+    }
 
-        Object actualRequest = requestContainer.getSubscriptionRequest();
-        Object actualResponse = super.delegate(actualRequest);
+    private SubscriptionResponseType handle(SubscriptionRequestType request) {
+        boolean isAllowed = validateSender(request.getSystemID());
+        if (!isAllowed) {
+            // TODO: Set an error object and early exit this iteration (or something)
+        }
 
-        // TODO process request, create response etc.
+        // -------------------------------------------------------------------------
+        // Start processing
+        // -------------------------------------------------------------------------
+
+        long startTime = System.currentTimeMillis();
+        SubscriptionResponseType response = delegate(request);
+        long stopTime = System.currentTimeMillis();
+
+        // -------------------------------------------------------------------------
+        // End processing
+        // -------------------------------------------------------------------------
+
+        Duration calcTime = factory.newDuration(stopTime - startTime);
+        response.setCalcTime(calcTime);
+        response.setTransaction(request.getTransaction());
+        return response;
+    }
+
+    private SubscriptionResponseType delegate(SubscriptionRequestType request) {
+        if (request.isSetHeartBeat()) {
+            return buildHeartbeat();
+
+        } else if (request.isSetSubscriptionRequestGroup()) {
+            return buildResponse(request);
+
+        } else if (request.isSetRequestMessageGroup()) {
+            return buildResponseMessage(request);
+
+        } else {
+            throw new IllegalArgumentException("Unknown incoming message: " + request);
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // Choice content
+    // -------------------------------------------------------------------------
+
+    private SubscriptionResponseType buildHeartbeat() {
+        log.trace("Entered buildHeartbeat...");
+
+        SubscriptionResponseType s = new SubscriptionResponseType();
+        s.setHeartBeat(new HeartBeatResponseType());
+        return s;
+    }
+
+    @SuppressWarnings("unchecked")
+    private SubscriptionResponseType buildResponse(SubscriptionRequestType request) {
+        log.trace("Entered buildResponse...");
+
+        SubscriptionRequestGroup req = request.getSubscriptionRequestGroup();
+        SubscriptionResponseGroup res = requestMap.find(req).process(req);
+
+        SubscriptionResponseType s = new SubscriptionResponseType();
+        s.setSubscriptionResponseGroup(res);
+        return s;
+    }
+
+    @SuppressWarnings("unchecked")
+    private SubscriptionResponseType buildResponseMessage(SubscriptionRequestType request) {
+        log.trace("Entered buildResponseMessage...");
+
+        RequestMessageGroup req = request.getRequestMessageGroup();
+        ResponseMessageGroup res = requestMessageMap.find(req).process(req);
+
+        SubscriptionResponseType s = new SubscriptionResponseType();
+        s.setResponseMessageGroup(res);
+        return s;
     }
 }
