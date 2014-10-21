@@ -1,11 +1,13 @@
 package de.rwth.idsg.bikeman.ixsi.dispatcher;
 
+import com.google.common.base.Optional;
 import de.rwth.idsg.bikeman.ixsi.CommunicationContext;
 import de.rwth.idsg.bikeman.ixsi.processor.query.UserResponseParams;
 import de.rwth.idsg.bikeman.ixsi.schema.AuthType;
 import de.rwth.idsg.bikeman.ixsi.schema.Language;
 import de.rwth.idsg.bikeman.ixsi.schema.QueryRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.QueryResponseType;
+import de.rwth.idsg.bikeman.ixsi.schema.SessionIDType;
 import de.rwth.idsg.bikeman.ixsi.schema.StaticDataRequestGroup;
 import de.rwth.idsg.bikeman.ixsi.schema.StaticDataResponseGroup;
 import de.rwth.idsg.bikeman.ixsi.schema.UserTriggeredRequestChoice;
@@ -94,19 +96,28 @@ public class QueryRequestTypeDispatcher extends AbstractRequestDispatcher {
         return response;
     }
 
+    @SuppressWarnings("unchecked")
     private QueryResponseType buildUserResponse(QueryRequestType request) {
         log.trace("Entered buildUserResponse...");
 
-        Language lan = request.getLanguage();
+        Optional<Language> lan = Optional.fromNullable(request.getLanguage());
         AuthType auth = request.getAuth();
         UserTriggeredRequestChoice c = request.getUserTriggeredRequestChoice();
 
         UserResponseParams res = userRequestMap.find(c).process(lan, auth, c);
 
         QueryResponseType response = new QueryResponseType();
-        response.setSessionID(res.getSessionID());
-        response.setSessionTimeout(res.getSessionTimeout());
         response.setUserTriggeredResponseGroup(res.getResponse());
+
+        SessionIDType sessionID = res.getSessionID();
+        if (sessionID != null ) {
+            response.setSessionID(sessionID);
+        }
+
+        Duration duration = res.getSessionTimeout();
+        if (duration != null) {
+            response.setSessionTimeout(duration);
+        }
         return response;
     }
 }

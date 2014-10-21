@@ -13,8 +13,8 @@ import javax.xml.datatype.Duration;
  */
 @Getter
 @Setter
-public class UserResponseParams {
+public class UserResponseParams<T extends UserTriggeredResponseChoice> {
     private SessionIDType sessionID;
     private Duration sessionTimeout;
-    private UserTriggeredResponseChoice response;
+    private T response;
 }

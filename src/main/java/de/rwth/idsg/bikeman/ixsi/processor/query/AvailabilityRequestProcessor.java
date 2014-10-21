@@ -1,10 +1,11 @@
 package de.rwth.idsg.bikeman.ixsi.processor.query;
 
+import com.google.common.base.Optional;
 import de.rwth.idsg.bikeman.ixsi.schema.AuthType;
+import de.rwth.idsg.bikeman.ixsi.schema.AvailabilityRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.AvailabilityResponseType;
 import de.rwth.idsg.bikeman.ixsi.schema.Language;
 import de.rwth.idsg.bikeman.ixsi.schema.SessionIDType;
-import de.rwth.idsg.bikeman.ixsi.schema.UserTriggeredRequestChoice;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -18,15 +19,15 @@ import javax.xml.datatype.Duration;
  */
 @Slf4j
 @Component
-public class AvailabilityRequestProcessor implements UserRequestProcessor {
+public class AvailabilityRequestProcessor implements UserRequestProcessor<AvailabilityRequestType, AvailabilityResponseType> {
 
     @Autowired private DatatypeFactory factory;
 
     @Override
-    public UserResponseParams process(Language lan, AuthType auth, UserTriggeredRequestChoice c) {
+    public UserResponseParams<AvailabilityResponseType> process(Optional<Language> lan, AuthType auth, AvailabilityRequestType request) {
         log.trace("Entered process");
 
-        UserResponseParams u = new UserResponseParams();
+        UserResponseParams<AvailabilityResponseType> u = new UserResponseParams<>();
 
         SessionIDType id = new SessionIDType();
         id.setValue("hello-from-server");
@@ -36,7 +37,6 @@ public class AvailabilityRequestProcessor implements UserRequestProcessor {
         u.setSessionID(id);
         u.setSessionTimeout(d);
         u.setResponse(new AvailabilityResponseType());
-
         return u;
     }
 }
