@@ -32,7 +32,7 @@
                     <td ng-if="!pedelec.transaction.majorCustomerName">{{pedelec.transaction.firstname + " " + pedelec.transaction.lastname}}</td>
                     <td ng-if="pedelec.transaction.majorCustomerName">{{pedelec.transaction.majorCustomerName}}</td>
                     <td>
-                        <button type="button" class="btn btn-info" ui-sref="pedelecDetail({pedelecId:{{pedelec.pedelecId}}})">
+                        <button type="button" class="btn btn-info pull-right" ui-sref="pedelecDetail({pedelecId:{{pedelec.pedelecId}}})">
                             <span class="glyphicon glyphicon-eye-open"></span>
                             <span translate="pedelecs.table.body.details">Details</span>
                         </button>

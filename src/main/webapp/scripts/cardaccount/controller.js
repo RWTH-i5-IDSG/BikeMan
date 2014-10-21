@@ -5,12 +5,12 @@ bikeManApp.controller('CardaccountController', ['$scope', 'resolvedCardAccounts'
 
         $scope.cardaccounts = resolvedCardAccounts;
 
-        $scope.delete = function (cardId) {
-            CardAccount.delete({cardId: cardId},
-                function () {
-                    $scope.cardaccounts = CardAccount.query();
-                });
-        };
+//        $scope.delete = function (cardId) {
+//            CardAccount.delete({cardId: cardId},
+//                function () {
+//                    $scope.cardaccounts = CardAccount.query();
+//                });
+//        };
 
         $scope.toggleCardAccount = function (cardAcc) {
             if (cardAcc.operationState === "OPERATIVE") {
@@ -23,6 +23,14 @@ bikeManApp.controller('CardaccountController', ['$scope', 'resolvedCardAccounts'
                 });
             }
         }
+
+        $scope.create = function () {
+            CardAccount.save($scope.newCardaccount, function () {
+                $scope.cardaccounts = CardAccount.query();
+                $('#saveBikeStationModal').modal('hide');
+                $scope.clear();
+            });
+        };
 
         $scope.clear = function () {
             $scope.newCardaccount = null;

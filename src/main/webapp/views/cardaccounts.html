@@ -6,34 +6,34 @@
     </div>
 
     <div>
-        <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#addModal">
+        <button class="btn btn-primary" data-toggle="modal" data-target="#addModal">
             <span class="glyphicon glyphicon-flash"></span>
             <span translate="cardaccounts.buttons.add">Add Card Account</span>
         </button>
     </div>
 
-    <div class="modal fade" id="deleteModal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title" translate="cardaccounts.deleteModal.title">Delete Card Account</h4>
-                </div>
-                <div class="modal-body"  translate="cardaccounts.deleteModal.body" translate-values="{login: '{{cardaccountToDelete.cardId}}'}">
-                    Are you sure to delete <b>{{cardaccountToDelete.cardId}}?</b>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" translate="cardaccounts.deleteModal.buttons.cancel">
-                        Cancel
-                    </button>
-                    <button type="button" class="btn btn-danger"  data-dismiss="modal" ng-click="delete(cardaccountToDelete.userId)"
-                            translate="cardaccounts.deleteModal.buttons.delete">
-                        Delete
-                    </button>
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
+    <!--<div class="modal fade" id="deleteModal">-->
+        <!--<div class="modal-dialog">-->
+            <!--<div class="modal-content">-->
+                <!--<div class="modal-header">-->
+                    <!--<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>-->
+                    <!--<h4 class="modal-title" translate="cardaccounts.deleteModal.title">Delete Card Account</h4>-->
+                <!--</div>-->
+                <!--<div class="modal-body"  translate="cardaccounts.deleteModal.body" translate-values="{login: '{{cardaccountToDelete.cardId}}'}">-->
+                    <!--Are you sure to delete <b>{{cardaccountToDelete.cardId}}?</b>-->
+                <!--</div>-->
+                <!--<div class="modal-footer">-->
+                    <!--<button type="button" class="btn btn-default" data-dismiss="modal" translate="cardaccounts.deleteModal.buttons.cancel">-->
+                        <!--Cancel-->
+                    <!--</button>-->
+                    <!--<button type="button" class="btn btn-danger"  data-dismiss="modal" ng-click="delete(cardaccountToDelete.userId)"-->
+                            <!--translate="cardaccounts.deleteModal.buttons.delete">-->
+                        <!--Delete-->
+                    <!--</button>-->
+                <!--</div>-->
+            <!--</div>&lt;!&ndash; /.modal-content &ndash;&gt;-->
+        <!--</div>&lt;!&ndash; /.modal-dialog &ndash;&gt;-->
+    <!--</div>&lt;!&ndash; /.modal &ndash;&gt;-->
 
     <div class="modal fade" id="addModal">
         <div class="modal-dialog">
@@ -59,7 +59,7 @@
                         <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clear()" translate="cardaccounts.addModal.buttons.cancel">
                             Cancel
                         </button>
-                        <button type="submit" class="btn btn-primary"  data-dismiss="modal"
+                        <button type="submit" class="btn btn-primary"
                                 translate="cardaccounts.addModal.buttons.add">
                             Add
                         </button>
@@ -77,7 +77,7 @@
                 <th translate="majorcustomerDetail.cardaccounts.table.header.cardPin">Card PIN</th>
                 <th translate="majorcustomerDetail.cardaccounts.table.header.inTransaction">In Transaction</th>
                 <th translate="majorcustomerDetail.cardaccounts.table.header.operationState">Operation State</th>
-                <th></th>
+                <!--<th></th>-->
             </tr>
             </thead>
             <tbody>
@@ -85,12 +85,12 @@
                 <td>{{cardaccount.cardId}}</td>
                 <td>{{cardaccount.cardPin}}</td>
                 <td>{{cardaccount.inTransaction | occupiedFilter}}</td>
-                <td><button ng-click="toggleCardAccount(cardaccount)">{{cardaccount.operationState}}</button></td>
-                <td>
-                <button class="btn btn-danger btn-sm pull-right" type="button" ng-click="deleteModal(cardaccount)"
-                data-toggle="modal" data-target="#deleteModal"><span class="glyphicon glyphicon-remove"></span>
-                <span translate="cardaccounts.table.buttons.delete">Delete</span></button>
-                </td>
+                <td><button class="btn" ng-class="(cardaccount.operationState == 'OPERATIVE') ? 'btn-default' : ''" ng-click="toggleCardAccount(cardaccount)">{{cardaccount.operationState}}</button></td>
+                <!--<td>-->
+                    <!--<button class="btn btn-danger btn-sm pull-right" type="button" ng-click="deleteModal(cardaccount)"-->
+                    <!--data-toggle="modal" data-target="#deleteModal"><span class="glyphicon glyphicon-remove"></span>-->
+                    <!--<span translate="cardaccounts.table.buttons.delete">Delete</span></button>-->
+                <!--</td>-->
             </tr>
             </tbody>
         </table>

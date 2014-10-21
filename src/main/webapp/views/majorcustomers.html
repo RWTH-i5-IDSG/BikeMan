@@ -41,7 +41,7 @@
             <tr ng-repeat="majorcustomer in majorcustomers">
                 <td>{{ majorcustomer.login }}</td>
                 <td>{{ majorcustomer.name }}</td>
-                <td><button type="button" class="btn btn-info" ui-sref="majorcustomerDetail({login:'{{majorcustomer.login}}'})">
+                <td><button type="button" class="btn btn-info pull-right" ui-sref="majorcustomerDetail({login:'{{majorcustomer.login}}'})">
                     <span class="glyphicon glyphicon-eye-open"></span> <span translate="majorcustomers.table.body.details">Details</span></button></td>
                 <!--<td>-->
                     <!--<button class="btn btn-danger btn-sm pull-right" type="button" ng-click="deleteModal(majorcustomer.userId)"-->
