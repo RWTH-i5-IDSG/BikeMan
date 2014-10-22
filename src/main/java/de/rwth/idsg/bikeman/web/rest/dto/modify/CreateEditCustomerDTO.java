@@ -31,6 +31,8 @@ public class CreateEditCustomerDTO {
     @NotBlank
     private String customerId;
 
+    private String password;
+
     @NotBlank
     private String cardId;
 

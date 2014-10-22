@@ -27,7 +27,7 @@ import java.util.Set;
 @ToString(includeFieldNames = true, exclude = {})
 @Getter
 @Setter
-public class CardAccount implements Serializable {
+public class CardAccount extends AbstractTimestampClass implements Serializable {
     private static final long serialVersionUID = -1059619797439373147L;
 
     @Id
@@ -39,8 +39,6 @@ public class CardAccount implements Serializable {
     private String cardId;
 
     @Column(name = "card_pin")
-    @NotEmpty
-    @Digits(integer = 4, fraction = 0)
     private String cardPin;
 
     @Column(name = "in_transaction")
@@ -63,6 +61,8 @@ public class CardAccount implements Serializable {
 
     @PrePersist
     public void prePersist() {
+        super.prePersist();
+
         if (inTransaction == null) {
             inTransaction = false;
         }

@@ -140,5 +140,19 @@
         <addUniqueConstraint tableName="T_CARD_ACCOUNT" columnNames="card_id"/>
     </changeSet>
 
+    <changeSet id="1409564974607-25" author="wkluth">
+        <addColumn tableName="T_CARD_ACCOUNT">
+            <column name="created" type="timestamp"/>
+        </addColumn>
+        <addColumn tableName="T_CARD_ACCOUNT">
+            <column name="updated" type="timestamp"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="1409564974607-26" author="wkluth">
+        <createIndex tableName="T_USER" indexName="idx_user_login">
+            <column name="login"></column>
+        </createIndex>
+    </changeSet>
 
 </databaseChangeLog>
