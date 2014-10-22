@@ -177,10 +177,10 @@
                         </ul>
                         <!-- /.nav-second-level -->
                     </li>
-                    <li ng-show="isAuthorized(userRoles.major_customer)" ui-sref-active="selectedNavItem">
+                    <li ng-show="!isAuthorized(userRoles.admin) && isAuthorized(userRoles.major_customer)" ui-sref-active="selectedNavItem">
                         <a ui-sref="cardaccounts">
                             <i class="glyphicon glyphicon-barcode"></i>
-                            <span translate="global.menu.cardaccounts"></span>
+                            <span translate="global.menu.cardaccounts">Card Accounts</span>
                         </a>
                     </li>
                     <li ui-sref-active="active">
