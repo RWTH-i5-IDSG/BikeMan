@@ -110,6 +110,7 @@ bikeManApp.controller('CustomerDetailController', ['$scope', 'resolvedCustomer',
             $scope.saveCustomerDTO = {
                 "userId": $scope.customer.userId,
                 "login": $scope.customer.login,
+                "password": $scope.customer.password,
                 "customerId": $scope.customer.customerId,
                 "firstname": $scope.customer.firstname,
                 "lastname": $scope.customer.lastname,
@@ -129,11 +130,6 @@ bikeManApp.controller('CustomerDetailController', ['$scope', 'resolvedCustomer',
 
 bikeManApp.controller('CustomerCreateController', ['$scope', 'Customer', '$timeout', '$filter',
     function($scope, Customer, $timeout, $filter) {
-
-//        $scope.dateOptions = {
-//            formatYear: 'yyyy',
-//            startingDay: 1
-//        };
 
         $scope.maxDate = new Date();
 
@@ -155,6 +151,7 @@ bikeManApp.controller('CustomerCreateController', ['$scope', 'Customer', '$timeo
             $scope.customer = {
                 userId: null,
                 login: null,
+                password: null,
                 customerId: null,
                 cardId: null,
                 cardPin: null,

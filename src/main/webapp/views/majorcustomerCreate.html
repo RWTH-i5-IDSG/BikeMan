@@ -34,6 +34,7 @@
                     <input type="password" class="col-md-10 form-control" name="password"
                            ng-model="majorcustomer.password" ng-minlength=1 ng-maxlength=50
                            placeholder="{{ 'majorcustomerCreate.table.placeholders.password' | translate }}" required>
+                    <password-strength-bar password-to-check="majorcustomer.password"></password-strength-bar>
                 </div>
             </div>
 

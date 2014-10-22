@@ -179,3 +179,10 @@ ul#strength {
     display: none !important;
 }
 
+/*
+  make password strength bar appear inline
+*/
+#strengthBar {
+    display: inline;
+}
+

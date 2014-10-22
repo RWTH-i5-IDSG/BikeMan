@@ -58,6 +58,7 @@ bikeManApp.controller('MajorcustomerDetailController', ['$scope', 'resolvedMajor
             $scope.saveMajorcustomerDTO = {
                 "userId": $scope.majorcustomer.userId,
                 "login": $scope.majorcustomer.login,
+                "password": $scope.majorcustomer.password,
                 "name": $scope.majorcustomer.name
             }
 

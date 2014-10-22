@@ -9,7 +9,7 @@
             <span class="glyphicon glyphicon-pencil"></span> <span translate="majorcustomerDetail.buttons.edit"> Edit Major Customer</span></button>
         <button type="button" ng-switch-when="true" ng-click="toggleEdit()" class="btn btn-warning">
             <span class="glyphicon glyphicon-pencil"></span> <span translate="majorcustomerDetail.buttons.cancel"> Cancel</span></button>
-        <button type="button" ng-click="saveCustomer()" class="btn btn-primary" ng-show="isEditing">
+        <button type="button" ng-click="saveMajorcustomer()" class="btn btn-primary" ng-show="isEditing">
             <span class="glyphicon glyphicon-pencil"></span> <span translate="majorcustomerDetail.buttons.save"> Save Major Customer</span></button>
     </div>
 
@@ -25,6 +25,14 @@
                            placeholder="{{'majorcustomerCreate.table.placeholders.login' | translate}}"
                            ng-model="majorcustomer.login" ng-minlength=1 ng-maxlength=50 required
                            ng-switch-when="true">
+                </div>
+            </div>
+            <div class="form-group" ng-switch-when="true">
+                <label class="control-label col-md-2" translate="majorcustomerCreate.table.header.password">Password</label>
+                <div class="col-md-10">
+                    <input type="password" class="form-control" name="password"
+                           placeholder="{{'majorcustomerCreate.table.placeholders.password' | translate}}"
+                           ng-model="majorcustomer.password" ng-minlength=1 ng-maxlength=50 required>
                 </div>
             </div>
             <div class="form-group">

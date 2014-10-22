@@ -26,6 +26,15 @@
                            ng-model="customer.login" ng-minlength=1 ng-maxlength=50 required>
                 </div>
             </div>
+            <div class="form-group" show-errors id="passwordGroup">
+                <label class="control-label col-md-2" translate="customerCreate.table.header.password">Password</label>
+                <div class="col-md-10">
+                    <input type="password" class="form-control" name="password"
+                           placeholder="{{'customerCreate.table.placeholders.password' | translate}}"
+                           ng-model="customer.password" ng-minlength=1 ng-maxlength=50 required>
+                    <password-strength-bar password-to-check="customer.password"></password-strength-bar>
+                </div>
+            </div>
             <div class="form-group" show-errors>
                 <label class="control-label col-md-2" translate="customerCreate.table.header.cardId">Card ID</label>
                 <div class="col-md-10">
