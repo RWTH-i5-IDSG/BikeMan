@@ -22,7 +22,7 @@ import javax.xml.datatype.Duration;
  */
 @Slf4j
 @Component
-public class SubscriptionRequestTypeDispatcher extends AbstractRequestDispatcher {
+public class SubscriptionRequestTypeDispatcher implements Dispatcher {
 
     @Autowired private SubscriptionRequestMap requestMap;
     @Autowired private SubscriptionRequestMessageMap requestMessageMap;

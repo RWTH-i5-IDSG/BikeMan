@@ -1,7 +1,6 @@
 package de.rwth.idsg.bikeman.ixsi.dispatcher;
 
 import de.rwth.idsg.bikeman.ixsi.IxsiProcessingException;
-import de.rwth.idsg.bikeman.ixsi.processor.query.UserRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.processor.query.AvailabilityRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.processor.query.BookingRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.processor.query.ChangeBookingRequestProcessor;
@@ -10,6 +9,7 @@ import de.rwth.idsg.bikeman.ixsi.processor.query.OpenSessionRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.processor.query.PlaceAvailabilityRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.processor.query.PriceInformationRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.processor.query.TokenGenerationRequestProcessor;
+import de.rwth.idsg.bikeman.ixsi.processor.query.UserRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.schema.AvailabilityRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.BookingRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.ChangeBookingRequestType;
