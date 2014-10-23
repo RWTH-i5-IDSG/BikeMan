@@ -12,10 +12,15 @@ import org.springframework.stereotype.Component;
  * @since 26.09.2014
  */
 @Component
-public class CloseSessionRequestProcessor implements UserRequestProcessor<CloseSessionRequestType, CloseSessionResponseType> {
+public class CloseSessionRequestProcessor extends AbstractUserRequestProcessor<CloseSessionRequestType, CloseSessionResponseType> {
 
     @Override
-    public UserResponseParams<CloseSessionResponseType> process(Optional<Language> lan, AuthType auth, CloseSessionRequestType request) {
-        return null;
+    public UserResponseParams<CloseSessionResponseType> processAnonymously(Optional<Language> lan, CloseSessionRequestType request) {
+        return super.processAnonymously(lan, request);
+    }
+
+    @Override
+    public UserResponseParams<CloseSessionResponseType> processForUser(Optional<Language> lan, AuthType auth, CloseSessionRequestType request) {
+        return super.processForUser(lan, auth, request);
     }
 }

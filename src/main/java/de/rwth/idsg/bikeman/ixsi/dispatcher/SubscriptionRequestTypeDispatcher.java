@@ -1,6 +1,7 @@
 package de.rwth.idsg.bikeman.ixsi.dispatcher;
 
 import de.rwth.idsg.bikeman.ixsi.CommunicationContext;
+import de.rwth.idsg.bikeman.ixsi.IxsiProcessingException;
 import de.rwth.idsg.bikeman.ixsi.schema.HeartBeatResponseType;
 import de.rwth.idsg.bikeman.ixsi.schema.RequestMessageGroup;
 import de.rwth.idsg.bikeman.ixsi.schema.ResponseMessageGroup;
@@ -26,6 +27,7 @@ public class SubscriptionRequestTypeDispatcher extends AbstractRequestDispatcher
     @Autowired private SubscriptionRequestMap requestMap;
     @Autowired private SubscriptionRequestMessageMap requestMessageMap;
     @Autowired private DatatypeFactory factory;
+    @Autowired private SystemValidator systemValidator;
 
     @Override
     public void handle(CommunicationContext context) {
@@ -37,7 +39,7 @@ public class SubscriptionRequestTypeDispatcher extends AbstractRequestDispatcher
     }
 
     private SubscriptionResponseType handle(SubscriptionRequestType request) {
-        boolean isAllowed = validateSender(request.getSystemID());
+        boolean isAllowed = systemValidator.validate(request.getSystemID());
         if (!isAllowed) {
             // TODO: Set an error object and early exit this iteration (or something)
         }
@@ -71,7 +73,7 @@ public class SubscriptionRequestTypeDispatcher extends AbstractRequestDispatcher
             return buildResponseMessage(request);
 
         } else {
-            throw new IllegalArgumentException("Unknown incoming message: " + request);
+            throw new IxsiProcessingException("Unknown incoming message: " + request);
         }
     }
 

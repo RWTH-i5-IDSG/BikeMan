@@ -12,10 +12,16 @@ import org.springframework.stereotype.Component;
  * @since 26.09.2014
  */
 @Component
-public class OpenSessionRequestProcessor implements UserRequestProcessor<OpenSessionRequestType, OpenSessionResponseType> {
+public class OpenSessionRequestProcessor extends AbstractUserRequestProcessor<OpenSessionRequestType, OpenSessionResponseType> {
+
 
     @Override
-    public UserResponseParams<OpenSessionResponseType> process(Optional<Language> lan, AuthType auth, OpenSessionRequestType request) {
-        return null;
+    public UserResponseParams<OpenSessionResponseType> processAnonymously(Optional<Language> lan, OpenSessionRequestType request) {
+        return super.processAnonymously(lan, request);
+    }
+
+    @Override
+    public UserResponseParams<OpenSessionResponseType> processForUser(Optional<Language> lan, AuthType auth, OpenSessionRequestType request) {
+        return super.processForUser(lan, auth, request);
     }
 }

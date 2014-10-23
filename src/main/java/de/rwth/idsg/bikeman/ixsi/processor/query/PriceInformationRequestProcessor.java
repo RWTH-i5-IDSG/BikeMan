@@ -12,10 +12,15 @@ import org.springframework.stereotype.Component;
  * @since 26.09.2014
  */
 @Component
-public class PriceInformationRequestProcessor implements UserRequestProcessor<PriceInformationRequestType, PriceInformationResponseType> {
+public class PriceInformationRequestProcessor extends AbstractUserRequestProcessor<PriceInformationRequestType, PriceInformationResponseType> {
 
     @Override
-    public UserResponseParams<PriceInformationResponseType> process(Optional<Language> lan, AuthType auth, PriceInformationRequestType request) {
-        return null;
+    public UserResponseParams<PriceInformationResponseType> processAnonymously(Optional<Language> lan, PriceInformationRequestType request) {
+        return super.processAnonymously(lan, request);
+    }
+
+    @Override
+    public UserResponseParams<PriceInformationResponseType> processForUser(Optional<Language> lan, AuthType auth, PriceInformationRequestType request) {
+        return super.processForUser(lan, auth, request);
     }
 }

@@ -19,14 +19,12 @@ import javax.xml.datatype.Duration;
  */
 @Slf4j
 @Component
-public class AvailabilityRequestProcessor implements UserRequestProcessor<AvailabilityRequestType, AvailabilityResponseType> {
+public class AvailabilityRequestProcessor extends AbstractUserRequestProcessor<AvailabilityRequestType, AvailabilityResponseType> {
 
     @Autowired private DatatypeFactory factory;
 
     @Override
-    public UserResponseParams<AvailabilityResponseType> process(Optional<Language> lan, AuthType auth, AvailabilityRequestType request) {
-        log.trace("Entered process");
-
+    public UserResponseParams<AvailabilityResponseType> processAnonymously(Optional<Language> lan, AvailabilityRequestType request) {
         UserResponseParams<AvailabilityResponseType> u = new UserResponseParams<>();
 
         SessionIDType id = new SessionIDType();
@@ -38,5 +36,10 @@ public class AvailabilityRequestProcessor implements UserRequestProcessor<Availa
         u.setSessionTimeout(d);
         u.setResponse(new AvailabilityResponseType());
         return u;
+    }
+
+    @Override
+    public UserResponseParams<AvailabilityResponseType> processForUser(Optional<Language> lan, AuthType auth, AvailabilityRequestType request) {
+        return new UserResponseParams<>();
     }
 }

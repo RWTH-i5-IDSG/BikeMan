@@ -1,5 +1,6 @@
 package de.rwth.idsg.bikeman.ixsi.dispatcher;
 
+import de.rwth.idsg.bikeman.ixsi.IxsiProcessingException;
 import de.rwth.idsg.bikeman.ixsi.processor.subscription.SubscriptionRequestMessageProcessor;
 import de.rwth.idsg.bikeman.ixsi.processor.subscription.CompleteAvailabilityRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.processor.subscription.CompleteBookingAlertRequestProcessor;
@@ -45,7 +46,7 @@ public class SubscriptionRequestMessageMap extends HashMap<Class<?>, Subscriptio
         Class<?> clazz = s.getClass();
         SubscriptionRequestMessageProcessor p = super.get(clazz);
         if (p == null) {
-            throw new IllegalArgumentException("No processor is registered for the incoming request of type: " + clazz);
+            throw new IxsiProcessingException("No processor is registered for the incoming request of type: " + clazz);
         } else {
             return p;
         }

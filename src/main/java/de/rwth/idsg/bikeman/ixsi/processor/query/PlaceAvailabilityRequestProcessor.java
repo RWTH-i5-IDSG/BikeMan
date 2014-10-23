@@ -12,10 +12,15 @@ import org.springframework.stereotype.Component;
  * @since 26.09.2014
  */
 @Component
-public class PlaceAvailabilityRequestProcessor implements UserRequestProcessor<PlaceAvailabilityRequestType, PlaceAvailabilityResponseType> {
+public class PlaceAvailabilityRequestProcessor extends AbstractUserRequestProcessor<PlaceAvailabilityRequestType, PlaceAvailabilityResponseType> {
 
     @Override
-    public UserResponseParams<PlaceAvailabilityResponseType> process(Optional<Language> lan, AuthType auth, PlaceAvailabilityRequestType request) {
-        return null;
+    public UserResponseParams<PlaceAvailabilityResponseType> processAnonymously(Optional<Language> lan, PlaceAvailabilityRequestType request) {
+        return super.processAnonymously(lan, request);
+    }
+
+    @Override
+    public UserResponseParams<PlaceAvailabilityResponseType> processForUser(Optional<Language> lan, AuthType auth, PlaceAvailabilityRequestType request) {
+        return super.processForUser(lan, auth, request);
     }
 }

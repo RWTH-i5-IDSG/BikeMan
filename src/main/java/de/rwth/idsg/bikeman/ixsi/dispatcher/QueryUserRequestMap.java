@@ -1,5 +1,6 @@
 package de.rwth.idsg.bikeman.ixsi.dispatcher;
 
+import de.rwth.idsg.bikeman.ixsi.IxsiProcessingException;
 import de.rwth.idsg.bikeman.ixsi.processor.query.UserRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.processor.query.AvailabilityRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.processor.query.BookingRequestProcessor;
@@ -65,7 +66,7 @@ public class QueryUserRequestMap extends HashMap<Class<?>, UserRequestProcessor>
         Class<?> clazz = c.getClass();
         UserRequestProcessor p = super.get(clazz);
         if (p == null) {
-            throw new IllegalArgumentException("No processor is registered for the incoming request of type: " + clazz);
+            throw new IxsiProcessingException("No processor is registered for the incoming request of type: " + clazz);
         } else {
             return p;
         }
