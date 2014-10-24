@@ -12,10 +12,15 @@ import org.springframework.stereotype.Component;
  * @since 26.09.2014
  */
 @Component
-public class TokenGenerationRequestProcessor implements UserRequestProcessor<TokenGenerationRequestType, TokenGenerationResponseType> {
+public class TokenGenerationRequestProcessor extends AbstractUserRequestProcessor<TokenGenerationRequestType, TokenGenerationResponseType> {
 
     @Override
-    public UserResponseParams<TokenGenerationResponseType> process(Optional<Language> lan, AuthType auth, TokenGenerationRequestType request) {
-        return null;
+    public UserResponseParams<TokenGenerationResponseType> processAnonymously(Optional<Language> lan, TokenGenerationRequestType request) {
+        return super.processAnonymously(lan, request);
+    }
+
+    @Override
+    public UserResponseParams<TokenGenerationResponseType> processForUser(Optional<Language> lan, AuthType auth, TokenGenerationRequestType request) {
+        return super.processForUser(lan, auth, request);
     }
 }

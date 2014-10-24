@@ -7,6 +7,13 @@
             <MessageID>200</MessageID>
         </Transaction>
         <SystemID>string</SystemID>
+        <Auth>
+            <UserInfo>
+                <ProviderID>string</ProviderID>
+                <UserID>string</UserID>
+                <Token>token</Token>
+            </UserInfo>
+        </Auth>
         <!--You have a CHOICE of the next 3 items at this level-->
         <Availability>
             <!--You have a CHOICE of the next 3 items at this level-->

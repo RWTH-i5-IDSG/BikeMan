@@ -294,6 +294,7 @@
             "header": {
                 "customerId": "Customer ID",
                 "login": "Login",
+                "password": "Password",
                 "cardId": "Card ID",
                 "cardPin": "Card PIN",
                 "name": "Name",
@@ -310,6 +311,7 @@
             "placeholders": {
                 "customerId": "Customer ID...",
                 "login": "customer@bikeman.de",
+                "password": "********",
                 "cardId": "Card ID...",
                 "cardPin": "Card PIN...",
                 "firstname": "Max",
@@ -358,6 +360,7 @@
             "header": {
                 "login": "Login",
                 "name": "Name",
+                "password": "Password",
                 "majorcustomerId": "Customer ID",
                 "cardId": "Card ID",
                 "cardPin": "Card PIN"

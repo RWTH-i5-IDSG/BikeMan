@@ -2,6 +2,7 @@ package de.rwth.idsg.bikeman.ixsi.dispatcher;
 
 import com.google.common.base.Optional;
 import de.rwth.idsg.bikeman.ixsi.CommunicationContext;
+import de.rwth.idsg.bikeman.ixsi.IxsiProcessingException;
 import de.rwth.idsg.bikeman.ixsi.processor.query.UserResponseParams;
 import de.rwth.idsg.bikeman.ixsi.schema.AuthType;
 import de.rwth.idsg.bikeman.ixsi.schema.Language;
@@ -25,11 +26,12 @@ import java.util.List;
  */
 @Slf4j
 @Component
-public class QueryRequestTypeDispatcher extends AbstractRequestDispatcher {
+public class QueryRequestTypeDispatcher implements Dispatcher {
 
     @Autowired private QueryUserRequestMap userRequestMap;
     @Autowired private QueryStaticRequestMap staticRequestMap;
     @Autowired private DatatypeFactory factory;
+    @Autowired private SystemValidator validator;
 
     @Override
     public void handle(CommunicationContext context) {
@@ -45,7 +47,7 @@ public class QueryRequestTypeDispatcher extends AbstractRequestDispatcher {
     }
 
     private QueryResponseType handle(QueryRequestType request) {
-        boolean isAllowed = validateSender(request.getSystemID());
+        boolean isAllowed = validator.validate(request.getSystemID());
         if (!isAllowed) {
             // TODO: Set an error object and early exit this iteration (or something)
         }
@@ -76,7 +78,7 @@ public class QueryRequestTypeDispatcher extends AbstractRequestDispatcher {
             return buildUserResponse(request);
 
         } else {
-            throw new IllegalArgumentException("Unknown incoming message: " + request);
+            throw new IxsiProcessingException("Unknown incoming message: " + request);
         }
     }
 

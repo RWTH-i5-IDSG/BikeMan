@@ -13,10 +13,15 @@ import org.springframework.stereotype.Component;
  * @since 26.09.2014
  */
 @Component
-public class ChangeBookingRequestProcessor implements UserRequestProcessor<ChangeBookingRequestType, ChangeBookingResponseType> {
+public class ChangeBookingRequestProcessor extends AbstractUserRequestProcessor<ChangeBookingRequestType, ChangeBookingResponseType> {
 
     @Override
-    public UserResponseParams<ChangeBookingResponseType> process(Optional<Language> lan, AuthType auth, ChangeBookingRequestType request) {
-        return null;
+    public UserResponseParams<ChangeBookingResponseType> processAnonymously(Optional<Language> lan, ChangeBookingRequestType request) {
+        return super.processAnonymously(lan, request);
+    }
+
+    @Override
+    public UserResponseParams<ChangeBookingResponseType> processForUser(Optional<Language> lan, AuthType auth, ChangeBookingRequestType request) {
+        return super.processForUser(lan, auth, request);
     }
 }

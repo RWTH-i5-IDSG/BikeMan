@@ -12,4 +12,6 @@ import de.rwth.idsg.bikeman.ixsi.schema.UserTriggeredResponseChoice;
  */
 public interface UserRequestProcessor<T1 extends UserTriggeredRequestChoice, T2 extends UserTriggeredResponseChoice> {
     UserResponseParams<T2> process(Optional<Language> lan, AuthType auth, T1 request);
+    UserResponseParams<T2> processAnonymously(Optional<Language> lan, T1 request);
+    UserResponseParams<T2> processForUser(Optional<Language> lan, AuthType auth, T1 request);
 }
