@@ -10,7 +10,6 @@ import lombok.experimental.Builder;
 @Builder
 @Data
 public class StartTransactionDTO {
-//    private Long userId;
     private String cardId;
     private String pedelecManufacturerId;
     private String stationManufacturerId;

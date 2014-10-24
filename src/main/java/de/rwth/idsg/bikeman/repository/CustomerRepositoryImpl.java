@@ -11,9 +11,11 @@ import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditCustomerDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.view.ViewCustomerDTO;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.inject.Inject;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -34,6 +36,9 @@ import java.util.List;
 @Repository
 @Slf4j
 public class CustomerRepositoryImpl implements CustomerRepository {
+
+    @Inject
+    private PasswordEncoder passwordEncoder;
 
     private enum Operation { CREATE, UPDATE };
     private enum FindType { ALL, BY_NAME, BY_LOGIN };
@@ -94,12 +99,12 @@ public class CustomerRepositoryImpl implements CustomerRepository {
 
     @Override
     @Transactional(readOnly = true)
-    public long findByCardIdAndCardPin(String cardId, String cardPin) throws DatabaseException {
+    public String findByCardIdAndCardPin(String cardId, String cardPin) throws DatabaseException {
 
-        final String query = "SELECT c.userId FROM Customer c WHERE c.cardAccount.cardId = :cardId AND c.cardAccount.cardPin = :cardPin";
+        final String query = "SELECT c.cardAccount.cardId FROM Customer c WHERE c.cardAccount.cardId = :cardId AND c.cardAccount.cardPin = :cardPin";
 
         try {
-            return (long) em.createQuery(query)
+            return (String) em.createQuery(query)
                               .setParameter("cardId", cardId)
                               .setParameter("cardPin", cardPin)
                               .getSingleResult();
@@ -218,6 +223,10 @@ public class CustomerRepositoryImpl implements CustomerRepository {
         customer.setLastname(dto.getLastname());
         customer.setBirthday(dto.getBirthday());
         customer.setIsActivated(dto.getIsActivated());
+
+        if (dto.getPassword() != null) {
+            customer.setPassword(passwordEncoder.encode(dto.getPassword()));
+        }
 
         switch (operation) {
             case CREATE:

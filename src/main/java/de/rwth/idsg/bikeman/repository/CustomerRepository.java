@@ -32,7 +32,7 @@ public interface CustomerRepository {
      *
      * @return userId
      */
-    long findByCardIdAndCardPin(String cardId, String cardPin) throws DatabaseException;
+    String findByCardIdAndCardPin(String cardId, String cardPin) throws DatabaseException;
 
     void activate(long userId) throws DatabaseException;
 
