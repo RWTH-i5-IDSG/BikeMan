@@ -12,6 +12,8 @@ import javax.validation.constraints.Digits;
 @Data
 public class CreateEditCardAccountDTO {
 
+    private String login;
+
     @NotBlank
     private String cardId;
 

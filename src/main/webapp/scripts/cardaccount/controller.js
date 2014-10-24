@@ -27,7 +27,7 @@ bikeManApp.controller('CardaccountController', ['$scope', 'resolvedCardAccounts'
         $scope.create = function () {
             CardAccount.save($scope.newCardaccount, function () {
                 $scope.cardaccounts = CardAccount.query();
-                $('#saveBikeStationModal').modal('hide');
+                $('#addModal').modal('hide');
                 $scope.clear();
             });
         };

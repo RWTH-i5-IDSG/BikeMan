@@ -11,6 +11,11 @@
             <span class="glyphicon glyphicon-pencil"></span> <span translate="majorcustomerDetail.buttons.cancel"> Cancel</span></button>
         <button type="button" ng-click="saveMajorcustomer()" class="btn btn-primary" ng-show="isEditing">
             <span class="glyphicon glyphicon-pencil"></span> <span translate="majorcustomerDetail.buttons.save"> Save Major Customer</span></button>
+
+        <button class="btn btn-primary" data-toggle="modal" data-target="#addModal">
+            <span class="glyphicon glyphicon-flash"></span>
+            <span translate="cardaccounts.buttons.add">Add Card Account</span>
+        </button>
     </div>
 
     <form name="form" role="form" novalidate
@@ -61,11 +66,11 @@
             </tr>
             </thead>
             <tbody>
-            <tr ng-class='{warning:transaction.toStation.stationId == null}'  ng-repeat="cardaccount in majorcustomer.cardAccountDTOs">
+            <tr ng-class='{warning:transaction.toStation.stationId == null}'  ng-repeat="cardaccount in majorcustomer.cardAccountDTOs | orderBy: 'cardId'">
                 <td>{{cardaccount.cardId}}</td>
                 <td>{{cardaccount.cardPin}}</td>
                 <td>{{cardaccount.inTransaction | occupiedFilter}}</td>
-                <td>{{cardaccount.operationState}}</td>
+                <td><button class="btn" ng-class="(cardaccount.operationState == 'OPERATIVE') ? 'btn-default' : ''" ng-click="toggleCardAccount(cardaccount)">{{cardaccount.operationState}}</button></td>
                 <td>
                     <!--<button type="button" class="btn btn-sm" ng-click="updateCardAccount(cardaccount)"><span class="glyphicon glyphicon-wrench"></span>-->
                         <!--<span translate="majorCustomerDetail.cardaccounts.table.buttons.edit">Edit</span>-->
@@ -75,5 +80,39 @@
             </tbody>
         </table>
     </div>
+
+    <div class="modal fade" id="addModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form name="form" role="form" novalidate
+                      class="form-horizontal ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength"
+                      ng-submit="addCardAccount()">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" translate="cardaccounts.addModal.title">Add Card Account</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label class="control-label" translate="cardaccounts.addModal.cardId">Card ID</label>
+                            <input type="text" class="form-control" ng-model="newCardaccount.cardId" ng-minlength="1">
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" translate="cardaccounts.addModal.cardPin">Card PIN</label>
+                            <input type="text" class="form-control" ng-model="newCardaccount.cardPin" ng-minlength="4" ng-maxlength="4">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clear()" translate="cardaccounts.addModal.buttons.cancel">
+                            Cancel
+                        </button>
+                        <button type="submit" class="btn btn-primary"
+                                translate="cardaccounts.addModal.buttons.add">
+                            Add
+                        </button>
+                    </div>
+                </form>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
 
 </div>

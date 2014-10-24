@@ -6,15 +6,18 @@ import de.rwth.idsg.bikeman.domain.MajorCustomer_;
 import de.rwth.idsg.bikeman.domain.login.Authority;
 import de.rwth.idsg.bikeman.domain.login.User_;
 import de.rwth.idsg.bikeman.security.AuthoritiesConstants;
+import de.rwth.idsg.bikeman.security.SecurityUtils;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditMajorCustomerDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.view.ViewCardAccountDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.view.ViewCustomerDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.view.ViewMajorCustomerDTO;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.inject.Inject;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -31,6 +34,9 @@ import java.util.Set;
 @Repository
 @Slf4j
 public class MajorCustomerRepositoryImpl implements MajorCustomerRepository {
+
+    @Inject
+    private PasswordEncoder passwordEncoder;
 
     private enum Operation { CREATE, UPDATE };
     private enum FindType { ALL, BY_ID, BY_LOGIN };
@@ -219,7 +225,10 @@ public class MajorCustomerRepositoryImpl implements MajorCustomerRepository {
         // TODO: Should the login be changeable? Who sets the field? Clarify!
         majorCustomer.setLogin(dto.getLogin());
         majorCustomer.setName(dto.getName());
-        majorCustomer.setPassword(dto.getPassword());
+
+        if (dto.getPassword() != null) {
+            majorCustomer.setPassword(passwordEncoder.encode(dto.getPassword()));
+        }
 
         switch (operation) {
             case CREATE:

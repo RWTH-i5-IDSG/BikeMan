@@ -9,6 +9,10 @@ var bikeManApp = angular.module('bikeManApp', ['http-auth-interceptor', 'tmh.dyn
 bikeManApp
     .config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$translateProvider',  'tmhDynamicLocaleProvider', 'USER_ROLES', '$compileProvider',
         function ($stateProvider, $urlRouterProvider, $httpProvider, $translateProvider, tmhDynamicLocaleProvider, USER_ROLES, $compileProvider) {
+
+            $urlRouterProvider.otherwise('/main');
+
+
             $stateProvider
                 .state('login', {
                     url: '/login',
@@ -105,7 +109,7 @@ bikeManApp
                     access: {
                         authorizedRoles: [USER_ROLES.admin]
                     }
-                })
+                });
 
 
             // GLOBAL MESSAGES

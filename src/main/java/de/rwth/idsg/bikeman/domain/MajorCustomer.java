@@ -6,7 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import javax.persistence.*;
-import java.util.List;
+import java.util.Set;
 
 /**
  * Created by swam on 09/10/14.
@@ -24,6 +24,6 @@ public class MajorCustomer extends User {
     private String name;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user", orphanRemoval = true)
-    private List<CardAccount> cardAccounts;
+    private Set<CardAccount> cardAccounts;
 
 }

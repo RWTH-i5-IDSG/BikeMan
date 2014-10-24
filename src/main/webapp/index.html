@@ -121,23 +121,23 @@
         <div class="navbar-default navbar-static-side" role="navigation" ng-switch-when="true" metis-menu>
             <div class="sidebar-collapse">
                 <ul class="nav" id="side-menu">
-                    <li class="sidebar-search">
-                        <div class="input-group custom-search-form">
-                            <input type="text" class="form-control" placeholder="Search...">
-                                <span class="input-group-btn">
-                                <button class="btn btn-default" type="button">
-                                    <i class="fa fa-search"></i>
-                                </button>
-                            </span>
-                        </div>
-                        <!-- /input-group -->
-                    </li>
+                    <!--<li class="sidebar-search">-->
+                        <!--<div class="input-group custom-search-form">-->
+                            <!--<input type="text" class="form-control" placeholder="Search...">-->
+                                <!--<span class="input-group-btn">-->
+                                <!--<button class="btn btn-default" type="button">-->
+                                    <!--<i class="fa fa-search"></i>-->
+                                <!--</button>-->
+                            <!--</span>-->
+                        <!--</div>-->
+                        <!--&lt;!&ndash; /input-group &ndash;&gt;-->
+                    <!--</li>-->
                     <li>
                         <a ui-sref="main"><i class="fa fa-dashboard fa-fw"></i>
                             <span translate="global.menu.home"> Home</span>
                         </a>
                     </li>
-                    <li>
+                    <li ng-show="isAuthorized([userRoles.admin, userRoles.manager ])">
                         <a href="#"><i class="fa fa-desktop fa-fw"></i>
                             <span translate="global.menu.management.title">Management</span>
                             <span class="fa arrow"></span></a>
@@ -147,7 +147,7 @@
                                     <span translate="global.menu.management.custOverview">Customer Overview</span>
                                 </a>
                             </li>
-                            <li ng-show="isAuthorized(userRoles.admin)" ui-sref-active="selectedNavItem">
+                            <li ui-sref-active="selectedNavItem">
                                 <a ui-sref="customerCreate">
                                     <span translate="global.menu.management.custCreate">Create Customer</span>
                                 </a>
@@ -158,7 +158,7 @@
                                     <span translate="global.menu.management.majorcustomerOverview">Majorcustomer Overview</span>
                                 </a>
                             </li>
-                            <li ng-show="isAuthorized(userRoles.admin)" ui-sref-active="selectedNavItem">
+                            <li ui-sref-active="selectedNavItem">
                                 <a ui-sref="majorcustomerCreate">
                                     <span translate="global.menu.management.majorcustomerCreate">Create Majorcustomer</span>
                                 </a>
@@ -177,13 +177,14 @@
                         </ul>
                         <!-- /.nav-second-level -->
                     </li>
-                    <li ng-show="isAuthorized(userRoles.major_customer)" ui-sref-active="selectedNavItem">
+                    <li ng-show="isAuthorized(userRoles.major_customer) && !isAuthorized(userRoles.manager)" ui-sref-active="selectedNavItem">
                         <a ui-sref="cardaccounts">
                             <i class="glyphicon glyphicon-barcode"></i>
                             <span translate="global.menu.cardaccounts"></span>
                         </a>
                     </li>
-                    <li ui-sref-active="active">
+
+                    <li ng-show="isAuthorized([userRoles.admin, userRoles.manager])"" ui-sref-active="active">
                         <a href="#"><i class="glyphicon glyphicon-record fa-fw"></i>
                             <span translate="global.menu.station.title">Station Control</span>
                             <span class="fa arrow"></span>
@@ -203,7 +204,7 @@
                         <!-- /.nav-second-level -->
                     </li>
 
-                    <li>
+                    <li ng-show="isAuthorized([userRoles.admin, userRoles.manager])">
                         <a href="#"><i class="glyphicon glyphicon-send fa-fw"></i>
                             <span translate="global.menu.pedelec.title">Pedelec Control</span>
                             <span class="fa arrow"></span></a>
@@ -222,7 +223,7 @@
                         <!-- /.nav-second-level -->
                     </li>
 
-                    <li>
+                    <li ng-show="isAuthorized([userRoles.admin, userRoles.manager])">
                         <a href="#"><i class="fa fa-book fa-fw"></i>
                             <span translate="global.menu.driverlog.title">Driver's Logbook</span>
                             <span class="fa arrow"></span></a>
@@ -247,7 +248,7 @@
                     </li>
 
 
-                    <li>
+                    <li ng-show="isAuthorized([userRoles.admin, userRoles.manager])">
                         <a href="#"><i class="fa fa-book fa-fw"></i>
                             <span translate="global.menu.majorcustomerlog.title">Majorcustomer's Logbook</span>
                             <span class="fa arrow"></span></a>

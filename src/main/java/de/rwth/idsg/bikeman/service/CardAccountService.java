@@ -4,6 +4,7 @@ import de.rwth.idsg.bikeman.domain.CardAccount;
 import de.rwth.idsg.bikeman.domain.CustomerType;
 import de.rwth.idsg.bikeman.domain.MajorCustomer;
 import de.rwth.idsg.bikeman.domain.OperationState;
+import de.rwth.idsg.bikeman.domain.login.User;
 import de.rwth.idsg.bikeman.repository.CardAccountRepository;
 import de.rwth.idsg.bikeman.repository.UserRepository;
 import de.rwth.idsg.bikeman.security.SecurityUtils;
@@ -51,7 +52,15 @@ public class CardAccountService {
     @Transactional
     public void createCardAccount(CreateEditCardAccountDTO createEditCardAccountDTO) throws DatabaseException {
 
-        MajorCustomer currentMajorCustomer = (MajorCustomer)userRepository.findByLoginIgnoreCase(SecurityUtils.getCurrentLogin());
+        User user;
+
+
+        // when no login exists, add to current user
+        if (createEditCardAccountDTO.getLogin() == null) {
+            user = userRepository.findByLoginIgnoreCase(SecurityUtils.getCurrentLogin());
+        } else {
+            user = userRepository.findByLoginIgnoreCase(createEditCardAccountDTO.getLogin());
+        }
 
         CardAccount cardAccount = CardAccount.builder()
                 .cardId(createEditCardAccountDTO.getCardId())
@@ -59,7 +68,7 @@ public class CardAccountService {
                 .inTransaction(false)
                 .operationState(OperationState.OPERATIVE)
                 .ownerType(CustomerType.MAJOR_CUSTOMER)
-                .user(currentMajorCustomer)
+                .user(user)
                 .build();
 
         try {

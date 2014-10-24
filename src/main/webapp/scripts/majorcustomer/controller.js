@@ -67,14 +67,26 @@ bikeManApp.controller('MajorcustomerDetailController', ['$scope', 'resolvedMajor
             })
         }
 
-        $scope.updateCardAccount = function (cardAcc) {
+        $scope.toggleCardAccount = function (cardAcc) {
             if (cardAcc.operationState === "OPERATIVE") {
-                CardAccount.disable({'cardId': cardAcc.cardId});
+                CardAccount.disable({'cardId': cardAcc.cardId}, function () {
+                    $scope.majorcustomer = Majorcustomer.searchByLogin({login: $scope.majorcustomer.login});
+                });
             } else {
-                CardAccount.enable({'cardId': cardAcc.cardId});
+                CardAccount.enable({'cardId': cardAcc.cardId}, function () {
+                    $scope.majorcustomer = Majorcustomer.searchByLogin({login: $scope.majorcustomer.login});
+                });
             }
-            $scope.majorcustomer = Majorcustomer.searchByLogin({login: $scope.majorcustomer.login});
         }
+
+        $scope.addCardAccount = function () {
+            $scope.newCardaccount.login = $scope.majorcustomer.login;
+            CardAccount.save($scope.newCardaccount, function () {
+                $scope.majorcustomer = Majorcustomer.searchByLogin({login: $scope.majorcustomer.login});
+                $('#addModal').modal('hide');
+                $scope.newCardaccount = null;
+            });
+        };
 
     }]);
 
