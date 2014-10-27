@@ -1,5 +1,7 @@
 package de.rwth.idsg.bikeman.ixsi.processor.subscription;
 
+import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
+import de.rwth.idsg.bikeman.ixsi.schema.AvailabilitySubscriptionResponseType;
 import de.rwth.idsg.bikeman.ixsi.schema.AvailabilitySubscriptionStatusRequest;
 import de.rwth.idsg.bikeman.ixsi.schema.AvailabilitySubscriptionStatusResponse;
 import org.springframework.stereotype.Component;
@@ -17,8 +19,14 @@ public class AvailabilitySubscriptionStatusRequestProcessor implements
         return null;
     }
 
+    // -------------------------------------------------------------------------
+    // Error handling
+    // -------------------------------------------------------------------------
+
     @Override
     public AvailabilitySubscriptionStatusResponse invalidSystem() {
-        return null;
+        AvailabilitySubscriptionStatusResponse b = new AvailabilitySubscriptionStatusResponse();
+        b.getError().add(ErrorFactory.invalidSystem());
+        return b;
     }
 }

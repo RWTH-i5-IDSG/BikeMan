@@ -1,5 +1,7 @@
 package de.rwth.idsg.bikeman.ixsi.processor.subscription;
 
+import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
+import de.rwth.idsg.bikeman.ixsi.schema.AvailabilitySubscriptionResponseType;
 import de.rwth.idsg.bikeman.ixsi.schema.PlaceAvailabilitySubscriptionRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.PlaceAvailabilitySubscriptionResponseType;
 import org.springframework.stereotype.Component;
@@ -17,8 +19,14 @@ public class PlaceAvailabilitySubscriptionRequestProcessor implements
         return null;
     }
 
+    // -------------------------------------------------------------------------
+    // Error handling
+    // -------------------------------------------------------------------------
+
     @Override
     public PlaceAvailabilitySubscriptionResponseType invalidSystem() {
-        return null;
+        PlaceAvailabilitySubscriptionResponseType b = new PlaceAvailabilitySubscriptionResponseType();
+        b.getError().add(ErrorFactory.invalidSystem());
+        return b;
     }
 }

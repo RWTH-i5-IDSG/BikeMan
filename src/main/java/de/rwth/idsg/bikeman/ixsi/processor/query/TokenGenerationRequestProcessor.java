@@ -1,6 +1,9 @@
 package de.rwth.idsg.bikeman.ixsi.processor.query;
 
 import com.google.common.base.Optional;
+import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
+import de.rwth.idsg.bikeman.ixsi.schema.AvailabilityResponseType;
+import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
 import de.rwth.idsg.bikeman.ixsi.schema.Language;
 import de.rwth.idsg.bikeman.ixsi.schema.TokenGenerationRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.TokenGenerationResponseType;
@@ -24,13 +27,26 @@ public class TokenGenerationRequestProcessor implements UserRequestProcessor<Tok
         return null;
     }
 
+    // -------------------------------------------------------------------------
+    // Error handling
+    // -------------------------------------------------------------------------
+
     @Override
     public UserResponseParams<TokenGenerationResponseType> invalidSystem() {
-        return null;
+        return buildError(ErrorFactory.invalidSystem());
     }
 
     @Override
     public UserResponseParams<TokenGenerationResponseType> invalidUserAuth() {
-        return null;
+        return buildError(ErrorFactory.invalidUserAuth());
+    }
+
+    private UserResponseParams<TokenGenerationResponseType> buildError(ErrorType e) {
+        TokenGenerationResponseType res = new TokenGenerationResponseType();
+        res.getError().add(e);
+
+        UserResponseParams<TokenGenerationResponseType> u = new UserResponseParams<>();
+        u.setResponse(res);
+        return u;
     }
 }

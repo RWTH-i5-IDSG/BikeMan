@@ -1,8 +1,10 @@
 package de.rwth.idsg.bikeman.ixsi.processor.query;
 
+import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
 import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
 import de.rwth.idsg.bikeman.ixsi.dto.query.ChangedProvidersResponseDTO;
 import de.rwth.idsg.bikeman.ixsi.repository.QueryIXSIRepository;
+import de.rwth.idsg.bikeman.ixsi.schema.BookingTargetsInfoResponseType;
 import de.rwth.idsg.bikeman.ixsi.schema.ChangedProvidersRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.ChangedProvidersResponseType;
 import de.rwth.idsg.bikeman.ixsi.schema.ProviderIDType;
@@ -36,8 +38,14 @@ public class ChangedProvidersRequestProcessor implements
         return response;
     }
 
+    // -------------------------------------------------------------------------
+    // Error handling
+    // -------------------------------------------------------------------------
+
     @Override
     public ChangedProvidersResponseType invalidSystem() {
-        return null;
+        ChangedProvidersResponseType b = new ChangedProvidersResponseType();
+        b.getError().add(ErrorFactory.invalidSystem());
+        return b;
     }
 }

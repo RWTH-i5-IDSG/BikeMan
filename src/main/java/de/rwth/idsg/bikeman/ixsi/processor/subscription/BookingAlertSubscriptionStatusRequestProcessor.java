@@ -1,5 +1,7 @@
 package de.rwth.idsg.bikeman.ixsi.processor.subscription;
 
+import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
+import de.rwth.idsg.bikeman.ixsi.schema.AvailabilitySubscriptionResponseType;
 import de.rwth.idsg.bikeman.ixsi.schema.BookingAlertSubscriptionStatusRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.BookingAlertSubscriptionStatusResponseType;
 import org.springframework.stereotype.Component;
@@ -17,8 +19,14 @@ public class BookingAlertSubscriptionStatusRequestProcessor implements
         return null;
     }
 
+    // -------------------------------------------------------------------------
+    // Error handling
+    // -------------------------------------------------------------------------
+
     @Override
     public BookingAlertSubscriptionStatusResponseType invalidSystem() {
-        return null;
+        BookingAlertSubscriptionStatusResponseType b = new BookingAlertSubscriptionStatusResponseType();
+        b.getError().add(ErrorFactory.invalidSystem());
+        return b;
     }
 }

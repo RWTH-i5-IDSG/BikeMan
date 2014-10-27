@@ -1,5 +1,7 @@
 package de.rwth.idsg.bikeman.ixsi.processor.subscription;
 
+import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
+import de.rwth.idsg.bikeman.ixsi.schema.AvailabilitySubscriptionResponseType;
 import de.rwth.idsg.bikeman.ixsi.schema.CompleteBookingAlertRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.CompleteBookingAlertResponseType;
 import org.springframework.stereotype.Component;
@@ -17,8 +19,14 @@ public class CompleteBookingAlertRequestProcessor implements
         return null;
     }
 
+    // -------------------------------------------------------------------------
+    // Error handling
+    // -------------------------------------------------------------------------
+
     @Override
     public CompleteBookingAlertResponseType invalidSystem() {
-        return null;
+        CompleteBookingAlertResponseType b = new CompleteBookingAlertResponseType();
+        b.getError().add(ErrorFactory.invalidSystem());
+        return b;
     }
 }

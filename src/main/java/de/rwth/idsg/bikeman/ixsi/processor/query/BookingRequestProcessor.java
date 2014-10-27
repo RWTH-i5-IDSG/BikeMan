@@ -1,8 +1,11 @@
 package de.rwth.idsg.bikeman.ixsi.processor.query;
 
 import com.google.common.base.Optional;
+import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
+import de.rwth.idsg.bikeman.ixsi.schema.AvailabilityResponseType;
 import de.rwth.idsg.bikeman.ixsi.schema.BookingRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.BookingResponseType;
+import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
 import de.rwth.idsg.bikeman.ixsi.schema.Language;
 import de.rwth.idsg.bikeman.ixsi.schema.UserInfoType;
 import org.springframework.stereotype.Component;
@@ -27,13 +30,26 @@ public class BookingRequestProcessor implements
         return null;
     }
 
+    // -------------------------------------------------------------------------
+    // Error handling
+    // -------------------------------------------------------------------------
+
     @Override
     public UserResponseParams<BookingResponseType> invalidSystem() {
-        return null;
+        return buildError(ErrorFactory.invalidSystem());
     }
 
     @Override
     public UserResponseParams<BookingResponseType> invalidUserAuth() {
-        return null;
+        return buildError(ErrorFactory.invalidUserAuth());
+    }
+
+    private UserResponseParams<BookingResponseType> buildError(ErrorType e) {
+        BookingResponseType res = new BookingResponseType();
+        res.getError().add(e);
+
+        UserResponseParams<BookingResponseType> u = new UserResponseParams<>();
+        u.setResponse(res);
+        return u;
     }
 }

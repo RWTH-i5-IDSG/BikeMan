@@ -1,5 +1,7 @@
 package de.rwth.idsg.bikeman.ixsi.processor.subscription;
 
+import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
+import de.rwth.idsg.bikeman.ixsi.schema.AvailabilitySubscriptionResponseType;
 import de.rwth.idsg.bikeman.ixsi.schema.CompleteAvailabilityRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.CompleteAvailabilityResponseType;
 import org.springframework.stereotype.Component;
@@ -17,8 +19,14 @@ public class CompleteAvailabilityRequestProcessor implements
         return null;
     }
 
+    // -------------------------------------------------------------------------
+    // Error handling
+    // -------------------------------------------------------------------------
+
     @Override
     public CompleteAvailabilityResponseType invalidSystem() {
-        return null;
+        CompleteAvailabilityResponseType b = new CompleteAvailabilityResponseType();
+        b.getError().add(ErrorFactory.invalidSystem());
+        return b;
     }
 }
