@@ -26,4 +26,28 @@ public final class ErrorFactory {
         e.setUserMessage("");
         return e;
     }
+
+    public static ErrorType invalidSystem() {
+        ErrorCodeType c = new ErrorCodeType();
+        c.setValue("");
+
+        ErrorType e = new ErrorType();
+        e.setNonFatal(false);
+        e.setCode(c);
+        e.setSystemMessage("");
+        e.setUserMessage("");
+        return e;
+    }
+
+    public static ErrorType invalidUserAuth() {
+        ErrorCodeType c = new ErrorCodeType();
+        c.setValue("");
+
+        ErrorType e = new ErrorType();
+        e.setNonFatal(false);
+        e.setCode(c);
+        e.setSystemMessage("");
+        e.setUserMessage("");
+        return e;
+    }
 }

@@ -1,6 +1,7 @@
 package de.rwth.idsg.bikeman.ixsi.impl;
 
 import de.rwth.idsg.bikeman.ixsi.CommunicationContext;
+import de.rwth.idsg.bikeman.ixsi.IxsiProcessingException;
 import de.rwth.idsg.bikeman.ixsi.api.Parser;
 import de.rwth.idsg.bikeman.ixsi.api.Producer;
 import lombok.extern.slf4j.Slf4j;
@@ -29,9 +30,11 @@ public class ProducerImpl implements Producer {
             TextMessage out = new TextMessage(context.getOutgoingString());
             context.getSession().sendMessage(out);
 
-        } catch (JAXBException | IOException e) {
+        } catch (JAXBException e) {
+            throw new IxsiProcessingException("Could not marshal outgoing message", e);
+
+        } catch (IOException e) {
             log.error("Exception happened", e);
-            //TODO send error message
         }
     }
 }

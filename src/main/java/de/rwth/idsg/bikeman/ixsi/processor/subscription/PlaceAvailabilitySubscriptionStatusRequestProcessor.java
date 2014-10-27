@@ -16,4 +16,9 @@ public class PlaceAvailabilitySubscriptionStatusRequestProcessor implements
     public PlaceAvailabilitySubscriptionStatusResponse process(PlaceAvailabilitySubscriptionStatusRequest request) {
         return null;
     }
+
+    @Override
+    public PlaceAvailabilitySubscriptionStatusResponse invalidSystem() {
+        return null;
+    }
 }

@@ -1,10 +1,10 @@
 package de.rwth.idsg.bikeman.ixsi.processor.query;
 
 import com.google.common.base.Optional;
-import de.rwth.idsg.bikeman.ixsi.schema.AuthType;
 import de.rwth.idsg.bikeman.ixsi.schema.Language;
 import de.rwth.idsg.bikeman.ixsi.schema.PlaceAvailabilityRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.PlaceAvailabilityResponseType;
+import de.rwth.idsg.bikeman.ixsi.schema.UserInfoType;
 import org.springframework.stereotype.Component;
 
 /**
@@ -12,15 +12,25 @@ import org.springframework.stereotype.Component;
  * @since 26.09.2014
  */
 @Component
-public class PlaceAvailabilityRequestProcessor extends AbstractUserRequestProcessor<PlaceAvailabilityRequestType, PlaceAvailabilityResponseType> {
+public class PlaceAvailabilityRequestProcessor implements UserRequestProcessor<PlaceAvailabilityRequestType, PlaceAvailabilityResponseType> {
 
     @Override
-    public UserResponseParams<PlaceAvailabilityResponseType> processAnonymously(Optional<Language> lan, PlaceAvailabilityRequestType request) {
-        return super.processAnonymously(lan, request);
+    public UserResponseParams<PlaceAvailabilityResponseType> processAnonymously(PlaceAvailabilityRequestType request, Optional<Language> lan) {
+        return null;
     }
 
     @Override
-    public UserResponseParams<PlaceAvailabilityResponseType> processForUser(Optional<Language> lan, AuthType auth, PlaceAvailabilityRequestType request) {
-        return super.processForUser(lan, auth, request);
+    public UserResponseParams<PlaceAvailabilityResponseType> processForUser(PlaceAvailabilityRequestType request, Optional<Language> lan, UserInfoType userInfo) {
+        return null;
+    }
+
+    @Override
+    public UserResponseParams<PlaceAvailabilityResponseType> invalidSystem() {
+        return null;
+    }
+
+    @Override
+    public UserResponseParams<PlaceAvailabilityResponseType> invalidUserAuth() {
+        return null;
     }
 }

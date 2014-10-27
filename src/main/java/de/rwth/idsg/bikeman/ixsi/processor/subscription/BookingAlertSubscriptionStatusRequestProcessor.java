@@ -16,4 +16,9 @@ public class BookingAlertSubscriptionStatusRequestProcessor implements
     public BookingAlertSubscriptionStatusResponseType process(BookingAlertSubscriptionStatusRequestType request) {
         return null;
     }
+
+    @Override
+    public BookingAlertSubscriptionStatusResponseType invalidSystem() {
+        return null;
+    }
 }

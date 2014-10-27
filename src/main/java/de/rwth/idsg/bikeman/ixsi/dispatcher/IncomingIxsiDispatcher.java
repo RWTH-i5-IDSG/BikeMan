@@ -34,7 +34,7 @@ public class IncomingIxsiDispatcher implements Dispatcher {
             subscriptionRequestTypeDispatcher.handle(context);
 
         } else {
-            throw new IxsiProcessingException("Unknown incoming message: " + context.getIncomingString());
+            throw new IxsiProcessingException("Incoming message must be a QueryRequest or SubscriptionRequest");
         }
 
         producer.send(context);

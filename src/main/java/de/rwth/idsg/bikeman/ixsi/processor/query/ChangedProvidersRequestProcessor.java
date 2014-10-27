@@ -35,4 +35,9 @@ public class ChangedProvidersRequestProcessor implements
 
         return response;
     }
+
+    @Override
+    public ChangedProvidersResponseType invalidSystem() {
+        return null;
+    }
 }

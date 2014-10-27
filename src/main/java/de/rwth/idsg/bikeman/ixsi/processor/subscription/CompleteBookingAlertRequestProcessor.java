@@ -16,4 +16,9 @@ public class CompleteBookingAlertRequestProcessor implements
     public CompleteBookingAlertResponseType process(CompleteBookingAlertRequestType request) {
         return null;
     }
+
+    @Override
+    public CompleteBookingAlertResponseType invalidSystem() {
+        return null;
+    }
 }

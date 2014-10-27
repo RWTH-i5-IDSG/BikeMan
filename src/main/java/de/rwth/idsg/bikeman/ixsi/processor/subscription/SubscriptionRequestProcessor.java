@@ -9,4 +9,5 @@ import de.rwth.idsg.bikeman.ixsi.schema.SubscriptionResponseGroup;
  */
 public interface SubscriptionRequestProcessor<T1 extends SubscriptionRequestGroup, T2 extends SubscriptionResponseGroup> {
     T2 process(T1 request);
+    T2 invalidSystem();
 }

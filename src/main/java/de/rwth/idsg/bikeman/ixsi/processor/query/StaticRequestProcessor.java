@@ -9,4 +9,5 @@ import de.rwth.idsg.bikeman.ixsi.schema.StaticDataResponseGroup;
  */
 public interface StaticRequestProcessor<T1 extends StaticDataRequestGroup, T2 extends StaticDataResponseGroup> {
     T2 process(T1 request);
+    T2 invalidSystem();
 }

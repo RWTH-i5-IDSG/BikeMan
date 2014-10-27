@@ -1,5 +1,6 @@
 package de.rwth.idsg.bikeman.ixsi.processor.query;
 
+import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
 import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
 import de.rwth.idsg.bikeman.ixsi.dto.query.BookingTargetsInfoResponseDTO;
 import de.rwth.idsg.bikeman.ixsi.dto.query.PedelecDTO;
@@ -93,6 +94,13 @@ public class BookingTargetsInfoRequestProcessor implements
         // END response placegroups
 
         return response;
+    }
+
+    @Override
+    public BookingTargetsInfoResponseType invalidSystem() {
+        BookingTargetsInfoResponseType b = new BookingTargetsInfoResponseType();
+        b.getError().add(ErrorFactory.invalidSystem());
+        return b;
     }
 
     private List<BookingTargetType> getBookingTargetsFromDTO(List<PedelecDTO> pedelecs) {

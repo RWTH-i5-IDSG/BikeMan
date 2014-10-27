@@ -16,4 +16,9 @@ public class CompletePlaceAvailabilityRequestProcessor implements
     public CompletePlaceAvailabilityResponseType process(CompletePlaceAvailabilityRequestType request) {
         return null;
     }
+
+    @Override
+    public CompletePlaceAvailabilityResponseType invalidSystem() {
+        return null;
+    }
 }

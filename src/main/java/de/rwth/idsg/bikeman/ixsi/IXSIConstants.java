@@ -6,6 +6,8 @@ package de.rwth.idsg.bikeman.ixsi;
 public final class IXSIConstants {
     private IXSIConstants() {}
 
+    public static final String XML_SCHEMA_FILE = "ixsi/IXSI.xsd";
+
     public static final String bookeeClassType = "bike";
     public static final String engineType = "electric";
 

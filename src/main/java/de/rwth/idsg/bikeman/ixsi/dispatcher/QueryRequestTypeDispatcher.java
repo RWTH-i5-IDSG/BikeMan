@@ -3,6 +3,9 @@ package de.rwth.idsg.bikeman.ixsi.dispatcher;
 import com.google.common.base.Optional;
 import de.rwth.idsg.bikeman.ixsi.CommunicationContext;
 import de.rwth.idsg.bikeman.ixsi.IxsiProcessingException;
+import de.rwth.idsg.bikeman.ixsi.processor.query.StaticRequestProcessor;
+import de.rwth.idsg.bikeman.ixsi.processor.query.TokenValidator;
+import de.rwth.idsg.bikeman.ixsi.processor.query.UserRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.processor.query.UserResponseParams;
 import de.rwth.idsg.bikeman.ixsi.schema.AuthType;
 import de.rwth.idsg.bikeman.ixsi.schema.Language;
@@ -11,6 +14,7 @@ import de.rwth.idsg.bikeman.ixsi.schema.QueryResponseType;
 import de.rwth.idsg.bikeman.ixsi.schema.SessionIDType;
 import de.rwth.idsg.bikeman.ixsi.schema.StaticDataRequestGroup;
 import de.rwth.idsg.bikeman.ixsi.schema.StaticDataResponseGroup;
+import de.rwth.idsg.bikeman.ixsi.schema.UserInfoType;
 import de.rwth.idsg.bikeman.ixsi.schema.UserTriggeredRequestChoice;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +35,9 @@ public class QueryRequestTypeDispatcher implements Dispatcher {
     @Autowired private QueryUserRequestMap userRequestMap;
     @Autowired private QueryStaticRequestMap staticRequestMap;
     @Autowired private DatatypeFactory factory;
-    @Autowired private SystemValidator validator;
+
+    @Autowired private SystemValidator systemValidator;
+    @Autowired private TokenValidator tokenValidator;
 
     @Override
     public void handle(CommunicationContext context) {
@@ -47,22 +53,12 @@ public class QueryRequestTypeDispatcher implements Dispatcher {
     }
 
     private QueryResponseType handle(QueryRequestType request) {
-        boolean isAllowed = validator.validate(request.getSystemID());
-        if (!isAllowed) {
-            // TODO: Set an error object and early exit this iteration (or something)
-        }
 
-        // -------------------------------------------------------------------------
-        // Start processing
-        // -------------------------------------------------------------------------
-
+        // Process the request
+        //
         long startTime = System.currentTimeMillis();
         QueryResponseType response = delegate(request);
         long stopTime = System.currentTimeMillis();
-
-        // -------------------------------------------------------------------------
-        // End processing
-        // -------------------------------------------------------------------------
 
         Duration calcTime = factory.newDuration(stopTime - startTime);
         response.setCalcTime(calcTime);
@@ -71,6 +67,7 @@ public class QueryRequestTypeDispatcher implements Dispatcher {
     }
 
     private QueryResponseType delegate(QueryRequestType request) {
+
         if (request.isSetStaticDataRequestGroup()) {
             return buildStaticResponse(request);
 
@@ -91,7 +88,16 @@ public class QueryRequestTypeDispatcher implements Dispatcher {
         log.trace("Entered buildStaticResponse...");
 
         StaticDataRequestGroup req = request.getStaticDataRequestGroup();
-        StaticDataResponseGroup res = staticRequestMap.find(req).process(req);
+        StaticRequestProcessor p = staticRequestMap.find(req);
+
+        // System validation
+        //
+        StaticDataResponseGroup res;
+        if (systemValidator.validate(request.getSystemID())) {
+            res = p.process(req);
+        } else {
+            res = p.invalidSystem();
+        }
 
         QueryResponseType response = new QueryResponseType();
         response.setStaticDataResponseGroup(res);
@@ -102,11 +108,17 @@ public class QueryRequestTypeDispatcher implements Dispatcher {
     private QueryResponseType buildUserResponse(QueryRequestType request) {
         log.trace("Entered buildUserResponse...");
 
-        Optional<Language> lan = Optional.fromNullable(request.getLanguage());
-        AuthType auth = request.getAuth();
         UserTriggeredRequestChoice c = request.getUserTriggeredRequestChoice();
+        UserRequestProcessor p = userRequestMap.find(c);
 
-        UserResponseParams res = userRequestMap.find(c).process(lan, auth, c);
+        // System validation
+        //
+        UserResponseParams res;
+        if (systemValidator.validate(request.getSystemID())) {
+            res = delegateUserRequest(c, p, request.getAuth(), Optional.fromNullable(request.getLanguage()));
+        } else {
+            res = p.invalidSystem();
+        }
 
         QueryResponseType response = new QueryResponseType();
         response.setUserTriggeredResponseGroup(res.getResponse());
@@ -121,5 +133,32 @@ public class QueryRequestTypeDispatcher implements Dispatcher {
             response.setSessionTimeout(duration);
         }
         return response;
+    }
+
+    @SuppressWarnings("unchecked")
+    private UserResponseParams delegateUserRequest(UserTriggeredRequestChoice c, UserRequestProcessor p,
+                                                   AuthType auth, Optional<Language> lan) {
+        log.trace("Processing the authentication information...");
+
+        if (auth.isSetAnonymous() && auth.isAnonymous()) {
+            return p.processAnonymously(c, lan);
+
+        } else if (auth.isSetUserInfo()) {
+
+            // User validation
+            //
+            UserInfoType userInfo = auth.getUserInfo();
+            if (tokenValidator.validate(userInfo)) {
+                return p.processForUser(c, lan, auth.getUserInfo());
+            } else {
+                return p.invalidUserAuth();
+            }
+
+        } else if (auth.isSetSessionID()) {
+            throw new IxsiProcessingException("Session-based authentication is not supported by this party");
+
+        } else {
+            throw new IxsiProcessingException("Authentication requirements are not met");
+        }
     }
 }

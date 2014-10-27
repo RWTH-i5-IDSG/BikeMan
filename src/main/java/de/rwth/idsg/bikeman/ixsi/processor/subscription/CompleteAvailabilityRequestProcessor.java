@@ -16,4 +16,9 @@ public class CompleteAvailabilityRequestProcessor implements
     public CompleteAvailabilityResponseType process(CompleteAvailabilityRequestType request) {
         return null;
     }
+
+    @Override
+    public CompleteAvailabilityResponseType invalidSystem() {
+        return null;
+    }
 }

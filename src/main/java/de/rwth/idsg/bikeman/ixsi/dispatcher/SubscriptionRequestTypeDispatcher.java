@@ -2,6 +2,8 @@ package de.rwth.idsg.bikeman.ixsi.dispatcher;
 
 import de.rwth.idsg.bikeman.ixsi.CommunicationContext;
 import de.rwth.idsg.bikeman.ixsi.IxsiProcessingException;
+import de.rwth.idsg.bikeman.ixsi.processor.subscription.SubscriptionRequestMessageProcessor;
+import de.rwth.idsg.bikeman.ixsi.processor.subscription.SubscriptionRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.schema.HeartBeatResponseType;
 import de.rwth.idsg.bikeman.ixsi.schema.RequestMessageGroup;
 import de.rwth.idsg.bikeman.ixsi.schema.ResponseMessageGroup;
@@ -39,22 +41,12 @@ public class SubscriptionRequestTypeDispatcher implements Dispatcher {
     }
 
     private SubscriptionResponseType handle(SubscriptionRequestType request) {
-        boolean isAllowed = systemValidator.validate(request.getSystemID());
-        if (!isAllowed) {
-            // TODO: Set an error object and early exit this iteration (or something)
-        }
 
-        // -------------------------------------------------------------------------
-        // Start processing
-        // -------------------------------------------------------------------------
-
+        // Process the request
+        //
         long startTime = System.currentTimeMillis();
         SubscriptionResponseType response = delegate(request);
         long stopTime = System.currentTimeMillis();
-
-        // -------------------------------------------------------------------------
-        // End processing
-        // -------------------------------------------------------------------------
 
         Duration calcTime = factory.newDuration(stopTime - startTime);
         response.setCalcTime(calcTime);
@@ -73,7 +65,8 @@ public class SubscriptionRequestTypeDispatcher implements Dispatcher {
             return buildResponseMessage(request);
 
         } else {
-            throw new IxsiProcessingException("Unknown incoming message: " + request);
+            throw new IxsiProcessingException("Incoming message must be from " +
+                    "SubscriptionAdministrationRequestGroup, SubscriptionRequestGroup or RequestMessageGroup");
         }
     }
 
@@ -94,7 +87,16 @@ public class SubscriptionRequestTypeDispatcher implements Dispatcher {
         log.trace("Entered buildResponse...");
 
         SubscriptionRequestGroup req = request.getSubscriptionRequestGroup();
-        SubscriptionResponseGroup res = requestMap.find(req).process(req);
+        SubscriptionRequestProcessor p = requestMap.find(req);
+
+        // System validation
+        //
+        SubscriptionResponseGroup res;
+        if (systemValidator.validate(request.getSystemID())) {
+            res = p.process(req);
+        } else {
+            res = p.invalidSystem();
+        }
 
         SubscriptionResponseType s = new SubscriptionResponseType();
         s.setSubscriptionResponseGroup(res);
@@ -106,7 +108,16 @@ public class SubscriptionRequestTypeDispatcher implements Dispatcher {
         log.trace("Entered buildResponseMessage...");
 
         RequestMessageGroup req = request.getRequestMessageGroup();
-        ResponseMessageGroup res = requestMessageMap.find(req).process(req);
+        SubscriptionRequestMessageProcessor p = requestMessageMap.find(req);
+
+        // System validation
+        //
+        ResponseMessageGroup res;
+        if (systemValidator.validate(request.getSystemID())) {
+            res = p.process(req);
+        } else {
+            res = p.invalidSystem();
+        }
 
         SubscriptionResponseType s = new SubscriptionResponseType();
         s.setResponseMessageGroup(res);

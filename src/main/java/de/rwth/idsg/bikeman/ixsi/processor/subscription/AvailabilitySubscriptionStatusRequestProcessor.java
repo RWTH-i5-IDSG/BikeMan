@@ -16,4 +16,9 @@ public class AvailabilitySubscriptionStatusRequestProcessor implements
     public AvailabilitySubscriptionStatusResponse process(AvailabilitySubscriptionStatusRequest request) {
         return null;
     }
+
+    @Override
+    public AvailabilitySubscriptionStatusResponse invalidSystem() {
+        return null;
+    }
 }
