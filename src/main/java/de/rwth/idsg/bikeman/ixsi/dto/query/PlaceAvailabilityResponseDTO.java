@@ -9,4 +9,9 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class PlaceAvailabilityResponseDTO {
+
+    private long stationId;
+    private int availableSlots;
+//    private int availablePedelecs;
+
 }

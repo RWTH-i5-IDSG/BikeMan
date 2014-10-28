@@ -9,6 +9,9 @@ import de.rwth.idsg.bikeman.ixsi.dto.query.PedelecDTO;
 import de.rwth.idsg.bikeman.ixsi.dto.query.PlaceAvailabilityResponseDTO;
 import de.rwth.idsg.bikeman.ixsi.dto.query.StationDTO;
 import de.rwth.idsg.bikeman.ixsi.dto.query.TokenGenerationResponseDTO;
+import de.rwth.idsg.bikeman.ixsi.schema.GeoCircleType;
+import de.rwth.idsg.bikeman.ixsi.schema.GeoRectangleType;
+import de.rwth.idsg.bikeman.ixsi.schema.ProviderPlaceIDType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
@@ -81,7 +84,27 @@ public class QueryIXSIRepositoryImpl implements QueryIXSIRepository {
     }
 
     @Override
-    public AvailabilityResponseDTO availability() {
+    public List<AvailabilityResponseDTO> availability(GeoCircleType circle) {
+        return null;
+    }
+
+    @Override
+    public List<AvailabilityResponseDTO> availability(GeoRectangleType rectangle) {
+        return null;
+    }
+
+    @Override
+    public List<PlaceAvailabilityResponseDTO> placeAvailability(List<ProviderPlaceIDType> placeIds) {
+        return null;
+    }
+
+    @Override
+    public List<PlaceAvailabilityResponseDTO> placeAvailability(GeoCircleType circle) {
+        return null;
+    }
+
+    @Override
+    public List<PlaceAvailabilityResponseDTO> placeAvailability(GeoRectangleType geoRectangle) {
         return null;
     }
 
@@ -92,11 +115,6 @@ public class QueryIXSIRepositoryImpl implements QueryIXSIRepository {
 
     @Override
     public OpenSessionResponseDTO openSession() {
-        return null;
-    }
-
-    @Override
-    public PlaceAvailabilityResponseDTO placeAvailability() {
         return null;
     }
 
