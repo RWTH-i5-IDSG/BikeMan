@@ -27,6 +27,10 @@ public class CloseSessionRequestProcessor implements
         return buildError(ErrorFactory.requestNotSupported());
     }
 
+    // -------------------------------------------------------------------------
+    // Error handling
+    // -------------------------------------------------------------------------
+
     @Override
     public UserResponseParams<CloseSessionResponseType> invalidSystem() {
         return buildError(ErrorFactory.requestNotSupported());

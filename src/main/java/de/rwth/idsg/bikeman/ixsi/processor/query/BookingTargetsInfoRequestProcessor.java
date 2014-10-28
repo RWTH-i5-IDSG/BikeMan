@@ -96,13 +96,6 @@ public class BookingTargetsInfoRequestProcessor implements
         return response;
     }
 
-    @Override
-    public BookingTargetsInfoResponseType invalidSystem() {
-        BookingTargetsInfoResponseType b = new BookingTargetsInfoResponseType();
-        b.getError().add(ErrorFactory.invalidSystem());
-        return b;
-    }
-
     private List<BookingTargetType> getBookingTargetsFromDTO(List<PedelecDTO> pedelecs) {
         List<BookingTargetType> bookingTargets = new ArrayList<>();
         for (PedelecDTO ped : pedelecs) {
@@ -202,5 +195,16 @@ public class BookingTargetsInfoRequestProcessor implements
 
     private String formatAddress(ViewAddressDTO dto) {
         return String.format("%s, %s %s, %s", dto.getStreetAndHousenumber(), dto.getZip(), dto.getCity(), dto.getCountry());
+    }
+
+    // -------------------------------------------------------------------------
+    // Error handling
+    // -------------------------------------------------------------------------
+
+    @Override
+    public BookingTargetsInfoResponseType invalidSystem() {
+        BookingTargetsInfoResponseType b = new BookingTargetsInfoResponseType();
+        b.getError().add(ErrorFactory.invalidSystem());
+        return b;
     }
 }

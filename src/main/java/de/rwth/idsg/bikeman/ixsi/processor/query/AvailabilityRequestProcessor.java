@@ -113,6 +113,10 @@ public class AvailabilityRequestProcessor implements
         return null;
     }
 
+    // -------------------------------------------------------------------------
+    // Error handling
+    // -------------------------------------------------------------------------
+
     @Override
     public UserResponseParams<AvailabilityResponseType> invalidSystem() {
         return buildError(ErrorFactory.invalidSystem());

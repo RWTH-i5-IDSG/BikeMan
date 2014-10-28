@@ -26,6 +26,10 @@ public class OpenSessionRequestProcessor implements UserRequestProcessor<OpenSes
         return buildError(ErrorFactory.requestNotSupported());
     }
 
+    // -------------------------------------------------------------------------
+    // Error handling
+    // -------------------------------------------------------------------------
+
     @Override
     public UserResponseParams<OpenSessionResponseType> invalidSystem() {
         return buildError(ErrorFactory.requestNotSupported());
