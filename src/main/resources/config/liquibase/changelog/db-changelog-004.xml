@@ -155,4 +155,21 @@
         </createIndex>
     </changeSet>
 
+    <changeSet id="1409564974607-27" author="sgoekay">
+        <createTable tableName="IXSI_TOKEN">
+            <column name="token_id" type="INT8">
+                <constraints primaryKey="true" nullable="false"></constraints>
+            </column>
+            <column name="token_value" type="VARCHAR(255)"/>
+            <column name="customer_id" type="VARCHAR(255)"/>
+            <column name="created" type="timestamp"/>
+            <column name="last_used" type="timestamp"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="IXSI_TOKEN" baseColumnNames="customer_id"
+                                 constraintName="fk_ixsi_token_customer"
+                                 referencedTableName="T_CUSTOMER"
+                                 referencedColumnNames="customer_id"/>
+
+    </changeSet>
 </databaseChangeLog>

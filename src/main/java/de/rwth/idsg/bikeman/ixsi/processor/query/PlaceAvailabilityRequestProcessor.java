@@ -2,12 +2,11 @@ package de.rwth.idsg.bikeman.ixsi.processor.query;
 
 import com.google.common.base.Optional;
 import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
-import de.rwth.idsg.bikeman.ixsi.schema.AvailabilityResponseType;
-import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
-import de.rwth.idsg.bikeman.ixsi.schema.Language;
-import de.rwth.idsg.bikeman.ixsi.schema.PlaceAvailabilityRequestType;
-import de.rwth.idsg.bikeman.ixsi.schema.PlaceAvailabilityResponseType;
-import de.rwth.idsg.bikeman.ixsi.schema.UserInfoType;
+import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
+import de.rwth.idsg.bikeman.ixsi.dto.query.PlaceAvailabilityResponseDTO;
+import de.rwth.idsg.bikeman.ixsi.repository.QueryIXSIRepository;
+import de.rwth.idsg.bikeman.ixsi.schema.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.xml.datatype.DatatypeFactory;
