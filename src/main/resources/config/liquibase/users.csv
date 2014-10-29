@@ -1,3 +1,3 @@
 user_id;login;password;user_type
-1;admin@bikeman.com;b8f57d6d6ec0a60dfe2e20182d4615b12e321cad9e2979e0b9f81e0d6eda78ad9b6dcfe53e4e22d1;customer
-2;user@bikeman.com;4f54479f8290dfd503b72a654faf5d70593eab443993d87a79e14e5f7cda3eb7988423aa99090c9b;customer
+1;admin@bikeman.com;$2a$10$lr6q.osI1q/VbKbN8kQmBehz1T5pAZedp.Ad/6QAq4eQdbJeJj.eO;customer
+2;user@bikeman.com;$2a$10$D26/I7XY5.QNQfTRB7PWcuVohzV8Z80wd8PtTbuGkTogzQ3wvF8V.;customer

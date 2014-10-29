@@ -27,9 +27,6 @@ public class Customer extends User {
     @Column(name = "customer_id")
     private String customerId;
 
-    @Column(name = "card_id")
-    private String cardId;
-
     @Column(name = "first_name")
     private String firstname;
 
@@ -49,9 +46,6 @@ public class Customer extends User {
 
     @Column(name = "in_transaction")
     private Boolean inTransaction;
-
-    @Column(name = "card_pin")
-    private Integer cardPin;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "customer", orphanRemoval = true)
     private Set<Transaction> transactions;

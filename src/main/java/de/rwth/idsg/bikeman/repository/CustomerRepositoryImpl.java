@@ -218,7 +218,6 @@ public class CustomerRepositoryImpl implements CustomerRepository {
         customer.setLogin(dto.getLogin());
 
         customer.setCustomerId(dto.getCustomerId());
-        customer.setCardId(dto.getCardId());
         customer.setFirstname(dto.getFirstname());
         customer.setLastname(dto.getLastname());
         customer.setBirthday(dto.getBirthday());
