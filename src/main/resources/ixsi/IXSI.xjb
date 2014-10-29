@@ -11,12 +11,45 @@
         <xjc:javaType name="org.joda.time.DateTime" xmlType="xs:dateTime"
                       adapter="de.rwth.idsg.bikeman.ixsi.JodaDateTimeConverter" />
 
+        <xjc:javaType name="java.lang.Integer" xmlType="xs:nonNegativeInteger"
+                      adapter="de.rwth.idsg.bikeman.ixsi.NonNegativeIntConverter" />
+
         <xjc:javaType name="java.lang.String" xmlType="xs:NMTOKEN"
                       adapter="javax.xml.bind.annotation.adapters.CollapsedStringAdapter" />
 
     </jaxb:globalBindings>
 
     <jaxb:bindings schemaLocation="IXSI.xsd" node="/xs:schema">
+
+        <!-- Map ID type definitions directly to String
+        rather than to Type classes that encapsulate the String value -->
+
+        <jaxb:bindings multiple="true" node="xs:simpleType[
+        @name='AreaIDType' or
+        @name='PlaceIDType' or
+        @name='PlaceGroupIDType' or
+        @name='BookeeIDType' or
+        @name='ProviderIDType' or
+        @name='SessionIDType' or
+        @name='BookingIDType' or
+        @name='UserIDType' or
+        @name='SystemIDType']">
+            <xjc:javaType name="java.lang.String" adapter="javax.xml.bind.annotation.adapters.CollapsedStringAdapter" />
+        </jaxb:bindings>
+
+        <!-- Map enumerations and type definitions directly to String
+        rather than to Type classes that encapsulate the String value -->
+
+        <jaxb:bindings multiple="true" node="xs:simpleType[
+        @name='ErrorCodeType' or
+        @name='ClassType' or
+        @name='EngineType' or
+        @name='AttributeClassType' or
+        @name='AttributeIDType']">
+            <xjc:javaType name="java.lang.String" adapter="javax.xml.bind.annotation.adapters.CollapsedStringAdapter" />
+        </jaxb:bindings>
+
+        <!-- Reference to groups in classes -->
 
         <jaxb:bindings node="//xs:group[@name='PushMessageGroup']">
             <jaxb:property name="PushMessageGroup">

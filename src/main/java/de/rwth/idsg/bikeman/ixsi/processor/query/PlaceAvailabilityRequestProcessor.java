@@ -23,7 +23,6 @@ import java.util.List;
 public class PlaceAvailabilityRequestProcessor implements UserRequestProcessor<PlaceAvailabilityRequestType, PlaceAvailabilityResponseType> {
 
     @Autowired private QueryIXSIRepository queryIXSIRepository;
-    @Autowired private DatatypeFactory factory;
 
     @Override
     public UserResponseParams<PlaceAvailabilityResponseType> processAnonymously(PlaceAvailabilityRequestType request, Optional<Language> lan) {
@@ -41,19 +40,12 @@ public class PlaceAvailabilityRequestProcessor implements UserRequestProcessor<P
         for (PlaceAvailabilityResponseDTO plavdto : dtos) {
             // Id
             ProviderPlaceIDType providerPlaceIDType = new ProviderPlaceIDType();
-            PlaceIDType placeIDType = new PlaceIDType();
-            placeIDType.setValue(String.valueOf(plavdto.getStationId()));
-            providerPlaceIDType.setPlaceID(placeIDType);
-            ProviderIDType providerIDType = new ProviderIDType();
-            providerIDType.setValue(IXSIConstants.Provider.id);
-            providerPlaceIDType.setProviderID(providerIDType);
-            // Availability
-            NonNegativeInteger availability = new NonNegativeInteger();
-            availability.setValue(BigInteger.valueOf(plavdto.getAvailableSlots()));
+            providerPlaceIDType.setPlaceID(String.valueOf(plavdto.getStationId()));
+            providerPlaceIDType.setProviderID(IXSIConstants.Provider.id);
 
             PlaceAvailabilityType placeAvailabilityType = new PlaceAvailabilityType();
             placeAvailabilityType.setID(providerPlaceIDType);
-            placeAvailabilityType.setAvailability(availability);
+            placeAvailabilityType.setAvailability(plavdto.getAvailableSlots());
 
             placeAvailList.add(placeAvailabilityType);
         }
@@ -63,14 +55,6 @@ public class PlaceAvailabilityRequestProcessor implements UserRequestProcessor<P
 
         UserResponseParams<PlaceAvailabilityResponseType> u = new UserResponseParams<>();
         u.setResponse(response);
-
-        SessionIDType sesId = new SessionIDType();
-        sesId.setValue("hello-from-server");
-        Duration d = factory.newDuration(5656L);
-
-        u.setSessionID(sesId);
-        u.setSessionTimeout(d);
-
         return u;
     }
 

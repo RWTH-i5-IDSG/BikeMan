@@ -1,19 +1,23 @@
 package de.rwth.idsg.bikeman.ixsi.processor.query;
 
-import com.fasterxml.jackson.databind.node.BigIntegerNode;
 import com.google.common.base.Optional;
 import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
 import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
 import de.rwth.idsg.bikeman.ixsi.dto.query.AvailabilityResponseDTO;
 import de.rwth.idsg.bikeman.ixsi.repository.QueryIXSIRepository;
-import de.rwth.idsg.bikeman.ixsi.schema.*;
+import de.rwth.idsg.bikeman.ixsi.schema.AvailabilityRequestType;
+import de.rwth.idsg.bikeman.ixsi.schema.AvailabilityResponseType;
+import de.rwth.idsg.bikeman.ixsi.schema.BookingTargetAvailabilityType;
+import de.rwth.idsg.bikeman.ixsi.schema.BookingTargetIDType;
+import de.rwth.idsg.bikeman.ixsi.schema.CoordType;
+import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
+import de.rwth.idsg.bikeman.ixsi.schema.Language;
+import de.rwth.idsg.bikeman.ixsi.schema.PercentType;
+import de.rwth.idsg.bikeman.ixsi.schema.UserInfoType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.Duration;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,8 +29,6 @@ import java.util.List;
 @Component
 public class AvailabilityRequestProcessor implements
         UserRequestProcessor<AvailabilityRequestType, AvailabilityResponseType> {
-
-    @Autowired private DatatypeFactory factory;
 
     @Autowired private QueryIXSIRepository queryIXSIRepository;
 
@@ -52,15 +54,11 @@ public class AvailabilityRequestProcessor implements
         for (AvailabilityResponseDTO ardto : dtos) {
             // BookingTargetId
             BookingTargetIDType bookingTargetIDType = new BookingTargetIDType();
-            BookeeIDType bookeeIDType = new BookeeIDType();
-            bookeeIDType.setValue(String.valueOf(ardto.getPedelecId()));
-            bookingTargetIDType.setBookeeID(bookeeIDType);
-            ProviderIDType providerIDType = new ProviderIDType();
-            providerIDType.setValue(IXSIConstants.Provider.id);
-            bookingTargetIDType.setProviderID(providerIDType);
+            String bookeeId = String.valueOf(ardto.getPedelecId());
+            bookingTargetIDType.setBookeeID(bookeeId);
+            bookingTargetIDType.setProviderID(IXSIConstants.Provider.id);
             // PlaceID
-            PlaceIDType placeIDType = new PlaceIDType();
-            placeIDType.setValue(String.valueOf(ardto.getStationId()));
+            String placeId = String.valueOf(ardto.getStationId());
             // GeoPosition
             CoordType coordType = new CoordType();
             coordType.setLatitude(ardto.getLocationLatitude());
@@ -68,43 +66,29 @@ public class AvailabilityRequestProcessor implements
             // CurrentStateOfCharge
             PercentType percentType = new PercentType();
             percentType.setValue(roundPercent(ardto.getStateOfCharge()));
-            // CurrentDrivingRange
-            NonNegativeInteger drivingRange = new NonNegativeInteger();
-            // TODO get the actual driving range from pedelec!
-            drivingRange.setValue(BigInteger.valueOf(0));
 
             BookingTargetAvailabilityType bType = new BookingTargetAvailabilityType();
             bType.setID(bookingTargetIDType);
-            bType.setPlaceID(placeIDType);
+            bType.setPlaceID(placeId);
             bType.setGeoPosition(coordType);
             bType.setCurrentStateOfCharge(percentType);
-            bType.setCurrentDrivingRange(drivingRange);
+
+            // TODO get the actual driving range from pedelec!
+            bType.setCurrentDrivingRange(0);
 
             availabilityList.add(bType);
         }
 
-        // TODO make these values real!
-        SessionIDType sesId = new SessionIDType();
-        sesId.setValue("hello-from-server");
-        Duration d = factory.newDuration(5656L);
-
         AvailabilityResponseType a = new AvailabilityResponseType();
         a.getBookingTarget().addAll(availabilityList);
 
-
         UserResponseParams<AvailabilityResponseType> u = new UserResponseParams<>();
-        u.setSessionID(sesId);
-        u.setSessionTimeout(d);
         u.setResponse(a);
         return u;
     }
 
-    private NonNegativeInteger roundPercent(Float decimal) {
-        long percent = Math.round(decimal * 100);
-        NonNegativeInteger nonNegativeInteger = new NonNegativeInteger();
-        nonNegativeInteger.setValue(BigInteger.valueOf(percent));
-
-        return nonNegativeInteger;
+    private int roundPercent(Float decimal) {
+        return Math.round(decimal * 100);
     }
 
     @Override

@@ -1,6 +1,5 @@
 package de.rwth.idsg.bikeman.ixsi.processor.query;
 
-import de.rwth.idsg.bikeman.ixsi.schema.SessionIDType;
 import de.rwth.idsg.bikeman.ixsi.schema.UserTriggeredResponseChoice;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,7 +13,7 @@ import javax.xml.datatype.Duration;
 @Getter
 @Setter
 public class UserResponseParams<T extends UserTriggeredResponseChoice> {
-    private SessionIDType sessionID;
+    private String sessionID;
     private Duration sessionTimeout;
     private T response;
 }

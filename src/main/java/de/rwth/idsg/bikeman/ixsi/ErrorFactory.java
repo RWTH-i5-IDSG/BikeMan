@@ -1,6 +1,5 @@
 package de.rwth.idsg.bikeman.ixsi;
 
-import de.rwth.idsg.bikeman.ixsi.schema.ErrorCodeType;
 import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
 
 /**
@@ -16,36 +15,27 @@ public final class ErrorFactory {
     private ErrorFactory() {}
 
     public static ErrorType requestNotSupported() {
-        ErrorCodeType c = new ErrorCodeType();
-        c.setValue("");
-
         ErrorType e = new ErrorType();
         e.setNonFatal(false);
-        e.setCode(c);
+        e.setCode("");
         e.setSystemMessage("");
         e.setUserMessage("");
         return e;
     }
 
     public static ErrorType invalidSystem() {
-        ErrorCodeType c = new ErrorCodeType();
-        c.setValue("");
-
         ErrorType e = new ErrorType();
         e.setNonFatal(false);
-        e.setCode(c);
+        e.setCode("");
         e.setSystemMessage("");
         e.setUserMessage("");
         return e;
     }
 
     public static ErrorType invalidUserAuth() {
-        ErrorCodeType c = new ErrorCodeType();
-        c.setValue("");
-
         ErrorType e = new ErrorType();
         e.setNonFatal(false);
-        e.setCode(c);
+        e.setCode("");
         e.setSystemMessage("");
         e.setUserMessage("");
         return e;

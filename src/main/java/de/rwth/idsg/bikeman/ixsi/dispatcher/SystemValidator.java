@@ -1,6 +1,5 @@
 package de.rwth.idsg.bikeman.ixsi.dispatcher;
 
-import de.rwth.idsg.bikeman.ixsi.schema.SystemIDType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -12,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class SystemValidator {
 
-    public boolean validate(SystemIDType systemIDType) {
+    public boolean validate(String systemID) {
         // TODO
         return true;
     }

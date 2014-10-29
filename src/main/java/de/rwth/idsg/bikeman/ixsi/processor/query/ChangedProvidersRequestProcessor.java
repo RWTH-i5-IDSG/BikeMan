@@ -4,10 +4,8 @@ import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
 import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
 import de.rwth.idsg.bikeman.ixsi.dto.query.ChangedProvidersResponseDTO;
 import de.rwth.idsg.bikeman.ixsi.repository.QueryIXSIRepository;
-import de.rwth.idsg.bikeman.ixsi.schema.BookingTargetsInfoResponseType;
 import de.rwth.idsg.bikeman.ixsi.schema.ChangedProvidersRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.ChangedProvidersResponseType;
-import de.rwth.idsg.bikeman.ixsi.schema.ProviderIDType;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
@@ -30,9 +28,7 @@ public class ChangedProvidersRequestProcessor implements
         ChangedProvidersResponseType response = new ChangedProvidersResponseType();
 
         if (responseDTO.isProvidersChanged()) {
-            ProviderIDType id = new ProviderIDType();
-            id.setValue(IXSIConstants.Provider.id);
-            response.getProvider().add(id);
+            response.getProvider().add(IXSIConstants.Provider.id);
         }
 
         return response;

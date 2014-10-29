@@ -54,9 +54,7 @@ public class BookingTargetsInfoRequestProcessor implements
         ProviderType provider = new ProviderType();
 
         // set providerId
-        ProviderIDType providerId = new ProviderIDType();
-        providerId.setValue(IXSIConstants.Provider.id);
-        provider.setID(providerId);
+        provider.setID(IXSIConstants.Provider.id);
 
         // set provider name
         provider.setName(IXSIConstants.Provider.name);
@@ -75,19 +73,15 @@ public class BookingTargetsInfoRequestProcessor implements
         PlaceGroupType placegroup = new PlaceGroupType();
 
         // set placegroupId
-        PlaceGroupIDType placeGroupId = new PlaceGroupIDType();
-        placeGroupId.setValue(IXSIConstants.PlaceGroup.id);
-        placegroup.setID(placeGroupId);
+        placegroup.setID(IXSIConstants.PlaceGroup.id);
 
         // set placegroup placeIds
         List<ProbabilityPlaceIDType> placeIds = getPlaceIdsFromPlaceTypes(places);
         placegroup.getPlaceID().addAll(placeIds);
 
-        // set probability (Why do we even need this?)
+        // TODO: set probability (Why do we even need this?)
         PercentType percent = new PercentType();
-        NonNegativeInteger percentValue = new NonNegativeInteger();
-        percentValue.setValue(BigInteger.valueOf(100));        
-        percent.setValue(percentValue);
+        percent.setValue(100);
         placegroup.setProbability(percent);
 
         response.getPlaceGroup().add(placegroup);
@@ -102,34 +96,17 @@ public class BookingTargetsInfoRequestProcessor implements
             BookingTargetType target = new BookingTargetType();
 
             // set pedelecId
-            BookeeIDType id = new BookeeIDType();
-            id.setValue(String.valueOf(ped.getPedelecId()));
-            target.setID(id);
+            target.setID(String.valueOf(ped.getPedelecId()));
 
             // set manufacturerId
             TextType name = new TextType();
             name.setText(ped.getManufacturerId());
             target.getName().add(name);
 
-            // set placeGroupId
-            PlaceGroupIDType placeGroupID = new PlaceGroupIDType();
-            placeGroupID.setValue(IXSIConstants.PlaceGroup.id);
-            target.setPlaceGroupID(placeGroupID);
-
-            // set maxDistance
-            NonNegativeInteger nni = new NonNegativeInteger();
-            nni.setValue(BigInteger.valueOf(ped.getMaxDistance()));
-            target.setMaxDistance(nni);
-
-            // set class
-            ClassType clazz = new ClassType();
-            clazz.setValue(IXSIConstants.bookeeClassType);
-            target.setClazz(clazz);
-
-            // set engine
-            EngineType engine = new EngineType();
-            engine.setValue(IXSIConstants.engineType);
-            target.setEngine(engine);
+            target.setMaxDistance(ped.getMaxDistance());
+            target.setPlaceGroupID(IXSIConstants.PlaceGroup.id);
+            target.setClazz(IXSIConstants.bookeeClassType);
+            target.setEngine(IXSIConstants.engineType);
 
             bookingTargets.add(target);
         }
@@ -156,9 +133,7 @@ public class BookingTargetsInfoRequestProcessor implements
             PlaceType place = new PlaceType();
 
             // set placeID
-            PlaceIDType id = new PlaceIDType();
-            id.setValue(String.valueOf(stat.getStationId()));
-            place.setID(id);
+            place.setID(String.valueOf(stat.getStationId()));
 
             // set place coordinates
             CoordType coords = new CoordType();
@@ -167,9 +142,7 @@ public class BookingTargetsInfoRequestProcessor implements
             place.setCoord(coords);
 
             // set place capacity
-            NonNegativeInteger capacityValue = new NonNegativeInteger();
-            capacityValue.setValue(BigInteger.valueOf(stat.getSlotCount()));
-            place.setCapacity(capacityValue);
+            place.setCapacity(stat.getSlotCount());
 
             // set place name
             TextType name = new TextType();
@@ -177,9 +150,7 @@ public class BookingTargetsInfoRequestProcessor implements
             place.getName().add(name);
 
             // set place providerId
-            ProviderIDType provId = new ProviderIDType();
-            provId.setValue(IXSIConstants.Provider.id);
-            place.setProviderID(provId);
+            place.setProviderID(IXSIConstants.Provider.id);
 
             // set place description
             TextType desc = new TextType();

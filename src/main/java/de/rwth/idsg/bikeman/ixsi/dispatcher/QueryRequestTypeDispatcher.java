@@ -11,7 +11,6 @@ import de.rwth.idsg.bikeman.ixsi.schema.AuthType;
 import de.rwth.idsg.bikeman.ixsi.schema.Language;
 import de.rwth.idsg.bikeman.ixsi.schema.QueryRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.QueryResponseType;
-import de.rwth.idsg.bikeman.ixsi.schema.SessionIDType;
 import de.rwth.idsg.bikeman.ixsi.schema.StaticDataRequestGroup;
 import de.rwth.idsg.bikeman.ixsi.schema.StaticDataResponseGroup;
 import de.rwth.idsg.bikeman.ixsi.schema.UserInfoType;
@@ -123,7 +122,7 @@ public class QueryRequestTypeDispatcher implements Dispatcher {
         QueryResponseType response = new QueryResponseType();
         response.setUserTriggeredResponseGroup(res.getResponse());
 
-        SessionIDType sessionID = res.getSessionID();
+        String sessionID = res.getSessionID();
         if (sessionID != null ) {
             response.setSessionID(sessionID);
         }
