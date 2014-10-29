@@ -69,11 +69,11 @@ public class CustomerRepositoryTest {
 
             log.info("Find Customer with CustomerId: {}, CardId and CardPin.", newCustomer.getCustomerId());
 
-            long userId = customerRepository.findByCardIdAndCardPin(generatedCardId, newCustomer.getCardPin());
+            String login = customerRepository.findByCardIdAndCardPin(generatedCardId, newCustomer.getCardPin());
 
-            log.info("Found userId: {}", userId);
+            log.info("Found userId: {}", login);
 
-            User user = userRepository.findOne(userId);
+            User user = userRepository.findByLogin(login);
 
             Assert.assertEquals(newCustomer.getLogin(), user.getLogin());
         } catch (DatabaseException e) {

@@ -170,6 +170,10 @@
                                  constraintName="fk_ixsi_token_customer"
                                  referencedTableName="T_CUSTOMER"
                                  referencedColumnNames="customer_id"/>
+    </changeSet>
 
+    <changeSet id="1409564974607-28" author="wkluth">
+        <dropColumn tableName="T_CUSTOMER" columnName="card_id"/>
+        <dropColumn tableName="T_CUSTOMER" columnName="card_pin"/>
     </changeSet>
 </databaseChangeLog>
