@@ -14,6 +14,9 @@
         <xjc:javaType name="java.lang.Integer" xmlType="xs:nonNegativeInteger"
                       adapter="de.rwth.idsg.bikeman.ixsi.NonNegativeIntConverter" />
 
+        <xjc:javaType name="java.lang.Integer" xmlType="xs:integer"
+                      adapter="de.rwth.idsg.bikeman.ixsi.IntegerConverter" />
+
         <xjc:javaType name="java.lang.String" xmlType="xs:NMTOKEN"
                       adapter="javax.xml.bind.annotation.adapters.CollapsedStringAdapter" />
 
