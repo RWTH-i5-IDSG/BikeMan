@@ -14,12 +14,13 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-
+    <!-- build:css(.tmp) styles/main.css -->
     <link rel="stylesheet" href="styles/bootstrap.css">
     <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="styles/famfamfam-flags.css">
-    <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
+    <link href="styles/font-awesome.css" rel="stylesheet">
     <link href="styles/sb-admin.css" rel="stylesheet">
+    <!-- endbuild -->
 </head>
 
 <body ng-app="bikeManApp" ng-controller="MainController">
@@ -130,7 +131,7 @@
                                 <!--</button>-->
                             <!--</span>-->
                         <!--</div>-->
-                        <!--&lt;!&ndash; /input-group &ndash;&gt;-->
+                        <!--<!-- /input-group -->
                     <!--</li>-->
                     <li>
                         <a ui-sref="main"><i class="fa fa-dashboard fa-fw"></i>
@@ -184,7 +185,7 @@
                         </a>
                     </li>
 
-                    <li ng-show="isAuthorized([userRoles.admin, userRoles.manager])"" ui-sref-active="active">
+                    <li ng-show="isAuthorized([userRoles.admin, userRoles.manager])" ui-sref-active="active">
                         <a href="#"><i class="glyphicon glyphicon-record fa-fw"></i>
                             <span translate="global.menu.station.title">Station Control</span>
                             <span class="fa arrow"></span>
@@ -362,9 +363,10 @@
 <script src="bower_components/angular-bootstrap/ui-bootstrap.min.js"></script>
 <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
 <script src="scripts/dateSelect.js"></script>
-<!-- endbuild -->
 <script src="scripts/sb-admin.js"></script>
 <script src="bower_components/angular-bootstrap-show-errors/src/showErrors.js"></script>
+
+<!-- endbuild -->
 </body>
 
 

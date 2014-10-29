@@ -234,14 +234,14 @@ module.exports = function (grunt) {
             // By default, your `index.html` <!-- Usemin Block --> will take care of
             // minification. This option is pre-configured if you do not wish to use
             // Usemin blocks.
-            // dist: {
-            //   files: {
-            //     '<%= yeoman.dist %>/styles/main.css': [
-            //       '.tmp/styles/{,*/}*.css',
-            //       'styles/{,*/}*.css'
-            //     ]
-            //   }
-            // }
+//            dist: {
+//               files: {
+//                 '<%= yeoman.dist %>/styles/main.css': [
+//                   '.tmp/styles/{,*/}*.css',
+//                   'styles/{,*/}*.css'
+//                 ]
+//               }
+//            }
         },
         htmlmin: {
             dist: {
@@ -405,6 +405,19 @@ module.exports = function (grunt) {
         //'karma'
     ]);
 
+    grunt.registerTask('buildHeroku', [
+        'test',
+        'build',
+        'copy:generateHerokuDirectory',
+    ]);
+
+    grunt.registerTask('deployHeroku', [
+        'test',
+        'build',
+        'copy:generateHerokuDirectory',
+        'buildcontrol:heroku'
+    ]);
+
     grunt.registerTask('build', [
         'clean:dist',
         'useminPrepare',
@@ -425,16 +438,5 @@ module.exports = function (grunt) {
         'build'
     ]);
 
-    grunt.registerTask('buildHeroku', [
-        'test',
-        'build',
-        'copy:generateHerokuDirectory',
-    ]);
 
-    grunt.registerTask('deployHeroku', [
-        'test',
-        'build',
-        'copy:generateHerokuDirectory',
-        'buildcontrol:heroku'
-    ]);
 };
