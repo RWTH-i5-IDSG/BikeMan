@@ -1,7 +1,7 @@
 package de.rwth.idsg.bikeman.ixsi.processor.subscription;
 
-import de.rwth.idsg.bikeman.ixsi.schema.SubscriptionRequestGroup;
-import de.rwth.idsg.bikeman.ixsi.schema.SubscriptionResponseGroup;
+import de.rwth.idsg.ixsi.jaxb.SubscriptionRequestGroup;
+import de.rwth.idsg.ixsi.jaxb.SubscriptionResponseGroup;
 
 /**
  * @author Sevket Goekay <goekay@dbis.rwth-aachen.de>

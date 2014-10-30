@@ -1,7 +1,7 @@
 package de.rwth.idsg.bikeman.ixsi.processor.query;
 
-import de.rwth.idsg.bikeman.ixsi.schema.StaticDataRequestGroup;
-import de.rwth.idsg.bikeman.ixsi.schema.StaticDataResponseGroup;
+import de.rwth.idsg.ixsi.jaxb.StaticDataRequestGroup;
+import de.rwth.idsg.ixsi.jaxb.StaticDataResponseGroup;
 
 /**
  * @author Sevket Goekay <goekay@dbis.rwth-aachen.de>

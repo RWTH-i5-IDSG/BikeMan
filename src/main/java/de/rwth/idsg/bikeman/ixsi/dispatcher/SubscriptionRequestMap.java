@@ -14,7 +14,7 @@ import de.rwth.idsg.bikeman.ixsi.schema.BookingAlertSubscriptionRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.BookingAlertSubscriptionStatusRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.PlaceAvailabilitySubscriptionRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.PlaceAvailabilitySubscriptionStatusRequest;
-import de.rwth.idsg.bikeman.ixsi.schema.SubscriptionRequestGroup;
+import de.rwth.idsg.ixsi.jaxb.SubscriptionRequestGroup;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

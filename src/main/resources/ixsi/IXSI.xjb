@@ -9,13 +9,13 @@
     <jaxb:globalBindings mapSimpleTypeDef="true" generateIsSetMethod="true">
 
         <xjc:javaType name="org.joda.time.DateTime" xmlType="xs:dateTime"
-                      adapter="de.rwth.idsg.bikeman.ixsi.JodaDateTimeConverter" />
+                      adapter="de.rwth.idsg.ixsi.jaxb.JodaDateTimeConverter" />
 
         <xjc:javaType name="java.lang.Integer" xmlType="xs:nonNegativeInteger"
-                      adapter="de.rwth.idsg.bikeman.ixsi.NonNegativeIntConverter" />
+                      adapter="de.rwth.idsg.ixsi.jaxb.NonNegativeIntConverter" />
 
         <xjc:javaType name="java.lang.Integer" xmlType="xs:integer"
-                      adapter="de.rwth.idsg.bikeman.ixsi.IntegerConverter" />
+                      adapter="de.rwth.idsg.ixsi.jaxb.IntegerConverter" />
 
         <xjc:javaType name="java.lang.String" xmlType="xs:NMTOKEN"
                       adapter="javax.xml.bind.annotation.adapters.CollapsedStringAdapter" />
@@ -56,47 +56,47 @@
 
         <jaxb:bindings node="//xs:group[@name='PushMessageGroup']">
             <jaxb:property name="PushMessageGroup">
-                <jaxb:baseType name="de.rwth.idsg.bikeman.ixsi.schema.PushMessageGroup"/>
+                <jaxb:baseType name="de.rwth.idsg.ixsi.jaxb.PushMessageGroup"/>
             </jaxb:property>
         </jaxb:bindings>
         <jaxb:bindings node="//xs:group[@name='RequestMessageGroup']">
             <jaxb:property name="RequestMessageGroup">
-                <jaxb:baseType name="de.rwth.idsg.bikeman.ixsi.schema.RequestMessageGroup"/>
+                <jaxb:baseType name="de.rwth.idsg.ixsi.jaxb.RequestMessageGroup"/>
             </jaxb:property>
         </jaxb:bindings>
         <jaxb:bindings node="//xs:group[@name='ResponseMessageGroup']">
             <jaxb:property name="ResponseMessageGroup">
-                <jaxb:baseType name="de.rwth.idsg.bikeman.ixsi.schema.ResponseMessageGroup"/>
+                <jaxb:baseType name="de.rwth.idsg.ixsi.jaxb.ResponseMessageGroup"/>
             </jaxb:property>
         </jaxb:bindings>
         <jaxb:bindings node="//xs:group[@name='StaticDataRequestGroup']">
             <jaxb:property name="StaticDataRequestGroup">
-                <jaxb:baseType name="de.rwth.idsg.bikeman.ixsi.schema.StaticDataRequestGroup"/>
+                <jaxb:baseType name="de.rwth.idsg.ixsi.jaxb.StaticDataRequestGroup"/>
             </jaxb:property>
         </jaxb:bindings>
         <jaxb:bindings node="//xs:group[@name='StaticDataResponseGroup']">
             <jaxb:property name="StaticDataResponseGroup">
-                <jaxb:baseType name="de.rwth.idsg.bikeman.ixsi.schema.StaticDataResponseGroup"/>
+                <jaxb:baseType name="de.rwth.idsg.ixsi.jaxb.StaticDataResponseGroup"/>
             </jaxb:property>
         </jaxb:bindings>
         <jaxb:bindings node="//xs:group[@name='SubscriptionRequestGroup']">
             <jaxb:property name="SubscriptionRequestGroup">
-                <jaxb:baseType name="de.rwth.idsg.bikeman.ixsi.schema.SubscriptionRequestGroup"/>
+                <jaxb:baseType name="de.rwth.idsg.ixsi.jaxb.SubscriptionRequestGroup"/>
             </jaxb:property>
         </jaxb:bindings>
         <jaxb:bindings node="//xs:group[@name='SubscriptionResponseGroup']">
             <jaxb:property name="SubscriptionResponseGroup">
-                <jaxb:baseType name="de.rwth.idsg.bikeman.ixsi.schema.SubscriptionResponseGroup"/>
+                <jaxb:baseType name="de.rwth.idsg.ixsi.jaxb.SubscriptionResponseGroup"/>
             </jaxb:property>
         </jaxb:bindings>
         <jaxb:bindings node="//xs:group[@name='UserTriggeredRequestGroup']//xs:choice">
             <jaxb:property name="UserTriggeredRequestChoice">
-                <jaxb:baseType name="de.rwth.idsg.bikeman.ixsi.schema.UserTriggeredRequestChoice"/>
+                <jaxb:baseType name="de.rwth.idsg.ixsi.jaxb.UserTriggeredRequestChoice"/>
             </jaxb:property>
         </jaxb:bindings>
         <jaxb:bindings node="//xs:group[@name='UserTriggeredResponseGroup']//xs:choice">
             <jaxb:property name="UserTriggeredResponseGroup">
-                <jaxb:baseType name="de.rwth.idsg.bikeman.ixsi.schema.UserTriggeredResponseChoice"/>
+                <jaxb:baseType name="de.rwth.idsg.ixsi.jaxb.UserTriggeredResponseChoice"/>
             </jaxb:property>
         </jaxb:bindings>
 
@@ -106,33 +106,33 @@
         @name='AvailabilityPushMessageType' or
         @name='PlaceAvailabilityPushMessageType' or
         @name='BookingAlertPushMessageType']">
-            <inheritance:implements>de.rwth.idsg.bikeman.ixsi.schema.PushMessageGroup</inheritance:implements>
+            <inheritance:implements>de.rwth.idsg.ixsi.jaxb.PushMessageGroup</inheritance:implements>
         </jaxb:bindings>
 
         <jaxb:bindings multiple="true" node="xs:complexType[
         @name='CompleteAvailabilityRequestType' or
         @name='CompletePlaceAvailabilityRequestType' or
         @name='CompleteBookingAlertRequestType']">
-            <inheritance:implements>de.rwth.idsg.bikeman.ixsi.schema.RequestMessageGroup</inheritance:implements>
+            <inheritance:implements>de.rwth.idsg.ixsi.jaxb.RequestMessageGroup</inheritance:implements>
         </jaxb:bindings>
 
         <jaxb:bindings multiple="true" node="xs:complexType[
         @name='CompleteAvailabilityResponseType' or
         @name='CompletePlaceAvailabilityResponseType' or
         @name='CompleteBookingAlertResponseType']">
-            <inheritance:implements>de.rwth.idsg.bikeman.ixsi.schema.ResponseMessageGroup</inheritance:implements>
+            <inheritance:implements>de.rwth.idsg.ixsi.jaxb.ResponseMessageGroup</inheritance:implements>
         </jaxb:bindings>
 
         <jaxb:bindings multiple="true" node="xs:complexType[
         @name='BookingTargetsInfoRequestType' or
         @name='ChangedProvidersRequestType']">
-            <inheritance:implements>de.rwth.idsg.bikeman.ixsi.schema.StaticDataRequestGroup</inheritance:implements>
+            <inheritance:implements>de.rwth.idsg.ixsi.jaxb.StaticDataRequestGroup</inheritance:implements>
         </jaxb:bindings>
 
         <jaxb:bindings multiple="true" node="xs:complexType[
         @name='BookingTargetsInfoResponseType' or
         @name='ChangedProvidersResponseType']">
-            <inheritance:implements>de.rwth.idsg.bikeman.ixsi.schema.StaticDataResponseGroup</inheritance:implements>
+            <inheritance:implements>de.rwth.idsg.ixsi.jaxb.StaticDataResponseGroup</inheritance:implements>
         </jaxb:bindings>
 
         <jaxb:bindings multiple="true" node="xs:complexType[
@@ -142,7 +142,7 @@
         @name='PlaceAvailabilitySubscriptionStatusRequest' or
         @name='BookingAlertSubscriptionRequestType' or
         @name='BookingAlertSubscriptionStatusRequestType']">
-            <inheritance:implements>de.rwth.idsg.bikeman.ixsi.schema.SubscriptionRequestGroup</inheritance:implements>
+            <inheritance:implements>de.rwth.idsg.ixsi.jaxb.SubscriptionRequestGroup</inheritance:implements>
         </jaxb:bindings>
 
         <jaxb:bindings multiple="true" node="xs:complexType[
@@ -152,7 +152,7 @@
         @name='PlaceAvailabilitySubscriptionStatusResponse' or
         @name='BookingAlertSubscriptionResponseType' or
         @name='BookingAlertSubscriptionStatusResponseType']">
-            <inheritance:implements>de.rwth.idsg.bikeman.ixsi.schema.SubscriptionResponseGroup</inheritance:implements>
+            <inheritance:implements>de.rwth.idsg.ixsi.jaxb.SubscriptionResponseGroup</inheritance:implements>
         </jaxb:bindings>
 
         <jaxb:bindings multiple="true" node="xs:complexType[
@@ -164,7 +164,7 @@
         @name='PriceInformationRequestType' or
         @name='BookingRequestType' or
         @name='ChangeBookingRequestType']">
-            <inheritance:implements>de.rwth.idsg.bikeman.ixsi.schema.UserTriggeredRequestChoice</inheritance:implements>
+            <inheritance:implements>de.rwth.idsg.ixsi.jaxb.UserTriggeredRequestChoice</inheritance:implements>
         </jaxb:bindings>
 
         <jaxb:bindings multiple="true" node="xs:complexType[
@@ -176,7 +176,7 @@
         @name='PriceInformationResponseType' or
         @name='BookingResponseType' or
         @name='ChangeBookingResponseType']">
-            <inheritance:implements>de.rwth.idsg.bikeman.ixsi.schema.UserTriggeredResponseChoice</inheritance:implements>
+            <inheritance:implements>de.rwth.idsg.ixsi.jaxb.UserTriggeredResponseChoice</inheritance:implements>
         </jaxb:bindings>
 
     </jaxb:bindings>

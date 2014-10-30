@@ -3,8 +3,8 @@ package de.rwth.idsg.bikeman.ixsi.processor.query;
 import com.google.common.base.Optional;
 import de.rwth.idsg.bikeman.ixsi.schema.Language;
 import de.rwth.idsg.bikeman.ixsi.schema.UserInfoType;
-import de.rwth.idsg.bikeman.ixsi.schema.UserTriggeredRequestChoice;
-import de.rwth.idsg.bikeman.ixsi.schema.UserTriggeredResponseChoice;
+import de.rwth.idsg.ixsi.jaxb.UserTriggeredRequestChoice;
+import de.rwth.idsg.ixsi.jaxb.UserTriggeredResponseChoice;
 
 /**
  * @author Sevket Goekay <goekay@dbis.rwth-aachen.de>

@@ -1,4 +1,4 @@
-package de.rwth.idsg.bikeman.ixsi;
+package de.rwth.idsg.ixsi.jaxb;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 

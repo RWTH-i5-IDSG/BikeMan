@@ -6,7 +6,7 @@ import de.rwth.idsg.bikeman.ixsi.processor.query.ChangedProvidersRequestProcesso
 import de.rwth.idsg.bikeman.ixsi.processor.query.StaticRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.schema.BookingTargetsInfoRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.ChangedProvidersRequestType;
-import de.rwth.idsg.bikeman.ixsi.schema.StaticDataRequestGroup;
+import de.rwth.idsg.ixsi.jaxb.StaticDataRequestGroup;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

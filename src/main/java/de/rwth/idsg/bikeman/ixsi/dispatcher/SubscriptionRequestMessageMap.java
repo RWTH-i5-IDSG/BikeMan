@@ -8,7 +8,7 @@ import de.rwth.idsg.bikeman.ixsi.processor.subscription.SubscriptionRequestMessa
 import de.rwth.idsg.bikeman.ixsi.schema.CompleteAvailabilityRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.CompleteBookingAlertRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.CompletePlaceAvailabilityRequestType;
-import de.rwth.idsg.bikeman.ixsi.schema.RequestMessageGroup;
+import de.rwth.idsg.ixsi.jaxb.RequestMessageGroup;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

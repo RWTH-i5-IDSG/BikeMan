@@ -1,6 +1,6 @@
 package de.rwth.idsg.bikeman.ixsi.processor.query;
 
-import de.rwth.idsg.bikeman.ixsi.schema.UserTriggeredResponseChoice;
+import de.rwth.idsg.ixsi.jaxb.UserTriggeredResponseChoice;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -18,7 +18,7 @@ import de.rwth.idsg.bikeman.ixsi.schema.OpenSessionRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.PlaceAvailabilityRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.PriceInformationRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.TokenGenerationRequestType;
-import de.rwth.idsg.bikeman.ixsi.schema.UserTriggeredRequestChoice;
+import de.rwth.idsg.ixsi.jaxb.UserTriggeredRequestChoice;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
