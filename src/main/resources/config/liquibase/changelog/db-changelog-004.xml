@@ -176,4 +176,17 @@
         <dropColumn tableName="T_CUSTOMER" columnName="card_id"/>
         <dropColumn tableName="T_CUSTOMER" columnName="card_pin"/>
     </changeSet>
+
+    <changeSet id="1409564974607-29" author="sgoekay">
+        <dropColumn tableName="IXSI_TOKEN" columnName="customer_id"/>
+        <addColumn tableName="IXSI_TOKEN">
+            <column name="user_id" type="INT8"/>
+        </addColumn>
+        <addForeignKeyConstraint baseTableName="IXSI_TOKEN" baseColumnNames="user_id"
+                                 constraintName="fk_ixsi_token_user_id"
+                                 referencedTableName="T_USER"
+                                 referencedColumnNames="user_id"/>
+
+    </changeSet>
+
 </databaseChangeLog>

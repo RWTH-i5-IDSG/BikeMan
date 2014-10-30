@@ -1,6 +1,6 @@
 package de.rwth.idsg.bikeman.domain.ixsi;
 
-import de.rwth.idsg.bikeman.domain.Customer;
+import de.rwth.idsg.bikeman.domain.MajorCustomer;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -35,25 +35,20 @@ public class IxsiToken implements Serializable {
     private String tokenValue;
 
     @OneToOne(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
-    @JoinColumn(name = "customer_id")
-    private Customer customer;
+    @JoinColumn(name = "user_id")
+    private MajorCustomer majorCustomer;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "created", nullable = false, updatable = false)
+    @Column(name = "created", nullable = false, updatable = true)
     private Date created;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "last_used", nullable = false, updatable = false)
+    @Column(name = "last_used", nullable = true, updatable = true)
     private Date lastUsed;
 
     @PrePersist
     protected void prePersist() {
-        created = lastUsed = new Date();
-    }
-
-    // TODO: not so sure about this
-    @PostLoad
-    protected void postLoad() {
-        lastUsed = new Date();
+        created = new Date();
+        lastUsed = null;
     }
 }
