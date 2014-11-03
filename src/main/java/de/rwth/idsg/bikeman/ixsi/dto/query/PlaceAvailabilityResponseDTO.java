@@ -1,17 +1,17 @@
 package de.rwth.idsg.bikeman.ixsi.dto.query;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
+
+import java.math.BigInteger;
 
 /**
  * Created by max on 06/10/14.
  */
-@AllArgsConstructor
-@Getter
+@Data
 public class PlaceAvailabilityResponseDTO {
 
-    private long stationId;
-    private int availableSlots;
+    private final long stationId;
+    private final Integer availableSlots;
 //    private int availablePedelecs;
 
 }

@@ -13,8 +13,6 @@ import de.rwth.idsg.bikeman.ixsi.schema.GeoCircleType;
 import de.rwth.idsg.bikeman.ixsi.schema.GeoRectangleType;
 import de.rwth.idsg.bikeman.ixsi.schema.ProviderPlaceIDType;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.SQLQuery;
-import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -23,12 +21,8 @@ import javax.persistence.Query;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 /**
  * Created by max on 06/10/14.
@@ -42,21 +36,19 @@ public class QueryIXSIRepositoryImpl implements QueryIXSIRepository {
 
     @Override
     public BookingTargetsInfoResponseDTO bookingTargetInfos() {
+        String pedelecQuery = "SELECT new de.rwth.idsg.bikeman.ixsi.dto.query." +
+                "PedelecDTO(p.pedelecId, p.manufacturerId, 0) " +
+                "FROM Pedelec p";
+        String stationQuery = "SELECT new de.rwth.idsg.bikeman.ixsi.dto.query." +
+                "StationDTO(s.stationId, s.locationLongitude, s.locationLatitude, " +
+                "s.stationSlots.size, s.name, s.note, " +
+                "a.streetAndHousenumber, a.zip, a.city, a.country) " +
+                "FROM Station s LEFT JOIN s.address a";
 
         // TODO: The value 0 for maxDistance is a placeholder! Pedelec entity has to be expanded to contain such a property
         //
-        final String pedelecQuery = "SELECT new de.rwth.idsg.bikeman.ixsi.dto.query." +
-                                    "PedelecDTO(p.pedelecId, p.manufacturerId, 0) " +
-                                    "FROM Pedelec p";
-
-        final String stationQuery = "SELECT new de.rwth.idsg.bikeman.ixsi.dto.query." +
-                                    "StationDTO(s.stationId, s.locationLongitude, s.locationLatitude, " +
-                                    "s.stationSlots.size, s.name, s.note, " +
-                                    "a.streetAndHousenumber, a.zip, a.city, a.country) " +
-                                    "FROM Station s LEFT JOIN s.address a";
-
-        List<PedelecDTO> pedelecList = em.createQuery(pedelecQuery, PedelecDTO.class).getResultList();
-        List<StationDTO> stationList = em.createQuery(stationQuery, StationDTO.class).getResultList();
+        List<PedelecDTO> pedelecList = em.createNamedQuery(pedelecQuery, PedelecDTO.class).getResultList();
+        List<StationDTO> stationList = em.createNamedQuery(stationQuery, StationDTO.class).getResultList();
 
         long timestamp = getMaxUpdateTimestamp();
 
@@ -96,21 +88,41 @@ public class QueryIXSIRepositoryImpl implements QueryIXSIRepository {
     @Override
     @SuppressWarnings("unchecked")
     public List<AvailabilityResponseDTO> availability(GeoCircleType circle) {
-        Integer r = circle.getRadius();
-        BigDecimal lat = circle.getCenter().getLatitude();
-        BigDecimal lon = circle.getCenter().getLongitude();
-        final String availQuery = "SELECT " +
-                                  "p.pedelec_Id as pedelecId, s.station_Id as stationId, " +
-                                  "s.location_Latitude as locationLatitude, s.location_Longitude as locationLongitude, p.state_Of_Charge as stateOfCharge " +
-                                  "FROM t_Pedelec p JOIN t_Station_Slot slot ON p.pedelec_Id = slot.pedelec_Id " +
-                                  "JOIN t_Station s ON s.station_Id = slot.station_Id " +
-                                  "WHERE st_intersects(" +
-                                  "st_geometryfromtext('POINT( ' || s.location_Latitude || ' '" +
-                                  " || s.location_Longitude || ')')," +
-                                  "st_buffer(CAST(st_makepoint(" + lat + ", " + lon + ") as geography), " + r + "))";
+        Query q = em.createNativeQuery(
+                "SELECT p.pedelec_Id as pedelecId, s.station_Id as stationId, " +
+                "s.location_Latitude as locationLatitude, s.location_Longitude as locationLongitude, p.state_Of_Charge as stateOfCharge " +
+                "FROM t_Pedelec p JOIN t_Station_Slot slot ON p.pedelec_Id = slot.pedelec_Id " +
+                "JOIN t_Station s ON s.station_Id = slot.station_Id WHERE st_dwithin(" +
+                "st_geographyfromtext('POINT( ' || s.location_Latitude || ' ' || s.location_Longitude || ')')," +
+                "CAST(st_makepoint( :lat, :lon ) as geography), :radius)");
 
+        q.setParameter("lat", circle.getCenter().getLatitude());
+        q.setParameter("lon", circle.getCenter().getLongitude());
+        q.setParameter("radius", circle.getRadius());
 
-        Query q = em.createNativeQuery(availQuery);
+        return getAvailabilityResponseDTOs(q);
+    }
+
+    @Override
+    public List<AvailabilityResponseDTO> availability(GeoRectangleType rectangle) {
+        Query q = em.createNativeQuery(
+                "SELECT p.pedelec_Id as pedelecId, s.station_Id as stationId, " +
+                "s.location_Latitude as locationLatitude, s.location_Longitude as locationLongitude, p.state_Of_Charge as stateOfCharge " +
+                "FROM t_Pedelec p JOIN t_Station_Slot slot ON p.pedelec_Id = slot.pedelec_Id " +
+                "JOIN t_Station s ON s.station_Id = slot.station_Id WHERE " +
+                "st_contains(st_makeenvelope(:lat1, :lon1, :lat2, :lon2, 4326)," +
+                "st_geometryfromtext('POINT( ' || s.location_Latitude || ' ' || s.location_Longitude || ')', 4326))");
+
+        q.setParameter("lat1", rectangle.getUpperLeft().getLatitude());
+        q.setParameter("lon1", rectangle.getUpperLeft().getLongitude());
+        q.setParameter("lat2", rectangle.getLowerRight().getLatitude());
+        q.setParameter("lon2", rectangle.getLowerRight().getLongitude());
+
+        return getAvailabilityResponseDTOs(q);
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<AvailabilityResponseDTO> getAvailabilityResponseDTOs(Query q) {
         List<AvailabilityResponseDTO> myList = new ArrayList<>();
 
         List<Object[]> fooList = q.getResultList();
@@ -128,23 +140,80 @@ public class QueryIXSIRepositoryImpl implements QueryIXSIRepository {
     }
 
     @Override
-    public List<AvailabilityResponseDTO> availability(GeoRectangleType rectangle) {
-        return null;
-    }
-
-    @Override
+    @SuppressWarnings("unchecked")
     public List<PlaceAvailabilityResponseDTO> placeAvailability(List<ProviderPlaceIDType> placeIds) {
-        return null;
+
+        List<Long> idList = new ArrayList<>();
+        for (ProviderPlaceIDType id : placeIds) {
+            idList.add(Long.valueOf(id.getPlaceID()));
+        }
+
+        Query q = em.createQuery(
+                "SELECT new de.rwth.idsg.bikeman.ixsi.dto.query.PlaceAvailabilityResponseDTO(" +
+                        "slot.station.stationId, CAST(count(slot) as integer)) " +
+                        "FROM StationSlot slot " +
+                        "WHERE NOT slot.isOccupied = true AND " +
+                        "slot.station.stationId in :placeIds " +
+                        "GROUP by slot.station.stationId"
+                , PlaceAvailabilityResponseDTO.class);
+        q.setParameter("placeIds", idList);
+
+        return q.getResultList();
     }
 
     @Override
     public List<PlaceAvailabilityResponseDTO> placeAvailability(GeoCircleType circle) {
-        return null;
+        Query q = em.createNativeQuery(
+                "SELECT s.station_id, CAST(count(slot) as Integer) " +
+                "FROM t_station s " +
+                "LEFT JOIN t_station_slot slot " +
+                "ON slot.station_id = s.station_id " +
+                "WHERE NOT slot.is_occupied AND " +
+                "st_dwithin(st_geographyfromtext('POINT( ' || s.location_Latitude || ' ' || s.location_Longitude || ')'), " +
+                "CAST(st_makepoint( :lat, :lon ) as geography), :radius) " +
+                "GROUP BY s.station_id");
+
+        q.setParameter("lat", circle.getCenter().getLatitude());
+        q.setParameter("lon", circle.getCenter().getLongitude());
+        q.setParameter("radius", circle.getRadius());
+
+        return getPlaceAvailabilityResponseDTOs(q);
     }
 
     @Override
     public List<PlaceAvailabilityResponseDTO> placeAvailability(GeoRectangleType geoRectangle) {
-        return null;
+        Query q = em.createNativeQuery(
+                "SELECT s.station_id, CAST(count(slot) as Integer) " +
+                "FROM t_station s " +
+                "LEFT JOIN t_station_slot slot " +
+                "ON slot.station_id = s.station_id " +
+                "WHERE NOT slot.is_occupied AND " +
+                "st_contains(st_makeenvelope(:lat1, :lon1, :lat2, :lon2, 4326), " +
+                "st_geometryfromtext('POINT( ' || s.location_Latitude || ' ' || s.location_Longitude || ')', 4326)) " +
+                "GROUP BY s.station_id");
+
+        q.setParameter("lat1", geoRectangle.getUpperLeft().getLatitude());
+        q.setParameter("lon1", geoRectangle.getUpperLeft().getLongitude());
+        q.setParameter("lat2", geoRectangle.getLowerRight().getLatitude());
+        q.setParameter("lon2", geoRectangle.getLowerRight().getLongitude());
+
+        return getPlaceAvailabilityResponseDTOs(q);
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<PlaceAvailabilityResponseDTO> getPlaceAvailabilityResponseDTOs(Query q) {
+        List<PlaceAvailabilityResponseDTO> myList = new ArrayList<>();
+
+        List<Object[]> fooList = q.getResultList();
+        for (Object[] row : fooList) {
+            PlaceAvailabilityResponseDTO dto = new PlaceAvailabilityResponseDTO(
+                    ((BigInteger) row[0]).longValue(),
+                    (Integer) row[1]
+                    );
+
+            myList.add(dto);
+        }
+        return myList;
     }
 
     @Override
