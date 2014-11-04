@@ -1,6 +1,7 @@
 package de.rwth.idsg.bikeman.ixsi.processor;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Sevket Goekay <goekay@dbis.rwth-aachen.de>
@@ -10,6 +11,6 @@ public interface SubscriptionStore {
     void subscribe(String systemID, List<Long> itemIDs, long expireIntervalinMinutes);
     void subscribe(String systemID, List<Long> itemIDs);
     void unsubscribe(String systemID, List<Long> itemIDs);
-    List<String> getSubscribedSystems(Long itemID);
+    Set<String> getSubscribedSystems(Long itemID);
     List<Long> getSubscriptions(String systemID);
 }
