@@ -19,11 +19,13 @@ public class PriceInformationRequestProcessor implements UserRequestProcessor<Pr
 
     @Override
     public UserResponseParams<PriceInformationResponseType> processAnonymously(PriceInformationRequestType request, Optional<Language> lan) {
+        // TODO FUTURE
         return null;
     }
 
     @Override
     public UserResponseParams<PriceInformationResponseType> processForUser(PriceInformationRequestType request, Optional<Language> lan, UserInfoType userInfo) {
+        // TODO FUTURE
         return null;
     }
 

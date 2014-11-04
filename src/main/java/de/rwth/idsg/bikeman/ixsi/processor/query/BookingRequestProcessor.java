@@ -21,12 +21,14 @@ public class BookingRequestProcessor implements
     @Override
     public UserResponseParams<BookingResponseType> processAnonymously(BookingRequestType request,
                                                                       Optional<Language> lan) {
+        // TODO FUTURE
         return null;
     }
 
     @Override
     public UserResponseParams<BookingResponseType> processForUser(BookingRequestType request,
                                                                   Optional<Language> lan, UserInfoType userInfo) {
+        // TODO FUTURE
         return null;
     }
 
