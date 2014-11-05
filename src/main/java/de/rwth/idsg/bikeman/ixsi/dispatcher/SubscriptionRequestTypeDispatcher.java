@@ -5,12 +5,12 @@ import de.rwth.idsg.bikeman.ixsi.IxsiProcessingException;
 import de.rwth.idsg.bikeman.ixsi.processor.subscription.SubscriptionRequestMessageProcessor;
 import de.rwth.idsg.bikeman.ixsi.processor.subscription.SubscriptionRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.schema.HeartBeatResponseType;
+import de.rwth.idsg.bikeman.ixsi.schema.SubscriptionRequestType;
+import de.rwth.idsg.bikeman.ixsi.schema.SubscriptionResponseType;
 import de.rwth.idsg.ixsi.jaxb.RequestMessageGroup;
 import de.rwth.idsg.ixsi.jaxb.ResponseMessageGroup;
 import de.rwth.idsg.ixsi.jaxb.SubscriptionRequestGroup;
-import de.rwth.idsg.bikeman.ixsi.schema.SubscriptionRequestType;
 import de.rwth.idsg.ixsi.jaxb.SubscriptionResponseGroup;
-import de.rwth.idsg.bikeman.ixsi.schema.SubscriptionResponseType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -93,7 +93,7 @@ public class SubscriptionRequestTypeDispatcher implements Dispatcher {
         //
         SubscriptionResponseGroup res;
         if (systemValidator.validate(request.getSystemID())) {
-            res = p.process(req);
+            res = p.process(req, request.getSystemID());
         } else {
             res = p.invalidSystem();
         }
@@ -114,7 +114,7 @@ public class SubscriptionRequestTypeDispatcher implements Dispatcher {
         //
         ResponseMessageGroup res;
         if (systemValidator.validate(request.getSystemID())) {
-            res = p.process(req);
+            res = p.process(req, request.getSystemID());
         } else {
             res = p.invalidSystem();
         }

@@ -1,10 +1,15 @@
 package de.rwth.idsg.bikeman.ixsi.processor.subscription;
 
 import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
-import de.rwth.idsg.bikeman.ixsi.schema.AvailabilitySubscriptionResponseType;
+import de.rwth.idsg.bikeman.ixsi.processor.AvailabilityStore;
 import de.rwth.idsg.bikeman.ixsi.schema.AvailabilitySubscriptionStatusRequest;
 import de.rwth.idsg.bikeman.ixsi.schema.AvailabilitySubscriptionStatusResponse;
+import de.rwth.idsg.bikeman.ixsi.schema.BookingTargetIDType;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Sevket Goekay <goekay@dbis.rwth-aachen.de>
@@ -14,9 +19,22 @@ import org.springframework.stereotype.Component;
 public class AvailabilitySubscriptionStatusRequestProcessor implements
         SubscriptionRequestProcessor<AvailabilitySubscriptionStatusRequest, AvailabilitySubscriptionStatusResponse> {
 
+    @Autowired AvailabilityStore availabilityStore;
+
     @Override
-    public AvailabilitySubscriptionStatusResponse process(AvailabilitySubscriptionStatusRequest request) {
-        return null;
+    public AvailabilitySubscriptionStatusResponse process(AvailabilitySubscriptionStatusRequest request, String systemId) {
+        List<Long> subscriptions = availabilityStore.getSubscriptions(systemId);
+
+        AvailabilitySubscriptionStatusResponse response = new AvailabilitySubscriptionStatusResponse();
+        List<BookingTargetIDType> ids = new ArrayList<>();
+        for (Long s : subscriptions) {
+            BookingTargetIDType idType = new BookingTargetIDType();
+            idType.setBookeeID(s.toString());
+            ids.add(idType);
+        }
+        response.getBookingTargetID().addAll(ids);
+
+        return response;
     }
 
     // -------------------------------------------------------------------------

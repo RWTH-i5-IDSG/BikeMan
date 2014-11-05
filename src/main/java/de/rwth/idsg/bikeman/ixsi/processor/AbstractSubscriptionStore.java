@@ -34,7 +34,7 @@ public abstract class AbstractSubscriptionStore implements SubscriptionStore {
     ScheduledExecutorService scheduler;
 
     @Override
-    public void subscribe(String systemID, List<Long> itemIDs, long expireIntervalinMinutes) {
+    public void subscribe(String systemID, List<Long> itemIDs, Integer expireIntervalinMinutes) {
         subscribe(systemID, itemIDs);
         scheduleRemove(systemID, itemIDs, expireIntervalinMinutes);
         log.debug("System '{}' subscribed to '{}'. This subscription is scheduled to expire in {} minutes",

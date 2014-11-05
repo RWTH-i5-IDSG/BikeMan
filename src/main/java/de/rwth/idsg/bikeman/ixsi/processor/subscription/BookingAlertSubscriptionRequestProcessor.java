@@ -1,7 +1,6 @@
 package de.rwth.idsg.bikeman.ixsi.processor.subscription;
 
 import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
-import de.rwth.idsg.bikeman.ixsi.schema.AvailabilitySubscriptionResponseType;
 import de.rwth.idsg.bikeman.ixsi.schema.BookingAlertSubscriptionRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.BookingAlertSubscriptionResponseType;
 import org.springframework.stereotype.Component;
@@ -15,7 +14,7 @@ public class BookingAlertSubscriptionRequestProcessor implements
         SubscriptionRequestProcessor<BookingAlertSubscriptionRequestType, BookingAlertSubscriptionResponseType> {
 
     @Override
-    public BookingAlertSubscriptionResponseType process(BookingAlertSubscriptionRequestType request) {
+    public BookingAlertSubscriptionResponseType process(BookingAlertSubscriptionRequestType request, String systemId) {
         // TODO FUTURE
         return null;
     }

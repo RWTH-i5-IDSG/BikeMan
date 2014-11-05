@@ -1,10 +1,15 @@
 package de.rwth.idsg.bikeman.ixsi.processor.subscription;
 
 import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
-import de.rwth.idsg.bikeman.ixsi.schema.AvailabilitySubscriptionResponseType;
+import de.rwth.idsg.bikeman.ixsi.processor.PlaceAvailabilityStore;
 import de.rwth.idsg.bikeman.ixsi.schema.PlaceAvailabilitySubscriptionRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.PlaceAvailabilitySubscriptionResponseType;
+import de.rwth.idsg.bikeman.ixsi.schema.ProviderPlaceIDType;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Sevket Goekay <goekay@dbis.rwth-aachen.de>
@@ -14,9 +19,27 @@ import org.springframework.stereotype.Component;
 public class PlaceAvailabilitySubscriptionRequestProcessor implements
         SubscriptionRequestProcessor<PlaceAvailabilitySubscriptionRequestType, PlaceAvailabilitySubscriptionResponseType> {
 
+    @Autowired PlaceAvailabilityStore placeAvailabilityStore;
+
     @Override
-    public PlaceAvailabilitySubscriptionResponseType process(PlaceAvailabilitySubscriptionRequestType request) {
-        return null;
+    public PlaceAvailabilitySubscriptionResponseType process(PlaceAvailabilitySubscriptionRequestType request, String systemId) {
+        List<Long> itemIds = new ArrayList<>();
+        for (ProviderPlaceIDType id : request.getPlaceID()) {
+            try {
+                itemIds.add(Long.valueOf(id.getPlaceID()));
+            } catch (NumberFormatException e) {
+                // TODO change this?
+                return invalidSystem();
+            }
+        }
+
+        if (request.isUnsubscription()) {
+            placeAvailabilityStore.unsubscribe(systemId, itemIds);
+        } else {
+            placeAvailabilityStore.subscribe(systemId, itemIds);
+        }
+
+        return new PlaceAvailabilitySubscriptionResponseType();
     }
 
     // -------------------------------------------------------------------------

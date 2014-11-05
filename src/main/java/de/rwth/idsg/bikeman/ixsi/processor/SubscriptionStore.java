@@ -8,7 +8,7 @@ import java.util.Set;
  * @since 04.11.2014
  */
 public interface SubscriptionStore {
-    void subscribe(String systemID, List<Long> itemIDs, long expireIntervalinMinutes);
+    void subscribe(String systemID, List<Long> itemIDs, Integer expireIntervalinMinutes);
     void subscribe(String systemID, List<Long> itemIDs);
     void unsubscribe(String systemID, List<Long> itemIDs);
     Set<String> getSubscribedSystems(Long itemID);

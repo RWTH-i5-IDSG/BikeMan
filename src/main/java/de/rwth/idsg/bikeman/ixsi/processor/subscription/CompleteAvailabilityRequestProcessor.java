@@ -1,7 +1,6 @@
 package de.rwth.idsg.bikeman.ixsi.processor.subscription;
 
 import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
-import de.rwth.idsg.bikeman.ixsi.schema.AvailabilitySubscriptionResponseType;
 import de.rwth.idsg.bikeman.ixsi.schema.CompleteAvailabilityRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.CompleteAvailabilityResponseType;
 import org.springframework.stereotype.Component;
@@ -13,9 +12,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class CompleteAvailabilityRequestProcessor implements
         SubscriptionRequestMessageProcessor<CompleteAvailabilityRequestType, CompleteAvailabilityResponseType> {
-
+    
     @Override
-    public CompleteAvailabilityResponseType process(CompleteAvailabilityRequestType request) {
+    public CompleteAvailabilityResponseType process(CompleteAvailabilityRequestType request, String systemId) {
         return null;
     }
 
