@@ -1,6 +1,8 @@
 package de.rwth.idsg.bikeman.ixsi.processor;
 
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -17,9 +19,12 @@ import java.util.concurrent.TimeUnit;
  */
 public abstract class AbstractSubscriptionStore implements SubscriptionStore {
 
+    // Want to get the logger of the extending class and not of this abstract one
+    private final Logger log = LoggerFactory.getLogger(getClass());
+
     /**
      * Key   (Long)        = ID of the item
-     * Value (Set<String>) = ID of the subscribed system
+     * Value (Set<String>) = IDs of the subscribed systems
      */
     ConcurrentHashMap<Long, Set<String>> lookupTable;
 
@@ -32,10 +37,17 @@ public abstract class AbstractSubscriptionStore implements SubscriptionStore {
     public void subscribe(String systemID, List<Long> itemIDs, long expireIntervalinMinutes) {
         subscribe(systemID, itemIDs);
         scheduleRemove(systemID, itemIDs, expireIntervalinMinutes);
+        log.debug("System '{}' subscribed to '{}'. This subscription is scheduled to expire in {} minutes",
+                systemID, itemIDs, expireIntervalinMinutes);
     }
 
     @Override
     public void subscribe(String systemID, List<Long> itemIDs) {
+        subscribeInternal(systemID, itemIDs);
+        log.debug("System '{}' subscribed to '{}'", systemID, itemIDs);
+    }
+
+    private void subscribeInternal(String systemID, List<Long> itemIDs) {
         Set<String> systemIDSet;
         for (Long itemID : itemIDs) {
             systemIDSet = lookupTable.get(itemID);
@@ -61,6 +73,7 @@ public abstract class AbstractSubscriptionStore implements SubscriptionStore {
                 systemIDSet.remove(systemID);
             }
         }
+        log.debug("System '{}' unsubscribed from '{}'", systemID, itemIDs);
     }
 
     @Override
@@ -77,6 +90,17 @@ public abstract class AbstractSubscriptionStore implements SubscriptionStore {
             }
         }
         return subscriptions;
+    }
+
+    @Override
+    public void clear() {
+        lookupTable.clear();
+        log.debug("Cleared the subscription store");
+    }
+
+    @Override
+    public String toString() {
+        return lookupTable.toString();
     }
 
     // -------------------------------------------------------------------------

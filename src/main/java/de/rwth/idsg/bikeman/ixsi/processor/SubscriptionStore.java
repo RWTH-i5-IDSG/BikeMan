@@ -13,4 +13,5 @@ public interface SubscriptionStore {
     void unsubscribe(String systemID, List<Long> itemIDs);
     Set<String> getSubscribedSystems(Long itemID);
     List<Long> getSubscriptions(String systemID);
+    void clear();
 }
