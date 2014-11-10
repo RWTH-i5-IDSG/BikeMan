@@ -25,15 +25,15 @@ public class AvailabilitySubscriptionStatusRequestProcessor implements
     public AvailabilitySubscriptionStatusResponse process(AvailabilitySubscriptionStatusRequest request, String systemId) {
         List<Long> subscriptions = availabilityStore.getSubscriptions(systemId);
 
-        AvailabilitySubscriptionStatusResponse response = new AvailabilitySubscriptionStatusResponse();
         List<BookingTargetIDType> ids = new ArrayList<>();
         for (Long s : subscriptions) {
             BookingTargetIDType idType = new BookingTargetIDType();
             idType.setBookeeID(s.toString());
             ids.add(idType);
         }
-        response.getBookingTargetID().addAll(ids);
 
+        AvailabilitySubscriptionStatusResponse response = new AvailabilitySubscriptionStatusResponse();
+        response.getBookingTargetID().addAll(ids);
         return response;
     }
 

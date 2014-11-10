@@ -3,6 +3,7 @@ package de.rwth.idsg.bikeman.config;
 import de.rwth.idsg.bikeman.ApplicationConfig;
 import de.rwth.idsg.bikeman.ixsi.HandshakeInterceptor;
 import de.rwth.idsg.bikeman.ixsi.WebSocketEndpoint;
+import de.rwth.idsg.bikeman.ixsi.repository.SystemValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -25,11 +26,12 @@ import javax.xml.datatype.DatatypeFactory;
 public class WebSocketConfiguration implements WebSocketConfigurer {
 
     @Autowired private WebSocketEndpoint webSocketEndpoint;
+    @Autowired private SystemValidator systemValidator;
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(webSocketEndpoint, ApplicationConfig.IXSI.WS_ENDPOINT)
-                .addInterceptors(new HandshakeInterceptor());
+                .addInterceptors(new HandshakeInterceptor(systemValidator));
     }
 
     @Bean()

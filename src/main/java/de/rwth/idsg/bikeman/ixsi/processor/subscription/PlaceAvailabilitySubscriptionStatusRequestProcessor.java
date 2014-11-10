@@ -25,15 +25,15 @@ public class PlaceAvailabilitySubscriptionStatusRequestProcessor implements
     public PlaceAvailabilitySubscriptionStatusResponse process(PlaceAvailabilitySubscriptionStatusRequest request, String systemId) {
         List<Long> subscriptions = placeAvailabilityStore.getSubscriptions(systemId);
 
-        PlaceAvailabilitySubscriptionStatusResponse response = new PlaceAvailabilitySubscriptionStatusResponse();
         List<ProviderPlaceIDType> ids = new ArrayList<>();
         for (Long s : subscriptions) {
             ProviderPlaceIDType idType = new ProviderPlaceIDType();
             idType.setPlaceID(s.toString());
             ids.add(idType);
         }
-        response.getPlaceID().addAll(ids);
 
+        PlaceAvailabilitySubscriptionStatusResponse response = new PlaceAvailabilitySubscriptionStatusResponse();
+        response.getPlaceID().addAll(ids);
         return response;
     }
 

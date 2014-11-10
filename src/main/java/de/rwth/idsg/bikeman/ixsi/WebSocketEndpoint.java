@@ -16,6 +16,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 @Component
 public class WebSocketEndpoint extends TextWebSocketHandler {
 
+    @Autowired private WebSocketSessionStore webSocketSessionStore;
     @Autowired private Consumer consumer;
 
     @Override
@@ -24,17 +25,20 @@ public class WebSocketEndpoint extends TextWebSocketHandler {
 
         CommunicationContext context = new CommunicationContext(session, webSocketMessage.getPayload());
         consumer.consume(context);
-        //this.sendMessage(webSocketMessage.getPayload() + " -- server");
     }
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         log.info("New connection established: {}", session);
+        String systemId = (String) session.getAttributes().get(HandshakeInterceptor.SYSTEM_ID_KEY);
+        webSocketSessionStore.add(systemId, session);
     }
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception {
         log.info("[id={}] Connection was closed, status: {}", session.getId(), closeStatus);
+        String systemId = (String) session.getAttributes().get(HandshakeInterceptor.SYSTEM_ID_KEY);
+        webSocketSessionStore.remove(systemId, session);
     }
 
     @Override

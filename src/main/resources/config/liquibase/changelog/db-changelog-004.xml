@@ -5,7 +5,7 @@
             <column name="firmware_version" type="varchar(255)"/>
         </addColumn>
     </changeSet>
-    
+
     <changeSet author="jhipster" id="1409564974607-9" logicalFilePath="none">
         <addColumn tableName="T_STATION">
             <column name="error_code" type="varchar(255)"/>
@@ -62,12 +62,12 @@
         <addForeignKeyConstraint baseColumnNames="card_account_id" baseTableName="T_TRANSACTION" baseTableSchemaName="public" constraintName="FK_CARDACC_TRANSACTION" deferrable="false" initiallyDeferred="false" referencedColumnNames="card_account_id" referencedTableCatalogName="" referencedTableName="T_CARD_ACCOUNT" referencedTableSchemaName="public"/>
 
     </changeSet>
-    
+
     <changeSet id="1409564974607-16" author="wkluth">
         <addColumn tableName="T_STATION">
             <column name="endpoint_address" type="varchar(255)"/>
         </addColumn>
-        
+
         <createTable tableName="T_MAJOR_CUSTOMER">
             <column name="user_id" type="INT8"/>
         </createTable>
@@ -104,7 +104,7 @@
             <column name="updated" type="timestamp"/>
         </addColumn>
     </changeSet>
-    
+
     <changeSet id="1409564974607-20" author="wkluth">
         <addColumn tableName="T_CARD_ACCOUNT">
             <column name="owner_type" type="VARCHAR(255)"></column>
@@ -135,7 +135,7 @@
     <changeSet id="1409564974607-22" author="wkluth">
         <modifyDataType tableName="T_CARD_ACCOUNT" columnName="card_pin" newDataType="VARCHAR(255)"/>
     </changeSet>
-    
+
     <changeSet id="1409564974607-23" author="wkluth">
         <addUniqueConstraint tableName="T_CARD_ACCOUNT" columnNames="card_id"/>
     </changeSet>
@@ -187,6 +187,17 @@
                                  referencedTableName="T_USER"
                                  referencedColumnNames="user_id"/>
 
+    </changeSet>
+
+    <changeSet id="1409564974607-30" author="sgoekay">
+        <createTable tableName="IXSI_CLIENT_SYSTEM">
+            <column name="system_id" type="VARCHAR(255)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="ip_address" type="VARCHAR(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
     </changeSet>
 
 </databaseChangeLog>

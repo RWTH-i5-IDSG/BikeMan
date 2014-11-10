@@ -35,13 +35,13 @@ public class AvailabilitySubscriptionRequestProcessor implements
 
         if (request.isUnsubscription()) {
             availabilityStore.unsubscribe(systemId, itemIds);
+
+        } else if (request.isSetEventHorizon()) {
+            Integer interval = request.getEventHorizon().getMinutes();
+            availabilityStore.subscribe(systemId, itemIds, interval);
+
         } else {
-            if (request.isSetEventHorizon()) {
-                availabilityStore.subscribe(systemId, itemIds);
-            } else {
-                Integer interval = request.getEventHorizon().getMinutes();
-                availabilityStore.subscribe(systemId, itemIds, interval);
-            }
+            availabilityStore.subscribe(systemId, itemIds);
         }
 
         return new AvailabilitySubscriptionResponseType();

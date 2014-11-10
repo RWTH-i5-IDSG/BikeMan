@@ -4,6 +4,7 @@ import de.rwth.idsg.bikeman.ixsi.CommunicationContext;
 import de.rwth.idsg.bikeman.ixsi.IxsiProcessingException;
 import de.rwth.idsg.bikeman.ixsi.processor.subscription.SubscriptionRequestMessageProcessor;
 import de.rwth.idsg.bikeman.ixsi.processor.subscription.SubscriptionRequestProcessor;
+import de.rwth.idsg.bikeman.ixsi.repository.SystemValidator;
 import de.rwth.idsg.bikeman.ixsi.schema.HeartBeatResponseType;
 import de.rwth.idsg.bikeman.ixsi.schema.SubscriptionRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.SubscriptionResponseType;
@@ -92,8 +93,9 @@ public class SubscriptionRequestTypeDispatcher implements Dispatcher {
         // System validation
         //
         SubscriptionResponseGroup res;
-        if (systemValidator.validate(request.getSystemID())) {
-            res = p.process(req, request.getSystemID());
+        String systemID = request.getSystemID();
+        if (systemValidator.validate(systemID)) {
+            res = p.process(req, systemID);
         } else {
             res = p.invalidSystem();
         }
@@ -113,8 +115,9 @@ public class SubscriptionRequestTypeDispatcher implements Dispatcher {
         // System validation
         //
         ResponseMessageGroup res;
-        if (systemValidator.validate(request.getSystemID())) {
-            res = p.process(req, request.getSystemID());
+        String systemID = request.getSystemID();
+        if (systemValidator.validate(systemID)) {
+            res = p.process(req, systemID);
         } else {
             res = p.invalidSystem();
         }
