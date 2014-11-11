@@ -1,6 +1,5 @@
 package de.rwth.idsg.bikeman.ixsi.impl;
 
-import de.rwth.idsg.bikeman.ixsi.CommunicationContext;
 import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
 import de.rwth.idsg.bikeman.ixsi.api.Parser;
 import de.rwth.idsg.bikeman.ixsi.schema.IxsiMessageType;
@@ -20,6 +19,7 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
+import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URL;
@@ -36,31 +36,33 @@ public class ParserImpl implements Parser {
     private Schema schema;
 
     @PostConstruct
-    public void init() throws SAXException {
+    public void init() throws SAXException, IOException {
         SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         URL xsdURL = getClass().getClassLoader().getResource(IXSIConstants.XML_SCHEMA_FILE);
-        schema = schemaFactory.newSchema(xsdURL);
+        if (xsdURL == null) {
+            throw new IOException("XML schema could not be found/loaded");
+        } else {
+            schema = schemaFactory.newSchema(xsdURL);
+        }
     }
 
     @Override
-    public void unmarshalIncoming(CommunicationContext context) throws JAXBException {
-        log.trace("Entered unmarshalIncoming...");
+    public IxsiMessageType unmarshal(String str) throws JAXBException {
+        log.trace("Entered unmarshal...");
 
         Unmarshaller um = jaxbContext.createUnmarshaller();
         // Validate against the schema
         um.setSchema(schema);
-        StringReader reader = new StringReader(context.getIncomingString());
+        StringReader reader = new StringReader(str);
         StreamSource source = new StreamSource(reader);
-        JAXBElement<IxsiMessageType> incoming = um.unmarshal(source, IxsiMessageType.class);
-        context.setIncomingIxsi(incoming.getValue());
+        return um.unmarshal(source, IxsiMessageType.class).getValue();
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public void marshalOutgoing(CommunicationContext context) throws JAXBException {
-        log.trace("Entered marshalOutgoing...");
+    public String marshal(IxsiMessageType ixsi) throws JAXBException {
+        log.trace("Entered marshal...");
 
-        JAXBElement<IxsiMessageType> outgoing = objectFactory.createIxsi(context.getOutgoingIxsi());
+        JAXBElement<IxsiMessageType> outgoing = objectFactory.createIxsi(ixsi);
         Marshaller m = jaxbContext.createMarshaller();
         // Validate against the schema
         m.setSchema(schema);
@@ -71,6 +73,6 @@ public class ParserImpl implements Parser {
 
         StringWriter stringWriter = new StringWriter();
         m.marshal(outgoing, stringWriter);
-        context.setOutgoingString(stringWriter.toString());
+        return stringWriter.toString();
     }
 }

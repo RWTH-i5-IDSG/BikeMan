@@ -14,6 +14,5 @@ public final class ApplicationConfig {
      */
     public final class IXSI {
         public static final String WS_ENDPOINT  = "/ws";
-        public static final String JAXB_CONTEXT_PATH = "de.rwth.idsg.bikeman.ixsi.schema";
     }
 }

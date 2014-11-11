@@ -4,6 +4,7 @@ import de.rwth.idsg.bikeman.ApplicationConfig;
 import de.rwth.idsg.bikeman.ixsi.HandshakeInterceptor;
 import de.rwth.idsg.bikeman.ixsi.WebSocketEndpoint;
 import de.rwth.idsg.bikeman.ixsi.repository.SystemValidator;
+import de.rwth.idsg.bikeman.ixsi.schema.IxsiMessageType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -37,7 +38,7 @@ public class WebSocketConfiguration implements WebSocketConfigurer {
     @Bean()
     public JAXBContext jaxbContext() throws JAXBException {
         // is thread-safe
-        return JAXBContext.newInstance(ApplicationConfig.IXSI.JAXB_CONTEXT_PATH);
+        return JAXBContext.newInstance(IxsiMessageType.class);
     }
 
     @Bean()
