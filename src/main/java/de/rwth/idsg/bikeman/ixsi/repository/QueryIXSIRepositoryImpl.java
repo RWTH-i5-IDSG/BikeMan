@@ -36,19 +36,21 @@ public class QueryIXSIRepositoryImpl implements QueryIXSIRepository {
 
     @Override
     public BookingTargetsInfoResponseDTO bookingTargetInfos() {
-        String pedelecQuery = "SELECT new de.rwth.idsg.bikeman.ixsi.dto.query." +
-                "PedelecDTO(p.pedelecId, p.manufacturerId, 0) " +
-                "FROM Pedelec p";
-        String stationQuery = "SELECT new de.rwth.idsg.bikeman.ixsi.dto.query." +
-                "StationDTO(s.stationId, s.locationLongitude, s.locationLatitude, " +
-                "s.stationSlots.size, s.name, s.note, " +
-                "a.streetAndHousenumber, a.zip, a.city, a.country) " +
-                "FROM Station s LEFT JOIN s.address a";
 
         // TODO: The value 0 for maxDistance is a placeholder! Pedelec entity has to be expanded to contain such a property
         //
-        List<PedelecDTO> pedelecList = em.createNamedQuery(pedelecQuery, PedelecDTO.class).getResultList();
-        List<StationDTO> stationList = em.createNamedQuery(stationQuery, StationDTO.class).getResultList();
+        final String pedelecQuery = "SELECT new de.rwth.idsg.bikeman.ixsi.dto.query." +
+                                    "PedelecDTO(p.pedelecId, p.manufacturerId, 0) " +
+                                    "FROM Pedelec p";
+
+        final String stationQuery = "SELECT new de.rwth.idsg.bikeman.ixsi.dto.query." +
+                                    "StationDTO(s.stationId, s.locationLongitude, s.locationLatitude, " +
+                                    "s.stationSlots.size, s.name, s.note, " +
+                                    "a.streetAndHousenumber, a.zip, a.city, a.country) " +
+                                    "FROM Station s LEFT JOIN s.address a";
+
+        List<PedelecDTO> pedelecList = em.createQuery(pedelecQuery, PedelecDTO.class).getResultList();
+        List<StationDTO> stationList = em.createQuery(stationQuery, StationDTO.class).getResultList();
 
         long timestamp = getMaxUpdateTimestamp();
 
