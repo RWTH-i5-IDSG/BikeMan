@@ -13,18 +13,18 @@ import de.rwth.idsg.bikeman.ixsi.dto.subscription.PlaceAvailabilitySubscriptionS
  */
 public interface SubscriptionIXSIRepository {
     // Subscr. Administration response
-    public HeartBeatResponseDTO heartBeat();
+    HeartBeatResponseDTO heartBeat();
 
     // Subscr. Response
-    public AvailabilitySubscriptionResponseDTO availabilitySubscription();
-    public AvailabilitySubscriptionStatusResponseDTO availabilitySubscriptionStatus();
-    public PlaceAvailabilitySubscriptionResponseDTO placeAvailabilitySubscription();
-    public PlaceAvailabilitySubscriptionStatusResponseDTO placeAvailabilitySubscriptionStatus();
-//    public BookingAlertSubscriptionResponseDTO bookingAlertSubscription();
-//    public BookingAlertSubscriptionStatusResponseDTO bookingAlertSubscriptionStatus();
+    AvailabilitySubscriptionResponseDTO availabilitySubscription();
+    AvailabilitySubscriptionStatusResponseDTO availabilitySubscriptionStatus();
+    PlaceAvailabilitySubscriptionResponseDTO placeAvailabilitySubscription();
+    PlaceAvailabilitySubscriptionStatusResponseDTO placeAvailabilitySubscriptionStatus();
+//    BookingAlertSubscriptionResponseDTO bookingAlertSubscription();
+//    BookingAlertSubscriptionStatusResponseDTO bookingAlertSubscriptionStatus();
 
     // Response Message
-    public CompleteAvailabilityResponseDTO completeAvailability();
-    public CompletePlaceAvailabilityResponseDTO completePlaceAvailability();
-//    public CompleteBookingAlertResponseDTO completeBookingAlert();
+    CompleteAvailabilityResponseDTO completeAvailability();
+    CompletePlaceAvailabilityResponseDTO completePlaceAvailability();
+//    CompleteBookingAlertResponseDTO completeBookingAlert();
 }

@@ -8,6 +8,7 @@ import de.rwth.idsg.bikeman.ixsi.schema.IxsiMessageType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
@@ -23,8 +24,9 @@ import javax.xml.datatype.DatatypeFactory;
  */
 @EnableWebSocket
 @Configuration
+@ComponentScan("de.rwth.idsg.bikeman.ixsi")
 @Slf4j
-public class WebSocketConfiguration implements WebSocketConfigurer {
+public class IxsiConfiguration implements WebSocketConfigurer {
 
     @Autowired private WebSocketEndpoint webSocketEndpoint;
     @Autowired private SystemValidator systemValidator;

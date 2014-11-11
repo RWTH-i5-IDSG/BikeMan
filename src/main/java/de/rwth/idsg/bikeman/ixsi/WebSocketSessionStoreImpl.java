@@ -29,7 +29,7 @@ public class WebSocketSessionStoreImpl implements WebSocketSessionStore {
      * Key   (String)                  = ID of the client system
      * Value (Deque<WebSocketSession>) = WebSocket connections of the client system
      */
-    private ConcurrentHashMap<String, Deque<WebSocketSession>> lookupTable = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, Deque<WebSocketSession>> lookupTable = new ConcurrentHashMap<>();
 
     @Override
     public void add(String systemID, WebSocketSession session) {

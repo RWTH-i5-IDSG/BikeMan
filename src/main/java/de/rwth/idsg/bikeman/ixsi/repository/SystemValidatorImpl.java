@@ -1,12 +1,10 @@
 package de.rwth.idsg.bikeman.ixsi.repository;
 
-import de.rwth.idsg.bikeman.domain.ixsi.IxsiClientSystem;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;

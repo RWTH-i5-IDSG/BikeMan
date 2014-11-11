@@ -103,7 +103,7 @@ public class IxsiUserRepositoryImpl implements IxsiUserRepository {
             return majorCustomer;
 
         } catch (NoResultException e) {
-            throw new DatabaseException("No MajorCustomer exists with login " + login);
+            throw new DatabaseException("No MajorCustomer exists with login " + login, e);
         }
     }
 

@@ -19,19 +19,19 @@ import java.util.List;
 public interface QueryIXSIRepository {
 
     // Static data
-    public BookingTargetsInfoResponseDTO bookingTargetInfos();
-    public ChangedProvidersResponseDTO changedProviders(long requestTimestamp);
+    BookingTargetsInfoResponseDTO bookingTargetInfos();
+    ChangedProvidersResponseDTO changedProviders(long requestTimestamp);
 
     // User triggered data
-    public List<AvailabilityResponseDTO> availability(GeoCircleType circle);
-    public List<AvailabilityResponseDTO> availability(GeoRectangleType rectangle);
+    List<AvailabilityResponseDTO> availability(GeoCircleType circle);
+    List<AvailabilityResponseDTO> availability(GeoRectangleType rectangle);
     // we do not need booking for velocity
-//    public BookingResponseDTObooking();
-//    public ChangeBookingResponseDTO changeBooking();
-    public CloseSessionResponseDTO closeSession();
-    public OpenSessionResponseDTO openSession();
-    public List<PlaceAvailabilityResponseDTO> placeAvailability(List<ProviderPlaceIDType> placeIds);
-    public List<PlaceAvailabilityResponseDTO> placeAvailability(GeoCircleType circle);
-    public List<PlaceAvailabilityResponseDTO> placeAvailability(GeoRectangleType geoRectangle);
-    public TokenGenerationResponseDTO tokenGeneration();
+//    BookingResponseDTObooking();
+//    ChangeBookingResponseDTO changeBooking();
+    CloseSessionResponseDTO closeSession();
+    OpenSessionResponseDTO openSession();
+    List<PlaceAvailabilityResponseDTO> placeAvailability(List<ProviderPlaceIDType> placeIds);
+    List<PlaceAvailabilityResponseDTO> placeAvailability(GeoCircleType circle);
+    List<PlaceAvailabilityResponseDTO> placeAvailability(GeoRectangleType geoRectangle);
+    TokenGenerationResponseDTO tokenGeneration();
 }

@@ -32,7 +32,7 @@ import java.net.URL;
 public class ParserImpl implements Parser {
 
     @Autowired private JAXBContext jaxbContext;
-    private static final ObjectFactory objectFactory = new ObjectFactory();
+    private static final ObjectFactory OBJECT_FACTORY = new ObjectFactory();
     private Schema schema;
 
     @PostConstruct
@@ -62,7 +62,7 @@ public class ParserImpl implements Parser {
     public String marshal(IxsiMessageType ixsi) throws JAXBException {
         log.trace("Entered marshal...");
 
-        JAXBElement<IxsiMessageType> outgoing = objectFactory.createIxsi(ixsi);
+        JAXBElement<IxsiMessageType> outgoing = OBJECT_FACTORY.createIxsi(ixsi);
         Marshaller m = jaxbContext.createMarshaller();
         // Validate against the schema
         m.setSchema(schema);

@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
-import org.springframework.web.socket.WebSocketSession;
 
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
@@ -28,26 +27,29 @@ public class ProducerImpl implements Producer {
 
     @Override
     public void send(CommunicationContext context) {
-        // Convenience method. Just delegate
-        sendInternal(context.getOutgoingIxsi(), context.getSession());
+        try {
+            String str = parser.marshal(context.getOutgoingIxsi());
+            TextMessage out = new TextMessage(str);
+            context.getSession().sendMessage(out);
+
+        } catch (JAXBException e) {
+            throw new IxsiProcessingException("Could not marshal outgoing message", e);
+
+        } catch (IOException e) {
+            log.error("Exception happened", e);
+        }
+
     }
 
     @Override
     public void send(IxsiMessageType ixsi, Set<String> systemIdSet) {
-        for (String systemId : systemIdSet) {
-            WebSocketSession session = webSocketSessionStore.getNext(systemId);
-            sendInternal(ixsi, session);
-        }
-    }
-
-    private void sendInternal(IxsiMessageType ixsi, WebSocketSession session) {
-        log.trace("Entered sendInternal...");
-
         try {
             String str = parser.marshal(ixsi);
             TextMessage out = new TextMessage(str);
-            session.sendMessage(out);
 
+            for (String systemId : systemIdSet) {
+                webSocketSessionStore.getNext(systemId).sendMessage(out);
+            }
         } catch (JAXBException e) {
             throw new IxsiProcessingException("Could not marshal outgoing message", e);
 

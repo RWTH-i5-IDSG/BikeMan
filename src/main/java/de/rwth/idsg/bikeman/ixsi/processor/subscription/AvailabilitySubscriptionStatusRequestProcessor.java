@@ -19,7 +19,7 @@ import java.util.List;
 public class AvailabilitySubscriptionStatusRequestProcessor implements
         SubscriptionRequestProcessor<AvailabilitySubscriptionStatusRequest, AvailabilitySubscriptionStatusResponse> {
 
-    @Autowired AvailabilityStore availabilityStore;
+    @Autowired private AvailabilityStore availabilityStore;
 
     @Override
     public AvailabilitySubscriptionStatusResponse process(AvailabilitySubscriptionStatusRequest request, String systemId) {

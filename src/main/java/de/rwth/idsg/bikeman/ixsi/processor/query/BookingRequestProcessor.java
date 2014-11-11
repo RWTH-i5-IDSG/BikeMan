@@ -2,7 +2,6 @@ package de.rwth.idsg.bikeman.ixsi.processor.query;
 
 import com.google.common.base.Optional;
 import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
-import de.rwth.idsg.bikeman.ixsi.schema.AvailabilityResponseType;
 import de.rwth.idsg.bikeman.ixsi.schema.BookingRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.BookingResponseType;
 import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;

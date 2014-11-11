@@ -1,7 +1,6 @@
 package de.rwth.idsg.bikeman.ixsi.dto.query;
 
 import lombok.Data;
-import lombok.Value;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
