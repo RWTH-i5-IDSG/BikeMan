@@ -36,7 +36,7 @@ public class DatabaseConfiguration implements EnvironmentAware {
     }
 
     @Bean(destroyMethod = "shutdown")
-    @ConditionalOnMissingClass(name = "HerokuDatabaseConfiguration")
+    @ConditionalOnMissingClass(name = "de.rwth.idsg.bikeman.config.HerokuDatabaseConfiguration")
     public DataSource dataSource() {
         log.debug("Configuring Datasource");
         if (propertyResolver.getProperty("url") == null && propertyResolver.getProperty("databaseName") == null) {
