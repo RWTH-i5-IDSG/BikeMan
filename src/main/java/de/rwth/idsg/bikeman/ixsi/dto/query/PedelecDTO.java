@@ -7,7 +7,7 @@ import lombok.Value;
  */
 @Value
 public class PedelecDTO {
-    private Long pedelecId;
+//    private Long pedelecId;
     private String manufacturerId;
     private Integer maxDistance;
 }

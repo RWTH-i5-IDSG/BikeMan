@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 @ToString(includeFieldNames = true)
 public class StationDTO {
 
-    private Long stationId;
+    private String manufacturerId;
     private BigDecimal location_longitude;
     private BigDecimal location_latitude;
     private Integer slotCount;
@@ -21,10 +21,10 @@ public class StationDTO {
     private String note;
     private ViewAddressDTO address;
 
-    public StationDTO(Long stationId, BigDecimal location_longitude, BigDecimal location_latitude,
+    public StationDTO(String manufacturerId, BigDecimal location_longitude, BigDecimal location_latitude,
                       Integer slotCount, String name, String note,
                       String streetAndHousenumber, String zip, String city, String country) {
-        this.stationId = stationId;
+        this.manufacturerId = manufacturerId;
         this.location_longitude = location_longitude;
         this.location_latitude = location_latitude;
         this.slotCount = slotCount;

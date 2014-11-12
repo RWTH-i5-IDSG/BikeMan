@@ -40,11 +40,11 @@ public class QueryIXSIRepositoryImpl implements QueryIXSIRepository {
         // TODO: The value 0 for maxDistance is a placeholder! Pedelec entity has to be expanded to contain such a property
         //
         final String pedelecQuery = "SELECT new de.rwth.idsg.bikeman.ixsi.dto.query." +
-                                    "PedelecDTO(p.pedelecId, p.manufacturerId, 0) " +
+                                    "PedelecDTO(p.manufacturerId, 0) " +
                                     "FROM Pedelec p";
 
         final String stationQuery = "SELECT new de.rwth.idsg.bikeman.ixsi.dto.query." +
-                                    "StationDTO(s.stationId, s.locationLongitude, s.locationLatitude, " +
+                                    "StationDTO(s.manufacturerId, s.locationLongitude, s.locationLatitude, " +
                                     "s.stationSlots.size, s.name, s.note, " +
                                     "a.streetAndHousenumber, a.zip, a.city, a.country) " +
                                     "FROM Station s LEFT JOIN s.address a";
