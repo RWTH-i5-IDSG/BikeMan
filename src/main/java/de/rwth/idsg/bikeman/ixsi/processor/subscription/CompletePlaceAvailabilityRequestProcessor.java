@@ -1,7 +1,6 @@
 package de.rwth.idsg.bikeman.ixsi.processor.subscription;
 
 import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
-import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
 import de.rwth.idsg.bikeman.ixsi.dto.query.PlaceAvailabilityResponseDTO;
 import de.rwth.idsg.bikeman.ixsi.processor.PlaceAvailabilityStore;
 import de.rwth.idsg.bikeman.ixsi.processor.query.PlaceAvailabilityRequestProcessor;
@@ -9,11 +8,9 @@ import de.rwth.idsg.bikeman.ixsi.repository.QueryIXSIRepository;
 import de.rwth.idsg.bikeman.ixsi.schema.CompletePlaceAvailabilityRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.CompletePlaceAvailabilityResponseType;
 import de.rwth.idsg.bikeman.ixsi.schema.PlaceAvailabilityType;
-import de.rwth.idsg.bikeman.ixsi.schema.ProviderPlaceIDType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,7 +29,7 @@ public class CompletePlaceAvailabilityRequestProcessor implements
     public CompletePlaceAvailabilityResponseType process(CompletePlaceAvailabilityRequestType request, String systemId) {
         List<String> ids = placeAvailabilityStore.getSubscriptions(systemId);
 
-        List<PlaceAvailabilityResponseDTO> dtos = queryIXSIRepository.placeAvailability(getProviderPlaceIdsFromString(ids));
+        List<PlaceAvailabilityResponseDTO> dtos = queryIXSIRepository.placeAvailability(ids);
         List<PlaceAvailabilityType> availabilities = placeAvailabilityRequestProcessor.getPlaceAvailabilities(dtos);
 
         CompletePlaceAvailabilityResponseType response = new CompletePlaceAvailabilityResponseType();
@@ -41,17 +38,6 @@ public class CompletePlaceAvailabilityRequestProcessor implements
         response.getPlaceAvailability().addAll(availabilities);
 
         return response;
-    }
-
-    private List<ProviderPlaceIDType> getProviderPlaceIdsFromString(List<String> ids) {
-        List<ProviderPlaceIDType> res = new ArrayList<>();
-        for (String id : ids) {
-            ProviderPlaceIDType t = new ProviderPlaceIDType();
-            t.setPlaceID(id);
-            t.setProviderID(IXSIConstants.Provider.id);
-            res.add(t);
-        }
-        return res;
     }
 
     // -------------------------------------------------------------------------
