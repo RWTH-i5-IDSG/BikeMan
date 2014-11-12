@@ -27,13 +27,16 @@ public interface QueryIXSIRepository {
     List<AvailabilityResponseDTO> availability(List<BookingTargetIDType> targets);
     List<AvailabilityResponseDTO> availability(GeoCircleType circle);
     List<AvailabilityResponseDTO> availability(GeoRectangleType rectangle);
-    // we do not need booking for velocity
+
 //    BookingResponseDTObooking();
 //    ChangeBookingResponseDTO changeBooking();
+
     CloseSessionResponseDTO closeSession();
     OpenSessionResponseDTO openSession();
-    List<PlaceAvailabilityResponseDTO> placeAvailability(List<ProviderPlaceIDType> placeIds);
+
+    List<PlaceAvailabilityResponseDTO> placeAvailability(List<String> placeIdList);
     List<PlaceAvailabilityResponseDTO> placeAvailability(GeoCircleType circle);
     List<PlaceAvailabilityResponseDTO> placeAvailability(GeoRectangleType geoRectangle);
+
     TokenGenerationResponseDTO tokenGeneration();
 }

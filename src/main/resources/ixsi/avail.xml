@@ -6,10 +6,10 @@
             <TimeStamp>2008-09-29T03:49:45</TimeStamp>
             <MessageID>200</MessageID>
         </Transaction>
-        <SystemID>string</SystemID>
+        <SystemID>MobilityBroker</SystemID>
         <Auth>
             <UserInfo>
-                <ProviderID>string</ProviderID>
+                <ProviderID>Velocity</ProviderID>
                 <UserID>string</UserID>
                 <Token>token</Token>
             </UserInfo>
@@ -28,28 +28,6 @@
                 <!--Optional:-->
                 <SeverityFactor>200</SeverityFactor>
             </BookingTarget>
-            <Circle>
-                <Center>
-                    <Longitude>180.0</Longitude>
-                    <Latitude>90.0</Latitude>
-                </Center>
-                <Radius>200</Radius>
-            </Circle>
-            <GeoRectangle>
-                <UpperLeft>
-                    <Longitude>180.0</Longitude>
-                    <Latitude>90.0</Latitude>
-                </UpperLeft>
-                <LowerRight>
-                    <Longitude>180.0</Longitude>
-                    <Latitude>90.0</Latitude>
-                </LowerRight>
-            </GeoRectangle>
-            <!--Optional:-->
-            <TimePeriod>
-                <Begin>2009-05-16T14:42:28</Begin>
-                <End>2003-08-09T02:18:37+02:00</End>
-            </TimePeriod>
         </Availability>
     </Request>
 </Ixsi>

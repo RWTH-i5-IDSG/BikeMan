@@ -9,6 +9,8 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
+import java.io.IOException;
+
 /**
  * Created by max on 08/09/14.
  */
@@ -24,7 +26,26 @@ public class WebSocketEndpoint extends TextWebSocketHandler {
         log.info("[id={}] Received text message: {}", session.getId(), webSocketMessage);
 
         CommunicationContext context = new CommunicationContext(session, webSocketMessage.getPayload());
-        consumer.consume(context);
+        try {
+            consumer.consume(context);
+        } catch (IxsiProcessingException e) {
+            handleError(session, e);
+        }
+    }
+
+    /**
+     * If there's something fundamentally wrong with the incoming message or its processing
+     * (like receiving non-Ixsi strings or parsing the request) from which the system cannot recover
+     * and send the appropriate IXSI error message, we cannot do anything but send a simple error string
+     * for debugging purposes and close the session.
+     *
+     */
+    private void handleError(WebSocketSession session, IxsiProcessingException e) throws IOException {
+        log.error("Error occurred", e);
+        String errorMsg = "IxsiProcessingException: " + e.getLocalizedMessage();
+
+        session.sendMessage(new TextMessage(errorMsg));
+        session.close(CloseStatus.NOT_ACCEPTABLE.withReason(errorMsg));
     }
 
     @Override
@@ -43,6 +64,7 @@ public class WebSocketEndpoint extends TextWebSocketHandler {
 
     @Override
     public void handleTransportError(WebSocketSession session, Throwable throwable) throws Exception {
+        log.error("Oops", throwable);
         // TODO catch transportexceptions!
     }
 

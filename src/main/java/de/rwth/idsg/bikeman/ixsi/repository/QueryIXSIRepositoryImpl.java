@@ -1,20 +1,11 @@
 package de.rwth.idsg.bikeman.ixsi.repository;
 
 import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
-import de.rwth.idsg.bikeman.ixsi.dto.query.AvailabilityResponseDTO;
-import de.rwth.idsg.bikeman.ixsi.dto.query.BookingTargetsInfoResponseDTO;
-import de.rwth.idsg.bikeman.ixsi.dto.query.ChangedProvidersResponseDTO;
-import de.rwth.idsg.bikeman.ixsi.dto.query.CloseSessionResponseDTO;
-import de.rwth.idsg.bikeman.ixsi.dto.query.OpenSessionResponseDTO;
-import de.rwth.idsg.bikeman.ixsi.dto.query.PedelecDTO;
-import de.rwth.idsg.bikeman.ixsi.dto.query.PlaceAvailabilityResponseDTO;
-import de.rwth.idsg.bikeman.ixsi.dto.query.StationDTO;
-import de.rwth.idsg.bikeman.ixsi.dto.query.TokenGenerationResponseDTO;
+import de.rwth.idsg.bikeman.ixsi.dto.query.*;
 import de.rwth.idsg.bikeman.ixsi.schema.BookingTargetIDType;
 import de.rwth.idsg.bikeman.ixsi.schema.BookingTargetPropertiesType;
 import de.rwth.idsg.bikeman.ixsi.schema.GeoCircleType;
 import de.rwth.idsg.bikeman.ixsi.schema.GeoRectangleType;
-import de.rwth.idsg.bikeman.ixsi.schema.ProviderPlaceIDType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
@@ -22,7 +13,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -107,7 +97,8 @@ public class QueryIXSIRepositoryImpl implements QueryIXSIRepository {
     @Override
     @SuppressWarnings("unchecked")
     public List<AvailabilityResponseDTO> availability(List<BookingTargetIDType> targets) {
-        Query q = em.createQuery("SELECT new de.rwth.idsg.bikeman.ixsi.dto.query.AvailabilityResponseDTO(" +
+        Query q = em.createQuery(
+                "SELECT new de.rwth.idsg.bikeman.ixsi.dto.query.AvailabilityResponseDTO(" +
                 "p.manufacturerId, s.manufacturerId, s.locationLatitude, s.locationLongitude, p.stateOfCharge) " +
                 "FROM Pedelec p JOIN p.stationSlot slot JOIN slot.station s " +
                 "WHERE p.manufacturerId in :targets");
@@ -177,24 +168,17 @@ public class QueryIXSIRepositoryImpl implements QueryIXSIRepository {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<PlaceAvailabilityResponseDTO> placeAvailability(List<ProviderPlaceIDType> placeIds) {
+    public List<PlaceAvailabilityResponseDTO> placeAvailability(List<String> placeIdList) {
+        final String q = "SELECT new de.rwth.idsg.bikeman.ixsi.dto.query.PlaceAvailabilityResponseDTO(" +
+                         "slot.station.manufacturerId, CAST(count(slot) as integer)) " +
+                         "FROM StationSlot slot " +
+                         "WHERE NOT slot.isOccupied = true AND " +
+                         "slot.station.manufacturerId in :placeIds " +
+                         "GROUP by slot.station.manufacturerId";
 
-        List<String> idList = new ArrayList<>();
-        for (ProviderPlaceIDType id : placeIds) {
-            idList.add(id.getPlaceID());
-        }
-
-        Query q = em.createQuery(
-                "SELECT new de.rwth.idsg.bikeman.ixsi.dto.query.PlaceAvailabilityResponseDTO(" +
-                        "slot.station.manufacturerId, CAST(count(slot) as integer)) " +
-                        "FROM StationSlot slot " +
-                        "WHERE NOT slot.isOccupied = true AND " +
-                        "slot.station.manufacturerId in :placeIds " +
-                        "GROUP by slot.station.manufacturerId"
-                , PlaceAvailabilityResponseDTO.class);
-        q.setParameter("placeIds", idList);
-
-        return q.getResultList();
+        return em.createQuery(q, PlaceAvailabilityResponseDTO.class)
+                 .setParameter("placeIds", placeIdList)
+                 .getResultList();
     }
 
     @Override

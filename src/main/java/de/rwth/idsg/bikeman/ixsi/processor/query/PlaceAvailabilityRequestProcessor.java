@@ -32,9 +32,16 @@ public class PlaceAvailabilityRequestProcessor implements UserRequestProcessor<P
 
         List<PlaceAvailabilityResponseDTO> dtos = new ArrayList<>();
         if (request.isSetPlaceID()) {
-            dtos = queryIXSIRepository.placeAvailability(request.getPlaceID());
+
+            List<String> idList = new ArrayList<>();
+            for (ProviderPlaceIDType id : request.getPlaceID()) {
+                idList.add(id.getPlaceID());
+            }
+            dtos = queryIXSIRepository.placeAvailability(idList);
+
         } else if (request.isSetGeoRectangle()) {
             dtos = queryIXSIRepository.placeAvailability(request.getGeoRectangle());
+
         } else if (request.isSetCircle()) {
             dtos = queryIXSIRepository.placeAvailability(request.getCircle());
         }
