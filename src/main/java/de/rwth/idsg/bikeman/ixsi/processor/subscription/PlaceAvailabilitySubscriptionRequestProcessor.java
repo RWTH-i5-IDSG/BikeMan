@@ -23,14 +23,10 @@ public class PlaceAvailabilitySubscriptionRequestProcessor implements
 
     @Override
     public PlaceAvailabilitySubscriptionResponseType process(PlaceAvailabilitySubscriptionRequestType request, String systemId) {
-        List<Long> itemIds = new ArrayList<>();
+
+        List<String> itemIds = new ArrayList<>();
         for (ProviderPlaceIDType id : request.getPlaceID()) {
-            try {
-                itemIds.add(Long.valueOf(id.getPlaceID()));
-            } catch (NumberFormatException e) {
-                // TODO change this?
-                return invalidSystem();
-            }
+            itemIds.add(id.getPlaceID());
         }
 
         if (request.isUnsubscription()) {

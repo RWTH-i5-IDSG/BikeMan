@@ -45,18 +45,6 @@ public class WebSocketSessionStoreImpl implements WebSocketSessionStore {
         log.debug("A new WebSocketSession with id '{}' is stored for system '{}'", session.getId(), systemID);
     }
 
-//    @Override
-//    public void remove(WebSocketSession session) {
-//        for (Map.Entry<String, Deque<WebSocketSession>> entry : lookupTable.entrySet()) {
-//            Deque<WebSocketSession> sessionSet = entry.getValue();
-//            if (sessionSet.contains(session)) {
-//                sessionSet.remove(session);
-//                log.debug("The WebSocketSession with id '{}' is removed for system '{}'", entry.getKey(), session.getId());
-//                break;
-//            }
-//        }
-//    }
-
     @Override
     public void remove(String systemID, WebSocketSession session) {
         Deque<WebSocketSession> sessionSet = lookupTable.get(systemID);

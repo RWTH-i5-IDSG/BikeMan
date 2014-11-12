@@ -63,7 +63,7 @@ public class AvailabilityPushService {
         IxsiMessageType ixsi = new IxsiMessageType();
         ixsi.setSubscriptionMessage(sub);
 
-        Set<String> systemIdSet = availabilityStore.getSubscribedSystems(Long.valueOf(bookeeID));
+        Set<String> systemIdSet = availabilityStore.getSubscribedSystems(bookeeID);
         producer.send(ixsi, systemIdSet);
     }
 

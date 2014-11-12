@@ -8,10 +8,10 @@ import java.util.Set;
  * @since 04.11.2014
  */
 public interface SubscriptionStore {
-    void subscribe(String systemID, List<Long> itemIDs, Integer expireIntervalinMinutes);
-    void subscribe(String systemID, List<Long> itemIDs);
-    void unsubscribe(String systemID, List<Long> itemIDs);
-    Set<String> getSubscribedSystems(Long itemID);
-    List<Long> getSubscriptions(String systemID);
+    void subscribe(String systemID, List<String> itemIDs, Integer expireIntervalinMinutes);
+    void subscribe(String systemID, List<String> itemIDs);
+    void unsubscribe(String systemID, List<String> itemIDs);
+    Set<String> getSubscribedSystems(String itemID);
+    List<String> getSubscriptions(String systemID);
     void clear();
 }

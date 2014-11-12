@@ -49,92 +49,92 @@ public class AvailabilityStoreTest {
 
     @Test
     public void test1_System1() {
-        store.subscribe(systemId_1, Arrays.asList(11L, 12L, 13L, 14L));
-        List<Long> list_1 = store.getSubscriptions(systemId_1);
+        store.subscribe(systemId_1, Arrays.asList("11", "12", "13", "14"));
+        List<String> list_1 = store.getSubscriptions(systemId_1);
 
         logWithMethodName();
-        assertThat(list_1, CoreMatchers.hasItems(11L, 12L, 13L, 14L));
+        assertThat(list_1, CoreMatchers.hasItems("11", "12", "13", "14"));
     }
 
     @Test
     public void test2_System1_OneMore() {
-        store.subscribe(systemId_1, Arrays.asList(11L, 12L, 13L, 14L));
+        store.subscribe(systemId_1, Arrays.asList("11", "12", "13", "14"));
 
-        store.subscribe(systemId_1, Arrays.asList(5765L));
-        List<Long> list_1 = store.getSubscriptions(systemId_1);
+        store.subscribe(systemId_1, Arrays.asList("5765"));
+        List<String> list_1 = store.getSubscriptions(systemId_1);
 
         logWithMethodName();
-        assertThat(list_1, CoreMatchers.hasItems(11L, 12L, 13L, 14L, 5765L));
+        assertThat(list_1, CoreMatchers.hasItems("11", "12", "13", "14", "5765"));
     }
 
     @Test
     public void test3_System2() {
-        store.subscribe(systemId_1, Arrays.asList(11L, 12L, 13L, 14L));
-        store.subscribe(systemId_2, Arrays.asList(21L, 22L, 23L, 24L));
-        List<Long> list_2 = store.getSubscriptions(systemId_2);
+        store.subscribe(systemId_1, Arrays.asList("11", "12", "13", "14"));
+        store.subscribe(systemId_2, Arrays.asList("21", "22", "23", "24"));
+        List<String> list_2 = store.getSubscriptions(systemId_2);
 
         logWithMethodName();
-        assertThat(list_2, CoreMatchers.hasItems(21L, 22L, 23L, 24L));
+        assertThat(list_2, CoreMatchers.hasItems("21", "22", "23", "24"));
     }
 
     @Test
     public void test4_System1_Duplicate() {
-        store.subscribe(systemId_1, Arrays.asList(11L, 12L, 13L, 14L));
-        store.subscribe(systemId_2, Arrays.asList(21L, 22L, 23L, 24L));
+        store.subscribe(systemId_1, Arrays.asList("11", "12", "13", "14"));
+        store.subscribe(systemId_2, Arrays.asList("21", "22", "23", "24"));
 
-        store.subscribe(systemId_1, Arrays.asList(13L, 14L));
-        List<Long> list_1 = store.getSubscriptions(systemId_1);
+        store.subscribe(systemId_1, Arrays.asList("13", "14"));
+        List<String> list_1 = store.getSubscriptions(systemId_1);
 
         logWithMethodName();
-        assertThat(list_1, CoreMatchers.hasItems(11L, 12L, 13L, 14L));
+        assertThat(list_1, CoreMatchers.hasItems("11", "12", "13", "14"));
     }
 
     @Test
     public void test5_System1and2_Mix() {
-        store.subscribe(systemId_1, Arrays.asList(11L, 12L, 13L, 14L));
-        store.subscribe(systemId_2, Arrays.asList(21L, 22L, 23L, 24L));
+        store.subscribe(systemId_1, Arrays.asList("11", "12", "13", "14"));
+        store.subscribe(systemId_2, Arrays.asList("21", "22", "23", "24"));
 
         // system1 subscribes to target of system2
-        store.subscribe(systemId_1, Arrays.asList(22L));
-        List<Long> list_1 = store.getSubscriptions(systemId_1);
+        store.subscribe(systemId_1, Arrays.asList("22"));
+        List<String> list_1 = store.getSubscriptions(systemId_1);
 
         logWithMethodName();
-        assertThat(list_1, CoreMatchers.hasItems(11L, 12L, 13L, 14L, 22L));
+        assertThat(list_1, CoreMatchers.hasItems("11", "12", "13", "14", "22"));
     }
 
     @Test
     public void test6_GetSystems() {
-        store.subscribe(systemId_1, Arrays.asList(11L, 12L, 13L, 14L));
-        store.subscribe(systemId_2, Arrays.asList(21L, 22L, 23L, 24L));
+        store.subscribe(systemId_1, Arrays.asList("11", "12", "13", "14"));
+        store.subscribe(systemId_2, Arrays.asList("21", "22", "23", "24"));
 
-        store.subscribe(systemId_1, Arrays.asList(22L));
+        store.subscribe(systemId_1, Arrays.asList("22"));
 
-        Set<String> systems = store.getSubscribedSystems(22L);
+        Set<String> systems = store.getSubscribedSystems("22");
         assertThat(systems, CoreMatchers.hasItems(systemId_1, systemId_2));
     }
 
     @Test
     public void test7_System1_Unsubscribe() {
-        store.subscribe(systemId_1, Arrays.asList(11L, 12L, 13L, 14L));
-        store.subscribe(systemId_2, Arrays.asList(21L, 22L, 23L, 24L));
+        store.subscribe(systemId_1, Arrays.asList("11", "12", "13", "14"));
+        store.subscribe(systemId_2, Arrays.asList("21", "22", "23", "24"));
 
-        store.unsubscribe(systemId_1, Arrays.asList(11L));
-        List<Long> temp = store.getSubscriptions(systemId_1);
+        store.unsubscribe(systemId_1, Arrays.asList("11"));
+        List<String> temp = store.getSubscriptions(systemId_1);
 
         logWithMethodName();
-        assertThat(temp, CoreMatchers.hasItems(12L, 13L, 14L));
+        assertThat(temp, CoreMatchers.hasItems("12", "13", "14"));
     }
 
     @Test
     public void test8_RandomSystemForAll() {
-        store.subscribe(systemId_1, Arrays.asList(11L, 12L, 13L, 14L));
-        store.subscribe(systemId_2, Arrays.asList(21L, 22L, 23L, 24L));
+        store.subscribe(systemId_1, Arrays.asList("11", "12", "13", "14"));
+        store.subscribe(systemId_2, Arrays.asList("21", "22", "23", "24"));
 
-        store.subscribe("random", Arrays.asList(11L, 12L, 13L, 14L, 21L, 22L, 23L, 24L));
-        List<Long> temp = store.getSubscriptions("random");
+        store.subscribe("random", Arrays.asList("11", "12", "13", "14", "21", "22", "23", "24"));
+        List<String> temp = store.getSubscriptions("random");
 
         logWithMethodName();
-        assertThat(temp, CoreMatchers.hasItems(11L, 12L, 13L, 14L, 21L, 22L, 23L, 24L));
+        assertThat(temp, CoreMatchers.hasItems("11", "12", "13", "14", "21", "22", "23", "24"));
     }
 
     private void logWithMethodName() {

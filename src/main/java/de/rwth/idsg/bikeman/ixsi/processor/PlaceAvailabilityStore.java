@@ -31,7 +31,7 @@ public class PlaceAvailabilityStore extends AbstractSubscriptionStore {
     }
 
     @Override
-    public void subscribe(String systemID, List<Long> itemIDs, Integer expireIntervalinMinutes) {
+    public void subscribe(String systemID, List<String> itemIDs, Integer expireIntervalinMinutes) {
         // No op: PlaceAvailabilitySubscriptionRequestType defines no EventHorizon
     }
 }

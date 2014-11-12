@@ -23,14 +23,10 @@ public class AvailabilitySubscriptionRequestProcessor implements
 
     @Override
     public AvailabilitySubscriptionResponseType process(AvailabilitySubscriptionRequestType request, String systemId) {
-        // transform bookingTargetIds
-        List<Long> itemIds = new ArrayList<>();
+
+        List<String> itemIds = new ArrayList<>();
         for (BookingTargetIDType id : request.getBookingTargetID()) {
-            try {
-                itemIds.add(Long.valueOf(id.getBookeeID()));
-            } catch (NumberFormatException e) {
-                return invalidSystem();
-            }
+            itemIds.add(id.getBookeeID());
         }
 
         if (request.isUnsubscription()) {

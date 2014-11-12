@@ -8,7 +8,6 @@ import org.springframework.web.socket.WebSocketSession;
  */
 public interface WebSocketSessionStore {
     void add(String systemID, WebSocketSession session);
-//    void remove(WebSocketSession session);
     void remove(String systemID, WebSocketSession session);
     WebSocketSession getNext(String systemID);
     void clear();

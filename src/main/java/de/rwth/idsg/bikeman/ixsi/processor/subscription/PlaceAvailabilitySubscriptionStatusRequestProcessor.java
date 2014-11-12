@@ -23,12 +23,12 @@ public class PlaceAvailabilitySubscriptionStatusRequestProcessor implements
 
     @Override
     public PlaceAvailabilitySubscriptionStatusResponse process(PlaceAvailabilitySubscriptionStatusRequest request, String systemId) {
-        List<Long> subscriptions = placeAvailabilityStore.getSubscriptions(systemId);
+        List<String> subscriptions = placeAvailabilityStore.getSubscriptions(systemId);
 
         List<ProviderPlaceIDType> ids = new ArrayList<>();
-        for (Long s : subscriptions) {
+        for (String s : subscriptions) {
             ProviderPlaceIDType idType = new ProviderPlaceIDType();
-            idType.setPlaceID(s.toString());
+            idType.setPlaceID(s);
             ids.add(idType);
         }
 

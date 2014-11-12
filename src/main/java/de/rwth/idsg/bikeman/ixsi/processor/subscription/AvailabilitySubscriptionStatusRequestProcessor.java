@@ -23,12 +23,12 @@ public class AvailabilitySubscriptionStatusRequestProcessor implements
 
     @Override
     public AvailabilitySubscriptionStatusResponse process(AvailabilitySubscriptionStatusRequest request, String systemId) {
-        List<Long> subscriptions = availabilityStore.getSubscriptions(systemId);
+        List<String> subscriptions = availabilityStore.getSubscriptions(systemId);
 
         List<BookingTargetIDType> ids = new ArrayList<>();
-        for (Long s : subscriptions) {
+        for (String s : subscriptions) {
             BookingTargetIDType idType = new BookingTargetIDType();
-            idType.setBookeeID(s.toString());
+            idType.setBookeeID(s);
             ids.add(idType);
         }
 
