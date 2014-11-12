@@ -7,8 +7,8 @@ var bikeManApp = angular.module('bikeManApp', ['http-auth-interceptor', 'tmh.dyn
     'ngResource', 'ngCookies', 'bikeManAppUtils', 'pascalprecht.translate', 'truncate', 'ui.router', 'ui.bootstrap', 'ui.bootstrap.showErrors']);
 
 bikeManApp
-    .config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$translateProvider',  'tmhDynamicLocaleProvider', 'USER_ROLES', '$compileProvider',
-        function ($stateProvider, $urlRouterProvider, $httpProvider, $translateProvider, tmhDynamicLocaleProvider, USER_ROLES, $compileProvider) {
+    .config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$translateProvider',  'tmhDynamicLocaleProvider', 'USER_ROLES',
+        function ($stateProvider, $urlRouterProvider, $httpProvider, $translateProvider, tmhDynamicLocaleProvider, USER_ROLES) {
 
             $urlRouterProvider.otherwise('/main');
 

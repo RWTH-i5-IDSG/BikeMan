@@ -1,14 +1,17 @@
 package de.rwth.idsg.bikeman.domain;
 
 import de.rwth.idsg.bikeman.domain.login.User;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.Builder;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
-import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Set;
 
@@ -23,7 +26,7 @@ import java.util.Set;
 @Table(name = "T_CARD_ACCOUNT")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @TableGenerator(name="card_account_gen", initialValue=0, allocationSize=1)
-@EqualsAndHashCode(of = {"cardId"})
+@EqualsAndHashCode(of = {"cardId"}, callSuper = false)
 @ToString(includeFieldNames = true, exclude = {})
 @Getter
 @Setter
