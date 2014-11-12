@@ -11,8 +11,8 @@ import java.math.BigInteger;
 @Data
 public class AvailabilityResponseDTO {
 
-    private final BigInteger pedelecId;
-    private final BigInteger stationId;
+    private final String manufacturerId;
+    private final String stationManufacturerId;
     private final BigDecimal locationLatitude;
     private final BigDecimal locationLongitude;
     private final Float stateOfCharge;

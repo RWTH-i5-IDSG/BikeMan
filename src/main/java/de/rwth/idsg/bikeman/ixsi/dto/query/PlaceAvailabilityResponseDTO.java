@@ -8,7 +8,7 @@ import lombok.Data;
 @Data
 public class PlaceAvailabilityResponseDTO {
 
-    private final long stationId;
+    private final String manufacturerId;
     private final Integer availableSlots;
 //    private int availablePedelecs;
 

@@ -7,6 +7,7 @@ import de.rwth.idsg.bikeman.ixsi.dto.query.CloseSessionResponseDTO;
 import de.rwth.idsg.bikeman.ixsi.dto.query.OpenSessionResponseDTO;
 import de.rwth.idsg.bikeman.ixsi.dto.query.PlaceAvailabilityResponseDTO;
 import de.rwth.idsg.bikeman.ixsi.dto.query.TokenGenerationResponseDTO;
+import de.rwth.idsg.bikeman.ixsi.schema.BookingTargetIDType;
 import de.rwth.idsg.bikeman.ixsi.schema.GeoCircleType;
 import de.rwth.idsg.bikeman.ixsi.schema.GeoRectangleType;
 import de.rwth.idsg.bikeman.ixsi.schema.ProviderPlaceIDType;
@@ -23,6 +24,7 @@ public interface QueryIXSIRepository {
     ChangedProvidersResponseDTO changedProviders(long requestTimestamp);
 
     // User triggered data
+    List<AvailabilityResponseDTO> availability(List<BookingTargetIDType> targets);
     List<AvailabilityResponseDTO> availability(GeoCircleType circle);
     List<AvailabilityResponseDTO> availability(GeoRectangleType rectangle);
     // we do not need booking for velocity

@@ -29,7 +29,7 @@ public class AvailabilitySubscriptionRequestProcessor implements
             itemIds.add(id.getBookeeID());
         }
 
-        if (request.isUnsubscription()) {
+        if (request.isSetUnsubscription() && request.isUnsubscription()) {
             availabilityStore.unsubscribe(systemId, itemIds);
 
         } else if (request.isSetEventHorizon()) {

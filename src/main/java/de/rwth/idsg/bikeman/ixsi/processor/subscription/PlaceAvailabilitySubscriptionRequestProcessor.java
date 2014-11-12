@@ -29,7 +29,7 @@ public class PlaceAvailabilitySubscriptionRequestProcessor implements
             itemIds.add(id.getPlaceID());
         }
 
-        if (request.isUnsubscription()) {
+        if (request.isSetUnsubscription() && request.isUnsubscription()) {
             placeAvailabilityStore.unsubscribe(systemId, itemIds);
         } else {
             placeAvailabilityStore.subscribe(systemId, itemIds);

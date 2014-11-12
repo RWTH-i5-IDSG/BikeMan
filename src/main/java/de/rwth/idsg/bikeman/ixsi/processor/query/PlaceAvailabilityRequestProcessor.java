@@ -39,11 +39,23 @@ public class PlaceAvailabilityRequestProcessor implements UserRequestProcessor<P
             dtos = queryIXSIRepository.placeAvailability(request.getCircle());
         }
 
+        List<PlaceAvailabilityType> placeAvailList = getPlaceAvailabilities(dtos);
+
+
+        PlaceAvailabilityResponseType response = new PlaceAvailabilityResponseType();
+        response.getPlace().addAll(placeAvailList);
+
+        UserResponseParams<PlaceAvailabilityResponseType> u = new UserResponseParams<>();
+        u.setResponse(response);
+        return u;
+    }
+
+    public List<PlaceAvailabilityType> getPlaceAvailabilities(List<PlaceAvailabilityResponseDTO> dtos) {
         List<PlaceAvailabilityType> placeAvailList = new ArrayList<>();
         for (PlaceAvailabilityResponseDTO plavdto : dtos) {
             // Id
             ProviderPlaceIDType providerPlaceIDType = new ProviderPlaceIDType();
-            providerPlaceIDType.setPlaceID(String.valueOf(plavdto.getStationId()));
+            providerPlaceIDType.setPlaceID(plavdto.getManufacturerId());
             providerPlaceIDType.setProviderID(IXSIConstants.Provider.id);
 
             PlaceAvailabilityType placeAvailabilityType = new PlaceAvailabilityType();
@@ -52,13 +64,7 @@ public class PlaceAvailabilityRequestProcessor implements UserRequestProcessor<P
 
             placeAvailList.add(placeAvailabilityType);
         }
-
-        PlaceAvailabilityResponseType response = new PlaceAvailabilityResponseType();
-        response.getPlace().addAll(placeAvailList);
-
-        UserResponseParams<PlaceAvailabilityResponseType> u = new UserResponseParams<>();
-        u.setResponse(response);
-        return u;
+        return placeAvailList;
     }
 
     @Override

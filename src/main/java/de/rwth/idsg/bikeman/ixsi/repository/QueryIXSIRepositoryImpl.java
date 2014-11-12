@@ -1,5 +1,6 @@
 package de.rwth.idsg.bikeman.ixsi.repository;
 
+import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
 import de.rwth.idsg.bikeman.ixsi.dto.query.AvailabilityResponseDTO;
 import de.rwth.idsg.bikeman.ixsi.dto.query.BookingTargetsInfoResponseDTO;
 import de.rwth.idsg.bikeman.ixsi.dto.query.ChangedProvidersResponseDTO;
@@ -9,6 +10,8 @@ import de.rwth.idsg.bikeman.ixsi.dto.query.PedelecDTO;
 import de.rwth.idsg.bikeman.ixsi.dto.query.PlaceAvailabilityResponseDTO;
 import de.rwth.idsg.bikeman.ixsi.dto.query.StationDTO;
 import de.rwth.idsg.bikeman.ixsi.dto.query.TokenGenerationResponseDTO;
+import de.rwth.idsg.bikeman.ixsi.schema.BookingTargetIDType;
+import de.rwth.idsg.bikeman.ixsi.schema.BookingTargetPropertiesType;
 import de.rwth.idsg.bikeman.ixsi.schema.GeoCircleType;
 import de.rwth.idsg.bikeman.ixsi.schema.GeoRectangleType;
 import de.rwth.idsg.bikeman.ixsi.schema.ProviderPlaceIDType;
@@ -87,11 +90,42 @@ public class QueryIXSIRepositoryImpl implements QueryIXSIRepository {
         return Math.max(pedelecUpdated.getTime(), stationUpdated.getTime());
     }
 
+    private List<BookingTargetPropertiesType> getTargetPropertyList(List<String> ids) {
+        List<BookingTargetPropertiesType> res = new ArrayList<>();
+        for (String id : ids) {
+            BookingTargetPropertiesType t = new BookingTargetPropertiesType();
+            BookingTargetIDType bookingTargetIDType = new BookingTargetIDType();
+            bookingTargetIDType.setBookeeID(id);
+            bookingTargetIDType.setProviderID(IXSIConstants.Provider.id);
+
+            res.add(t);
+        }
+
+        return res;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<AvailabilityResponseDTO> availability(List<BookingTargetIDType> targets) {
+        Query q = em.createQuery("SELECT new de.rwth.idsg.bikeman.ixsi.dto.query.AvailabilityResponseDTO(" +
+                "p.manufacturerId, s.manufacturerId, s.locationLatitude, s.locationLongitude, p.stateOfCharge) " +
+                "FROM Pedelec p JOIN p.stationSlot slot JOIN slot.station s " +
+                "WHERE p.manufacturerId in :targets");
+
+        List<String> idList = new ArrayList<>();
+        for (BookingTargetIDType id : targets) {
+            idList.add(id.getBookeeID());
+        }
+        q.setParameter("targets", idList);
+
+        return q.getResultList();
+    }
+
     @Override
     @SuppressWarnings("unchecked")
     public List<AvailabilityResponseDTO> availability(GeoCircleType circle) {
         Query q = em.createNativeQuery(
-                "SELECT p.pedelec_Id as pedelecId, s.station_Id as stationId, " +
+                "SELECT p.manufacturer_id as manufacturerId, s.station_Id as stationId, " +
                 "s.location_Latitude as locationLatitude, s.location_Longitude as locationLongitude, p.state_Of_Charge as stateOfCharge " +
                 "FROM t_Pedelec p JOIN t_Station_Slot slot ON p.pedelec_Id = slot.pedelec_Id " +
                 "JOIN t_Station s ON s.station_Id = slot.station_Id WHERE st_dwithin(" +
@@ -108,7 +142,7 @@ public class QueryIXSIRepositoryImpl implements QueryIXSIRepository {
     @Override
     public List<AvailabilityResponseDTO> availability(GeoRectangleType rectangle) {
         Query q = em.createNativeQuery(
-                "SELECT p.pedelec_Id as pedelecId, s.station_Id as stationId, " +
+                "SELECT p.manufacturer_id as manufacturerId, s.station_Id as stationId, " +
                 "s.location_Latitude as locationLatitude, s.location_Longitude as locationLongitude, p.state_Of_Charge as stateOfCharge " +
                 "FROM t_Pedelec p JOIN t_Station_Slot slot ON p.pedelec_Id = slot.pedelec_Id " +
                 "JOIN t_Station s ON s.station_Id = slot.station_Id WHERE " +
@@ -130,8 +164,8 @@ public class QueryIXSIRepositoryImpl implements QueryIXSIRepository {
         List<Object[]> fooList = q.getResultList();
         for (Object[] row : fooList) {
             AvailabilityResponseDTO dto = new AvailabilityResponseDTO(
-                    (BigInteger) row[0],
-                    (BigInteger) row[1],
+                    (String) row[0],
+                    (String) row[1],
                     (BigDecimal) row[2],
                     (BigDecimal) row[3],
                     (Float) row[4]);
@@ -145,18 +179,18 @@ public class QueryIXSIRepositoryImpl implements QueryIXSIRepository {
     @SuppressWarnings("unchecked")
     public List<PlaceAvailabilityResponseDTO> placeAvailability(List<ProviderPlaceIDType> placeIds) {
 
-        List<Long> idList = new ArrayList<>();
+        List<String> idList = new ArrayList<>();
         for (ProviderPlaceIDType id : placeIds) {
-            idList.add(Long.valueOf(id.getPlaceID()));
+            idList.add(id.getPlaceID());
         }
 
         Query q = em.createQuery(
                 "SELECT new de.rwth.idsg.bikeman.ixsi.dto.query.PlaceAvailabilityResponseDTO(" +
-                        "slot.station.stationId, CAST(count(slot) as integer)) " +
+                        "slot.station.manufacturerId, CAST(count(slot) as integer)) " +
                         "FROM StationSlot slot " +
                         "WHERE NOT slot.isOccupied = true AND " +
-                        "slot.station.stationId in :placeIds " +
-                        "GROUP by slot.station.stationId"
+                        "slot.station.manufacturerId in :placeIds " +
+                        "GROUP by slot.station.manufacturerId"
                 , PlaceAvailabilityResponseDTO.class);
         q.setParameter("placeIds", idList);
 
@@ -166,14 +200,14 @@ public class QueryIXSIRepositoryImpl implements QueryIXSIRepository {
     @Override
     public List<PlaceAvailabilityResponseDTO> placeAvailability(GeoCircleType circle) {
         Query q = em.createNativeQuery(
-                "SELECT s.station_id, CAST(count(slot) as Integer) " +
-                "FROM t_station s " +
-                "LEFT JOIN t_station_slot slot " +
+                "SELECT s.manufacturer_id, CAST(count(slot) as Integer) " +
+                "FROM t_Station s " +
+                "LEFT JOIN t_Station_slot slot " +
                 "ON slot.station_id = s.station_id " +
                 "WHERE NOT slot.is_occupied AND " +
                 "st_dwithin(st_geographyfromtext('POINT( ' || s.location_Latitude || ' ' || s.location_Longitude || ')'), " +
                 "CAST(st_makepoint( :lat, :lon ) as geography), :radius) " +
-                "GROUP BY s.station_id");
+                "GROUP BY s.manufacturer_id");
 
         q.setParameter("lat", circle.getCenter().getLatitude());
         q.setParameter("lon", circle.getCenter().getLongitude());
@@ -185,14 +219,14 @@ public class QueryIXSIRepositoryImpl implements QueryIXSIRepository {
     @Override
     public List<PlaceAvailabilityResponseDTO> placeAvailability(GeoRectangleType geoRectangle) {
         Query q = em.createNativeQuery(
-                "SELECT s.station_id, CAST(count(slot) as Integer) " +
+                "SELECT s.manufacturer_id, CAST(count(slot) as Integer) " +
                 "FROM t_station s " +
                 "LEFT JOIN t_station_slot slot " +
                 "ON slot.station_id = s.station_id " +
                 "WHERE NOT slot.is_occupied AND " +
                 "st_contains(st_makeenvelope(:lat1, :lon1, :lat2, :lon2, 4326), " +
                 "st_geometryfromtext('POINT( ' || s.location_Latitude || ' ' || s.location_Longitude || ')', 4326)) " +
-                "GROUP BY s.station_id");
+                "GROUP BY s.manufacturer_id");
 
         q.setParameter("lat1", geoRectangle.getUpperLeft().getLatitude());
         q.setParameter("lon1", geoRectangle.getUpperLeft().getLongitude());
@@ -209,7 +243,7 @@ public class QueryIXSIRepositoryImpl implements QueryIXSIRepository {
         List<Object[]> fooList = q.getResultList();
         for (Object[] row : fooList) {
             PlaceAvailabilityResponseDTO dto = new PlaceAvailabilityResponseDTO(
-                    ((BigInteger) row[0]).longValue(),
+                    (String) row[0],
                     (Integer) row[1]
                     );
 

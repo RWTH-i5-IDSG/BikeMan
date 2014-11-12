@@ -50,15 +50,27 @@ public class AvailabilityRequestProcessor implements
             dtos = queryIXSIRepository.availability(request.getCircle());
         }
 
+        List<BookingTargetAvailabilityType> availabilityList = getBookingTargetAvailabilities(dtos);
+
+
+        AvailabilityResponseType a = new AvailabilityResponseType();
+        a.getBookingTarget().addAll(availabilityList);
+
+        UserResponseParams<AvailabilityResponseType> u = new UserResponseParams<>();
+        u.setResponse(a);
+        return u;
+    }
+
+    public List<BookingTargetAvailabilityType> getBookingTargetAvailabilities(List<AvailabilityResponseDTO> dtos) {
         List<BookingTargetAvailabilityType> availabilityList = new ArrayList<>();
         for (AvailabilityResponseDTO ardto : dtos) {
             // BookingTargetId
             BookingTargetIDType bookingTargetIDType = new BookingTargetIDType();
-            String bookeeId = String.valueOf(ardto.getPedelecId());
+            String bookeeId = String.valueOf(ardto.getManufacturerId());
             bookingTargetIDType.setBookeeID(bookeeId);
             bookingTargetIDType.setProviderID(IXSIConstants.Provider.id);
             // PlaceID
-            String placeId = String.valueOf(ardto.getStationId());
+            String placeId = String.valueOf(ardto.getStationManufacturerId());
             // GeoPosition
             CoordType coordType = new CoordType();
             coordType.setLatitude(ardto.getLocationLatitude());
@@ -78,13 +90,7 @@ public class AvailabilityRequestProcessor implements
 
             availabilityList.add(bType);
         }
-
-        AvailabilityResponseType a = new AvailabilityResponseType();
-        a.getBookingTarget().addAll(availabilityList);
-
-        UserResponseParams<AvailabilityResponseType> u = new UserResponseParams<>();
-        u.setResponse(a);
-        return u;
+        return availabilityList;
     }
 
     private int roundPercent(Float decimal) {
