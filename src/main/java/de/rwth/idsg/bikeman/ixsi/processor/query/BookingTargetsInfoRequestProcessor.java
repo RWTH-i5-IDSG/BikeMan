@@ -95,9 +95,10 @@ public class BookingTargetsInfoRequestProcessor implements
             BookingTargetType target = new BookingTargetType();
 
             // set pedelecId
-            target.setID(String.valueOf(ped.getPedelecId()));
+            target.setID(ped.getManufacturerId());
 
-            // set manufacturerId
+            // TODO: In our case pedelecs have no names,
+            // for now we just set the manufacturerId
             TextType name = new TextType();
             name.setText(ped.getManufacturerId());
             target.getName().add(name);
@@ -132,7 +133,7 @@ public class BookingTargetsInfoRequestProcessor implements
             PlaceType place = new PlaceType();
 
             // set placeID
-            place.setID(String.valueOf(stat.getStationId()));
+            place.setID(stat.getManufacturerId());
 
             // set place coordinates
             CoordType coords = new CoordType();

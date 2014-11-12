@@ -8,6 +8,7 @@ import de.rwth.idsg.bikeman.ixsi.schema.BookingTargetChangeAvailabilityType;
 import de.rwth.idsg.bikeman.ixsi.schema.BookingTargetIDType;
 import de.rwth.idsg.bikeman.ixsi.schema.IxsiMessageType;
 import de.rwth.idsg.bikeman.ixsi.schema.SubscriptionMessageType;
+import de.rwth.idsg.bikeman.ixsi.schema.TimePeriodType;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,35 +27,44 @@ public class AvailabilityPushService {
     @Autowired private Producer producer;
     @Autowired private AvailabilityStore availabilityStore;
 
-    private void push(AvailabilityPushMessageType msg, Set<String> systemIdSet) {
-        SubscriptionMessageType sub = new SubscriptionMessageType();
-        sub.setPushMessageGroup(msg);
-
-        IxsiMessageType ixsi = new IxsiMessageType();
-        ixsi.setSubscriptionMessage(sub);
-
-        producer.send(ixsi, systemIdSet);
+    public void takenFromPlace(String bookeeID, String placeID, DateTime departure) {
+        buildAndSend(bookeeID, placeID, departure, true);
     }
 
-    public void arrivedAtLocation(String bookeeID, String placeID, DateTime arrival) {
+    public void arrivedAtPlace(String bookeeID, String placeID, DateTime arrival) {
+        buildAndSend(bookeeID, placeID, arrival, false);
+    }
+
+    private void buildAndSend(String bookeeID, String placeID, DateTime dt, boolean isAvailable) {
         BookingTargetIDType bookingTargetID = new BookingTargetIDType();
         bookingTargetID.setBookeeID(bookeeID);
         bookingTargetID.setProviderID(IXSIConstants.Provider.id);
+
+        TimePeriodType period = new TimePeriodType();
+        period.setBegin(dt);
+        period.setEnd(new DateTime().plusHours(6)); // TODO: Does not make sense at all. Find a solution!
 
         BookingTargetChangeAvailabilityType targetChange = new BookingTargetChangeAvailabilityType();
         targetChange.setID(bookingTargetID);
         targetChange.setPlaceID(placeID);
 
-        // TODO targetChange.setAvailability();
+        if (isAvailable) {
+            targetChange.setAvailability(period);
+        } else {
+            targetChange.setInavailability(period);
+        }
 
-        AvailabilityPushMessageType a = new AvailabilityPushMessageType();
-        a.getAvailabilityChange().add(targetChange);
+        AvailabilityPushMessageType avail = new AvailabilityPushMessageType();
+        avail.getAvailabilityChange().add(targetChange);
+
+        SubscriptionMessageType sub = new SubscriptionMessageType();
+        sub.setPushMessageGroup(avail);
+
+        IxsiMessageType ixsi = new IxsiMessageType();
+        ixsi.setSubscriptionMessage(sub);
+
         Set<String> systemIdSet = availabilityStore.getSubscribedSystems(Long.valueOf(bookeeID));
-
-        this.push(a, systemIdSet);
+        producer.send(ixsi, systemIdSet);
     }
 
-    public void takenFromLocation(BookingTargetIDType id, String placeID, DateTime departure) {
-
-    }
 }

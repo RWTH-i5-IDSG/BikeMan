@@ -78,7 +78,7 @@ public class WebSocketSessionStoreImpl implements WebSocketSessionStore {
     @Override
     public void clear() {
         lookupTable.clear();
-        log.debug("Cleared the subscription store");
+        log.debug("Cleared the WebSocketSession store");
     }
 
     @Override
