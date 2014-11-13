@@ -16,7 +16,6 @@ import java.io.Serializable;
 @Entity
 @Table(name = "T_TRANSACTION",
         indexes = {
-                @Index(columnList="user_id", unique = false),
                 @Index(columnList="pedelec_id", unique = false),
                 @Index(columnList="from_slot_id", unique = false),
                 @Index(columnList="to_slot_id", unique = false) })
@@ -33,10 +32,6 @@ public class Transaction implements Serializable {
     @GeneratedValue(strategy = GenerationType.TABLE, generator = "transaction_gen")
     @Column(name = "transaction_id")
     private long transactionId;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private Customer customer;
 
     @Column(name = "start_datetime")
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")

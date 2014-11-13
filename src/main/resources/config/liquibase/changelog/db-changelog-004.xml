@@ -200,4 +200,10 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="1409564974607-31" author="wkluth">
+        <dropForeignKeyConstraint baseTableName="T_TRANSACTION" constraintName="FK_eknl11x7ke9v1lbonnw3dnx5h"/>
+        <dropIndex tableName="T_TRANSACTION" indexName="idx_t_transaction_user_id"/>
+        <dropColumn tableName="T_TRANSACTION" columnName="user_id"/>
+    </changeSet>
+
 </databaseChangeLog>
