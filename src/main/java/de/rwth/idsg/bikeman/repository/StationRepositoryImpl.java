@@ -10,6 +10,7 @@ import de.rwth.idsg.bikeman.domain.StationSlot;
 import de.rwth.idsg.bikeman.domain.StationSlot_;
 import de.rwth.idsg.bikeman.domain.Station_;
 import de.rwth.idsg.bikeman.psinterface.dto.request.BootNotificationDTO;
+import de.rwth.idsg.bikeman.psinterface.dto.request.SlotDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditAddressDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditStationDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.view.ViewStationDTO;
@@ -24,7 +25,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
@@ -32,7 +35,9 @@ import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Root;
 import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by sgokay on 26.05.14.
@@ -186,6 +191,141 @@ public class StationRepositoryImpl implements StationRepository {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateAfterBoot(BootNotificationDTO dto) throws DatabaseException {
+
+        Query findStationQuery = em.createQuery("select s from Station s where s.manufacturerId = :stationManufacturerId");
+        findStationQuery.setParameter("stationManufacturerId", dto.getStationManufacturerId());
+
+        Station station = null;
+
+        try {
+            station = (Station) findStationQuery.getSingleResult();
+        } catch (NoResultException ex) {
+        }
+
+        if (station == null) {
+            // create new station with new slots
+            station = new Station();
+            station.setManufacturerId(dto.getStationManufacturerId());
+            station.setFirmwareVersion(dto.getFirmwareVersion());
+
+            Set<StationSlot> stationSlots = new HashSet<>();
+
+            for (SlotDTO slotDTO : dto.getSlotDTOs()) {
+                StationSlot newStationSlot = new StationSlot();
+                newStationSlot.setManufacturerId(slotDTO.getSlotManufacturerId());
+                newStationSlot.setErrorCode(slotDTO.getSlotErrorCode());
+                newStationSlot.setErrorInfo(slotDTO.getSlotErrorInfo());
+                newStationSlot.setStationSlotPosition(slotDTO.getSlotPosition());
+                newStationSlot.setStation(station);
+                newStationSlot.setState(OperationState.valueOf(slotDTO.getSlotState().toString()));
+
+                if (slotDTO.getPedelecManufacturerId() != null) {
+                    Query findPedelec = em.createQuery("select p from Pedelec p where p.manufacturerId = :manufacturerId");
+                    findPedelec.setParameter("manufacturerId", slotDTO.getPedelecManufacturerId());
+
+                    Pedelec pedelec = null;
+                    try {
+                        pedelec = (Pedelec) findPedelec.getSingleResult();
+                    } catch (NoResultException ex) {
+                    }
+
+                    if (pedelec == null) {
+                        pedelec = new Pedelec();
+                    }
+
+                    StationSlot pedelecStationSlot = pedelec.getStationSlot();
+
+                    if (pedelecStationSlot != null) {
+                        pedelecStationSlot.setPedelec(null);
+                        em.merge(pedelecStationSlot);
+                    }
+
+                    pedelec.setManufacturerId(slotDTO.getPedelecManufacturerId());
+                    pedelec.setStationSlot(newStationSlot);
+                    newStationSlot.setPedelec(pedelec);
+                    newStationSlot.setIsOccupied(true);
+                    //em.merge(pedelec);
+                } else {
+                    newStationSlot.setIsOccupied(false);
+                }
+
+                stationSlots.add(newStationSlot);
+            }
+
+            station.setStationSlots(stationSlots);
+
+            for (StationSlot slot : stationSlots) {
+                Pedelec pedelec = slot.getPedelec();
+                if (pedelec != null) {
+                    em.persist(pedelec);
+                }
+            }
+
+            em.persist(station);
+
+            //save pedelec, save slot, save station
+
+        } else {
+            station.setFirmwareVersion(dto.getFirmwareVersion());
+
+            Set<StationSlot> stationSlots = new HashSet<>();
+
+            for (StationSlot slot : station.getStationSlots()) {
+                for (SlotDTO slotDTO : dto.getSlotDTOs()) {
+                    if (!slot.getManufacturerId().equals(slotDTO.getSlotManufacturerId())) {
+                        continue;
+                    }
+
+                    slot.setManufacturerId(slotDTO.getSlotManufacturerId());
+                    slot.setErrorCode(slotDTO.getSlotErrorCode());
+                    slot.setErrorInfo(slotDTO.getSlotErrorInfo());
+                    slot.setStationSlotPosition(slotDTO.getSlotPosition());
+                    slot.setStation(station);
+                    slot.setState(OperationState.valueOf(slotDTO.getSlotState().toString()));
+
+                    if (slot.getPedelec() == null && slotDTO.getPedelecManufacturerId() == null) {
+                        //no pedelec update
+                        slot.setIsOccupied(false);
+                        continue;
+                    } else if (slotDTO.getPedelecManufacturerId().equals(slot.getPedelec().getManufacturerId())) {
+                        //still same pedelec
+                        slot.setIsOccupied(true);
+                        continue;
+                    } else {
+                        Query findPedelec = em.createQuery("select p from Pedelec p where p.manufacturerId = :manufacturerId");
+                        findPedelec.setParameter("manufacturerId", slotDTO.getPedelecManufacturerId());
+
+                        Pedelec pedelec = null;
+                        try {
+                            pedelec = (Pedelec) findPedelec.getSingleResult();
+                        } catch (NoResultException ex) {
+                        }
+
+                        if (pedelec == null) {
+                            pedelec = new Pedelec();
+                        }
+
+                        if (pedelec.getStationSlot() != null) {
+                            pedelec.getStationSlot().setPedelec(null);
+                            em.merge(pedelec.getStationSlot());
+                        }
+
+                        pedelec.setManufacturerId(slotDTO.getPedelecManufacturerId());
+                        pedelec.setStationSlot(slot);
+                        slot.setPedelec(pedelec);
+                        slot.setIsOccupied(true);
+                        em.merge(pedelec);
+                    }
+                }
+
+                stationSlots.add(slot);
+            }
+
+            station.setStationSlots(stationSlots);
+            em.merge(station);
+        }
+    }
+
 //        String stationManufacturerId = dto.getStationManufacturerId();
 //
 //        Station s = new Station();
@@ -278,7 +418,7 @@ public class StationRepositoryImpl implements StationRepository {
 //            log.error("[StationId: {}] {} slots to update, but there are failed updates. List of failed slotIds: {}",
 //                    stationManufacturerId, slotsCount, failedSlots);
 //        }
-    }
+//    }
 
 //    @Override
 //    public void updateStatus(StationStatusDTO dto) {

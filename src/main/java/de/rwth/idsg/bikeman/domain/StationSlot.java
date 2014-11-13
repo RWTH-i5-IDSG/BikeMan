@@ -18,7 +18,7 @@ import java.io.Serializable;
                 @Index(columnList="station_id", unique = false) })
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @TableGenerator(name="slot_gen", initialValue=0, allocationSize=1)
-@EqualsAndHashCode(of = {"stationSlotId"})
+@EqualsAndHashCode(of = {"stationSlotId", "manufacturerId"})
 @ToString(includeFieldNames = true)
 @Getter
 @Setter
