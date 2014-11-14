@@ -22,7 +22,7 @@
 
     </jaxb:globalBindings>
 
-    <jaxb:bindings schemaLocation="IXSI.xsd" node="/xs:schema">
+    <jaxb:bindings schemaLocation="IXSI-with-enums.xsd" node="/xs:schema">
 
         <!-- Map ID type definitions directly to String
         rather than to Type classes that encapsulate the String value -->
@@ -43,12 +43,7 @@
         <!-- Map enumerations and type definitions directly to String
         rather than to Type classes that encapsulate the String value -->
 
-        <jaxb:bindings multiple="true" node="xs:simpleType[
-        @name='ErrorCodeType' or
-        @name='ClassType' or
-        @name='EngineType' or
-        @name='AttributeClassType' or
-        @name='AttributeIDType']">
+        <jaxb:bindings node="xs:simpleType[@name='AttributeIDType']">
             <xjc:javaType name="java.lang.String" adapter="javax.xml.bind.annotation.adapters.CollapsedStringAdapter" />
         </jaxb:bindings>
 

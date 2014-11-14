@@ -1,5 +1,8 @@
 package de.rwth.idsg.bikeman.ixsi;
 
+import de.rwth.idsg.bikeman.ixsi.schema.ClassType;
+import de.rwth.idsg.bikeman.ixsi.schema.EngineType;
+
 /**
  * Created by max on 07/10/14.
  */
@@ -8,8 +11,8 @@ public final class IXSIConstants {
 
     public static final String XML_SCHEMA_FILE = "ixsi/IXSI.xsd";
 
-    public static final String bookeeClassType = "bike";
-    public static final String engineType = "electric";
+    public static final ClassType bookeeClassType = ClassType.BIKE;
+    public static final EngineType engineType = EngineType.ELECTRIC;
 
     public final class Provider {
         public static final String id = "Velocity";

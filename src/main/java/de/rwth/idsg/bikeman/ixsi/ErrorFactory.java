@@ -1,5 +1,6 @@
 package de.rwth.idsg.bikeman.ixsi;
 
+import de.rwth.idsg.bikeman.ixsi.schema.ErrorCodeType;
 import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
 
 /**
@@ -17,7 +18,7 @@ public final class ErrorFactory {
     public static ErrorType requestNotSupported() {
         ErrorType e = new ErrorType();
         e.setNonFatal(false);
-        e.setCode("");
+        e.setCode(ErrorCodeType.SYS_NOT_IMPLEMENTED);
         e.setSystemMessage("");
         e.setUserMessage("");
         return e;
@@ -26,7 +27,7 @@ public final class ErrorFactory {
     public static ErrorType invalidSystem() {
         ErrorType e = new ErrorType();
         e.setNonFatal(false);
-        e.setCode("");
+        e.setCode(ErrorCodeType.SYS_REQUEST_NOT_PLAUSIBLE);
         e.setSystemMessage("");
         e.setUserMessage("");
         return e;
@@ -35,7 +36,7 @@ public final class ErrorFactory {
     public static ErrorType invalidUserAuth() {
         ErrorType e = new ErrorType();
         e.setNonFatal(false);
-        e.setCode("");
+        e.setCode(ErrorCodeType.AUTH_NOT_AUTHORIZED);
         e.setSystemMessage("");
         e.setUserMessage("");
         return e;

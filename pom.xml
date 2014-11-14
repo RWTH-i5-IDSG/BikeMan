@@ -568,7 +568,7 @@
                             <bindingDirectory>src/main/resources/ixsi</bindingDirectory>
                             <bindingIncludes><value>IXSI.xjb</value></bindingIncludes>
                             <schemaIncludes>
-                                <include>IXSI.xsd</include>
+                                <include>IXSI-with-enums.xsd</include>
                             </schemaIncludes>
                             <generatePackage>de.rwth.idsg.bikeman.ixsi.schema</generatePackage>
                             <removeOldOutput>true</removeOldOutput>

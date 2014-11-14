@@ -25,11 +25,12 @@ public class WebSocketEndpoint extends TextWebSocketHandler {
     public void handleTextMessage(WebSocketSession session, TextMessage webSocketMessage) throws Exception {
         log.info("[id={}] Received text message: {}", session.getId(), webSocketMessage);
 
-        CommunicationContext context = new CommunicationContext(session, webSocketMessage.getPayload());
+        String payload = webSocketMessage.getPayload();
+        CommunicationContext context = new CommunicationContext(session, payload);
         try {
             consumer.consume(context);
         } catch (IxsiProcessingException e) {
-            handleError(session, e);
+            handleError(session, payload, e);
         }
     }
 
@@ -40,11 +41,11 @@ public class WebSocketEndpoint extends TextWebSocketHandler {
      * for debugging purposes and close the session.
      *
      */
-    private void handleError(WebSocketSession session, IxsiProcessingException e) throws IOException {
+    private void handleError(WebSocketSession session, String payload, IxsiProcessingException e) throws IOException {
         log.error("Error occurred", e);
         String errorMsg = "IxsiProcessingException: " + e.getLocalizedMessage();
 
-        session.sendMessage(new TextMessage(errorMsg));
+        session.sendMessage(new TextMessage(errorMsg + "\nMessage that caused the exception: " + payload));
         session.close(CloseStatus.NOT_ACCEPTABLE.withReason(errorMsg));
     }
 
