@@ -17,9 +17,6 @@ import de.rwth.idsg.bikeman.web.rest.dto.view.ViewStationDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.view.ViewStationSlotDTO;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.criterion.Example;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -268,9 +265,9 @@ public class StationRepositoryImpl implements StationRepository {
         } else {
             station.setFirmwareVersion(dto.getFirmwareVersion());
 
-            Set<StationSlot> stationSlots = new HashSet<>();
+            Set<StationSlot> stationSlots = station.getStationSlots();
 
-            for (StationSlot slot : station.getStationSlots()) {
+            for (StationSlot slot : stationSlots) {
                 for (SlotDTO slotDTO : dto.getSlotDTOs()) {
                     if (!slot.getManufacturerId().equals(slotDTO.getSlotManufacturerId())) {
                         continue;
@@ -283,39 +280,41 @@ public class StationRepositoryImpl implements StationRepository {
                     slot.setStation(station);
                     slot.setState(OperationState.valueOf(slotDTO.getSlotState().toString()));
 
-                    if (slot.getPedelec() == null && slotDTO.getPedelecManufacturerId() == null) {
-                        //no pedelec update
+                    Pedelec pedelecAtSlot = slot.getPedelec();
+
+                    if (pedelecAtSlot != null) {
+                        pedelecAtSlot.setStationSlot(null);
+                        slot.setPedelec(null);
                         slot.setIsOccupied(false);
-                        continue;
-                    } else if (slotDTO.getPedelecManufacturerId().equals(slot.getPedelec().getManufacturerId())) {
-                        //still same pedelec
-                        slot.setIsOccupied(true);
-                        continue;
-                    } else {
-                        Query findPedelec = em.createQuery("select p from Pedelec p where p.manufacturerId = :manufacturerId");
-                        findPedelec.setParameter("manufacturerId", slotDTO.getPedelecManufacturerId());
-
-                        Pedelec pedelec = null;
-                        try {
-                            pedelec = (Pedelec) findPedelec.getSingleResult();
-                        } catch (NoResultException ex) {
-                        }
-
-                        if (pedelec == null) {
-                            pedelec = new Pedelec();
-                        }
-
-                        if (pedelec.getStationSlot() != null) {
-                            pedelec.getStationSlot().setPedelec(null);
-                            em.merge(pedelec.getStationSlot());
-                        }
-
-                        pedelec.setManufacturerId(slotDTO.getPedelecManufacturerId());
-                        pedelec.setStationSlot(slot);
-                        slot.setPedelec(pedelec);
-                        slot.setIsOccupied(true);
-                        em.merge(pedelec);
                     }
+
+                    if (slotDTO.getPedelecManufacturerId() == null) {
+                        continue;
+                    }
+
+                    Query findPedelec = em.createQuery("select p from Pedelec p where p.manufacturerId = :manufacturerId");
+                    findPedelec.setParameter("manufacturerId", slotDTO.getPedelecManufacturerId());
+
+                    Pedelec pedelec = null;
+                    try {
+                        pedelec = (Pedelec) findPedelec.getSingleResult();
+                    } catch (NoResultException ex) {
+                    }
+
+                    if (pedelec == null) {
+                        pedelec = new Pedelec();
+                    }
+
+                    if (pedelec.getStationSlot() != null) {
+                        pedelec.getStationSlot().setPedelec(null);
+                        em.merge(pedelec.getStationSlot());
+                    }
+
+                    pedelec.setManufacturerId(slotDTO.getPedelecManufacturerId());
+                    pedelec.setStationSlot(slot);
+                    slot.setPedelec(pedelec);
+                    slot.setIsOccupied(true);
+                    em.merge(pedelec);
                 }
 
                 stationSlots.add(slot);

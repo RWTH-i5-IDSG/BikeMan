@@ -7,7 +7,6 @@ import lombok.experimental.Builder;
  * Created by swam on 31/07/14.
  */
 
-@Builder
 @Data
 public class StopTransactionDTO {
     private String pedelecManufacturerId;
