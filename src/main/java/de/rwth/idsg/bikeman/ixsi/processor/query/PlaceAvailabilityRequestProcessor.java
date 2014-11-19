@@ -23,12 +23,13 @@ import java.util.List;
  * @since 26.09.2014
  */
 @Component
-public class PlaceAvailabilityRequestProcessor implements UserRequestProcessor<PlaceAvailabilityRequestType, PlaceAvailabilityResponseType> {
+public class PlaceAvailabilityRequestProcessor implements
+        UserRequestProcessor<PlaceAvailabilityRequestType, PlaceAvailabilityResponseType> {
 
     @Autowired private QueryIXSIRepository queryIXSIRepository;
 
     @Override
-    public UserResponseParams<PlaceAvailabilityResponseType> processAnonymously(PlaceAvailabilityRequestType request, Optional<Language> lan) {
+    public PlaceAvailabilityResponseType processAnonymously(PlaceAvailabilityRequestType request, Optional<Language> lan) {
 
         List<PlaceAvailabilityResponseDTO> dtos = new ArrayList<>();
         if (request.isSetPlaceID()) {
@@ -51,10 +52,16 @@ public class PlaceAvailabilityRequestProcessor implements UserRequestProcessor<P
 
         PlaceAvailabilityResponseType response = new PlaceAvailabilityResponseType();
         response.getPlace().addAll(placeAvailList);
+        return response;
+    }
 
-        UserResponseParams<PlaceAvailabilityResponseType> u = new UserResponseParams<>();
-        u.setResponse(response);
-        return u;
+    /**
+     * This method has to validate the user infos !!!!
+     */
+    @Override
+    public PlaceAvailabilityResponseType processForUser(PlaceAvailabilityRequestType request, Optional<Language> lan,
+                                                        List<UserInfoType> userInfoList) {
+        return null;
     }
 
     public List<PlaceAvailabilityType> getPlaceAvailabilities(List<PlaceAvailabilityResponseDTO> dtos) {
@@ -74,31 +81,18 @@ public class PlaceAvailabilityRequestProcessor implements UserRequestProcessor<P
         return placeAvailList;
     }
 
-    @Override
-    public UserResponseParams<PlaceAvailabilityResponseType> processForUser(PlaceAvailabilityRequestType request, Optional<Language> lan, UserInfoType userInfo) {
-        return null;
-    }
-
     // -------------------------------------------------------------------------
     // Error handling
     // -------------------------------------------------------------------------
 
     @Override
-    public UserResponseParams<PlaceAvailabilityResponseType> invalidSystem() {
+    public PlaceAvailabilityResponseType invalidSystem() {
         return buildError(ErrorFactory.invalidSystem());
     }
 
-    @Override
-    public UserResponseParams<PlaceAvailabilityResponseType> invalidUserAuth() {
-        return buildError(ErrorFactory.invalidUserAuth());
-    }
-
-    private UserResponseParams<PlaceAvailabilityResponseType> buildError(ErrorType e) {
+    private PlaceAvailabilityResponseType buildError(ErrorType e) {
         PlaceAvailabilityResponseType res = new PlaceAvailabilityResponseType();
         res.getError().add(e);
-
-        UserResponseParams<PlaceAvailabilityResponseType> u = new UserResponseParams<>();
-        u.setResponse(res);
-        return u;
+        return res;
     }
 }

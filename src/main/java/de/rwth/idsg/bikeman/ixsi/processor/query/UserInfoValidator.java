@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @Component
-public class TokenValidator {
+public class UserInfoValidator {
 
     @Autowired private IxsiUserRepository ixsiUserRepository;
 

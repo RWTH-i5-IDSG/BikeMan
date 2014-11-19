@@ -10,7 +10,6 @@ import de.rwth.idsg.bikeman.ixsi.dto.query.TokenGenerationResponseDTO;
 import de.rwth.idsg.bikeman.ixsi.schema.BookingTargetIDType;
 import de.rwth.idsg.bikeman.ixsi.schema.GeoCircleType;
 import de.rwth.idsg.bikeman.ixsi.schema.GeoRectangleType;
-import de.rwth.idsg.bikeman.ixsi.schema.ProviderPlaceIDType;
 
 import java.util.List;
 

@@ -2,8 +2,8 @@ package de.rwth.idsg.bikeman.ixsi.processor.subscription;
 
 import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
 import de.rwth.idsg.bikeman.ixsi.processor.PlaceAvailabilityStore;
-import de.rwth.idsg.bikeman.ixsi.schema.PlaceAvailabilitySubscriptionStatusRequest;
-import de.rwth.idsg.bikeman.ixsi.schema.PlaceAvailabilitySubscriptionStatusResponse;
+import de.rwth.idsg.bikeman.ixsi.schema.PlaceAvailabilitySubscriptionStatusRequestType;
+import de.rwth.idsg.bikeman.ixsi.schema.PlaceAvailabilitySubscriptionStatusResponseType;
 import de.rwth.idsg.bikeman.ixsi.schema.ProviderPlaceIDType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -17,12 +17,12 @@ import java.util.List;
  */
 @Component
 public class PlaceAvailabilitySubscriptionStatusRequestProcessor implements
-        SubscriptionRequestProcessor<PlaceAvailabilitySubscriptionStatusRequest, PlaceAvailabilitySubscriptionStatusResponse> {
+        SubscriptionRequestProcessor<PlaceAvailabilitySubscriptionStatusRequestType, PlaceAvailabilitySubscriptionStatusResponseType> {
 
     @Autowired private PlaceAvailabilityStore placeAvailabilityStore;
 
     @Override
-    public PlaceAvailabilitySubscriptionStatusResponse process(PlaceAvailabilitySubscriptionStatusRequest request, String systemId) {
+    public PlaceAvailabilitySubscriptionStatusResponseType process(PlaceAvailabilitySubscriptionStatusRequestType request, String systemId) {
         List<String> subscriptions = placeAvailabilityStore.getSubscriptions(systemId);
 
         List<ProviderPlaceIDType> ids = new ArrayList<>();
@@ -32,7 +32,7 @@ public class PlaceAvailabilitySubscriptionStatusRequestProcessor implements
             ids.add(idType);
         }
 
-        PlaceAvailabilitySubscriptionStatusResponse response = new PlaceAvailabilitySubscriptionStatusResponse();
+        PlaceAvailabilitySubscriptionStatusResponseType response = new PlaceAvailabilitySubscriptionStatusResponseType();
         response.getPlaceID().addAll(ids);
         return response;
     }
@@ -42,8 +42,8 @@ public class PlaceAvailabilitySubscriptionStatusRequestProcessor implements
     // -------------------------------------------------------------------------
 
     @Override
-    public PlaceAvailabilitySubscriptionStatusResponse invalidSystem() {
-        PlaceAvailabilitySubscriptionStatusResponse b = new PlaceAvailabilitySubscriptionStatusResponse();
+    public PlaceAvailabilitySubscriptionStatusResponseType invalidSystem() {
+        PlaceAvailabilitySubscriptionStatusResponseType b = new PlaceAvailabilitySubscriptionStatusResponseType();
         b.getError().add(ErrorFactory.invalidSystem());
         return b;
     }

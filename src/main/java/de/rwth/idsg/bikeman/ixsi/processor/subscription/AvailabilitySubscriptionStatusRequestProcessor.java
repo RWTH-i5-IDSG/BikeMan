@@ -2,8 +2,8 @@ package de.rwth.idsg.bikeman.ixsi.processor.subscription;
 
 import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
 import de.rwth.idsg.bikeman.ixsi.processor.AvailabilityStore;
-import de.rwth.idsg.bikeman.ixsi.schema.AvailabilitySubscriptionStatusRequest;
-import de.rwth.idsg.bikeman.ixsi.schema.AvailabilitySubscriptionStatusResponse;
+import de.rwth.idsg.bikeman.ixsi.schema.AvailabilitySubscriptionStatusRequestType;
+import de.rwth.idsg.bikeman.ixsi.schema.AvailabilitySubscriptionStatusResponseType;
 import de.rwth.idsg.bikeman.ixsi.schema.BookingTargetIDType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -17,12 +17,12 @@ import java.util.List;
  */
 @Component
 public class AvailabilitySubscriptionStatusRequestProcessor implements
-        SubscriptionRequestProcessor<AvailabilitySubscriptionStatusRequest, AvailabilitySubscriptionStatusResponse> {
+        SubscriptionRequestProcessor<AvailabilitySubscriptionStatusRequestType, AvailabilitySubscriptionStatusResponseType> {
 
     @Autowired private AvailabilityStore availabilityStore;
 
     @Override
-    public AvailabilitySubscriptionStatusResponse process(AvailabilitySubscriptionStatusRequest request, String systemId) {
+    public AvailabilitySubscriptionStatusResponseType process(AvailabilitySubscriptionStatusRequestType request, String systemId) {
         List<String> subscriptions = availabilityStore.getSubscriptions(systemId);
 
         List<BookingTargetIDType> ids = new ArrayList<>();
@@ -32,7 +32,7 @@ public class AvailabilitySubscriptionStatusRequestProcessor implements
             ids.add(idType);
         }
 
-        AvailabilitySubscriptionStatusResponse response = new AvailabilitySubscriptionStatusResponse();
+        AvailabilitySubscriptionStatusResponseType response = new AvailabilitySubscriptionStatusResponseType();
         response.getBookingTargetID().addAll(ids);
         return response;
     }
@@ -42,8 +42,8 @@ public class AvailabilitySubscriptionStatusRequestProcessor implements
     // -------------------------------------------------------------------------
 
     @Override
-    public AvailabilitySubscriptionStatusResponse invalidSystem() {
-        AvailabilitySubscriptionStatusResponse b = new AvailabilitySubscriptionStatusResponse();
+    public AvailabilitySubscriptionStatusResponseType invalidSystem() {
+        AvailabilitySubscriptionStatusResponseType b = new AvailabilitySubscriptionStatusResponseType();
         b.getError().add(ErrorFactory.invalidSystem());
         return b;
     }

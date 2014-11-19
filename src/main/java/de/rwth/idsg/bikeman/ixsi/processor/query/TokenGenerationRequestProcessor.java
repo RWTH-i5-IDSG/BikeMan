@@ -13,35 +13,51 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 /**
  * @author Sevket Goekay <goekay@dbis.rwth-aachen.de>
  * @since 26.09.2014
  */
 @Slf4j
 @Component
-public class TokenGenerationRequestProcessor implements UserRequestProcessor<TokenGenerationRequestType, TokenGenerationResponseType> {
+public class TokenGenerationRequestProcessor implements
+        UserRequestProcessor<TokenGenerationRequestType, TokenGenerationResponseType> {
 
     @Autowired private IxsiUserRepository ixsiUserRepository;
+    @Autowired private UserInfoValidator userInfoValidator;
 
     @Override
-    public UserResponseParams<TokenGenerationResponseType> processAnonymously(TokenGenerationRequestType request, Optional<Language> lan) {
+    public TokenGenerationResponseType processAnonymously(TokenGenerationRequestType request, Optional<Language> lan) {
         return buildError(ErrorFactory.requestNotSupported());
     }
 
+    /**
+     * This method has to validate the user infos !!!!
+     */
     @Override
-    public UserResponseParams<TokenGenerationResponseType> processForUser(TokenGenerationRequestType request, Optional<Language> lan, UserInfoType userInfo) {
+    public TokenGenerationResponseType processForUser(TokenGenerationRequestType request, Optional<Language> lan,
+                                                      List<UserInfoType> userInfoList) {
+
+        // For the token generation request there can be only one userInfo
+        if (userInfoList.size() != 1) {
+            return buildError(ErrorFactory.invalidRequest());
+        }
+
+        UserInfoType userInfo = userInfoList.get(0);
+        if (!userInfoValidator.validate(userInfo)) {
+            return buildError(ErrorFactory.invalidUserAuth());
+        }
+
         try {
             String token = ixsiUserRepository.setUserToken(userInfo.getUserID(), userInfo.getPassword());
             TokenGenerationResponseType r = new TokenGenerationResponseType();
             r.setToken(token);
-
-            UserResponseParams<TokenGenerationResponseType> u = new UserResponseParams<>();
-            u.setResponse(r);
-            return u;
+            return r;
 
         } catch (DatabaseException e) {
             log.error("Error occurred", e);
-            return buildError(ErrorFactory.invalidUserAuth());
+            return buildError(ErrorFactory.backendFailed());
         }
     }
 
@@ -50,21 +66,13 @@ public class TokenGenerationRequestProcessor implements UserRequestProcessor<Tok
     // -------------------------------------------------------------------------
 
     @Override
-    public UserResponseParams<TokenGenerationResponseType> invalidSystem() {
+    public TokenGenerationResponseType invalidSystem() {
         return buildError(ErrorFactory.invalidSystem());
     }
 
-    @Override
-    public UserResponseParams<TokenGenerationResponseType> invalidUserAuth() {
-        return buildError(ErrorFactory.invalidUserAuth());
-    }
-
-    private UserResponseParams<TokenGenerationResponseType> buildError(ErrorType e) {
+    private TokenGenerationResponseType buildError(ErrorType e) {
         TokenGenerationResponseType res = new TokenGenerationResponseType();
         res.getError().add(e);
-
-        UserResponseParams<TokenGenerationResponseType> u = new UserResponseParams<>();
-        u.setResponse(res);
-        return u;
+        return res;
     }
 }

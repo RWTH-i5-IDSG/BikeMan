@@ -4,18 +4,16 @@ import com.google.common.base.Optional;
 import de.rwth.idsg.bikeman.ixsi.CommunicationContext;
 import de.rwth.idsg.bikeman.ixsi.IxsiProcessingException;
 import de.rwth.idsg.bikeman.ixsi.processor.query.StaticRequestProcessor;
-import de.rwth.idsg.bikeman.ixsi.processor.query.TokenValidator;
 import de.rwth.idsg.bikeman.ixsi.processor.query.UserRequestProcessor;
-import de.rwth.idsg.bikeman.ixsi.processor.query.UserResponseParams;
 import de.rwth.idsg.bikeman.ixsi.repository.SystemValidator;
 import de.rwth.idsg.bikeman.ixsi.schema.AuthType;
 import de.rwth.idsg.bikeman.ixsi.schema.Language;
 import de.rwth.idsg.bikeman.ixsi.schema.QueryRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.QueryResponseType;
-import de.rwth.idsg.bikeman.ixsi.schema.UserInfoType;
 import de.rwth.idsg.ixsi.jaxb.StaticDataRequestGroup;
 import de.rwth.idsg.ixsi.jaxb.StaticDataResponseGroup;
 import de.rwth.idsg.ixsi.jaxb.UserTriggeredRequestChoice;
+import de.rwth.idsg.ixsi.jaxb.UserTriggeredResponseChoice;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -35,9 +33,7 @@ public class QueryRequestTypeDispatcher implements Dispatcher {
     @Autowired private QueryUserRequestMap userRequestMap;
     @Autowired private QueryStaticRequestMap staticRequestMap;
     @Autowired private DatatypeFactory factory;
-
     @Autowired private SystemValidator systemValidator;
-    @Autowired private TokenValidator tokenValidator;
 
     @Override
     public void handle(CommunicationContext context) {
@@ -113,46 +109,28 @@ public class QueryRequestTypeDispatcher implements Dispatcher {
 
         // System validation
         //
-        UserResponseParams res;
+        UserTriggeredResponseChoice responseChoice;
         if (systemValidator.validate(request.getSystemID())) {
-            res = delegateUserRequest(c, p, request.getAuth(), Optional.fromNullable(request.getLanguage()));
+            responseChoice = delegateUserRequest(c, p, request.getAuth(), Optional.fromNullable(request.getLanguage()));
         } else {
-            res = p.invalidSystem();
+            responseChoice = p.invalidSystem();
         }
 
         QueryResponseType response = new QueryResponseType();
-        response.setUserTriggeredResponseGroup(res.getResponse());
-
-        String sessionID = res.getSessionID();
-        if (sessionID != null ) {
-            response.setSessionID(sessionID);
-        }
-
-        Duration duration = res.getSessionTimeout();
-        if (duration != null) {
-            response.setSessionTimeout(duration);
-        }
+        response.setUserTriggeredResponseGroup(responseChoice);
         return response;
     }
 
     @SuppressWarnings("unchecked")
-    private UserResponseParams delegateUserRequest(UserTriggeredRequestChoice c, UserRequestProcessor p,
-                                                   AuthType auth, Optional<Language> lan) {
+    private UserTriggeredResponseChoice delegateUserRequest(UserTriggeredRequestChoice c, UserRequestProcessor p,
+                                                            AuthType auth, Optional<Language> lan) {
         log.trace("Processing the authentication information...");
 
         if (auth.isSetAnonymous() && auth.isAnonymous()) {
             return p.processAnonymously(c, lan);
 
         } else if (auth.isSetUserInfo()) {
-
-            // User validation
-            //
-            UserInfoType userInfo = auth.getUserInfo();
-            if (tokenValidator.validate(userInfo)) {
-                return p.processForUser(c, lan, auth.getUserInfo());
-            } else {
-                return p.invalidUserAuth();
-            }
+            return p.processForUser(c, lan, auth.getUserInfo());
 
         } else if (auth.isSetSessionID()) {
             throw new IxsiProcessingException("Session-based authentication is not supported by this party");

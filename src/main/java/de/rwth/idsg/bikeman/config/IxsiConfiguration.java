@@ -37,13 +37,13 @@ public class IxsiConfiguration implements WebSocketConfigurer {
                 .addInterceptors(new HandshakeInterceptor(systemValidator));
     }
 
-    @Bean()
+    @Bean
     public JAXBContext jaxbContext() throws JAXBException {
         // is thread-safe
         return JAXBContext.newInstance(IxsiMessageType.class);
     }
 
-    @Bean()
+    @Bean
     public DatatypeFactory datatypeFactory() throws DatatypeConfigurationException {
         // This is expensive to init
         return DatatypeFactory.newInstance();

@@ -24,7 +24,7 @@ public final class ErrorFactory {
         return e;
     }
 
-    public static ErrorType invalidSystem() {
+    public static ErrorType invalidRequest() {
         ErrorType e = new ErrorType();
         e.setNonFatal(false);
         e.setCode(ErrorCodeType.SYS_REQUEST_NOT_PLAUSIBLE);
@@ -33,11 +33,29 @@ public final class ErrorFactory {
         return e;
     }
 
+    public static ErrorType invalidSystem() {
+        ErrorType e = new ErrorType();
+        e.setNonFatal(false);
+        e.setCode(ErrorCodeType.SYS_REQUEST_NOT_PLAUSIBLE);
+        e.setSystemMessage("");
+        e.setUserMessage("System ID is unknown");
+        return e;
+    }
+
     public static ErrorType invalidUserAuth() {
         ErrorType e = new ErrorType();
         e.setNonFatal(false);
         e.setCode(ErrorCodeType.AUTH_NOT_AUTHORIZED);
         e.setSystemMessage("");
+        e.setUserMessage("");
+        return e;
+    }
+
+    public static ErrorType backendFailed() {
+        ErrorType e = new ErrorType();
+        e.setNonFatal(false);
+        e.setCode(ErrorCodeType.SYS_BACKEND_FAILED);
+        e.setSystemMessage("Exception occurred");
         e.setUserMessage("");
         return e;
     }

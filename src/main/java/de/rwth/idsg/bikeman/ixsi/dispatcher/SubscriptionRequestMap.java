@@ -5,15 +5,19 @@ import de.rwth.idsg.bikeman.ixsi.processor.subscription.AvailabilitySubscription
 import de.rwth.idsg.bikeman.ixsi.processor.subscription.AvailabilitySubscriptionStatusRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.processor.subscription.BookingAlertSubscriptionRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.processor.subscription.BookingAlertSubscriptionStatusRequestProcessor;
+import de.rwth.idsg.bikeman.ixsi.processor.subscription.ConsumptionSubscriptionRequestProcessor;
+import de.rwth.idsg.bikeman.ixsi.processor.subscription.ConsumptionSubscriptionStatusRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.processor.subscription.PlaceAvailabilitySubscriptionRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.processor.subscription.PlaceAvailabilitySubscriptionStatusRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.processor.subscription.SubscriptionRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.schema.AvailabilitySubscriptionRequestType;
-import de.rwth.idsg.bikeman.ixsi.schema.AvailabilitySubscriptionStatusRequest;
+import de.rwth.idsg.bikeman.ixsi.schema.AvailabilitySubscriptionStatusRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.BookingAlertSubscriptionRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.BookingAlertSubscriptionStatusRequestType;
+import de.rwth.idsg.bikeman.ixsi.schema.ConsumptionSubscriptionRequestType;
+import de.rwth.idsg.bikeman.ixsi.schema.ConsumptionSubscriptionStatusRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.PlaceAvailabilitySubscriptionRequestType;
-import de.rwth.idsg.bikeman.ixsi.schema.PlaceAvailabilitySubscriptionStatusRequest;
+import de.rwth.idsg.bikeman.ixsi.schema.PlaceAvailabilitySubscriptionStatusRequestType;
 import de.rwth.idsg.ixsi.jaxb.SubscriptionRequestGroup;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +41,8 @@ public class SubscriptionRequestMap extends HashMap<Class<?>, SubscriptionReques
     @Autowired private PlaceAvailabilitySubscriptionStatusRequestProcessor placeAvailabilitySubscriptionStatusRequestProcessor;
     @Autowired private BookingAlertSubscriptionRequestProcessor bookingAlertSubscriptionRequestProcessor;
     @Autowired private BookingAlertSubscriptionStatusRequestProcessor bookingAlertSubscriptionStatusRequestProcessor;
+    @Autowired private ConsumptionSubscriptionRequestProcessor consumptionSubscriptionRequestProcessor;
+    @Autowired private ConsumptionSubscriptionStatusRequestProcessor consumptionSubscriptionStatusRequestProcessor;
 
     public SubscriptionRequestMap() {
         super();
@@ -46,11 +52,13 @@ public class SubscriptionRequestMap extends HashMap<Class<?>, SubscriptionReques
     @PostConstruct
     public void init() {
         super.put(AvailabilitySubscriptionRequestType.class, availabilitySubscriptionRequestProcessor);
-        super.put(AvailabilitySubscriptionStatusRequest.class, availabilitySubscriptionStatusRequestProcessor);
+        super.put(AvailabilitySubscriptionStatusRequestType.class, availabilitySubscriptionStatusRequestProcessor);
         super.put(PlaceAvailabilitySubscriptionRequestType.class, placeAvailabilitySubscriptionRequestProcessor);
-        super.put(PlaceAvailabilitySubscriptionStatusRequest.class, placeAvailabilitySubscriptionStatusRequestProcessor);
+        super.put(PlaceAvailabilitySubscriptionStatusRequestType.class, placeAvailabilitySubscriptionStatusRequestProcessor);
         super.put(BookingAlertSubscriptionRequestType.class, bookingAlertSubscriptionRequestProcessor);
         super.put(BookingAlertSubscriptionStatusRequestType.class, bookingAlertSubscriptionStatusRequestProcessor);
+        super.put(ConsumptionSubscriptionRequestType.class, consumptionSubscriptionRequestProcessor);
+        super.put(ConsumptionSubscriptionStatusRequestType.class, consumptionSubscriptionStatusRequestProcessor);
         log.trace("Ready");
     }
 

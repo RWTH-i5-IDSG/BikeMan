@@ -60,10 +60,11 @@ public class BookingTargetsInfoRequestProcessor implements
         provider.setShortName(IXSIConstants.Provider.shortName);
 
         // set provider URLs
-        provider.setURL(IXSIConstants.Provider.url);
-        provider.setLogoURL(IXSIConstants.Provider.logoUrl);
-        provider.setInterAppBaseURL(IXSIConstants.Provider.interAppBaseUrl);
-        provider.setWebAppBaseURL(IXSIConstants.Provider.webAppBaseUrl);
+        //TODO: new IXSI does not contain these.
+//        provider.setURL(IXSIConstants.Provider.url);
+//        provider.setLogoURL(IXSIConstants.Provider.logoUrl);
+//        provider.setInterAppBaseURL(IXSIConstants.Provider.interAppBaseUrl);
+//        provider.setWebAppBaseURL(IXSIConstants.Provider.webAppBaseUrl);
 
         response.getProvider().add(provider);
         // END response providers

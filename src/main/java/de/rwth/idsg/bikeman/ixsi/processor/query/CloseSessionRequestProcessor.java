@@ -9,6 +9,8 @@ import de.rwth.idsg.bikeman.ixsi.schema.Language;
 import de.rwth.idsg.bikeman.ixsi.schema.UserInfoType;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 /**
  * @author Sevket Goekay <goekay@dbis.rwth-aachen.de>
  * @since 26.09.2014
@@ -18,12 +20,16 @@ public class CloseSessionRequestProcessor implements
         UserRequestProcessor<CloseSessionRequestType, CloseSessionResponseType> {
 
     @Override
-    public UserResponseParams<CloseSessionResponseType> processAnonymously(CloseSessionRequestType request, Optional<Language> lan) {
+    public CloseSessionResponseType processAnonymously(CloseSessionRequestType request, Optional<Language> lan) {
         return buildError(ErrorFactory.requestNotSupported());
     }
 
+    /**
+     * This method has to validate the user infos !!!!
+     */
     @Override
-    public UserResponseParams<CloseSessionResponseType> processForUser(CloseSessionRequestType request, Optional<Language> lan, UserInfoType userInfo) {
+    public CloseSessionResponseType processForUser(CloseSessionRequestType request, Optional<Language> lan,
+                                                   List<UserInfoType> userInfoList) {
         return buildError(ErrorFactory.requestNotSupported());
     }
 
@@ -32,22 +38,14 @@ public class CloseSessionRequestProcessor implements
     // -------------------------------------------------------------------------
 
     @Override
-    public UserResponseParams<CloseSessionResponseType> invalidSystem() {
+    public CloseSessionResponseType invalidSystem() {
         return buildError(ErrorFactory.requestNotSupported());
     }
 
-    @Override
-    public UserResponseParams<CloseSessionResponseType> invalidUserAuth() {
-        return buildError(ErrorFactory.requestNotSupported());
-    }
-
-    private UserResponseParams<CloseSessionResponseType> buildError(ErrorType e) {
+    private CloseSessionResponseType buildError(ErrorType e) {
         CloseSessionResponseType res = new CloseSessionResponseType();
         res.getError().add(e);
-
-        UserResponseParams<CloseSessionResponseType> u = new UserResponseParams<>();
-        u.setResponse(res);
-        return u;
+        return res;
     }
 
 }

@@ -9,6 +9,8 @@ import de.rwth.idsg.bikeman.ixsi.schema.Language;
 import de.rwth.idsg.bikeman.ixsi.schema.UserInfoType;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 /**
  * @author Sevket Goekay <goekay@dbis.rwth-aachen.de>
  * @since 26.09.2014
@@ -18,15 +20,17 @@ public class BookingRequestProcessor implements
         UserRequestProcessor<BookingRequestType, BookingResponseType> {
 
     @Override
-    public UserResponseParams<BookingResponseType> processAnonymously(BookingRequestType request,
-                                                                      Optional<Language> lan) {
+    public BookingResponseType processAnonymously(BookingRequestType request, Optional<Language> lan) {
         // TODO FUTURE
         return null;
     }
 
+    /**
+     * This method has to validate the user infos !!!!
+     */
     @Override
-    public UserResponseParams<BookingResponseType> processForUser(BookingRequestType request,
-                                                                  Optional<Language> lan, UserInfoType userInfo) {
+    public BookingResponseType processForUser(BookingRequestType request, Optional<Language> lan,
+                                              List<UserInfoType> userInfoList) {
         // TODO FUTURE
         return null;
     }
@@ -36,21 +40,13 @@ public class BookingRequestProcessor implements
     // -------------------------------------------------------------------------
 
     @Override
-    public UserResponseParams<BookingResponseType> invalidSystem() {
+    public BookingResponseType invalidSystem() {
         return buildError(ErrorFactory.invalidSystem());
     }
 
-    @Override
-    public UserResponseParams<BookingResponseType> invalidUserAuth() {
-        return buildError(ErrorFactory.invalidUserAuth());
-    }
-
-    private UserResponseParams<BookingResponseType> buildError(ErrorType e) {
+    private BookingResponseType buildError(ErrorType e) {
         BookingResponseType res = new BookingResponseType();
         res.getError().add(e);
-
-        UserResponseParams<BookingResponseType> u = new UserResponseParams<>();
-        u.setResponse(res);
-        return u;
+        return res;
     }
 }

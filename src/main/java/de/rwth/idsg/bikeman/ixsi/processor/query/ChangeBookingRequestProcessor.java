@@ -9,6 +9,8 @@ import de.rwth.idsg.bikeman.ixsi.schema.Language;
 import de.rwth.idsg.bikeman.ixsi.schema.UserInfoType;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 /**
  * @author Sevket Goekay <goekay@dbis.rwth-aachen.de>
  * @since 26.09.2014
@@ -18,16 +20,16 @@ public class ChangeBookingRequestProcessor implements
         UserRequestProcessor<ChangeBookingRequestType, ChangeBookingResponseType> {
 
     @Override
-    public UserResponseParams<ChangeBookingResponseType> processAnonymously(ChangeBookingRequestType request,
-                                                                            Optional<Language> lan) {
+    public ChangeBookingResponseType processAnonymously(ChangeBookingRequestType request, Optional<Language> lan) {
         // TODO FUTURE
         return null;
     }
 
+    /**
+     * This method has to validate the user infos !!!!
+     */
     @Override
-    public UserResponseParams<ChangeBookingResponseType> processForUser(ChangeBookingRequestType request,
-                                                                        Optional<Language> lan, UserInfoType userInfo) {
-        // TODO FUTURE
+    public ChangeBookingResponseType processForUser(ChangeBookingRequestType request, Optional<Language> lan, List<UserInfoType> userInfoList) {
         return null;
     }
 
@@ -36,21 +38,13 @@ public class ChangeBookingRequestProcessor implements
     // -------------------------------------------------------------------------
 
     @Override
-    public UserResponseParams<ChangeBookingResponseType> invalidSystem() {
+    public ChangeBookingResponseType invalidSystem() {
         return buildError(ErrorFactory.invalidSystem());
     }
 
-    @Override
-    public UserResponseParams<ChangeBookingResponseType> invalidUserAuth() {
-        return buildError(ErrorFactory.invalidUserAuth());
-    }
-
-    private UserResponseParams<ChangeBookingResponseType> buildError(ErrorType e) {
+    private ChangeBookingResponseType buildError(ErrorType e) {
         ChangeBookingResponseType res = new ChangeBookingResponseType();
         res.getError().add(e);
-
-        UserResponseParams<ChangeBookingResponseType> u = new UserResponseParams<>();
-        u.setResponse(res);
-        return u;
+        return res;
     }
 }

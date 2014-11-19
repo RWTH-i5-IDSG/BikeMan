@@ -1,17 +1,10 @@
 package de.rwth.idsg.bikeman.ixsi.dispatcher;
 
 import de.rwth.idsg.bikeman.ixsi.IxsiProcessingException;
-import de.rwth.idsg.bikeman.ixsi.processor.query.AvailabilityRequestProcessor;
-import de.rwth.idsg.bikeman.ixsi.processor.query.BookingRequestProcessor;
-import de.rwth.idsg.bikeman.ixsi.processor.query.ChangeBookingRequestProcessor;
-import de.rwth.idsg.bikeman.ixsi.processor.query.CloseSessionRequestProcessor;
-import de.rwth.idsg.bikeman.ixsi.processor.query.OpenSessionRequestProcessor;
-import de.rwth.idsg.bikeman.ixsi.processor.query.PlaceAvailabilityRequestProcessor;
-import de.rwth.idsg.bikeman.ixsi.processor.query.PriceInformationRequestProcessor;
-import de.rwth.idsg.bikeman.ixsi.processor.query.TokenGenerationRequestProcessor;
-import de.rwth.idsg.bikeman.ixsi.processor.query.UserRequestProcessor;
+import de.rwth.idsg.bikeman.ixsi.processor.query.*;
 import de.rwth.idsg.bikeman.ixsi.schema.AvailabilityRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.BookingRequestType;
+import de.rwth.idsg.bikeman.ixsi.schema.BookingUnlockRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.ChangeBookingRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.CloseSessionRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.OpenSessionRequestType;
@@ -43,6 +36,7 @@ public class QueryUserRequestMap extends HashMap<Class<?>, UserRequestProcessor>
     @Autowired private PriceInformationRequestProcessor priceInformationRequestProcessor;
     @Autowired private BookingRequestProcessor bookingRequestProcessor;
     @Autowired private ChangeBookingRequestProcessor changeBookingRequestProcessor;
+    @Autowired private BookingUnlockRequestProcessor bookingUnlockRequestProcessor;
 
     public QueryUserRequestMap() {
         super();
@@ -59,6 +53,7 @@ public class QueryUserRequestMap extends HashMap<Class<?>, UserRequestProcessor>
         super.put(PriceInformationRequestType.class, priceInformationRequestProcessor);
         super.put(BookingRequestType.class, bookingRequestProcessor);
         super.put(ChangeBookingRequestType.class, changeBookingRequestProcessor);
+        super.put(BookingUnlockRequestType.class, bookingUnlockRequestProcessor);
         log.trace("Ready");
     }
 

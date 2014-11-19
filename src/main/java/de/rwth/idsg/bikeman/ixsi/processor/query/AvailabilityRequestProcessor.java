@@ -33,8 +33,7 @@ public class AvailabilityRequestProcessor implements
     @Autowired private QueryIXSIRepository queryIXSIRepository;
 
     @Override
-    public UserResponseParams<AvailabilityResponseType> processAnonymously(AvailabilityRequestType request,
-                                                                           Optional<Language> lan) {
+    public AvailabilityResponseType processAnonymously(AvailabilityRequestType request, Optional<Language> lan) {
 
         if (request.isSetBookingTarget()) {
             // we don't want to use booking targets in this request
@@ -55,10 +54,17 @@ public class AvailabilityRequestProcessor implements
 
         AvailabilityResponseType a = new AvailabilityResponseType();
         a.getBookingTarget().addAll(availabilityList);
+        return a;
+    }
 
-        UserResponseParams<AvailabilityResponseType> u = new UserResponseParams<>();
-        u.setResponse(a);
-        return u;
+    /**
+     * This method has to validate the user infos !!!!
+     */
+    @Override
+    public AvailabilityResponseType processForUser(AvailabilityRequestType request, Optional<Language> lan,
+                                                   List<UserInfoType> userInfoList) {
+        // TODO
+        return null;
     }
 
     public List<BookingTargetAvailabilityType> getBookingTargetAvailabilities(List<AvailabilityResponseDTO> dtos) {
@@ -97,33 +103,19 @@ public class AvailabilityRequestProcessor implements
         return Math.round(decimal * 100);
     }
 
-    @Override
-    public UserResponseParams<AvailabilityResponseType> processForUser(AvailabilityRequestType request,
-                                                                       Optional<Language> lan, UserInfoType userInfo) {
-        return null;
-    }
-
     // -------------------------------------------------------------------------
     // Error handling
     // -------------------------------------------------------------------------
 
     @Override
-    public UserResponseParams<AvailabilityResponseType> invalidSystem() {
+    public AvailabilityResponseType invalidSystem() {
         return buildError(ErrorFactory.invalidSystem());
     }
 
-    @Override
-    public UserResponseParams<AvailabilityResponseType> invalidUserAuth() {
-        return buildError(ErrorFactory.invalidUserAuth());
-    }
-
-    private UserResponseParams<AvailabilityResponseType> buildError(ErrorType e) {
+    private AvailabilityResponseType buildError(ErrorType e) {
         AvailabilityResponseType res = new AvailabilityResponseType();
         res.getError().add(e);
-
-        UserResponseParams<AvailabilityResponseType> u = new UserResponseParams<>();
-        u.setResponse(res);
-        return u;
+        return res;
     }
 
 }

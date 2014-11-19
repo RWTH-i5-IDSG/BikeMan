@@ -9,20 +9,27 @@ import de.rwth.idsg.bikeman.ixsi.schema.OpenSessionResponseType;
 import de.rwth.idsg.bikeman.ixsi.schema.UserInfoType;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 /**
  * @author Sevket Goekay <goekay@dbis.rwth-aachen.de>
  * @since 26.09.2014
  */
 @Component
-public class OpenSessionRequestProcessor implements UserRequestProcessor<OpenSessionRequestType, OpenSessionResponseType> {
+public class OpenSessionRequestProcessor implements
+        UserRequestProcessor<OpenSessionRequestType, OpenSessionResponseType> {
 
     @Override
-    public UserResponseParams<OpenSessionResponseType> processAnonymously(OpenSessionRequestType request, Optional<Language> lan) {
+    public OpenSessionResponseType processAnonymously(OpenSessionRequestType request, Optional<Language> lan) {
         return buildError(ErrorFactory.requestNotSupported());
     }
 
+    /**
+     * This method has to validate the user infos !!!!
+     */
     @Override
-    public UserResponseParams<OpenSessionResponseType> processForUser(OpenSessionRequestType request, Optional<Language> lan, UserInfoType userInfo) {
+    public OpenSessionResponseType processForUser(OpenSessionRequestType request, Optional<Language> lan,
+                                                  List<UserInfoType> userInfoList) {
         return buildError(ErrorFactory.requestNotSupported());
     }
 
@@ -31,21 +38,13 @@ public class OpenSessionRequestProcessor implements UserRequestProcessor<OpenSes
     // -------------------------------------------------------------------------
 
     @Override
-    public UserResponseParams<OpenSessionResponseType> invalidSystem() {
+    public OpenSessionResponseType invalidSystem() {
         return buildError(ErrorFactory.requestNotSupported());
     }
 
-    @Override
-    public UserResponseParams<OpenSessionResponseType> invalidUserAuth() {
-        return buildError(ErrorFactory.requestNotSupported());
-    }
-
-    private UserResponseParams<OpenSessionResponseType> buildError(ErrorType e) {
+    private OpenSessionResponseType buildError(ErrorType e) {
         OpenSessionResponseType res = new OpenSessionResponseType();
         res.getError().add(e);
-
-        UserResponseParams<OpenSessionResponseType> u = new UserResponseParams<>();
-        u.setResponse(res);
-        return u;
+        return res;
     }
 }

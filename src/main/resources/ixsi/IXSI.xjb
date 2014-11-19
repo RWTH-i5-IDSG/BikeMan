@@ -100,21 +100,24 @@
         <jaxb:bindings multiple="true" node="xs:complexType[
         @name='AvailabilityPushMessageType' or
         @name='PlaceAvailabilityPushMessageType' or
-        @name='BookingAlertPushMessageType']">
+        @name='BookingAlertPushMessageType' or
+        @name='ConsumptionPushMessageType']">
             <inheritance:implements>de.rwth.idsg.ixsi.jaxb.PushMessageGroup</inheritance:implements>
         </jaxb:bindings>
 
         <jaxb:bindings multiple="true" node="xs:complexType[
         @name='CompleteAvailabilityRequestType' or
         @name='CompletePlaceAvailabilityRequestType' or
-        @name='CompleteBookingAlertRequestType']">
+        @name='CompleteBookingAlertRequestType' or
+        @name='CompleteConsumptionRequestType']">
             <inheritance:implements>de.rwth.idsg.ixsi.jaxb.RequestMessageGroup</inheritance:implements>
         </jaxb:bindings>
 
         <jaxb:bindings multiple="true" node="xs:complexType[
         @name='CompleteAvailabilityResponseType' or
         @name='CompletePlaceAvailabilityResponseType' or
-        @name='CompleteBookingAlertResponseType']">
+        @name='CompleteBookingAlertResponseType' or
+        @name='CompleteConsumptionResponseType']">
             <inheritance:implements>de.rwth.idsg.ixsi.jaxb.ResponseMessageGroup</inheritance:implements>
         </jaxb:bindings>
 
@@ -132,21 +135,25 @@
 
         <jaxb:bindings multiple="true" node="xs:complexType[
         @name='AvailabilitySubscriptionRequestType' or
-        @name='AvailabilitySubscriptionStatusRequest' or
+        @name='AvailabilitySubscriptionStatusRequestType' or
         @name='PlaceAvailabilitySubscriptionRequestType' or
-        @name='PlaceAvailabilitySubscriptionStatusRequest' or
+        @name='PlaceAvailabilitySubscriptionStatusRequestType' or
         @name='BookingAlertSubscriptionRequestType' or
-        @name='BookingAlertSubscriptionStatusRequestType']">
+        @name='BookingAlertSubscriptionStatusRequestType' or
+        @name='ConsumptionSubscriptionRequestType' or
+        @name='ConsumptionSubscriptionStatusRequestType']">
             <inheritance:implements>de.rwth.idsg.ixsi.jaxb.SubscriptionRequestGroup</inheritance:implements>
         </jaxb:bindings>
 
         <jaxb:bindings multiple="true" node="xs:complexType[
         @name='AvailabilitySubscriptionResponseType' or
-        @name='AvailabilitySubscriptionStatusResponse' or
+        @name='AvailabilitySubscriptionStatusResponseType' or
         @name='PlaceAvailabilitySubscriptionResponseType' or
-        @name='PlaceAvailabilitySubscriptionStatusResponse' or
+        @name='PlaceAvailabilitySubscriptionStatusResponseType' or
         @name='BookingAlertSubscriptionResponseType' or
-        @name='BookingAlertSubscriptionStatusResponseType']">
+        @name='BookingAlertSubscriptionStatusResponseType' or
+        @name='ConsumptionSubscriptionResponseType' or
+        @name='ConsumptionSubscriptionStatusResponseType']">
             <inheritance:implements>de.rwth.idsg.ixsi.jaxb.SubscriptionResponseGroup</inheritance:implements>
         </jaxb:bindings>
 
@@ -158,7 +165,8 @@
         @name='PlaceAvailabilityRequestType' or
         @name='PriceInformationRequestType' or
         @name='BookingRequestType' or
-        @name='ChangeBookingRequestType']">
+        @name='ChangeBookingRequestType' or
+        @name='BookingUnlockRequestType']">
             <inheritance:implements>de.rwth.idsg.ixsi.jaxb.UserTriggeredRequestChoice</inheritance:implements>
         </jaxb:bindings>
 
@@ -170,7 +178,8 @@
         @name='PlaceAvailabilityResponseType' or
         @name='PriceInformationResponseType' or
         @name='BookingResponseType' or
-        @name='ChangeBookingResponseType']">
+        @name='ChangeBookingResponseType' or
+        @name='BookingUnlockResponseType']">
             <inheritance:implements>de.rwth.idsg.ixsi.jaxb.UserTriggeredResponseChoice</inheritance:implements>
         </jaxb:bindings>
 
