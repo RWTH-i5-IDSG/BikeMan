@@ -1,5 +1,6 @@
-package de.rwth.idsg.bikeman.ixsi.processor.query;
+package de.rwth.idsg.bikeman.ixsi.processor.api;
 
+import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
 import de.rwth.idsg.ixsi.jaxb.StaticDataRequestGroup;
 import de.rwth.idsg.ixsi.jaxb.StaticDataResponseGroup;
 
@@ -9,5 +10,5 @@ import de.rwth.idsg.ixsi.jaxb.StaticDataResponseGroup;
  */
 public interface StaticRequestProcessor<T1 extends StaticDataRequestGroup, T2 extends StaticDataResponseGroup> {
     T2 process(T1 request);
-    T2 invalidSystem();
+    T2 buildError(ErrorType e);
 }

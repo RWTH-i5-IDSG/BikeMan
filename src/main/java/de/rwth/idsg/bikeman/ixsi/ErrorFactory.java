@@ -15,48 +15,56 @@ import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
 public final class ErrorFactory {
     private ErrorFactory() {}
 
-    public static ErrorType requestNotSupported() {
-        ErrorType e = new ErrorType();
-        e.setNonFatal(false);
-        e.setCode(ErrorCodeType.SYS_NOT_IMPLEMENTED);
-        e.setSystemMessage("");
-        e.setUserMessage("");
-        return e;
-    }
-
-    public static ErrorType invalidRequest() {
-        ErrorType e = new ErrorType();
-        e.setNonFatal(false);
-        e.setCode(ErrorCodeType.SYS_REQUEST_NOT_PLAUSIBLE);
-        e.setSystemMessage("");
-        e.setUserMessage("");
-        return e;
-    }
-
     public static ErrorType invalidSystem() {
         ErrorType e = new ErrorType();
-        e.setNonFatal(false);
         e.setCode(ErrorCodeType.SYS_REQUEST_NOT_PLAUSIBLE);
-        e.setSystemMessage("");
-        e.setUserMessage("System ID is unknown");
+        e.setNonFatal(false);
+        e.setSystemMessage("System ID is unknown");
         return e;
     }
 
-    public static ErrorType invalidUserAuth() {
+    public static ErrorType notImplemented(String systemMsg, String userMsg) {
         ErrorType e = new ErrorType();
-        e.setNonFatal(false);
-        e.setCode(ErrorCodeType.AUTH_NOT_AUTHORIZED);
-        e.setSystemMessage("");
-        e.setUserMessage("");
+        e.setCode(ErrorCodeType.SYS_NOT_IMPLEMENTED);
+        e.setNonFatal(true);
+        if (systemMsg != null) e.setSystemMessage(systemMsg);
+        if (userMsg != null) e.setUserMessage(userMsg);
         return e;
     }
 
-    public static ErrorType backendFailed() {
+    public static ErrorType invalidRequest(String systemMsg, String userMsg) {
         ErrorType e = new ErrorType();
-        e.setNonFatal(false);
+        e.setCode(ErrorCodeType.SYS_REQUEST_NOT_PLAUSIBLE);
+        e.setNonFatal(true);
+        if (systemMsg != null) e.setSystemMessage(systemMsg);
+        if (userMsg != null) e.setUserMessage(userMsg);
+        return e;
+    }
+
+    public static ErrorType invalidUserToken(String systemMsg, String userMsg) {
+        ErrorType e = new ErrorType();
+        e.setCode(ErrorCodeType.AUTH_INVALID_TOKEN);
+        e.setNonFatal(true);
+        if (systemMsg != null) e.setSystemMessage(systemMsg);
+        if (userMsg != null) e.setUserMessage(userMsg);
+        return e;
+    }
+
+    public static ErrorType invalidProvider(String systemMsg, String userMsg) {
+        ErrorType e = new ErrorType();
+        e.setCode(ErrorCodeType.AUTH_PROVIDER_UNKNOWN);
+        e.setNonFatal(true);
+        if (systemMsg != null) e.setSystemMessage(systemMsg);
+        if (userMsg != null) e.setUserMessage(userMsg);
+        return e;
+    }
+
+    public static ErrorType backendFailed(String systemMsg, String userMsg) {
+        ErrorType e = new ErrorType();
         e.setCode(ErrorCodeType.SYS_BACKEND_FAILED);
-        e.setSystemMessage("Exception occurred");
-        e.setUserMessage("");
+        e.setNonFatal(true);
+        if (systemMsg != null) e.setSystemMessage(systemMsg);
+        if (userMsg != null) e.setUserMessage(userMsg);
         return e;
     }
 }

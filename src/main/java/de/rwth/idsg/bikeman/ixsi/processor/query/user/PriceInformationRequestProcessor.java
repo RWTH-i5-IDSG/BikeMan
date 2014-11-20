@@ -1,7 +1,7 @@
-package de.rwth.idsg.bikeman.ixsi.processor.query;
+package de.rwth.idsg.bikeman.ixsi.processor.query.user;
 
 import com.google.common.base.Optional;
-import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
+import de.rwth.idsg.bikeman.ixsi.processor.api.UserRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
 import de.rwth.idsg.bikeman.ixsi.schema.Language;
 import de.rwth.idsg.bikeman.ixsi.schema.PriceInformationRequestType;
@@ -40,11 +40,7 @@ public class PriceInformationRequestProcessor implements
     // -------------------------------------------------------------------------
 
     @Override
-    public PriceInformationResponseType invalidSystem() {
-        return buildError(ErrorFactory.invalidSystem());
-    }
-
-    private PriceInformationResponseType buildError(ErrorType e) {
+    public PriceInformationResponseType buildError(ErrorType e) {
         PriceInformationResponseType res = new PriceInformationResponseType();
         res.getError().add(e);
         return res;

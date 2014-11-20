@@ -1,7 +1,9 @@
-package de.rwth.idsg.bikeman.ixsi.processor.subscription;
+package de.rwth.idsg.bikeman.ixsi.processor.subscription.request;
 
+import de.rwth.idsg.bikeman.ixsi.processor.api.SubscriptionRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.schema.ConsumptionSubscriptionStatusRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.ConsumptionSubscriptionStatusResponseType;
+import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
 import org.springframework.stereotype.Component;
 
 /**
@@ -18,7 +20,9 @@ public class ConsumptionSubscriptionStatusRequestProcessor implements
     }
 
     @Override
-    public ConsumptionSubscriptionStatusResponseType invalidSystem() {
-        return null;
+    public ConsumptionSubscriptionStatusResponseType buildError(ErrorType e) {
+        ConsumptionSubscriptionStatusResponseType b = new ConsumptionSubscriptionStatusResponseType();
+        b.getError().add(e);
+        return b;
     }
 }

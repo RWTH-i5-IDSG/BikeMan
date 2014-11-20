@@ -1,12 +1,13 @@
-package de.rwth.idsg.bikeman.ixsi.processor.subscription;
+package de.rwth.idsg.bikeman.ixsi.processor.subscription.complete;
 
-import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
 import de.rwth.idsg.bikeman.ixsi.dto.query.PlaceAvailabilityResponseDTO;
 import de.rwth.idsg.bikeman.ixsi.processor.PlaceAvailabilityStore;
-import de.rwth.idsg.bikeman.ixsi.processor.query.PlaceAvailabilityRequestProcessor;
+import de.rwth.idsg.bikeman.ixsi.processor.api.SubscriptionRequestMessageProcessor;
+import de.rwth.idsg.bikeman.ixsi.processor.query.user.PlaceAvailabilityRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.repository.QueryIXSIRepository;
 import de.rwth.idsg.bikeman.ixsi.schema.CompletePlaceAvailabilityRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.CompletePlaceAvailabilityResponseType;
+import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
 import de.rwth.idsg.bikeman.ixsi.schema.PlaceAvailabilityType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -45,9 +46,9 @@ public class CompletePlaceAvailabilityRequestProcessor implements
     // -------------------------------------------------------------------------
 
     @Override
-    public CompletePlaceAvailabilityResponseType invalidSystem() {
+    public CompletePlaceAvailabilityResponseType buildError(ErrorType e) {
         CompletePlaceAvailabilityResponseType b = new CompletePlaceAvailabilityResponseType();
-        b.getError().add(ErrorFactory.invalidSystem());
+        b.getError().add(e);
         return b;
     }
 }

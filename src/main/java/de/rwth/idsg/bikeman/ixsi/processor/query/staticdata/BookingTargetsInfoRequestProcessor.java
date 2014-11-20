@@ -1,10 +1,10 @@
-package de.rwth.idsg.bikeman.ixsi.processor.query;
+package de.rwth.idsg.bikeman.ixsi.processor.query.staticdata;
 
-import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
 import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
 import de.rwth.idsg.bikeman.ixsi.dto.query.BookingTargetsInfoResponseDTO;
 import de.rwth.idsg.bikeman.ixsi.dto.query.PedelecDTO;
 import de.rwth.idsg.bikeman.ixsi.dto.query.StationDTO;
+import de.rwth.idsg.bikeman.ixsi.processor.api.StaticRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.repository.QueryIXSIRepository;
 import de.rwth.idsg.bikeman.ixsi.schema.*;
 import de.rwth.idsg.bikeman.web.rest.dto.view.ViewAddressDTO;
@@ -174,9 +174,9 @@ public class BookingTargetsInfoRequestProcessor implements
     // -------------------------------------------------------------------------
 
     @Override
-    public BookingTargetsInfoResponseType invalidSystem() {
+    public BookingTargetsInfoResponseType buildError(ErrorType e) {
         BookingTargetsInfoResponseType b = new BookingTargetsInfoResponseType();
-        b.getError().add(ErrorFactory.invalidSystem());
+        b.getError().add(e);
         return b;
     }
 }

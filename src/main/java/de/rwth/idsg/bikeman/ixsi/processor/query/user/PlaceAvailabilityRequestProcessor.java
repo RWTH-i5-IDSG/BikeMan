@@ -1,9 +1,9 @@
-package de.rwth.idsg.bikeman.ixsi.processor.query;
+package de.rwth.idsg.bikeman.ixsi.processor.query.user;
 
 import com.google.common.base.Optional;
-import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
 import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
 import de.rwth.idsg.bikeman.ixsi.dto.query.PlaceAvailabilityResponseDTO;
+import de.rwth.idsg.bikeman.ixsi.processor.api.UserRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.repository.QueryIXSIRepository;
 import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
 import de.rwth.idsg.bikeman.ixsi.schema.Language;
@@ -86,11 +86,7 @@ public class PlaceAvailabilityRequestProcessor implements
     // -------------------------------------------------------------------------
 
     @Override
-    public PlaceAvailabilityResponseType invalidSystem() {
-        return buildError(ErrorFactory.invalidSystem());
-    }
-
-    private PlaceAvailabilityResponseType buildError(ErrorType e) {
+    public PlaceAvailabilityResponseType buildError(ErrorType e) {
         PlaceAvailabilityResponseType res = new PlaceAvailabilityResponseType();
         res.getError().add(e);
         return res;

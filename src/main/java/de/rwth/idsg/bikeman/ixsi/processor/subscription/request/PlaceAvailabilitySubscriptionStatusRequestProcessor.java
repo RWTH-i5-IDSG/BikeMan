@@ -1,7 +1,8 @@
-package de.rwth.idsg.bikeman.ixsi.processor.subscription;
+package de.rwth.idsg.bikeman.ixsi.processor.subscription.request;
 
-import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
 import de.rwth.idsg.bikeman.ixsi.processor.PlaceAvailabilityStore;
+import de.rwth.idsg.bikeman.ixsi.processor.api.SubscriptionRequestProcessor;
+import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
 import de.rwth.idsg.bikeman.ixsi.schema.PlaceAvailabilitySubscriptionStatusRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.PlaceAvailabilitySubscriptionStatusResponseType;
 import de.rwth.idsg.bikeman.ixsi.schema.ProviderPlaceIDType;
@@ -42,9 +43,9 @@ public class PlaceAvailabilitySubscriptionStatusRequestProcessor implements
     // -------------------------------------------------------------------------
 
     @Override
-    public PlaceAvailabilitySubscriptionStatusResponseType invalidSystem() {
+    public PlaceAvailabilitySubscriptionStatusResponseType buildError(ErrorType e) {
         PlaceAvailabilitySubscriptionStatusResponseType b = new PlaceAvailabilitySubscriptionStatusResponseType();
-        b.getError().add(ErrorFactory.invalidSystem());
+        b.getError().add(e);
         return b;
     }
 }

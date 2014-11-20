@@ -1,7 +1,8 @@
-package de.rwth.idsg.bikeman.ixsi.processor.query;
+package de.rwth.idsg.bikeman.ixsi.processor.query.user;
 
 import com.google.common.base.Optional;
 import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
+import de.rwth.idsg.bikeman.ixsi.processor.api.UserRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
 import de.rwth.idsg.bikeman.ixsi.schema.Language;
 import de.rwth.idsg.bikeman.ixsi.schema.OpenSessionRequestType;
@@ -21,7 +22,7 @@ public class OpenSessionRequestProcessor implements
 
     @Override
     public OpenSessionResponseType processAnonymously(OpenSessionRequestType request, Optional<Language> lan) {
-        return buildError(ErrorFactory.requestNotSupported());
+        return buildError(ErrorFactory.notImplemented("We don't support sessions", null));
     }
 
     /**
@@ -30,7 +31,7 @@ public class OpenSessionRequestProcessor implements
     @Override
     public OpenSessionResponseType processForUser(OpenSessionRequestType request, Optional<Language> lan,
                                                   List<UserInfoType> userInfoList) {
-        return buildError(ErrorFactory.requestNotSupported());
+        return buildError(ErrorFactory.notImplemented("We don't support sessions", null));
     }
 
     // -------------------------------------------------------------------------
@@ -38,11 +39,7 @@ public class OpenSessionRequestProcessor implements
     // -------------------------------------------------------------------------
 
     @Override
-    public OpenSessionResponseType invalidSystem() {
-        return buildError(ErrorFactory.requestNotSupported());
-    }
-
-    private OpenSessionResponseType buildError(ErrorType e) {
+    public OpenSessionResponseType buildError(ErrorType e) {
         OpenSessionResponseType res = new OpenSessionResponseType();
         res.getError().add(e);
         return res;

@@ -1,9 +1,11 @@
-package de.rwth.idsg.bikeman.ixsi.processor.query;
+package de.rwth.idsg.bikeman.ixsi.processor.query.user;
 
 import com.google.common.base.Optional;
 import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
 import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
 import de.rwth.idsg.bikeman.ixsi.dto.query.AvailabilityResponseDTO;
+import de.rwth.idsg.bikeman.ixsi.processor.TokenValidator;
+import de.rwth.idsg.bikeman.ixsi.processor.api.UserRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.repository.QueryIXSIRepository;
 import de.rwth.idsg.bikeman.ixsi.schema.AvailabilityRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.AvailabilityResponseType;
@@ -31,13 +33,14 @@ public class AvailabilityRequestProcessor implements
         UserRequestProcessor<AvailabilityRequestType, AvailabilityResponseType> {
 
     @Autowired private QueryIXSIRepository queryIXSIRepository;
+    @Autowired private TokenValidator tokenValidator;
 
     @Override
     public AvailabilityResponseType processAnonymously(AvailabilityRequestType request, Optional<Language> lan) {
 
         if (request.isSetBookingTarget()) {
             // we don't want to use booking targets in this request
-            return buildError(ErrorFactory.requestNotSupported());
+            return buildError(ErrorFactory.invalidRequest("Cannot use booking targets", null));
         }
 
         List<AvailabilityResponseDTO> dtos = new ArrayList<>();
@@ -63,7 +66,19 @@ public class AvailabilityRequestProcessor implements
     @Override
     public AvailabilityResponseType processForUser(AvailabilityRequestType request, Optional<Language> lan,
                                                    List<UserInfoType> userInfoList) {
-        // TODO
+
+        AvailabilityResponseType availabilityResponse = new AvailabilityResponseType();
+        TokenValidator.Results results = tokenValidator.validate(userInfoList);
+
+        List<ErrorType> errors = results.getErrors();
+        if (!errors.isEmpty()) {
+            availabilityResponse.getError().addAll(errors);
+        }
+
+        List<UserInfoType> validUsers = results.getValidUsers();
+        // TODO process with validUsers
+
+
         return null;
     }
 
@@ -108,11 +123,7 @@ public class AvailabilityRequestProcessor implements
     // -------------------------------------------------------------------------
 
     @Override
-    public AvailabilityResponseType invalidSystem() {
-        return buildError(ErrorFactory.invalidSystem());
-    }
-
-    private AvailabilityResponseType buildError(ErrorType e) {
+    public AvailabilityResponseType buildError(ErrorType e) {
         AvailabilityResponseType res = new AvailabilityResponseType();
         res.getError().add(e);
         return res;

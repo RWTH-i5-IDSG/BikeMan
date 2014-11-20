@@ -1,7 +1,8 @@
-package de.rwth.idsg.bikeman.ixsi.processor.query;
+package de.rwth.idsg.bikeman.ixsi.processor.query.user;
 
 import com.google.common.base.Optional;
 import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
+import de.rwth.idsg.bikeman.ixsi.processor.api.UserRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.schema.BookingRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.BookingResponseType;
 import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
@@ -21,8 +22,7 @@ public class BookingRequestProcessor implements
 
     @Override
     public BookingResponseType processAnonymously(BookingRequestType request, Optional<Language> lan) {
-        // TODO FUTURE
-        return null;
+        return buildError(ErrorFactory.invalidRequest("Anonymous booking makes no sense", null));
     }
 
     /**
@@ -40,11 +40,7 @@ public class BookingRequestProcessor implements
     // -------------------------------------------------------------------------
 
     @Override
-    public BookingResponseType invalidSystem() {
-        return buildError(ErrorFactory.invalidSystem());
-    }
-
-    private BookingResponseType buildError(ErrorType e) {
+    public BookingResponseType buildError(ErrorType e) {
         BookingResponseType res = new BookingResponseType();
         res.getError().add(e);
         return res;

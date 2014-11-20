@@ -1,15 +1,16 @@
-package de.rwth.idsg.bikeman.ixsi.processor.subscription;
+package de.rwth.idsg.bikeman.ixsi.processor.subscription.complete;
 
-import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
 import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
 import de.rwth.idsg.bikeman.ixsi.dto.query.AvailabilityResponseDTO;
 import de.rwth.idsg.bikeman.ixsi.processor.AvailabilityStore;
-import de.rwth.idsg.bikeman.ixsi.processor.query.AvailabilityRequestProcessor;
+import de.rwth.idsg.bikeman.ixsi.processor.api.SubscriptionRequestMessageProcessor;
+import de.rwth.idsg.bikeman.ixsi.processor.query.user.AvailabilityRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.repository.QueryIXSIRepository;
 import de.rwth.idsg.bikeman.ixsi.schema.BookingTargetAvailabilityType;
 import de.rwth.idsg.bikeman.ixsi.schema.BookingTargetIDType;
 import de.rwth.idsg.bikeman.ixsi.schema.CompleteAvailabilityRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.CompleteAvailabilityResponseType;
+import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -61,9 +62,10 @@ public class CompleteAvailabilityRequestProcessor implements
     // -------------------------------------------------------------------------
 
     @Override
-    public CompleteAvailabilityResponseType invalidSystem() {
+    public CompleteAvailabilityResponseType buildError(ErrorType e) {
         CompleteAvailabilityResponseType b = new CompleteAvailabilityResponseType();
-        b.getError().add(ErrorFactory.invalidSystem());
+        b.getError().add(e);
         return b;
     }
+
 }

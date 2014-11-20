@@ -1,7 +1,8 @@
-package de.rwth.idsg.bikeman.ixsi.processor.query;
+package de.rwth.idsg.bikeman.ixsi.processor.query.user;
 
 import com.google.common.base.Optional;
 import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
+import de.rwth.idsg.bikeman.ixsi.processor.api.UserRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.repository.IxsiUserRepository;
 import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
 import de.rwth.idsg.bikeman.ixsi.schema.Language;
@@ -25,11 +26,10 @@ public class TokenGenerationRequestProcessor implements
         UserRequestProcessor<TokenGenerationRequestType, TokenGenerationResponseType> {
 
     @Autowired private IxsiUserRepository ixsiUserRepository;
-    @Autowired private UserInfoValidator userInfoValidator;
 
     @Override
     public TokenGenerationResponseType processAnonymously(TokenGenerationRequestType request, Optional<Language> lan) {
-        return buildError(ErrorFactory.requestNotSupported());
+        return buildError(ErrorFactory.invalidRequest("Anonymous token generation makes no sense", null));
     }
 
     /**
@@ -41,14 +41,10 @@ public class TokenGenerationRequestProcessor implements
 
         // For the token generation request there can be only one userInfo
         if (userInfoList.size() != 1) {
-            return buildError(ErrorFactory.invalidRequest());
+            return buildError(ErrorFactory.invalidRequest(null, null));
         }
 
         UserInfoType userInfo = userInfoList.get(0);
-        if (!userInfoValidator.validate(userInfo)) {
-            return buildError(ErrorFactory.invalidUserAuth());
-        }
-
         try {
             String token = ixsiUserRepository.setUserToken(userInfo.getUserID(), userInfo.getPassword());
             TokenGenerationResponseType r = new TokenGenerationResponseType();
@@ -57,7 +53,7 @@ public class TokenGenerationRequestProcessor implements
 
         } catch (DatabaseException e) {
             log.error("Error occurred", e);
-            return buildError(ErrorFactory.backendFailed());
+            return buildError(ErrorFactory.backendFailed(e.getLocalizedMessage(), null));
         }
     }
 
@@ -66,11 +62,7 @@ public class TokenGenerationRequestProcessor implements
     // -------------------------------------------------------------------------
 
     @Override
-    public TokenGenerationResponseType invalidSystem() {
-        return buildError(ErrorFactory.invalidSystem());
-    }
-
-    private TokenGenerationResponseType buildError(ErrorType e) {
+    public TokenGenerationResponseType buildError(ErrorType e) {
         TokenGenerationResponseType res = new TokenGenerationResponseType();
         res.getError().add(e);
         return res;

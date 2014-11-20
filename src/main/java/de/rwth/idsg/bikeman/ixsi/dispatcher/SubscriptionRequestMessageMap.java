@@ -1,11 +1,11 @@
 package de.rwth.idsg.bikeman.ixsi.dispatcher;
 
 import de.rwth.idsg.bikeman.ixsi.IxsiProcessingException;
-import de.rwth.idsg.bikeman.ixsi.processor.subscription.CompleteAvailabilityRequestProcessor;
-import de.rwth.idsg.bikeman.ixsi.processor.subscription.CompleteBookingAlertRequestProcessor;
-import de.rwth.idsg.bikeman.ixsi.processor.subscription.CompleteConsumptionRequestProcessor;
-import de.rwth.idsg.bikeman.ixsi.processor.subscription.CompletePlaceAvailabilityRequestProcessor;
-import de.rwth.idsg.bikeman.ixsi.processor.subscription.SubscriptionRequestMessageProcessor;
+import de.rwth.idsg.bikeman.ixsi.processor.subscription.complete.CompleteAvailabilityRequestProcessor;
+import de.rwth.idsg.bikeman.ixsi.processor.subscription.complete.CompleteBookingAlertRequestProcessor;
+import de.rwth.idsg.bikeman.ixsi.processor.subscription.complete.CompleteConsumptionRequestProcessor;
+import de.rwth.idsg.bikeman.ixsi.processor.subscription.complete.CompletePlaceAvailabilityRequestProcessor;
+import de.rwth.idsg.bikeman.ixsi.processor.api.SubscriptionRequestMessageProcessor;
 import de.rwth.idsg.bikeman.ixsi.schema.CompleteAvailabilityRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.CompleteBookingAlertRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.CompleteConsumptionRequestType;

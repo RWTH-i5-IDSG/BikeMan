@@ -2,9 +2,10 @@ package de.rwth.idsg.bikeman.ixsi.dispatcher;
 
 import com.google.common.base.Optional;
 import de.rwth.idsg.bikeman.ixsi.CommunicationContext;
+import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
 import de.rwth.idsg.bikeman.ixsi.IxsiProcessingException;
-import de.rwth.idsg.bikeman.ixsi.processor.query.StaticRequestProcessor;
-import de.rwth.idsg.bikeman.ixsi.processor.query.UserRequestProcessor;
+import de.rwth.idsg.bikeman.ixsi.processor.api.StaticRequestProcessor;
+import de.rwth.idsg.bikeman.ixsi.processor.api.UserRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.repository.SystemValidator;
 import de.rwth.idsg.bikeman.ixsi.schema.AuthType;
 import de.rwth.idsg.bikeman.ixsi.schema.Language;
@@ -92,7 +93,7 @@ public class QueryRequestTypeDispatcher implements Dispatcher {
         if (systemValidator.validate(request.getSystemID())) {
             res = p.process(req);
         } else {
-            res = p.invalidSystem();
+            res = p.buildError(ErrorFactory.invalidSystem());
         }
 
         QueryResponseType response = new QueryResponseType();
@@ -113,7 +114,7 @@ public class QueryRequestTypeDispatcher implements Dispatcher {
         if (systemValidator.validate(request.getSystemID())) {
             responseChoice = delegateUserRequest(c, p, request.getAuth(), Optional.fromNullable(request.getLanguage()));
         } else {
-            responseChoice = p.invalidSystem();
+            responseChoice = p.buildError(ErrorFactory.invalidSystem());
         }
 
         QueryResponseType response = new QueryResponseType();
@@ -133,10 +134,10 @@ public class QueryRequestTypeDispatcher implements Dispatcher {
             return p.processForUser(c, lan, auth.getUserInfo());
 
         } else if (auth.isSetSessionID()) {
-            throw new IxsiProcessingException("Session-based authentication is not supported by this party");
+            return p.buildError(ErrorFactory.notImplemented("Session-based authentication is not supported", null));
 
         } else {
-            throw new IxsiProcessingException("Authentication requirements are not met");
+            return p.buildError(ErrorFactory.invalidRequest("Authentication requirements are not met", null));
         }
     }
 }

@@ -1,6 +1,7 @@
-package de.rwth.idsg.bikeman.ixsi.processor.query;
+package de.rwth.idsg.bikeman.ixsi.processor.api;
 
 import com.google.common.base.Optional;
+import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
 import de.rwth.idsg.bikeman.ixsi.schema.Language;
 import de.rwth.idsg.bikeman.ixsi.schema.UserInfoType;
 import de.rwth.idsg.ixsi.jaxb.UserTriggeredRequestChoice;
@@ -22,5 +23,5 @@ public interface UserRequestProcessor<T1 extends UserTriggeredRequestChoice, T2 
     T2 processForUser(T1 request, Optional<Language> lan,
                       List<UserInfoType> userInfoList);
 
-    T2 invalidSystem();
+    T2 buildError(ErrorType e);
 }

@@ -1,15 +1,15 @@
 package de.rwth.idsg.bikeman.ixsi.dispatcher;
 
 import de.rwth.idsg.bikeman.ixsi.IxsiProcessingException;
-import de.rwth.idsg.bikeman.ixsi.processor.subscription.AvailabilitySubscriptionRequestProcessor;
-import de.rwth.idsg.bikeman.ixsi.processor.subscription.AvailabilitySubscriptionStatusRequestProcessor;
-import de.rwth.idsg.bikeman.ixsi.processor.subscription.BookingAlertSubscriptionRequestProcessor;
-import de.rwth.idsg.bikeman.ixsi.processor.subscription.BookingAlertSubscriptionStatusRequestProcessor;
-import de.rwth.idsg.bikeman.ixsi.processor.subscription.ConsumptionSubscriptionRequestProcessor;
-import de.rwth.idsg.bikeman.ixsi.processor.subscription.ConsumptionSubscriptionStatusRequestProcessor;
-import de.rwth.idsg.bikeman.ixsi.processor.subscription.PlaceAvailabilitySubscriptionRequestProcessor;
-import de.rwth.idsg.bikeman.ixsi.processor.subscription.PlaceAvailabilitySubscriptionStatusRequestProcessor;
-import de.rwth.idsg.bikeman.ixsi.processor.subscription.SubscriptionRequestProcessor;
+import de.rwth.idsg.bikeman.ixsi.processor.subscription.request.AvailabilitySubscriptionRequestProcessor;
+import de.rwth.idsg.bikeman.ixsi.processor.subscription.request.AvailabilitySubscriptionStatusRequestProcessor;
+import de.rwth.idsg.bikeman.ixsi.processor.subscription.request.BookingAlertSubscriptionRequestProcessor;
+import de.rwth.idsg.bikeman.ixsi.processor.subscription.request.BookingAlertSubscriptionStatusRequestProcessor;
+import de.rwth.idsg.bikeman.ixsi.processor.subscription.request.ConsumptionSubscriptionRequestProcessor;
+import de.rwth.idsg.bikeman.ixsi.processor.subscription.request.ConsumptionSubscriptionStatusRequestProcessor;
+import de.rwth.idsg.bikeman.ixsi.processor.subscription.request.PlaceAvailabilitySubscriptionRequestProcessor;
+import de.rwth.idsg.bikeman.ixsi.processor.subscription.request.PlaceAvailabilitySubscriptionStatusRequestProcessor;
+import de.rwth.idsg.bikeman.ixsi.processor.api.SubscriptionRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.schema.AvailabilitySubscriptionRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.AvailabilitySubscriptionStatusRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.BookingAlertSubscriptionRequestType;

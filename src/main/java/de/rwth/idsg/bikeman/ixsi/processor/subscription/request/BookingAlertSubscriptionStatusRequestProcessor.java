@@ -1,8 +1,9 @@
-package de.rwth.idsg.bikeman.ixsi.processor.subscription;
+package de.rwth.idsg.bikeman.ixsi.processor.subscription.request;
 
-import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
+import de.rwth.idsg.bikeman.ixsi.processor.api.SubscriptionRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.schema.BookingAlertSubscriptionStatusRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.BookingAlertSubscriptionStatusResponseType;
+import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
 import org.springframework.stereotype.Component;
 
 /**
@@ -24,9 +25,10 @@ public class BookingAlertSubscriptionStatusRequestProcessor implements
     // -------------------------------------------------------------------------
 
     @Override
-    public BookingAlertSubscriptionStatusResponseType invalidSystem() {
+    public BookingAlertSubscriptionStatusResponseType buildError(ErrorType e) {
         BookingAlertSubscriptionStatusResponseType b = new BookingAlertSubscriptionStatusResponseType();
-        b.getError().add(ErrorFactory.invalidSystem());
+        b.getError().add(e);
         return b;
     }
+
 }

@@ -1,7 +1,7 @@
-package de.rwth.idsg.bikeman.ixsi.processor.query;
+package de.rwth.idsg.bikeman.ixsi.processor.query.user;
 
 import com.google.common.base.Optional;
-import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
+import de.rwth.idsg.bikeman.ixsi.processor.api.UserRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.schema.ChangeBookingRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.ChangeBookingResponseType;
 import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
@@ -21,7 +21,6 @@ public class ChangeBookingRequestProcessor implements
 
     @Override
     public ChangeBookingResponseType processAnonymously(ChangeBookingRequestType request, Optional<Language> lan) {
-        // TODO FUTURE
         return null;
     }
 
@@ -29,7 +28,8 @@ public class ChangeBookingRequestProcessor implements
      * This method has to validate the user infos !!!!
      */
     @Override
-    public ChangeBookingResponseType processForUser(ChangeBookingRequestType request, Optional<Language> lan, List<UserInfoType> userInfoList) {
+    public ChangeBookingResponseType processForUser(ChangeBookingRequestType request, Optional<Language> lan,
+                                                    List<UserInfoType> userInfoList) {
         return null;
     }
 
@@ -38,11 +38,7 @@ public class ChangeBookingRequestProcessor implements
     // -------------------------------------------------------------------------
 
     @Override
-    public ChangeBookingResponseType invalidSystem() {
-        return buildError(ErrorFactory.invalidSystem());
-    }
-
-    private ChangeBookingResponseType buildError(ErrorType e) {
+    public ChangeBookingResponseType buildError(ErrorType e) {
         ChangeBookingResponseType res = new ChangeBookingResponseType();
         res.getError().add(e);
         return res;

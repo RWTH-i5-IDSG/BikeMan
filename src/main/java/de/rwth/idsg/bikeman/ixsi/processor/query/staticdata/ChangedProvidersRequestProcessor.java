@@ -1,11 +1,12 @@
-package de.rwth.idsg.bikeman.ixsi.processor.query;
+package de.rwth.idsg.bikeman.ixsi.processor.query.staticdata;
 
-import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
 import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
 import de.rwth.idsg.bikeman.ixsi.dto.query.ChangedProvidersResponseDTO;
+import de.rwth.idsg.bikeman.ixsi.processor.api.StaticRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.repository.QueryIXSIRepository;
 import de.rwth.idsg.bikeman.ixsi.schema.ChangedProvidersRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.ChangedProvidersResponseType;
+import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
@@ -39,9 +40,9 @@ public class ChangedProvidersRequestProcessor implements
     // -------------------------------------------------------------------------
 
     @Override
-    public ChangedProvidersResponseType invalidSystem() {
+    public ChangedProvidersResponseType buildError(ErrorType e) {
         ChangedProvidersResponseType b = new ChangedProvidersResponseType();
-        b.getError().add(ErrorFactory.invalidSystem());
+        b.getError().add(e);
         return b;
     }
 }

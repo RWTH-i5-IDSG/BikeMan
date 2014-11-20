@@ -1,9 +1,10 @@
 package de.rwth.idsg.bikeman.ixsi.dispatcher;
 
 import de.rwth.idsg.bikeman.ixsi.CommunicationContext;
+import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
 import de.rwth.idsg.bikeman.ixsi.IxsiProcessingException;
-import de.rwth.idsg.bikeman.ixsi.processor.subscription.SubscriptionRequestMessageProcessor;
-import de.rwth.idsg.bikeman.ixsi.processor.subscription.SubscriptionRequestProcessor;
+import de.rwth.idsg.bikeman.ixsi.processor.api.SubscriptionRequestMessageProcessor;
+import de.rwth.idsg.bikeman.ixsi.processor.api.SubscriptionRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.repository.SystemValidator;
 import de.rwth.idsg.bikeman.ixsi.schema.HeartBeatResponseType;
 import de.rwth.idsg.bikeman.ixsi.schema.SubscriptionRequestType;
@@ -97,7 +98,7 @@ public class SubscriptionRequestTypeDispatcher implements Dispatcher {
         if (systemValidator.validate(systemID)) {
             res = p.process(req, systemID);
         } else {
-            res = p.invalidSystem();
+            res = p.buildError(ErrorFactory.invalidSystem());
         }
 
         SubscriptionResponseType s = new SubscriptionResponseType();
@@ -119,7 +120,7 @@ public class SubscriptionRequestTypeDispatcher implements Dispatcher {
         if (systemValidator.validate(systemID)) {
             res = p.process(req, systemID);
         } else {
-            res = p.invalidSystem();
+            res = p.buildError(ErrorFactory.invalidSystem());
         }
 
         SubscriptionResponseType s = new SubscriptionResponseType();

@@ -1,7 +1,8 @@
-package de.rwth.idsg.bikeman.ixsi.processor.query;
+package de.rwth.idsg.bikeman.ixsi.processor.query.user;
 
 import com.google.common.base.Optional;
 import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
+import de.rwth.idsg.bikeman.ixsi.processor.api.UserRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.schema.CloseSessionRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.CloseSessionResponseType;
 import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
@@ -21,7 +22,7 @@ public class CloseSessionRequestProcessor implements
 
     @Override
     public CloseSessionResponseType processAnonymously(CloseSessionRequestType request, Optional<Language> lan) {
-        return buildError(ErrorFactory.requestNotSupported());
+        return buildError(ErrorFactory.notImplemented("We don't support sessions", null));
     }
 
     /**
@@ -30,7 +31,7 @@ public class CloseSessionRequestProcessor implements
     @Override
     public CloseSessionResponseType processForUser(CloseSessionRequestType request, Optional<Language> lan,
                                                    List<UserInfoType> userInfoList) {
-        return buildError(ErrorFactory.requestNotSupported());
+        return buildError(ErrorFactory.notImplemented("We don't support sessions", null));
     }
 
     // -------------------------------------------------------------------------
@@ -38,11 +39,7 @@ public class CloseSessionRequestProcessor implements
     // -------------------------------------------------------------------------
 
     @Override
-    public CloseSessionResponseType invalidSystem() {
-        return buildError(ErrorFactory.requestNotSupported());
-    }
-
-    private CloseSessionResponseType buildError(ErrorType e) {
+    public CloseSessionResponseType buildError(ErrorType e) {
         CloseSessionResponseType res = new CloseSessionResponseType();
         res.getError().add(e);
         return res;

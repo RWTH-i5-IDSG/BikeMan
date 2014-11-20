@@ -1,10 +1,11 @@
-package de.rwth.idsg.bikeman.ixsi.processor.subscription;
+package de.rwth.idsg.bikeman.ixsi.processor.subscription.request;
 
-import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
 import de.rwth.idsg.bikeman.ixsi.processor.AvailabilityStore;
+import de.rwth.idsg.bikeman.ixsi.processor.api.SubscriptionRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.schema.AvailabilitySubscriptionRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.AvailabilitySubscriptionResponseType;
 import de.rwth.idsg.bikeman.ixsi.schema.BookingTargetIDType;
+import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -48,9 +49,9 @@ public class AvailabilitySubscriptionRequestProcessor implements
     // -------------------------------------------------------------------------
 
     @Override
-    public AvailabilitySubscriptionResponseType invalidSystem() {
+    public AvailabilitySubscriptionResponseType buildError(ErrorType e) {
         AvailabilitySubscriptionResponseType b = new AvailabilitySubscriptionResponseType();
-        b.getError().add(ErrorFactory.invalidSystem());
+        b.getError().add(e);
         return b;
     }
 }
