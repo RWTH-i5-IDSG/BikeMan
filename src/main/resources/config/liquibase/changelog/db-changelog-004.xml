@@ -206,4 +206,43 @@
         <dropColumn tableName="T_TRANSACTION" columnName="user_id"/>
     </changeSet>
 
+    <changeSet id="1409564974607-32" author="mwiederhold">
+        <createTable tableName="T_RESERVATION" schemaName="public">
+            <column name="reservation_id" type="INT8">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="card_account_id" type="INT8" />
+            <column name="start_datetime" type="timestamp" />
+            <column name="end_datetime" type="timestamp" />
+            <column name="pedelec_id" type="INT8" />
+        </createTable>
+
+        <addForeignKeyConstraint baseColumnNames="card_account_id" baseTableName="T_RESERVATION" baseTableSchemaName="public"
+                                 constraintName="FK_CARDACC_RESERVATION" deferrable="false" initiallyDeferred="false"
+                                 referencedColumnNames="card_account_id" referencedTableName="T_CARD_ACCOUNT" referencedTableSchemaName="public"/>
+
+        <addForeignKeyConstraint baseColumnNames="pedelec_id" baseTableName="T_RESERVATION" baseTableSchemaName="public"
+                                 constraintName="FK_PEDELEC_RESERVATION" deferrable="false" initiallyDeferred="false"
+                                 referencedColumnNames="pedelec_id" referencedTableName="T_PEDELEC" referencedTableSchemaName="public"/>
+    </changeSet>
+
+    <changeSet id="1409564974607-33" author="mwiederhold">
+        <createTable tableName="T_BOOKING" schemaName="public">
+            <column name="booking_id" type="INT8">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="reservation_id" type="INT8" />
+            <column name="transaction_id" type="INT8" />
+        </createTable>
+
+        <addForeignKeyConstraint baseColumnNames="reservation_id" baseTableName="T_BOOKING" baseTableSchemaName="public"
+                                 constraintName="FK_RESERVATION_BOOKING" deferrable="false" initiallyDeferred="false"
+                                 referencedColumnNames="reservation_id" referencedTableName="T_RESERVATION" referencedTableSchemaName="public"/>
+
+        <addForeignKeyConstraint baseColumnNames="transaction_id" baseTableName="T_BOOKING" baseTableSchemaName="public"
+                                 constraintName="FK_TRANSACTION_BOOKING" deferrable="false" initiallyDeferred="false"
+                                 referencedColumnNames="transaction_id" referencedTableName="T_TRANSACTION" referencedTableSchemaName="public"/>
+    </changeSet>
+
+
 </databaseChangeLog>
