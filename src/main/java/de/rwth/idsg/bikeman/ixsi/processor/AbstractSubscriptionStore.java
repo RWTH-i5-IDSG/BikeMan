@@ -1,5 +1,6 @@
 package de.rwth.idsg.bikeman.ixsi.processor;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import de.rwth.idsg.bikeman.ixsi.processor.api.SubscriptionStore;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -12,6 +13,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -22,6 +24,11 @@ public abstract class AbstractSubscriptionStore implements SubscriptionStore {
 
     // Want to get the logger of the extending class and not of this abstract one
     private final Logger log = LoggerFactory.getLogger(getClass());
+
+    final ThreadFactory threadFactory = new ThreadFactoryBuilder()
+            .setNameFormat(getClass().getSimpleName() + "-Thread-%d")
+            .setDaemon(true)
+            .build();
 
     /**
      * Key   (String)      = ID of the item

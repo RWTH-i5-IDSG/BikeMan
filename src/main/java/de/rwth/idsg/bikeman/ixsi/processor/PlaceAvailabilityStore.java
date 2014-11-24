@@ -22,11 +22,13 @@ public class PlaceAvailabilityStore extends AbstractSubscriptionStore {
     @PostConstruct
     public void init() {
         lookupTable = new ConcurrentHashMap<>();
-        scheduler = Executors.newScheduledThreadPool(3);
+        scheduler = Executors.newScheduledThreadPool(3, threadFactory);
     }
 
     @PreDestroy
     public void preDestroy() {
+        log.debug("PlaceAvailabilityStore is being destroyed");
+        scheduler.shutdown();
         // TODO Publish info about going down
     }
 
