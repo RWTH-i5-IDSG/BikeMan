@@ -1,12 +1,17 @@
 package de.rwth.idsg.bikeman.repository;
 
-import de.rwth.idsg.bikeman.domain.*;
+import de.rwth.idsg.bikeman.domain.CardAccount;
 import de.rwth.idsg.bikeman.domain.CardAccount_;
+import de.rwth.idsg.bikeman.domain.CustomerType;
 import de.rwth.idsg.bikeman.domain.Customer_;
 import de.rwth.idsg.bikeman.domain.MajorCustomer_;
+import de.rwth.idsg.bikeman.domain.Pedelec;
 import de.rwth.idsg.bikeman.domain.Pedelec_;
+import de.rwth.idsg.bikeman.domain.Station;
+import de.rwth.idsg.bikeman.domain.StationSlot;
 import de.rwth.idsg.bikeman.domain.StationSlot_;
 import de.rwth.idsg.bikeman.domain.Station_;
+import de.rwth.idsg.bikeman.domain.Transaction;
 import de.rwth.idsg.bikeman.domain.Transaction_;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditPedelecDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.view.ViewPedelecDTO;
@@ -166,6 +171,17 @@ public class PedelecRepositoryImpl implements PedelecRepository {
     @Transactional(readOnly = true)
     public Pedelec findOne(long pedelecId) throws DatabaseException {
         return getPedelecEntity(pedelecId);
+    }
+
+    @Transactional(readOnly = true)
+    public Pedelec findByManufacturerId(String manufacturerId) throws DatabaseException {
+        final String q = "SELECT p FROM Pedelec p WHERE p.manufacturerId = :manufacturerId";
+
+        try {
+            return em.createQuery(q, Pedelec.class).getSingleResult();
+        } catch (Exception e) {
+            throw new DatabaseException("Failed to find pedelec with manufacturerId" + manufacturerId, e);
+        }
     }
 
     @Override

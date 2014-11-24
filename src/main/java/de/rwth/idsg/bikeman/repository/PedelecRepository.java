@@ -4,6 +4,7 @@ import de.rwth.idsg.bikeman.domain.Pedelec;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditPedelecDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.view.ViewPedelecDTO;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
@@ -15,6 +16,7 @@ public interface PedelecRepository {
     List<ViewPedelecDTO> findAll() throws DatabaseException;
     ViewPedelecDTO findOneDTO(Long pedelecId) throws DatabaseException;
     Pedelec findOne(long pedelecId) throws DatabaseException;
+    public Pedelec findByManufacturerId(String manufacturerId) throws DatabaseException;
     void create(CreateEditPedelecDTO dto) throws DatabaseException;
     void update(CreateEditPedelecDTO dto) throws DatabaseException;
     void delete(long pedelecId) throws DatabaseException;

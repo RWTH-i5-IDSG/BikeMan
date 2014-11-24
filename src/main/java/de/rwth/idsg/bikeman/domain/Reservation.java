@@ -4,6 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.Builder;
 import org.joda.time.LocalDateTime;
 
 import javax.persistence.Column;
@@ -21,6 +22,7 @@ import javax.persistence.TableGenerator;
  * @since 20.11.2014
  */
 @Entity
+@Builder
 @Table(name="T_RESERVATION")
 @TableGenerator(name="reservation_gen", initialValue=0, allocationSize=1)
 @EqualsAndHashCode(of = {"reservationId"})
