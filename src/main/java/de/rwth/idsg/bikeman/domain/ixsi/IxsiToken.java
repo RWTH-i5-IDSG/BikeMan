@@ -1,6 +1,6 @@
 package de.rwth.idsg.bikeman.domain.ixsi;
 
-import de.rwth.idsg.bikeman.domain.MajorCustomer;
+import de.rwth.idsg.bikeman.domain.CardAccount;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -35,8 +35,8 @@ public class IxsiToken implements Serializable {
     private String tokenValue;
 
     @OneToOne(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id")
-    private MajorCustomer majorCustomer;
+    @JoinColumn(name = "card_id")
+    private CardAccount cardAccount;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created", nullable = false, updatable = true)

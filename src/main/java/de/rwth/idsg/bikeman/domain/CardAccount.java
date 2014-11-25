@@ -23,7 +23,8 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "T_CARD_ACCOUNT")
+@Table(name = "T_CARD_ACCOUNT",
+        indexes = {@Index(columnList="card_id", unique = true)})
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @TableGenerator(name="card_account_gen", initialValue=0, allocationSize=1)
 @EqualsAndHashCode(of = {"cardId"}, callSuper = false)

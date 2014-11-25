@@ -1,6 +1,6 @@
 package de.rwth.idsg.bikeman.ixsi.repository;
 
-import de.rwth.idsg.bikeman.domain.MajorCustomer;
+import de.rwth.idsg.bikeman.domain.CardAccount;
 import de.rwth.idsg.bikeman.domain.ixsi.IxsiToken;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
@@ -27,48 +27,49 @@ public class IxsiUserRepositoryImpl implements IxsiUserRepository {
 
     @Override
     @Transactional(readOnly = false)
-    public String setUserToken(String login, String rawPassword) throws DatabaseException {
-        MajorCustomer majorCustomer = getMajorCustomer(login, rawPassword);
+    public String setUserToken(String cardId, String cardPin) throws DatabaseException {
+        CardAccount cardAccount = getCardAccount(cardId, cardPin);
 
-        final String q = "SELECT t FROM IxsiToken t WHERE t.majorCustomer = :majorCustomer";
+        final String q = "SELECT t FROM IxsiToken t WHERE t.cardAccount = :cardAccount";
 
-        String encodedPassword = passwordEncoder.encode(rawPassword);
+        String encodedPin = passwordEncoder.encode(cardPin);
 
         // If there is already a token, update it.
         try {
             IxsiToken t = em.createQuery(q, IxsiToken.class)
-                            .setParameter("majorCustomer", majorCustomer)
+                            .setParameter("cardAccount", cardAccount)
                             .getSingleResult();
-            t.setTokenValue(encodedPassword);
+
+            t.setTokenValue(encodedPin);
             t.setCreated(new Date());
             t.setLastUsed(null);
             em.merge(t);
-            log.debug("Updated IxsiToken for {}", majorCustomer);
+            log.debug("Updated IxsiToken for {}", cardAccount);
 
-        // Insert a new token for customer
+        // Insert a new token for cardAccount
         } catch (NoResultException e) {
             log.error("Error occurred", e);
 
             IxsiToken newToken = new IxsiToken();
-            newToken.setMajorCustomer(majorCustomer);
-            newToken.setTokenValue(encodedPassword);
+            newToken.setCardAccount(cardAccount);
+            newToken.setTokenValue(encodedPin);
             em.persist(newToken);
-            log.debug("Inserted IxsiToken for {}", majorCustomer);
+            log.debug("Inserted IxsiToken for {}", cardAccount);
         }
 
-        return encodedPassword;
+        return encodedPin;
     }
 
     @Override
     @Transactional(readOnly = false)
-    public boolean validateUserToken(String login, String ixsiToken) {
+    public boolean validateUserToken(String cardId, String ixsiToken) {
         final String q = "SELECT t FROM IxsiToken t " +
                          "WHERE t.tokenValue = :ixsiToken " +
-                         "AND t.majorCustomer.login = :login";
+                         "AND t.cardAccount.cardId = :cardId";
 
         try {
             IxsiToken t = em.createQuery(q, IxsiToken.class)
-                            .setParameter("login", login)
+                            .setParameter("cardId", cardId)
                             .setParameter("ixsiToken", ixsiToken)
                             .getSingleResult();
 
@@ -85,25 +86,24 @@ public class IxsiUserRepositoryImpl implements IxsiUserRepository {
     }
 
     /**
-     * Does the MajorCustomer exist, at all? And is the password correct?
-     *
+     * Does the CardAccount exist, at all? And is the pin correct?
      */
-    private MajorCustomer getMajorCustomer(String login, String rawPassword) throws DatabaseException {
-        final String p = "SELECT mc FROM MajorCustomer mc WHERE mc.login = :login";
+    private CardAccount getCardAccount(String cardId, String cardPin) throws DatabaseException {
+        final String p = "SELECT ca FROM CardAccount ca WHERE ca.cardId = :cardId";
 
         try {
-            MajorCustomer majorCustomer = em.createQuery(p, MajorCustomer.class)
-                                            .setParameter("login", login)
-                                            .getSingleResult();
+            CardAccount cardAccount = em.createQuery(p, CardAccount.class)
+                                        .setParameter("cardId", cardId)
+                                        .getSingleResult();
 
-            if (!passwordEncoder.matches(rawPassword, majorCustomer.getPassword())) {
-                throw new DatabaseException("MajorCustomer password is not correct");
+            if (cardAccount.getCardPin().equals(cardPin)) {
+                throw new DatabaseException("CardAccount pin is not correct");
             }
 
-            return majorCustomer;
+            return cardAccount;
 
         } catch (NoResultException e) {
-            throw new DatabaseException("No MajorCustomer exists with login " + login, e);
+            throw new DatabaseException("No CardAccount exists with cardId " + cardId, e);
         }
     }
 

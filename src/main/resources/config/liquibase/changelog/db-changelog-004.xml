@@ -244,5 +244,18 @@
                                  referencedColumnNames="transaction_id" referencedTableName="T_TRANSACTION" referencedTableSchemaName="public"/>
     </changeSet>
 
+    <changeSet id="1409564974607-34" author="goekay">
+        <dropColumn tableName="IXSI_TOKEN" columnName="user_id"/>
+        <addColumn tableName="IXSI_TOKEN">
+            <column name="card_id" type="varchar(255)" />
+        </addColumn>
+        <addForeignKeyConstraint baseTableName="IXSI_TOKEN" baseColumnNames="card_id" constraintName="FK_IXSI_TOKEN_CARD_ID"
+                                 referencedTableName="T_CARD_ACCOUNT"
+                                 referencedColumnNames="card_id"/>
+
+        <createIndex tableName="T_CARD_ACCOUNT" indexName="idx_card_account_ca_id">
+            <column name="card_id"/>
+        </createIndex>
+    </changeSet>
 
 </databaseChangeLog>
