@@ -9,7 +9,7 @@ import de.rwth.idsg.bikeman.ixsi.schema.EngineType;
 public final class IXSIConstants {
     private IXSIConstants() {}
 
-    public static final String XML_SCHEMA_FILE = "ixsi/IXSI.xsd";
+    public static final String XML_SCHEMA_FILE = "ixsi/IXSI-with-enums.xsd";
 
     public static final ClassType bookeeClassType = ClassType.BIKE;
     public static final EngineType engineType = EngineType.ELECTRIC;
