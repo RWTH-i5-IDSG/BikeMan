@@ -140,7 +140,20 @@ public class BookingTargetsInfoRequestProcessor implements
             CoordType coords = new CoordType();
             coords.setLatitude(stat.getLocation_latitude());
             coords.setLongitude(stat.getLocation_longitude());
-            place.setCoord(coords);
+
+            ViewAddressDTO viewAddressDTO = stat.getAddress();
+
+            AddressType address = new AddressType();
+            address.setCountry(viewAddressDTO.getCountry());
+            address.setPostalCode(viewAddressDTO.getZip());
+            address.setCity(viewAddressDTO.getCity());
+            address.setStreetHouseNr(viewAddressDTO.getStreetAndHousenumber());
+
+            GeoPositionType geoPosition = new GeoPositionType();
+            geoPosition.setAddress(address);
+            geoPosition.setCoord(coords);
+
+            place.setGeoPosition(geoPosition);
 
             // set place capacity
             place.setCapacity(stat.getSlotCount());
@@ -153,20 +166,10 @@ public class BookingTargetsInfoRequestProcessor implements
             // set place providerId
             place.setProviderID(IXSIConstants.Provider.id);
 
-            // set place description
-            TextType desc = new TextType();
-            desc.setText(String.format("Note: %s, Address: %s", stat.getNote(), formatAddress(stat.getAddress())));
-
-            place.getDescription().add(desc);
-
             places.add(place);
         }
 
         return places;
-    }
-
-    private String formatAddress(ViewAddressDTO dto) {
-        return String.format("%s, %s %s, %s", dto.getStreetAndHousenumber(), dto.getZip(), dto.getCity(), dto.getCountry());
     }
 
     // -------------------------------------------------------------------------

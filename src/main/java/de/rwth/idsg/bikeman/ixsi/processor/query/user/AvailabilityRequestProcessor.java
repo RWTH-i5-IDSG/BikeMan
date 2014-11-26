@@ -78,7 +78,6 @@ public class AvailabilityRequestProcessor implements
         List<UserInfoType> validUsers = results.getValidUsers();
         // TODO process with validUsers
 
-
         return null;
     }
 
@@ -103,7 +102,7 @@ public class AvailabilityRequestProcessor implements
             BookingTargetAvailabilityType bType = new BookingTargetAvailabilityType();
             bType.setID(bookingTargetIDType);
             bType.setPlaceID(placeId);
-            bType.setGeoPosition(coordType);
+
             bType.setCurrentStateOfCharge(percentType);
 
             // TODO get the actual driving range from pedelec!

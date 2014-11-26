@@ -1,7 +1,6 @@
 package de.rwth.idsg.bikeman.repository;
 
 import de.rwth.idsg.bikeman.Application;
-import de.rwth.idsg.bikeman.domain.CardAccount;
 import de.rwth.idsg.bikeman.ixsi.repository.IxsiUserRepository;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
