@@ -96,7 +96,7 @@ public class IxsiUserRepositoryImpl implements IxsiUserRepository {
                                         .setParameter("cardId", cardId)
                                         .getSingleResult();
 
-            if (cardAccount.getCardPin().equals(cardPin)) {
+            if (!cardAccount.getCardPin().equals(cardPin)) {
                 throw new DatabaseException("CardAccount pin is not correct");
             }
 

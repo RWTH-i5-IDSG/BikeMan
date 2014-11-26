@@ -258,4 +258,17 @@
         </createIndex>
     </changeSet>
 
+    <changeSet id="1409564974607-35" author="goekay">
+        <dropColumn tableName="IXSI_TOKEN" columnName="card_id"/>
+        <addColumn tableName="IXSI_TOKEN">
+            <column name="card_account_id" type="INT8" />
+        </addColumn>
+        <addForeignKeyConstraint baseTableName="IXSI_TOKEN" baseColumnNames="card_account_id" constraintName="FK_IXSI_TOKEN_CARD_ACC_ID"
+                                 referencedTableName="T_CARD_ACCOUNT"
+                                 referencedColumnNames="card_account_id"/>
+
+        <dropIndex indexName="idx_card_account_ca_id" tableName="T_CARD_ACCOUNT"/>
+
+    </changeSet>
+
 </databaseChangeLog>

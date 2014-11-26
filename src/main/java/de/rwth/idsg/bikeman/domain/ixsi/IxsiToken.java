@@ -35,7 +35,7 @@ public class IxsiToken implements Serializable {
     private String tokenValue;
 
     @OneToOne(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
-    @JoinColumn(name = "card_id")
+    @JoinColumn(name = "card_account_id")
     private CardAccount cardAccount;
 
     @Temporal(TemporalType.TIMESTAMP)
