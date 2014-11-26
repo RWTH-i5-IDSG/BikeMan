@@ -44,12 +44,12 @@ public class IxsiUserRepositoryImplTest {
         log.info("---------");
     }
 
-    //@Test(expected = DatabaseException.class)
+    @Test(expected = DatabaseException.class)
     public void test1_notExistingUser() throws DatabaseException {
         ixsiUserRepository.setUserToken(RandomStringUtils.randomAlphabetic(8), RandomStringUtils.randomAlphabetic(8));
     }
 
-    //@Test(expected = DatabaseException.class)
+    @Test(expected = DatabaseException.class)
     public void test2_incorrectUserPass() throws DatabaseException {
         ixsiUserRepository.setUserToken(CARD_ID, RandomStringUtils.randomAlphabetic(8));
     }
@@ -63,9 +63,4 @@ public class IxsiUserRepositoryImplTest {
         assertTrue(isValid);
     }
 
-    @Test
-    public void test4_updateAndValidateUserToken() throws DatabaseException {
-        CardAccount ca = ixsiUserRepository.getCardAccount(CARD_ID, CARD_PIN);
-        log.debug("CardAccount: {}", ca);
-    }
 }
