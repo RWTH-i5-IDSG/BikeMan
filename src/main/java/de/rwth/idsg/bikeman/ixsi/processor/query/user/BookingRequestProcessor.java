@@ -9,13 +9,10 @@ import de.rwth.idsg.bikeman.ixsi.schema.BookingResponseType;
 import de.rwth.idsg.bikeman.ixsi.schema.BookingType;
 import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
 import de.rwth.idsg.bikeman.ixsi.schema.Language;
-import de.rwth.idsg.bikeman.ixsi.schema.TimePeriodType;
 import de.rwth.idsg.bikeman.ixsi.schema.UserInfoType;
 import de.rwth.idsg.bikeman.ixsi.service.BookingService;
 import de.rwth.idsg.bikeman.repository.BookingRepository;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
-import org.joda.time.DateTime;
-import org.joda.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

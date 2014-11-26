@@ -178,9 +178,11 @@ public class PedelecRepositoryImpl implements PedelecRepository {
         final String q = "SELECT p FROM Pedelec p WHERE p.manufacturerId = :manufacturerId";
 
         try {
-            return em.createQuery(q, Pedelec.class).getSingleResult();
+            return em.createQuery(q, Pedelec.class)
+                    .setParameter("manufacturerId", manufacturerId)
+                    .getSingleResult();
         } catch (Exception e) {
-            throw new DatabaseException("Failed to find pedelec with manufacturerId" + manufacturerId, e);
+            throw new DatabaseException("Failed to find pedelec with manufacturerId " + manufacturerId, e);
         }
     }
 

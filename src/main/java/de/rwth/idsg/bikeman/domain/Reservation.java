@@ -1,10 +1,13 @@
 package de.rwth.idsg.bikeman.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Builder;
+import org.hibernate.annotations.Type;
 import org.joda.time.LocalDateTime;
 
 import javax.persistence.Column;
@@ -29,6 +32,8 @@ import javax.persistence.TableGenerator;
 @ToString(includeFieldNames = true)
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Reservation {
 
     @Id
@@ -41,9 +46,11 @@ public class Reservation {
     private CardAccount cardAccount;
 
     @Column(name = "start_datetime", nullable = false, updatable = false)
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
     private LocalDateTime startDateTime;
 
     @Column(name = "end_datetime", nullable = false, updatable = false)
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
     private LocalDateTime endDateTime;
 
     @ManyToOne
