@@ -1,12 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?><!-- Mit XMLSpy v2013 sp1 (x64) (http://www.altova.com) von Peter von Grumbkow (HaCon Ingenieurgesellschaft mbH) bearbeitet --><!-- edited with XMLSpy v2010 rel. 3 sp1 (x64) (http://www.altova.com) by Peter von Grumbkow (HaCon Ingenieurgesellschaft mbH) --><xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+<?xml version="1.0" encoding="UTF-8"?><!-- Mit XMLSpy v2013 sp1 (x64) (http://www.altova.com) von Peter von Grumbkow (HaCon Ingenieurgesellschaft mbH) bearbeitet --><!-- edited with XMLSpy v2010 rel. 3 sp1 (x64) (http://www.altova.com) by Peter von Grumbkow (HaCon Ingenieurgesellschaft mbH) --><xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.ixsi-schnittstelle.de/" targetNamespace="http://www.ixsi-schnittstelle.de/" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<!--*******************************************************************-->
 	<!--Interface for X-Sharing Information (IXSI)-->
 	<!--*******************************************************************-->
-	<!--Spezifikation, Version 4 vom 2014-07-03-->
+	<!--Spezifikation, Version 4 vom 2014-11-25-->
 	<!--Urheber: Peter von Grumbkow, HaCon Ing.-Ges. mbH und Dirk Hillbrecht, cantamen GmbH-->
 	<!--Diese Schnittstellenspezifikation steht unter folgender Lizenz: CC BY-ND 3.0 DE (Creative Commons Namensnennung-Keine Bearbeitung 3.0 Deutschland), http://creativecommons.org/licenses/by-nd/3.0/de/-->
 	<!--*******************************************************************-->
-	<!--Specification, Version 4 of 2014-07-03-->
+	<!--Specification, Version 4 of 2014-11-25-->
 	<!--Authors: Peter von Grumbkow, HaCon Ing.-Ges. mbH and Dirk Hillbrecht, cantamen GmbH-->
 	<!--This interface specification is licensed according to: CC BY-ND 3.0 DE (Creative Commons Namensnennung-Keine Bearbeitung 3.0 Deutschland), http://creativecommons.org/licenses/by-nd/3.0/de/-->
 	<!--*******************************************************************-->
@@ -17,61 +17,61 @@
 		<xs:annotation>
 			<xs:documentation>Type for area IDs.</xs:documentation>
 		</xs:annotation>
-		<xs:restriction base="xs:NMTOKEN"/>
+		<xs:restriction base="xs:token"/>
 	</xs:simpleType>
 	<xs:simpleType name="PlaceIDType">
 		<xs:annotation>
 			<xs:documentation>Type for place IDs.</xs:documentation>
 		</xs:annotation>
-		<xs:restriction base="xs:NMTOKEN"/>
+		<xs:restriction base="xs:token"/>
 	</xs:simpleType>
 	<xs:simpleType name="PlaceGroupIDType">
 		<xs:annotation>
 			<xs:documentation>Type for place group IDs.</xs:documentation>
 		</xs:annotation>
-		<xs:restriction base="xs:NMTOKEN"/>
+		<xs:restriction base="xs:token"/>
 	</xs:simpleType>
 	<xs:simpleType name="BookeeIDType">
 		<xs:annotation>
 			<xs:documentation>Type for bookee IDs.</xs:documentation>
 		</xs:annotation>
-		<xs:restriction base="xs:NMTOKEN"/>
+		<xs:restriction base="xs:token"/>
 	</xs:simpleType>
 	<xs:simpleType name="ProviderIDType">
 		<xs:annotation>
 			<xs:documentation>Type for provider IDs.</xs:documentation>
 		</xs:annotation>
-		<xs:restriction base="xs:NMTOKEN"/>
+		<xs:restriction base="xs:token"/>
 	</xs:simpleType>
 	<xs:simpleType name="SessionIDType">
 		<xs:annotation>
 			<xs:documentation>Type for session IDs.</xs:documentation>
 		</xs:annotation>
-		<xs:restriction base="xs:NMTOKEN"/>
+		<xs:restriction base="xs:token"/>
 	</xs:simpleType>
 	<xs:simpleType name="BookingIDType">
 		<xs:annotation>
 			<xs:documentation>Type for booking IDs.</xs:documentation>
 		</xs:annotation>
-		<xs:restriction base="xs:NMTOKEN"/>
+		<xs:restriction base="xs:token"/>
 	</xs:simpleType>
 	<xs:simpleType name="UserIDType">
 		<xs:annotation>
 			<xs:documentation>Type for user IDs.</xs:documentation>
 		</xs:annotation>
-		<xs:restriction base="xs:NMTOKEN"/>
+		<xs:restriction base="xs:token"/>
 	</xs:simpleType>
 	<xs:simpleType name="SystemIDType">
 		<xs:annotation>
 			<xs:documentation>Type for system IDs.</xs:documentation>
 		</xs:annotation>
-		<xs:restriction base="xs:NMTOKEN"/>
+		<xs:restriction base="xs:token"/>
 	</xs:simpleType>
 	<xs:simpleType name="GlobalIDType">
 		<xs:annotation>
 			<xs:documentation>Type for globally unique IDs for identifiying clone entities.</xs:documentation>
 		</xs:annotation>
-		<xs:restriction base="xs:NMTOKEN"/>
+		<xs:restriction base="xs:token"/>
 	</xs:simpleType>
 	<xs:annotation>
 		<xs:documentation>**** General type definitions ****</xs:documentation>
@@ -200,12 +200,12 @@
 		<xs:sequence>
 			<xs:element name="Duration" type="xs:duration">
 				<xs:annotation>
-					<xs:documentation>Probable duration for getting a booking target. </xs:documentation>
+					<xs:documentation>Probable duration for finding a booking target. </xs:documentation>
 				</xs:annotation>
 			</xs:element>
 			<xs:element name="Variance" type="xs:duration" minOccurs="0">
 				<xs:annotation>
-					<xs:documentation>Variance of the probable duration for getting a booking target. The probable duration can vary by this value up or down.</xs:documentation>
+					<xs:documentation>Variance of the probable duration for finding a booking target. The probable duration can vary by this value up or down.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
 		</xs:sequence>
@@ -221,6 +221,50 @@
 				</xs:annotation>
 			</xs:element>
 			<xs:group ref="DurationGroup"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AddressType">
+		<xs:annotation>
+			<xs:documentation>Type for storing an address.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Country" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Name of the country.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="PostalCode" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Complete postal code of the address.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="City" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Name of the city.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="StreetHouseNr" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Street and house number in one string.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="GeoPositionType">
+		<xs:annotation>
+			<xs:documentation>Type for a geopraphical position.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Coord" type="CoordType">
+				<xs:annotation>
+					<xs:documentation>Geographical coordinates.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Address" type="AddressType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Optional address of the geographical position.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="TimePeriodType">
@@ -338,7 +382,7 @@
 		<xs:annotation>
 			<xs:documentation>Enumeration for error codes.</xs:documentation>
 		</xs:annotation>
-		<xs:restriction base="xs:NMTOKEN"><xs:enumeration value="auth_provider_unknown"/><xs:enumeration value="auth_invalid_password"/><xs:enumeration value="auth_invalid_token"/><xs:enumeration value="auth_session_invalid"/><xs:enumeration value="auth_anon_not_allowed"/><xs:enumeration value="auth_not_authorized"/><xs:enumeration value="sys_backend_failed"/><xs:enumeration value="sys_unknown_failure"/><xs:enumeration value="sys_not_implemented"/><xs:enumeration value="sys_request_not_plausible"/><xs:enumeration value="booking_target_unknown"/><xs:enumeration value="price_info_not_available"/><xs:enumeration value="booking_too_short"/><xs:enumeration value="booking_too_long"/><xs:enumeration value="booking_target_not_available"/><xs:enumeration value="booking_change_not_possible"/><xs:enumeration value="booking_id_unknown"/><xs:enumeration value="language_not_supported"/></xs:restriction>
+		<xs:restriction base="xs:token"><xs:enumeration value="auth_provider_unknown"/><xs:enumeration value="auth_invalid_password"/><xs:enumeration value="auth_invalid_token"/><xs:enumeration value="auth_session_invalid"/><xs:enumeration value="auth_anon_not_allowed"/><xs:enumeration value="auth_not_authorized"/><xs:enumeration value="sys_backend_failed"/><xs:enumeration value="sys_unknown_failure"/><xs:enumeration value="sys_not_implemented"/><xs:enumeration value="sys_request_not_plausible"/><xs:enumeration value="booking_target_unknown"/><xs:enumeration value="price_info_not_available"/><xs:enumeration value="booking_too_short"/><xs:enumeration value="booking_too_long"/><xs:enumeration value="booking_target_not_available"/><xs:enumeration value="booking_change_not_possible"/><xs:enumeration value="booking_id_unknown"/><xs:enumeration value="language_not_supported"/></xs:restriction>
 	</xs:simpleType>
 	<xs:complexType name="ErrorType">
 		<xs:annotation>
@@ -374,31 +418,31 @@
 		<xs:annotation>
 			<xs:documentation>Enumeration for car classes.</xs:documentation>
 		</xs:annotation>
-		<xs:restriction base="xs:NMTOKEN"><xs:enumeration value="bike"/><xs:enumeration value="motorcycle"/><xs:enumeration value="micro"/><xs:enumeration value="mini"/><xs:enumeration value="small"/><xs:enumeration value="medium"/><xs:enumeration value="van"/><xs:enumeration value="transporter"/></xs:restriction>
+		<xs:restriction base="xs:token"><xs:enumeration value="bike"/><xs:enumeration value="motorcycle"/><xs:enumeration value="micro"/><xs:enumeration value="mini"/><xs:enumeration value="small"/><xs:enumeration value="medium"/><xs:enumeration value="van"/><xs:enumeration value="transporter"/></xs:restriction>
 	</xs:simpleType>
 	<xs:simpleType name="EngineType">
 		<xs:annotation>
 			<xs:documentation>Enumeration for engines.</xs:documentation>
 		</xs:annotation>
-		<xs:restriction base="xs:NMTOKEN"><xs:enumeration value="none"/><xs:enumeration value="diesel"/><xs:enumeration value="gasoline"/><xs:enumeration value="electric"/><xs:enumeration value="liquidgas"/><xs:enumeration value="hydrogen"/><xs:enumeration value="hybrid"/></xs:restriction>
+		<xs:restriction base="xs:token"><xs:enumeration value="none"/><xs:enumeration value="diesel"/><xs:enumeration value="gasoline"/><xs:enumeration value="electric"/><xs:enumeration value="liquidgas"/><xs:enumeration value="hydrogen"/><xs:enumeration value="hybrid"/></xs:restriction>
 	</xs:simpleType>
 	<xs:simpleType name="AttributeClassType">
 		<xs:annotation>
 			<xs:documentation>Enumeration for attribute classes.</xs:documentation>
 		</xs:annotation>
-		<xs:restriction base="xs:NMTOKEN"><xs:enumeration value="trailer_hitch"/><xs:enumeration value="automatic"/><xs:enumeration value="convertible"/><xs:enumeration value="air_condition"/><xs:enumeration value="navigation"/><xs:enumeration value="cruise_control"/><xs:enumeration value="winter_tyres"/><xs:enumeration value="child_seat_0"/><xs:enumeration value="child_seat_1"/><xs:enumeration value="child_seat_4"/><xs:enumeration value="utility"/><xs:enumeration value="doors_4"/><xs:enumeration value="seats_9"/><xs:enumeration value="seats_7"/><xs:enumeration value="seats_5"/><xs:enumeration value="seats_4"/></xs:restriction>
+		<xs:restriction base="xs:token"><xs:enumeration value="trailer_hitch"/><xs:enumeration value="automatic"/><xs:enumeration value="convertible"/><xs:enumeration value="air_condition"/><xs:enumeration value="navigation"/><xs:enumeration value="cruise_control"/><xs:enumeration value="winter_tyres"/><xs:enumeration value="child_seat_0"/><xs:enumeration value="child_seat_1"/><xs:enumeration value="child_seat_4"/><xs:enumeration value="utility"/><xs:enumeration value="doors_4"/><xs:enumeration value="seats_9"/><xs:enumeration value="seats_7"/><xs:enumeration value="seats_5"/><xs:enumeration value="seats_4"/></xs:restriction>
 	</xs:simpleType>
         <xs:simpleType name="ConsumptionClassType">
                 <xs:annotation>
                         <xs:documentation>Enumeration for consumption classes.</xs:documentation>
                 </xs:annotation>
-                <xs:restriction base="xs:NMTOKEN"/>
+                <xs:restriction base="xs:token"/>
         </xs:simpleType>
 	<xs:simpleType name="AttributeIDType">
 		<xs:annotation>
 			<xs:documentation>Enumeration for attribute codes.</xs:documentation>
 		</xs:annotation>
-		<xs:restriction base="xs:NMTOKEN"/>
+		<xs:restriction base="xs:token"/>
 	</xs:simpleType>
 	<xs:complexType name="AttributeType">
 		<xs:annotation>
@@ -489,7 +533,7 @@
 			<xs:documentation>Type for link from a car-sharing place to a stop.</xs:documentation>
 		</xs:annotation>
 		<xs:sequence>
-			<xs:element name="StopID" type="xs:NMTOKEN"/>
+			<xs:element name="StopID" type="xs:token"/>
 			<xs:group ref="DurationGroup"/>
 			<xs:element name="Distance" type="xs:nonNegativeInteger" minOccurs="0">
 				<xs:annotation>
@@ -573,7 +617,7 @@
 					<xs:documentation>Globallly unique ID of this object. Used for identifying clones of this object, if they are delivered from different systems. Such ID should be formed using unique elements like DNS domain names.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:element name="Coord" type="CoordType">
+			<xs:element name="GeoPosition" type="GeoPositionType">
 				<xs:annotation>
 					<xs:documentation>Geo position of the place.</xs:documentation>
 				</xs:annotation>
@@ -584,6 +628,11 @@
 				</xs:annotation>
 			</xs:element>
 			<xs:group ref="PlaceOrAreaGroup"/>
+			<xs:element name="OnPremisesTime" type="xs:duration" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Additional time needed for finding the place on the premises. Can be used for large parking areas or parking houses. Defaults to 0. </xs:documentation>
+				</xs:annotation>
+			</xs:element>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="ProbabilityPlaceIDType">
@@ -697,6 +746,11 @@
 					<xs:documentation>Grid for start and end time of bookings in minutes. Should be a divisor of 60. Examples: 1, 5, 10, 15, 30, 60.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
+			<xs:element name="OpeningTime" type="xs:duration" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Time needed for actually opening the booking target. If not given, the client system will assume some reasonable time.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
 			<xs:element name="Engine" type="EngineType" minOccurs="0"/>
 			<xs:element name="CO2Factor" type="xs:nonNegativeInteger" minOccurs="0">
 				<xs:annotation>
@@ -748,7 +802,7 @@
 					<xs:documentation>For currently available booking targets, which are not bound to a specific place, the current place should be returned.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:element name="GeoPosition" type="CoordType" minOccurs="0">
+			<xs:element name="GeoPosition" type="GeoPositionType" minOccurs="0">
 				<xs:annotation>
 					<xs:documentation>For currently available booking targets, which are not place bounded, the current position should be returned.</xs:documentation>
 				</xs:annotation>
@@ -785,7 +839,7 @@
 					<xs:documentation>For currently available booking targets, which are not bound to a specific place, the current place should be returned.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:element name="GeoPosition" type="CoordType" minOccurs="0">
+			<xs:element name="GeoPosition" type="GeoPositionType" minOccurs="0">
 				<xs:annotation>
 					<xs:documentation>For newly available vehicles, which are not place bounded, the position should be returned.</xs:documentation>
 				</xs:annotation>
@@ -812,7 +866,7 @@
 			<xs:element name="ID" type="ProviderPlaceIDType"/>
 			<xs:element name="Availability" type="xs:nonNegativeInteger">
 				<xs:annotation>
-					<xs:documentation>Currently available capacity for returning booking targets.</xs:documentation>
+					<xs:documentation>Currently available capacity for returning booking targets. This is the number of booking targets which could be returned now, without exceeding the overall capacity of the place.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
 		</xs:sequence>
@@ -1278,7 +1332,7 @@
 		<xs:complexContent>
 			<xs:extension base="AbstractBaseResponseType">
 				<xs:sequence>
-					<xs:element name="MessageBlockID" type="xs:NMTOKEN">
+					<xs:element name="MessageBlockID" type="xs:token">
 						<xs:annotation>
 							<xs:documentation>ID of the block, this message belongs to. All messages of one block have the same ID.</xs:documentation>
 						</xs:annotation>
@@ -1369,7 +1423,7 @@
 		<xs:complexContent>
 			<xs:extension base="AbstractBaseResponseType">
 				<xs:sequence>
-					<xs:element name="MessageBlockID" type="xs:NMTOKEN">
+					<xs:element name="MessageBlockID" type="xs:token">
 						<xs:annotation>
 							<xs:documentation>ID of the block, this message belongs to. All messages of one block have the same ID.</xs:documentation>
 						</xs:annotation>
@@ -1564,7 +1618,7 @@
 		<xs:complexContent>
 			<xs:extension base="AbstractBaseResponseType">
 				<xs:sequence>
-					<xs:element name="MessageBlockID" type="xs:NMTOKEN">
+					<xs:element name="MessageBlockID" type="xs:token">
 						<xs:annotation>
 							<xs:documentation>ID of the block, this message belongs to. All messages of one block have the same ID.</xs:documentation>
 						</xs:annotation>
@@ -1689,7 +1743,7 @@
                 <xs:complexContent>
                         <xs:extension base="AbstractBaseResponseType">
                                 <xs:sequence>
-                                        <xs:element name="MessageBlockID" type="xs:NMTOKEN">
+                                        <xs:element name="MessageBlockID" type="xs:token">
                                                 <xs:annotation>
                                                         <xs:documentation>ID of the block, this message belongs to. All messages of one block have the same ID.</xs:documentation>
                                                 </xs:annotation>
