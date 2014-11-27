@@ -8,6 +8,7 @@ import lombok.experimental.Builder;
  */
 
 @Data
+@Builder
 public class StopTransactionDTO {
     private String pedelecManufacturerId;
     private String stationManufacturerId;
