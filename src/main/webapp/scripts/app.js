@@ -221,21 +221,23 @@ bikeManApp
             });
 
             // Call when the 401 response is returned by the server
-            $rootScope.$on('event:auth-loginRequired', function (rejection) {
-
-                AuthenticationSharedService.refresh();
-                // Step 1:
-                // Save the state that the user wanted to see
-                // to route to after login is confirmed (see Step 2)
-//                    wantedState = $state.current;
-//
-//                    $rootScope.authenticated = false;
-//                    $state.go("login");
-
+            $rootScope.$on('event:auth-loginRequired', function(rejection) {
+                Session.invalidate();
+                $rootScope.authenticated = false;
+                if ($location.path() !== "/" && $location.path() !== "" && $location.path() !== "/register" &&
+                    $location.path() !== "/activate" && $location.path() !== "/login") {
+                    var redirect = $location.path();
+                    $location.path('/login').search('redirect', redirect).replace();
+                }
             });
 
             // Call when the the client is confirmed
             $rootScope.$on('event:auth-loginConfirmed', function (data) {
+
+                if ($rootScope.authenticated === false) {
+                    $state.go("main");
+                }
+
                 $rootScope.authenticated = true;
 
                 // Step 2:
@@ -243,14 +245,14 @@ bikeManApp
                 // that the user wanted to see beforehand
 
                 // first access to the frontend
-                if (typeof wantedState === "undefined") {
-                    $state.go("main");
-
-                    // consequent state changes
-                } else {
-                    console.log(wantedState.name);
-                    $state.go(wantedState);
-                }
+//                if (typeof wantedState === "undefined") {
+//                    $state.go("main");
+//
+//                    // consequent state changes
+//                } else {
+//                    console.log(wantedState.name);
+//                    $state.go(wantedState);
+//                }
             });
 
             // Call when the 403 response is returned by the server

@@ -105,129 +105,242 @@ bikeManApp.constant('USER_ROLES', {
         major_customer: 'ROLE_MAJOR_CUSTOMER'
     });
 
-bikeManApp.factory('AuthenticationSharedService', ['$rootScope', '$http', 'authService', 'Session', 'Account', 'Base64Service', 'AccessToken', '$q',
-    function ($rootScope, $http, authService, Session, Account, Base64Service, AccessToken, $q) {
-        return {
-            login: function (param) {
-                var data = "username=" + param.username + "&password=" + param.password + "&grant_type=password&scope=read%20write&client_secret=mySecretOAuthSecret&client_id=bikeManApp";
-                $http.post('oauth/token', data, {
-                    headers: {
-                        "Content-Type": "application/x-www-form-urlencoded",
-                        "Accept": "application/json",
-                        "Authorization": "Basic " + Base64Service.encode("bikeManApp" + ':' + "mySecretOAuthSecret")
-                    },
-                    ignoreAuthModule: 'ignoreAuthModule'
-                }).success(function (data, status, headers, config) {
-                    httpHeaders.common['Authorization'] = 'Bearer ' + data.access_token;
-                    AccessToken.set(data);
+//bikeManApp.factory('AuthenticationSharedService', ['$rootScope', '$http', 'authService', 'Session', 'Account', 'Base64Service', 'AccessToken', '$q',
+//    function ($rootScope, $http, authService, Session, Account, Base64Service, AccessToken, $q) {
+//        return {
+//            login: function (param) {
+//                var data = "username=" + param.username + "&password=" + param.password + "&grant_type=password&scope=read%20write&client_secret=mySecretOAuthSecret&client_id=bikeManApp";
+//                $http.post('oauth/token', data, {
+//                    headers: {
+//                        "Content-Type": "application/x-www-form-urlencoded",
+//                        "Accept": "application/json",
+//                        "Authorization": "Basic " + Base64Service.encode("bikeManApp" + ':' + "mySecretOAuthSecret")
+//                    },
+//                    ignoreAuthModule: 'ignoreAuthModule'
+//                }).success(function (data, status, headers, config) {
+//                    httpHeaders.common['Authorization'] = 'Bearer ' + data.access_token;
+//                    AccessToken.set(data);
+//
+//                    Account.get(function(accountData) {
+//                        Session.create(accountData.login, accountData.firstName, accountData.lastName, accountData.email, accountData.roles);
+//                        $rootScope.account = Session;
+//
+//                        authService.loginConfirmed(data, function(req) {
+//                            req.headers.Authorization = 'Bearer ' + data.access_token;
+//                            return req;
+//                        });
+//                    });
+//                }).error(function (data, status, headers, config) {
+//                    $rootScope.authenticationError = true;
+//                    Session.invalidate();
+//                });
+//            },
+//            valid: function (authorizedRoles) {
+//                httpHeaders.common['Authorization'] = 'Bearer ' + AccessToken.get();
+//
+//                var deferred = $q.defer();
+//
+//                $http.get('protected/transparent.gif', {
+//                    ignoreAuthModule: 'ignoreAuthModule'
+//                }).success(function (data, status, headers, config) {
+//                    if (!Session.login || AccessToken.get() != undefined) {
+//                        if (AccessToken.get() == undefined || AccessToken.expired()) {
+//                            $rootScope.authenticated = false;
+//                            return;
+//                        }
+//                        Account.get(function(data) {
+//                            Session.create(data.login, data.firstName, data.lastName, data.email, data.roles);
+//                            $rootScope.account = Session;
+//
+//                            if (!$rootScope.isAuthorized(authorizedRoles)) {
+//                                event.preventDefault();
+//                                // user is not allowed
+//                                $rootScope.$broadcast("event:auth-notAuthorized");
+//                                deferred.resolve(false);
+//                            }
+//
+//                            $rootScope.authenticated = true;
+//                            deferred.resolve(true);
+//                        });
+//                    }
+//                    $rootScope.authenticated = !!Session.login;
+//                }).error(function (data, status, headers, config) {
+//                    $rootScope.authenticated = false;
+//                    deferred.resolve(false);
+//                });
+//                return deferred.promise;
+//            },
+//            isAuthorized: function (authorizedRoles) {
+//                if (!angular.isArray(authorizedRoles)) {
+//                    if (authorizedRoles == '*') {
+//                        return true;
+//                    }
+//
+//                    authorizedRoles = [authorizedRoles];
+//                }
+//
+//                var isAuthorized = false;
+//                angular.forEach(authorizedRoles, function(authorizedRole) {
+//                    var authorized = (!!Session.login &&
+//                        Session.userRoles.indexOf(authorizedRole) !== -1);
+//
+//                    if (authorized || authorizedRole == '*') {
+//                        isAuthorized = true;
+//                    }
+//                });
+//
+//                return isAuthorized;
+//            },
+//            logout: function () {
+//                $rootScope.authenticationError = false;
+//                $rootScope.authenticated = false;
+//                $rootScope.account = null;
+//                AccessToken.remove();
+//
+//                $http.get('app/logout');
+//                Session.invalidate();
+//                httpHeaders.common['Authorization'] = null;
+//                authService.loginCancelled();
+//            },
+//            refresh: function () {
+//                var data = "refresh_token=" + Token.get('refresh_token') + "&grant_type=refresh_token&client_secret=mySecretOAuthSecret&client_id=carcloudapp";
+//                $http.post('oauth/token', data, {
+//                    headers: {
+//                        "Content-Type": "application/x-www-form-urlencoded",
+//                        "Accept": "application/json",
+//                        "Authorization": "Basic " + Base64Service.encode("carcloudapp" + ':' + "mySecretOAuthSecret")
+//                    },
+//                    ignoreAuthModule: 'ignoreAuthModule'
+//                }).success(function (data, status, headers, config) {
+//                    if (data.access_token) httpHeaders.common['Authorization'] = 'Bearer ' + data.access_token;
+//                    Token.set(data);
+//
+//                    Account.get(function (data) {
+//                        Session.create(data.login, data.firstName, data.lastName, data.email, data.roles);
+//                        $rootScope.account = Session;
+//                        authService.loginConfirmed(data, function(config) {
+//                            console.log("setting new header");
+//                            config.headers['Authorization'] = 'Bearer ' + Token.get('access_token');
+//                            return config;
+//                        });
+//                    });
+//                }).error(function (data, status, headers, config) {
+//                    $rootScope.authenticationError = true;
+//                    Session.invalidate();
+//                });
+//            }
+//        };
+//    }]);
 
-                    Account.get(function(accountData) {
-                        Session.create(accountData.login, accountData.firstName, accountData.lastName, accountData.email, accountData.roles);
-                        $rootScope.account = Session;
+bikeManApp.factory('AuthenticationSharedService', function ($rootScope, $http, authService, Session, Account, Base64Service, AccessToken, $q) {
+    return {
+        login: function (param) {
+            var data = "username=" + param.username + "&password=" + param.password + "&grant_type=password&scope=read%20write&client_secret=mySecretOAuthSecret&client_id=bikeManApp";
+            $http.post('oauth/token', data, {
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "Accept": "application/json",
+                    "Authorization": "Basic " + Base64Service.encode("bikeManApp" + ':' + "mySecretOAuthSecret")
+                },
+                ignoreAuthModule: 'ignoreAuthModule'
+            }).success(function (data, status, headers, config) {
+                httpHeaders.common['Authorization'] = 'Bearer ' + data.access_token;
+                AccessToken.set(data);
 
-                        authService.loginConfirmed(data, function(req) {
-                            req.headers.Authorization = 'Bearer ' + data.access_token;
-                            return req;
-                        });
-                    });
-                }).error(function (data, status, headers, config) {
-                    $rootScope.authenticationError = true;
-                    Session.invalidate();
+                Account.get(function(data) {
+                    Session.create(data.login, data.firstName, data.lastName, data.email, data.roles);
+                    $rootScope.account = Session;
+                    authService.loginConfirmed(data);
                 });
-            },
-            valid: function (authorizedRoles) {
-                httpHeaders.common['Authorization'] = 'Bearer ' + AccessToken.get();
-
-                var deferred = $q.defer();
-
-                $http.get('protected/transparent.gif', {
-                    ignoreAuthModule: 'ignoreAuthModule'
-                }).success(function (data, status, headers, config) {
-                    if (!Session.login || AccessToken.get() != undefined) {
-                        if (AccessToken.get() == undefined || AccessToken.expired()) {
-                            $rootScope.authenticated = false
-                            return;
-                        }
-                        Account.get(function(data) {
-                            Session.create(data.login, data.firstName, data.lastName, data.email, data.roles);
-                            $rootScope.account = Session;
-
-                            if (!$rootScope.isAuthorized(authorizedRoles)) {
-                                event.preventDefault();
-                                // user is not allowed
-                                $rootScope.$broadcast("event:auth-notAuthorized");
-                                deferred.resolve(false);
-                            }
-
-                            $rootScope.authenticated = true;
-                            deferred.resolve(true);
-                        });
-                    }
-                    $rootScope.authenticated = !!Session.login;
-                }).error(function (data, status, headers, config) {
-                    $rootScope.authenticated = false;
-                    deferred.resolve(false);
-                });
-                return deferred.promise;
-            },
-            isAuthorized: function (authorizedRoles) {
-                if (!angular.isArray(authorizedRoles)) {
-                    if (authorizedRoles == '*') {
-                        return true;
-                    }
-
-                    authorizedRoles = [authorizedRoles];
-                }
-
-                var isAuthorized = false;
-                angular.forEach(authorizedRoles, function(authorizedRole) {
-                    var authorized = (!!Session.login &&
-                        Session.userRoles.indexOf(authorizedRole) !== -1);
-
-                    if (authorized || authorizedRole == '*') {
-                        isAuthorized = true;
-                    }
-                });
-
-                return isAuthorized;
-            },
-            logout: function () {
-                $rootScope.authenticationError = false;
+            }).error(function (data, status, headers, config) {
                 $rootScope.authenticated = false;
-                $rootScope.account = null;
-                AccessToken.remove();
-
-                $http.get('app/logout');
+                $rootScope.authenticationError = true;
                 Session.invalidate();
-                httpHeaders.common['Authorization'] = null;
-                authService.loginCancelled();
-            },
-            refresh: function () {
-                var data = "refresh_token=" + Token.get('refresh_token') + "&grant_type=refresh_token&client_secret=mySecretOAuthSecret&client_id=carcloudapp";
-                $http.post('oauth/token', data, {
-                    headers: {
-                        "Content-Type": "application/x-www-form-urlencoded",
-                        "Accept": "application/json",
-                        "Authorization": "Basic " + Base64Service.encode("carcloudapp" + ':' + "mySecretOAuthSecret")
-                    },
-                    ignoreAuthModule: 'ignoreAuthModule'
-                }).success(function (data, status, headers, config) {
-                    if (data.access_token) httpHeaders.common['Authorization'] = 'Bearer ' + data.access_token;
-                    Token.set(data);
+                AccessToken.remove();
+                delete httpHeaders.common['Authorization'];
+                $rootScope.$broadcast('event:auth-loginRequired', data);
 
-                    Account.get(function (data) {
+            });
+        },
+        valid: function (authorizedRoles) {
+            var deferred = $q.defer();
+
+            if(AccessToken.get() !== null) {
+                httpHeaders.common['Authorization'] = 'Bearer ' + AccessToken.get();
+            }
+
+            $http.get('protected/transparent.gif', {
+                ignoreAuthModule: 'ignoreAuthModule'
+            }).success(function (data, status, headers, config) {
+                if (!Session.login || AccessToken.get() != undefined) {
+                    if (AccessToken.get() == undefined || AccessToken.expired()) {
+                        $rootScope.$broadcast("event:auth-loginRequired");
+                        return;
+                    }
+                    Account.get(function(data) {
                         Session.create(data.login, data.firstName, data.lastName, data.email, data.roles);
                         $rootScope.account = Session;
-                        authService.loginConfirmed(data, function(config) {
-                            console.log("setting new header");
-                            config.headers['Authorization'] = 'Bearer ' + Token.get('access_token');
-                            return config;
-                        });
+                        if (!$rootScope.isAuthorized(authorizedRoles)) {
+                            // user is not allowed
+                            $rootScope.$broadcast("event:auth-notAuthorized");
+                            $rootScope.authenticated = false;
+                        } else {
+                            $rootScope.$broadcast("event:auth-loginConfirmed");
+                            $rootScope.authenticated = true;
+                        }
                     });
-                }).error(function (data, status, headers, config) {
-                    $rootScope.authenticationError = true;
-                    Session.invalidate();
-                });
+                }else{
+                    if (!$rootScope.isAuthorized(authorizedRoles)) {
+                        // user is not allowed
+                        $rootScope.$broadcast("event:auth-notAuthorized");
+                        deferred.resolve(false);
+                        $rootScope.authenticated = false;
+                    } else {
+                        $rootScope.$broadcast("event:auth-loginConfirmed");
+                        deferred.resolve(true);
+                        $rootScope.authenticated = true;
+                    }
+                }
+            }).error(function (data, status, headers, config) {
+                if (!$rootScope.isAuthorized(authorizedRoles)) {
+                    $rootScope.$broadcast('event:auth-loginRequired', data);
+                    $rootScope.authenticated = false;
+                }
+            });
+
+            return deferred.promise;
+        },
+        isAuthorized: function (authorizedRoles) {
+            if (!angular.isArray(authorizedRoles)) {
+                if (authorizedRoles == '*') {
+                    return true;
+                }
+
+                authorizedRoles = [authorizedRoles];
             }
-        };
-    }]);
+
+            var isAuthorized = false;
+            angular.forEach(authorizedRoles, function(authorizedRole) {
+                var authorized = (!!Session.login &&
+                    Session.userRoles.indexOf(authorizedRole) !== -1);
+
+                if (authorized || authorizedRole == '*') {
+                    isAuthorized = true;
+                }
+            });
+
+            return isAuthorized;
+        },
+        logout: function () {
+            $rootScope.authenticationError = false;
+            $rootScope.authenticated = false;
+            $rootScope.account = null;
+            AccessToken.remove();
+
+            $http.get('app/logout');
+            Session.invalidate();
+            delete httpHeaders.common['Authorization'];
+            authService.loginCancelled();
+        }
+    };
+});

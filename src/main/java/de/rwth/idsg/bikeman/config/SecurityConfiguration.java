@@ -40,12 +40,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring()
+                .antMatchers("/views/**")
+                .antMatchers("/protected/**")
                 .antMatchers("/bower_components/**")
                 .antMatchers("/fonts/**")
                 .antMatchers("/images/**")
                 .antMatchers("/scripts/**")
                 .antMatchers("/styles/**")
-                .antMatchers("/views/**")
                 .antMatchers("/i18n/**")
                 .antMatchers("/swagger-ui/**");
     }

@@ -57,7 +57,6 @@ public class OAuth2ServerConfiguration {
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                     .and()
                     .authorizeRequests()
-//                    .antMatchers("/views/**").permitAll()
                     .antMatchers("/app/rest/authenticate").permitAll()
                     // TODO: currently station access is unprotected.
                     .antMatchers("/psi*").permitAll()
