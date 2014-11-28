@@ -93,6 +93,6 @@ angular.module('bikeManApp')
                 // init
                 $scope.reset();
             }],
-            templateUrl: 'views/templates/dateSelect.html'
+            templateUrl: 'views/dateSelect.html'
            }
     }]);

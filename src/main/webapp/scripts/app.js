@@ -7,7 +7,7 @@ var bikeManApp = angular.module('bikeManApp', ['http-auth-interceptor', 'tmh.dyn
     'ngResource', 'ngCookies', 'bikeManAppUtils', 'pascalprecht.translate', 'truncate', 'ui.router', 'ui.bootstrap', 'ui.bootstrap.showErrors']);
 
 bikeManApp
-    .config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$translateProvider',  'tmhDynamicLocaleProvider', 'USER_ROLES',
+    .config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$translateProvider', 'tmhDynamicLocaleProvider', 'USER_ROLES',
         function ($stateProvider, $urlRouterProvider, $httpProvider, $translateProvider, tmhDynamicLocaleProvider, USER_ROLES) {
 
             $urlRouterProvider.otherwise('/main');
@@ -57,8 +57,8 @@ bikeManApp
                     url: '/sessions',
                     templateUrl: 'views/sessions.html',
                     controller: 'SessionsController',
-                    resolve:{
-                        resolvedSessions:['Sessions', function (Sessions) {
+                    resolve: {
+                        resolvedSessions: ['Sessions', function (Sessions) {
                             return Sessions.get();
                         }]
                     },
@@ -78,8 +78,8 @@ bikeManApp
                     url: '/logs',
                     templateUrl: 'views/logs.html',
                     controller: 'LogsController',
-                    resolve:{
-                        resolvedLogs:['LogsService', function (LogsService) {
+                    resolve: {
+                        resolvedLogs: ['LogsService', function (LogsService) {
                             return LogsService.findAll();
                         }]
                     },
@@ -113,12 +113,12 @@ bikeManApp
 
 
             // GLOBAL MESSAGES
-            $httpProvider.responseInterceptors.push(function($timeout, $q, $rootScope) {
-                return function(promise) {
+            $httpProvider.responseInterceptors.push(function ($timeout, $q, $rootScope) {
+                return function (promise) {
                     var errorInterval = 3000;
                     var successInterval = 1500;
 
-                    return promise.then(function(successResponse) {
+                    return promise.then(function (successResponse) {
 
                         $rootScope.$broadcast('remove-error-message');
 
@@ -129,14 +129,14 @@ bikeManApp
                         }
                         return successResponse;
 
-                    }, function(errorResponse) {
+                    }, function (errorResponse) {
                         var alertType = 'alert-danger';
                         switch (errorResponse.status) {
                             // remove this because 401 is used for checking user auth
                             case 400:
                                 //showMessage(errorResponse.data.message + "\n" + errorResponse.data.fieldErrors.join("\n"), 'errorMessage', errorInterval, alertType);
 
-                                $rootScope.$broadcast('new-error-message', {msg: errorResponse.data.message, errors:errorResponse.data.fieldErrors});
+                                $rootScope.$broadcast('new-error-message', {msg: errorResponse.data.message, errors: errorResponse.data.fieldErrors});
                                 break;
                             case 401:
                                 // do nothing for now
@@ -151,7 +151,7 @@ bikeManApp
                                 $rootScope.$broadcast('new-error-message', {msg: 'You don\'t have the right to do this'});
                                 break;
                             case 500:
-                                $rootScope.$broadcast('new-error-message', {msg: errorResponse.data.message, error:errorResponse.data.fieldErrors});
+                                $rootScope.$broadcast('new-error-message', {msg: errorResponse.data.message, error: errorResponse.data.fieldErrors});
                                 break;
                             default:
 //                                showMessage('Error ' + errorResponse.status + ': ' + errorResponse.data.message, 'errorMessage', errorInterval, alertType);
@@ -189,10 +189,10 @@ bikeManApp
 
             httpHeaders = $httpProvider.defaults.headers;
         }])
-        .run(['$rootScope', '$state', 'AuthenticationSharedService', 'USER_ROLES',
+    .run(['$rootScope', '$state', 'AuthenticationSharedService', 'USER_ROLES',
         function ($rootScope, $state, AuthenticationSharedService, USER_ROLES) {
             $rootScope.isAuthorized = AuthenticationSharedService.isAuthorized;
-            AuthenticationSharedService.valid(USER_ROLES.all).then(function(authenticated) {
+            AuthenticationSharedService.valid(USER_ROLES.all).then(function (authenticated) {
                 if (!authenticated) {
                     $state.transitionTo("login");
                 } else if ($state.$current.name == "login") {
@@ -200,68 +200,68 @@ bikeManApp
                 }
             });
         }])
-        .run(['$rootScope', '$location', '$http', 'AuthenticationSharedService', 'Session', 'USER_ROLES', '$state',
+    .run(['$rootScope', '$location', '$http', 'AuthenticationSharedService', 'Session', 'USER_ROLES', '$state',
 
-            function($rootScope, $location, $http, AuthenticationSharedService, Session, USER_ROLES, $state) {
+        function ($rootScope, $location, $http, AuthenticationSharedService, Session, USER_ROLES, $state) {
 
-                // We are storing the state (web-page) for later use (See Step 1 and 2 below)
-                var wantedState;
+            // We are storing the state (web-page) for later use (See Step 1 and 2 below)
+            var wantedState;
 
-                $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {
-                    $rootScope.isAuthorized = AuthenticationSharedService.isAuthorized;
-                    $rootScope.userRoles = USER_ROLES;
-                    AuthenticationSharedService.valid(toState.access.authorizedRoles).then(function(authenticated){
-                        if (!authenticated) {
-                            $state.go("login");
-                        }
-                        if (authenticated && toState.name == "login") {
-                            $state.go("main");
-                        }
-                    });
+            $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {
+                $rootScope.isAuthorized = AuthenticationSharedService.isAuthorized;
+                $rootScope.userRoles = USER_ROLES;
+                AuthenticationSharedService.valid(toState.access.authorizedRoles).then(function (authenticated) {
+                    if (!authenticated) {
+                        $state.go("login");
+                    }
+                    if (authenticated && toState.name == "login") {
+                        $state.go("main");
+                    }
                 });
+            });
 
-                // Call when the 401 response is returned by the server
-                $rootScope.$on('event:auth-loginRequired', function(rejection) {
+            // Call when the 401 response is returned by the server
+            $rootScope.$on('event:auth-loginRequired', function (rejection) {
 
-                    AuthenticationSharedService.refresh();
-                    // Step 1:
-                    // Save the state that the user wanted to see
-                    // to route to after login is confirmed (see Step 2)
+                AuthenticationSharedService.refresh();
+                // Step 1:
+                // Save the state that the user wanted to see
+                // to route to after login is confirmed (see Step 2)
 //                    wantedState = $state.current;
 //
 //                    $rootScope.authenticated = false;
 //                    $state.go("login");
 
-                });
+            });
 
-                // Call when the the client is confirmed
-                $rootScope.$on('event:auth-loginConfirmed', function(data) {
-                    $rootScope.authenticated = true;
+            // Call when the the client is confirmed
+            $rootScope.$on('event:auth-loginConfirmed', function (data) {
+                $rootScope.authenticated = true;
 
-                    // Step 2:
-                    // Since the login is confirmed now, route to the state
-                    // that the user wanted to see beforehand
+                // Step 2:
+                // Since the login is confirmed now, route to the state
+                // that the user wanted to see beforehand
 
-                    // first access to the frontend
-                    if (typeof wantedState === "undefined") {
-                        $state.go("main");
+                // first access to the frontend
+                if (typeof wantedState === "undefined") {
+                    $state.go("main");
 
                     // consequent state changes
-                    } else {
-                        console.log(wantedState.name);
-                        $state.go(wantedState);
-                    }
-                });
+                } else {
+                    console.log(wantedState.name);
+                    $state.go(wantedState);
+                }
+            });
 
-                // Call when the 403 response is returned by the server
-                $rootScope.$on('event:auth-notAuthorized', function(rejection) {
-                    $rootScope.errorMessage = 'errors.403';
+            // Call when the 403 response is returned by the server
+            $rootScope.$on('event:auth-notAuthorized', function (rejection) {
+                $rootScope.errorMessage = 'errors.403';
 //                    $location.path('/error').replace();
-                    $state.go("error");
-                });
+                $state.go("error");
+            });
 
-                // Call when the user logs out
-                $rootScope.$on('event:auth-loginCancelled', function() {
-                    $state.go("login");
-                });
+            // Call when the user logs out
+            $rootScope.$on('event:auth-loginCancelled', function () {
+                $state.go("login");
+            });
         }]);
