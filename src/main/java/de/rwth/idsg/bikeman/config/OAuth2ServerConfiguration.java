@@ -3,6 +3,7 @@ package de.rwth.idsg.bikeman.config;
 import de.rwth.idsg.bikeman.security.AjaxLogoutSuccessHandler;
 import de.rwth.idsg.bikeman.security.AuthoritiesConstants;
 import de.rwth.idsg.bikeman.security.Http401UnauthorizedEntryPoint;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.bind.RelaxedPropertyResolver;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
@@ -56,7 +57,7 @@ public class OAuth2ServerConfiguration {
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                     .and()
                     .authorizeRequests()
-                    .antMatchers("/views/**").permitAll()
+//                    .antMatchers("/views/**").permitAll()
                     .antMatchers("/app/rest/authenticate").permitAll()
                     // TODO: currently station access is unprotected.
                     .antMatchers("/psi*").permitAll()
@@ -125,11 +126,13 @@ public class OAuth2ServerConfiguration {
         }
 
         @Inject
+        @Qualifier("authenticationManagerBean")
         private AuthenticationManager authenticationManager;
 
         @Override
         public void configure(AuthorizationServerEndpointsConfigurer endpoints)
                 throws Exception {
+
             endpoints
                     .tokenStore(tokenStore())
                     .authenticationManager(authenticationManager);
@@ -142,11 +145,10 @@ public class OAuth2ServerConfiguration {
                     .withClient(propertyResolver.getProperty(PROP_CLIENTID))
                     .scopes("read", "write")
                     .authorities(AuthoritiesConstants.ADMIN, AuthoritiesConstants.MANAGER, AuthoritiesConstants.CUSTOMER)
-                    .authorizedGrantTypes("password", "authorization_code", "refresh_token", "implicit")
+                    .authorizedGrantTypes("password", "refresh_token")
                     .secret(propertyResolver.getProperty(PROP_SECRET))
                     .accessTokenValiditySeconds(propertyResolver.getProperty(PROP_TOKEN_VALIDITY_SECONDS, Integer.class, 18000));
         }
-
 
         @Override
         public void setEnvironment(Environment environment) {

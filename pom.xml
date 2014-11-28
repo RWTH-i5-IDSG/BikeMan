@@ -93,7 +93,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.7</java.version>
-        <spring-security-oauth2.version>2.0.0.RC2</spring-security-oauth2.version>
+        <spring-security-oauth2.version>2.0.4.RELEASE</spring-security-oauth2.version>
         <metrics-spring.version>3.0.0-RC4</metrics-spring.version>
         <HikariCP.version>1.4.0</HikariCP.version>
         <commons-lang.version>2.6</commons-lang.version>
