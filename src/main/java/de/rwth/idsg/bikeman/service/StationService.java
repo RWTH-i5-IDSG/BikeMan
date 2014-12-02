@@ -60,7 +60,7 @@ public class StationService {
     public void updateStation(CreateEditStationDTO dto) throws DatabaseException {
         ChangeStationOperationStateDTO changeDTO = new ChangeStationOperationStateDTO();
         changeDTO.setState(dto.getState());
-        changeDTO.setSlotPosition(null);
+        changeDTO.setSlotPosition(-1);
 
         // first, communicate with the station to update status
         // then, update in DB

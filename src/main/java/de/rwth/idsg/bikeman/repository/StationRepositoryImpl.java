@@ -510,11 +510,18 @@ public class StationRepositoryImpl implements StationRepository {
             case UPDATE:
                 // for edit (keep the address ID)
                 Address add = station.getAddress();
+
+                if (add == null) {
+                    add = new Address();
+                }
+
                 CreateEditAddressDTO dtoAdd = dto.getAddress();
                 add.setStreetAndHousenumber(dtoAdd.getStreetAndHousenumber());
                 add.setZip(dtoAdd.getZip());
                 add.setCity(dtoAdd.getCity());
                 add.setCountry(dtoAdd.getCountry());
+
+                station.setAddress(add);
                 break;
         }
     }
