@@ -200,65 +200,67 @@ public class StationRepositoryImpl implements StationRepository {
         }
 
         if (station == null) {
-            // create new station with new slots
-            station = new Station();
-            station.setManufacturerId(dto.getStationManufacturerId());
-            station.setFirmwareVersion(dto.getFirmwareVersion());
 
-            Set<StationSlot> stationSlots = new HashSet<>();
-
-            for (SlotDTO slotDTO : dto.getSlotDTOs()) {
-                StationSlot newStationSlot = new StationSlot();
-                newStationSlot.setManufacturerId(slotDTO.getSlotManufacturerId());
-                newStationSlot.setErrorCode(slotDTO.getSlotErrorCode());
-                newStationSlot.setErrorInfo(slotDTO.getSlotErrorInfo());
-                newStationSlot.setStationSlotPosition(slotDTO.getSlotPosition());
-                newStationSlot.setStation(station);
-                newStationSlot.setState(OperationState.valueOf(slotDTO.getSlotState().toString()));
-
-                if (slotDTO.getPedelecManufacturerId() != null) {
-                    Query findPedelec = em.createQuery("select p from Pedelec p where p.manufacturerId = :manufacturerId");
-                    findPedelec.setParameter("manufacturerId", slotDTO.getPedelecManufacturerId());
-
-                    Pedelec pedelec = null;
-                    try {
-                        pedelec = (Pedelec) findPedelec.getSingleResult();
-                    } catch (NoResultException ex) {
-                    }
-
-                    if (pedelec == null) {
-                        pedelec = new Pedelec();
-                    }
-
-                    StationSlot pedelecStationSlot = pedelec.getStationSlot();
-
-                    if (pedelecStationSlot != null) {
-                        pedelecStationSlot.setPedelec(null);
-                        em.merge(pedelecStationSlot);
-                    }
-
-                    pedelec.setManufacturerId(slotDTO.getPedelecManufacturerId());
-                    pedelec.setStationSlot(newStationSlot);
-                    newStationSlot.setPedelec(pedelec);
-                    newStationSlot.setIsOccupied(true);
-                    //em.merge(pedelec);
-                } else {
-                    newStationSlot.setIsOccupied(false);
-                }
-
-                stationSlots.add(newStationSlot);
-            }
-
-            station.setStationSlots(stationSlots);
-
-            for (StationSlot slot : stationSlots) {
-                Pedelec pedelec = slot.getPedelec();
-                if (pedelec != null) {
-                    em.persist(pedelec);
-                }
-            }
-
-            em.persist(station);
+            throw new DatabaseException("Station is unregistered.");
+//            // create new station with new slots
+//            station = new Station();
+//            station.setManufacturerId(dto.getStationManufacturerId());
+//            station.setFirmwareVersion(dto.getFirmwareVersion());
+//
+//            Set<StationSlot> stationSlots = new HashSet<>();
+//
+//            for (SlotDTO slotDTO : dto.getSlotDTOs()) {
+//                StationSlot newStationSlot = new StationSlot();
+//                newStationSlot.setManufacturerId(slotDTO.getSlotManufacturerId());
+//                newStationSlot.setErrorCode(slotDTO.getSlotErrorCode());
+//                newStationSlot.setErrorInfo(slotDTO.getSlotErrorInfo());
+//                newStationSlot.setStationSlotPosition(slotDTO.getSlotPosition());
+//                newStationSlot.setStation(station);
+//                newStationSlot.setState(OperationState.valueOf(slotDTO.getSlotState().toString()));
+//
+//                if (slotDTO.getPedelecManufacturerId() != null) {
+//                    Query findPedelec = em.createQuery("select p from Pedelec p where p.manufacturerId = :manufacturerId");
+//                    findPedelec.setParameter("manufacturerId", slotDTO.getPedelecManufacturerId());
+//
+//                    Pedelec pedelec = null;
+//                    try {
+//                        pedelec = (Pedelec) findPedelec.getSingleResult();
+//                    } catch (NoResultException ex) {
+//                    }
+//
+//                    if (pedelec == null) {
+//                        pedelec = new Pedelec();
+//                    }
+//
+//                    StationSlot pedelecStationSlot = pedelec.getStationSlot();
+//
+//                    if (pedelecStationSlot != null) {
+//                        pedelecStationSlot.setPedelec(null);
+//                        em.merge(pedelecStationSlot);
+//                    }
+//
+//                    pedelec.setManufacturerId(slotDTO.getPedelecManufacturerId());
+//                    pedelec.setStationSlot(newStationSlot);
+//                    newStationSlot.setPedelec(pedelec);
+//                    newStationSlot.setIsOccupied(true);
+//                    //em.merge(pedelec);
+//                } else {
+//                    newStationSlot.setIsOccupied(false);
+//                }
+//
+//                stationSlots.add(newStationSlot);
+//            }
+//
+//            station.setStationSlots(stationSlots);
+//
+//            for (StationSlot slot : stationSlots) {
+//                Pedelec pedelec = slot.getPedelec();
+//                if (pedelec != null) {
+//                    em.persist(pedelec);
+//                }
+//            }
+//
+//            em.persist(station);
 
             //save pedelec, save slot, save station
 
@@ -511,17 +513,12 @@ public class StationRepositoryImpl implements StationRepository {
                 // for edit (keep the address ID)
                 Address add = station.getAddress();
 
-                if (add == null) {
-                    add = new Address();
-                }
-
                 CreateEditAddressDTO dtoAdd = dto.getAddress();
                 add.setStreetAndHousenumber(dtoAdd.getStreetAndHousenumber());
                 add.setZip(dtoAdd.getZip());
                 add.setCity(dtoAdd.getCity());
                 add.setCountry(dtoAdd.getCountry());
 
-                station.setAddress(add);
                 break;
         }
     }

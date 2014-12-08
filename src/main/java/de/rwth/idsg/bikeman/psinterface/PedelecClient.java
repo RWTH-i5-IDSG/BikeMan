@@ -29,7 +29,7 @@ public class PedelecClient {
         ResponseEntity<String> response = restTemplate.postForEntity(uri, dto, String.class, pedelecManufacturerId);
         HttpStatus status = response.getStatusCode();
 
-        if (status.equals(HttpStatus.ACCEPTED)) {
+        if (status.equals(HttpStatus.OK)) {
             return true;
         } else {
             // TODO
