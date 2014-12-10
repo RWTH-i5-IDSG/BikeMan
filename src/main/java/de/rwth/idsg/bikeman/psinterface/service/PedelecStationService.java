@@ -1,5 +1,7 @@
 package de.rwth.idsg.bikeman.psinterface.service;
 
+import de.rwth.idsg.bikeman.domain.CardAccount;
+import de.rwth.idsg.bikeman.domain.OperationState;
 import de.rwth.idsg.bikeman.psinterface.dto.request.BootNotificationDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.CustomerAuthorizeDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.StartTransactionDTO;
@@ -40,9 +42,14 @@ public class PedelecStationService {
     }
 
     public AuthorizeConfirmationDTO handleAuthorize(CustomerAuthorizeDTO customerAuthorizeDTO) throws DatabaseException {
-        String cardId = customerRepository.findByCardIdAndCardPin(customerAuthorizeDTO.getCardId(), customerAuthorizeDTO.getPin());
+        CardAccount cardAccount = customerRepository.findByCardIdAndCardPin(customerAuthorizeDTO.getCardId(), customerAuthorizeDTO.getPin());
+
+        if (cardAccount.getOperationState().equals(OperationState.INOPERATIVE)) {
+            throw new DatabaseException("Card is not operational!");
+        }
+
         AuthorizeConfirmationDTO authorizeConfirmationDTO = new AuthorizeConfirmationDTO();
-        authorizeConfirmationDTO.setCardId(cardId);
+        authorizeConfirmationDTO.setCardId(cardAccount.getCardId());
         return authorizeConfirmationDTO;
     }
 
