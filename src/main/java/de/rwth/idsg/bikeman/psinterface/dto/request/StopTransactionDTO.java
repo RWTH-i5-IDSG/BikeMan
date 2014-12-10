@@ -1,6 +1,8 @@
 package de.rwth.idsg.bikeman.psinterface.dto.request;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Builder;
 
 /**
@@ -8,6 +10,9 @@ import lombok.experimental.Builder;
  */
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class StopTransactionDTO {
     private String pedelecManufacturerId;
     private String stationManufacturerId;

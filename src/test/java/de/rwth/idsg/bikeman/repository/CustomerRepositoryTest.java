@@ -1,6 +1,7 @@
 package de.rwth.idsg.bikeman.repository;
 
 import de.rwth.idsg.bikeman.Application;
+import de.rwth.idsg.bikeman.domain.CardAccount;
 import de.rwth.idsg.bikeman.domain.Customer;
 import de.rwth.idsg.bikeman.domain.login.User;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditAddressDTO;
@@ -69,11 +70,11 @@ public class CustomerRepositoryTest {
 
             log.info("Find Customer with CustomerId: {}, CardId and CardPin.", newCustomer.getCustomerId());
 
-            String login = customerRepository.findByCardIdAndCardPin(generatedCardId, newCustomer.getCardPin());
+            CardAccount login = customerRepository.findByCardIdAndCardPin(generatedCardId, newCustomer.getCardPin());
 
             log.info("Found userId: {}", login);
 
-            User user = userRepository.findByLogin(login);
+            User user = userRepository.findByLogin(login.getUser().getLogin());
 
             Assert.assertEquals(newCustomer.getLogin(), user.getLogin());
         } catch (DatabaseException e) {
