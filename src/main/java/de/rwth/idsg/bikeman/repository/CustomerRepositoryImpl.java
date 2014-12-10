@@ -1,8 +1,11 @@
 package de.rwth.idsg.bikeman.repository;
 
-import de.rwth.idsg.bikeman.domain.*;
+import de.rwth.idsg.bikeman.domain.Address;
 import de.rwth.idsg.bikeman.domain.Address_;
+import de.rwth.idsg.bikeman.domain.CardAccount;
 import de.rwth.idsg.bikeman.domain.CardAccount_;
+import de.rwth.idsg.bikeman.domain.Customer;
+import de.rwth.idsg.bikeman.domain.CustomerType;
 import de.rwth.idsg.bikeman.domain.Customer_;
 import de.rwth.idsg.bikeman.domain.login.Authority;
 import de.rwth.idsg.bikeman.security.AuthoritiesConstants;
@@ -99,12 +102,12 @@ public class CustomerRepositoryImpl implements CustomerRepository {
 
     @Override
     @Transactional(readOnly = true)
-    public String findByCardIdAndCardPin(String cardId, String cardPin) throws DatabaseException {
+    public CardAccount findByCardIdAndCardPin(String cardId, String cardPin) throws DatabaseException {
 
-        final String query = "SELECT c.cardAccount.cardId FROM Customer c WHERE c.cardAccount.cardId = :cardId AND c.cardAccount.cardPin = :cardPin";
+        final String query = "SELECT c FROM CardAccount c WHERE c.cardId = :cardId AND c.cardPin = :cardPin";
 
         try {
-            return (String) em.createQuery(query)
+            return (CardAccount) em.createQuery(query)
                               .setParameter("cardId", cardId)
                               .setParameter("cardPin", cardPin)
                               .getSingleResult();
