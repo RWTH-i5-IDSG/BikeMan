@@ -43,9 +43,12 @@ import java.util.Set;
 @Slf4j
 public class StationRepositoryImpl implements StationRepository {
 
-    private enum Operation { CREATE, UPDATE };
+    private enum Operation {CREATE, UPDATE}
 
-    @PersistenceContext private EntityManager em;
+    ;
+
+    @PersistenceContext
+    private EntityManager em;
 
     @Override
     @Transactional(readOnly = true)
@@ -62,7 +65,7 @@ public class StationRepositoryImpl implements StationRepository {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ViewStationDTO> findByLocation(BigDecimal latitude, BigDecimal longitude)  throws DatabaseException {
+    public List<ViewStationDTO> findByLocation(BigDecimal latitude, BigDecimal longitude) throws DatabaseException {
         // TODO
         return null;
     }
@@ -115,8 +118,8 @@ public class StationRepositoryImpl implements StationRepository {
         final String q = "SELECT s.endpointAddress FROM Station s WHERE s.stationId = :stationId";
         try {
             return em.createQuery(q, String.class)
-                     .setParameter("stationId", stationId)
-                     .getSingleResult();
+                    .setParameter("stationId", stationId)
+                    .getSingleResult();
         } catch (Exception e) {
             throw new DatabaseException("Failed to find station with stationId " + stationId, e);
         }
@@ -127,9 +130,9 @@ public class StationRepositoryImpl implements StationRepository {
         final String q = "UPDATE Station s SET s.endpointAddress = :endpointAddress WHERE s.stationId = :stationId";
         try {
             em.createQuery(q)
-              .setParameter("stationId", stationId)
-              .setParameter("endpointAddress", endpointAddress)
-              .getSingleResult();
+                    .setParameter("stationId", stationId)
+                    .setParameter("endpointAddress", endpointAddress)
+                    .getSingleResult();
         } catch (Exception e) {
             throw new DatabaseException("Failed to update endpointAddress of station with stationId " + stationId, e);
         }
@@ -162,7 +165,7 @@ public class StationRepositoryImpl implements StationRepository {
         }
 
         Station station = getStationEntity(stationId);
-        setFields(station,dto, Operation.UPDATE);
+        setFields(station, dto, Operation.UPDATE);
 
         try {
             em.merge(station);
@@ -269,6 +272,7 @@ public class StationRepositoryImpl implements StationRepository {
 
             Set<StationSlot> stationSlots = station.getStationSlots();
 
+            // TODO: updating slots is not correct. deleting missing slots? adding new ones?
             for (StationSlot slot : stationSlots) {
                 for (SlotDTO slotDTO : dto.getSlotDTOs()) {
                     if (!slot.getManufacturerId().equals(slotDTO.getSlotManufacturerId())) {
@@ -322,8 +326,55 @@ public class StationRepositoryImpl implements StationRepository {
                 stationSlots.add(slot);
             }
 
+
+            // first boot notification, initilize slots
+            if (stationSlots.size() == 0) {
+
+                for (SlotDTO slotDTO : dto.getSlotDTOs()) {
+                    StationSlot newStationSlot = new StationSlot();
+                    newStationSlot.setManufacturerId(slotDTO.getSlotManufacturerId());
+                    newStationSlot.setErrorCode(slotDTO.getSlotErrorCode());
+                    newStationSlot.setErrorInfo(slotDTO.getSlotErrorInfo());
+                    newStationSlot.setStationSlotPosition(slotDTO.getSlotPosition());
+                    newStationSlot.setStation(station);
+                    newStationSlot.setState(OperationState.valueOf(slotDTO.getSlotState().toString()));
+
+                    if (slotDTO.getPedelecManufacturerId() != null) {
+                        Query findPedelec = em.createQuery("select p from Pedelec p where p.manufacturerId = :manufacturerId");
+                        findPedelec.setParameter("manufacturerId", slotDTO.getPedelecManufacturerId());
+
+                        Pedelec pedelec = null;
+                        try {
+                            pedelec = (Pedelec) findPedelec.getSingleResult();
+                        } catch (NoResultException ex) {
+
+                        }
+
+                        StationSlot pedelecStationSlot = pedelec.getStationSlot();
+
+                        if (pedelecStationSlot != null) {
+                            pedelecStationSlot.setPedelec(null);
+                            em.merge(pedelecStationSlot);
+                        }
+
+                        pedelec.setStationSlot(newStationSlot);
+                        newStationSlot.setPedelec(pedelec);
+                        newStationSlot.setIsOccupied(true);
+                    } else {
+                        newStationSlot.setIsOccupied(false);
+                    }
+
+                    em.persist(newStationSlot);
+
+                    stationSlots.add(newStationSlot);
+                }
+
+                station.setStationSlots(stationSlots);
+            }
+
             station.setStationSlots(stationSlots);
-            em.merge(station);
+
+            em.persist(station);
         }
     }
 
@@ -453,15 +504,15 @@ public class StationRepositoryImpl implements StationRepository {
     @Transactional(rollbackFor = Exception.class)
     public void changeSlotState(long stationId, int slotPosition, OperationState state) {
         final String query = "UPDATE StationSlot ss " +
-                             "SET ss.state = :state " +
-                             "WHERE ss.stationSlotPosition = :slotPosition " +
-                             "AND ss.station = (SELECT s FROM Station s WHERE s.stationId = :stationId)";
+                "SET ss.state = :state " +
+                "WHERE ss.stationSlotPosition = :slotPosition " +
+                "AND ss.station = (SELECT s FROM Station s WHERE s.stationId = :stationId)";
 
         int count = em.createQuery(query)
-                      .setParameter("state", state)
-                      .setParameter("slotPosition", slotPosition)
-                      .setParameter("stationId", stationId)
-                      .executeUpdate();
+                .setParameter("state", state)
+                .setParameter("slotPosition", slotPosition)
+                .setParameter("stationId", stationId)
+                .executeUpdate();
 
         if (count == 1) {
             log.debug("[StationId: {}] Slot with position {} is updated", stationId, slotPosition);
@@ -472,7 +523,6 @@ public class StationRepositoryImpl implements StationRepository {
 
     /**
      * Returns a station, or throws exception when no station exists.
-     *
      */
     @Transactional(readOnly = true)
     private Station getStationEntity(long stationId) throws DatabaseException {
@@ -485,10 +535,10 @@ public class StationRepositoryImpl implements StationRepository {
     }
 
     /**
-    * This method sets the fields of the station to the values in DTO.
-    *
-    * Important: The ID is not set!
-    */
+     * This method sets the fields of the station to the values in DTO.
+     * <p/>
+     * Important: The ID is not set!
+     */
     private void setFields(Station station, CreateEditStationDTO dto, Operation operation) {
         station.setManufacturerId(dto.getManufacturerId());
         station.setName(dto.getName());
@@ -524,9 +574,8 @@ public class StationRepositoryImpl implements StationRepository {
     }
 
     /**
-    * This method returns the query to get information of all the stations or only the specified station (by stationId)
-    *
-    */
+     * This method returns the query to get information of all the stations or only the specified station (by stationId)
+     */
     private CriteriaQuery<ViewStationDTO> getStationQuery(CriteriaBuilder builder, Long stationId) {
         CriteriaQuery<ViewStationDTO> criteria = builder.createQuery(ViewStationDTO.class);
 
