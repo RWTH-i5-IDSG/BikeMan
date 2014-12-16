@@ -27,15 +27,8 @@ public interface QueryIXSIRepository {
     List<AvailabilityResponseDTO> availability(GeoCircleType circle);
     List<AvailabilityResponseDTO> availability(GeoRectangleType rectangle);
 
-//    BookingResponseDTObooking();
-//    ChangeBookingResponseDTO changeBooking();
-
-    CloseSessionResponseDTO closeSession();
-    OpenSessionResponseDTO openSession();
-
     List<PlaceAvailabilityResponseDTO> placeAvailability(List<String> placeIdList);
     List<PlaceAvailabilityResponseDTO> placeAvailability(GeoCircleType circle);
     List<PlaceAvailabilityResponseDTO> placeAvailability(GeoRectangleType geoRectangle);
 
-    TokenGenerationResponseDTO tokenGeneration();
 }

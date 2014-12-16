@@ -243,19 +243,4 @@ public class QueryIXSIRepositoryImpl implements QueryIXSIRepository {
         }
         return myList;
     }
-
-    @Override
-    public CloseSessionResponseDTO closeSession() {
-        return null;
-    }
-
-    @Override
-    public OpenSessionResponseDTO openSession() {
-        return null;
-    }
-
-    @Override
-    public TokenGenerationResponseDTO tokenGeneration() {
-        return null;
-    }
 }
