@@ -8,6 +8,7 @@ import de.rwth.idsg.bikeman.domain.Pedelec_;
 import de.rwth.idsg.bikeman.domain.StationSlot_;
 import de.rwth.idsg.bikeman.domain.Station_;
 import de.rwth.idsg.bikeman.domain.Transaction_;
+import de.rwth.idsg.bikeman.domain.login.User;
 import de.rwth.idsg.bikeman.psinterface.dto.request.StartTransactionDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.StopTransactionDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.view.ViewTransactionDTO;
@@ -454,7 +455,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
                 .setParameter("cardId", dto.getCardId())
                 .getSingleResult();
 
-        Customer customer = (Customer) cardAccount.getUser();
+        User user = cardAccount.getUser();
 
         StationSlot slot = pedelec.getStationSlot();
 
@@ -488,14 +489,16 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         // 2. Update related entities
         // -------------------------------------------------------------------------
 
-        customer.setInTransaction(true);
+        if (user.getClass().equals(Customer.class)) {
+            ((Customer)user).setInTransaction(true);
+        }
         cardAccount.setInTransaction(true);
         pedelec.setInTransaction(true);
         pedelec.setStationSlot(null);
         slot.setIsOccupied(false);
         slot.setPedelec(null);
 
-//        em.merge(customer);
+        em.merge(user);
         em.merge(cardAccount);
         em.merge(pedelec);
         em.merge(slot);
@@ -537,18 +540,22 @@ public class TransactionRepositoryImpl implements TransactionRepository {
 
         CardAccount cardAccount = transaction.getCardAccount();
 //        Customer customer = transaction.getCustomer();
-        Customer customer = (Customer)cardAccount.getUser();
+        User user = cardAccount.getUser();
         Pedelec pedelec = transaction.getPedelec();
 
         cardAccount.setInTransaction(false);
-        customer.setInTransaction(false);
+
+        if (user.getClass().equals(Customer.class)) {
+            ((Customer)user).setInTransaction(false);
+        }
+
         pedelec.setInTransaction(false);
         pedelec.setStationSlot(slot);
         slot.setIsOccupied(true);
         slot.setPedelec(pedelec);
 
         em.merge(cardAccount);
-        em.merge(customer);
+        em.merge(user);
         em.merge(pedelec);
         em.merge(slot);
     }

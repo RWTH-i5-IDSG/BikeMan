@@ -1,261 +1,327 @@
 <div>
+<h2 class="page-header">Station: {{station.name}}</h2>
 
-    <h2 translate="stationDetail.title" translate-values="{stationName: station.name}" />
+<div ng-switch="isEditing">
+    <button type="button" ui-sref="stations" class="btn btn-default" ng-disabled="isEditing">
+        <span class="glyphicon glyphicon-arrow-left"></span>
+                <span translate="stationDetail.button.back">
+                    Back
+                </span>
+    </button>
+    <button type="button" ng-switch-when="false" ng-click="toggleEdit()" class="btn btn-default">
+        <span class="glyphicon glyphicon-pencil"></span>
+                <span translate="stationDetail.button.edit">
+                    Edit Station
+                </span>
+    </button>
+    <button type="button" ng-switch-when="true" ng-click="toggleEdit()" class="btn btn-warning">
+        <span class="glyphicon glyphicon-pencil"></span>
+                <span translate="stationDetail.button.cancel">
+                    Cancel
+                </span>
+    </button>
+    <button type="button" ng-click="saveStation()" class="btn btn-primary" ng-show="isEditing">
+        <span class="glyphicon glyphicon-pencil"></span>
+                <span translate="stationDetail.button.save">
+                    Save Station
+                </span>
+    </button>
+    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#detailModal" ng-click="getConfig()">
+        <span class="glyphicon glyphicon-cog"></span>
+        <span translate="stationDetail.button.changeConfig">Change Configuration</span>
+    </button>
+    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#rebootModal">
+        <span class="glyphicon glyphicon-off"></span>
+        <span translate="stationDetail.button.rebootStation">Reboot Station</span>
+    </button>
+</div>
 
-    <div ng-switch="isEditing">
-        <button type="button" ui-sref="stations" class="btn btn-default" ng-disabled="isEditing">
-            <span class="glyphicon glyphicon-arrow-left"></span>
-            <span translate="stationDetail.button.back">
-                Back
-            </span>
-        </button>
-        <button type="button" ng-switch-when="false" ng-click="toggleEdit()" class="btn btn-default">
-            <span class="glyphicon glyphicon-pencil"></span>
-            <span translate="stationDetail.button.edit">
-                Edit Station
-            </span>
-        </button>
-        <button type="button" ng-switch-when="true" ng-click="toggleEdit()" class="btn btn-warning">
-            <span class="glyphicon glyphicon-pencil"></span>
-            <span translate="stationDetail.button.cancel">
-                Cancel
-            </span>
-        </button>
-        <button type="button" ng-click="saveStation()" class="btn btn-primary" ng-show="isEditing">
-            <span class="glyphicon glyphicon-pencil"></span>
-            <span translate="stationDetail.button.save">
-                Save Station
-            </span>
-        </button>
-        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#detailModal" ng-click="getConfig()">
-            <span class="glyphicon glyphicon-cog"></span>
-            <span translate="stationDetail.button.changeConfig">Change Configuration</span>
-        </button>
-        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#rebootModal">
-            <span class="glyphicon glyphicon-off"></span>
-            <span translate="stationDetail.button.rebootStation">Reboot Station</span>
-        </button>
-    </div>
+<form name="form" role="form" novalidate
+      class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength form-horizontal"
+      ng-submit="create()" ng-switch="isEditing">
+    <div class="panel-body">
+        <div class="form-group" show-errors>
+            <label class="control-label col-md-2" translate="stationDetail.form.manufacturerId">Manufacturer ID</label>
 
-    <form name="form" role="form" novalidate
-          class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength form-horizontal"
-          ng-submit="create()" ng-switch="isEditing">
-        <div class="panel-body">
-            <div class="form-group" show-errors>
-                <label class="control-label col-md-2" translate="stationDetail.form.manufacturerId">Manufacturer ID</label>
-                <div class="well well-sm col-md-10 remove-margin" ng-switch-when="false">{{station.manufacturerId}}</div>
-                <div ng-show="isEditing" class="col-md-10"><input name="manufacturerId" type="text" class="form-control" ng-model="station.manufacturerId" ng-disabled="true"></div>
-            </div>
-            <div class="form-group" show-errors>
-                <label class="control-label col-md-2" translate="stationDetail.form.name">Name</label>
-                <div class="well well-sm col-md-10 remove-margin" ng-switch-when="false">{{station.name}}</div>
-                <div ng-show="isEditing" class="col-md-10"><input name="name" type="text" class="form-control" ng-model="station.name"></div>
-            </div>
-            <div class="form-group" show-errors>
-                <label class="control-label col-md-2" translate="stationDetail.form.address.title">Address</label>
-                <div class="well well-sm col-md-10 remove-margin" ng-switch-when="false">{{station.address.streetAndHousenumber + ', ' + station.address.zip + ', ' + station.address.city + ', ' + station.address.country}}</div>
-                <div ng-show="isEditing" class="col-md-10">
-                    <div class="form-group" show-errors>
-                        <label class="control-label col-md-2" translate="stationDetail.form.address.streetAddress">Street Address</label>
-                        <div class="col-md-10">
-                            <input name="streetAndHousenumber" type="text" class="form-control" ng-model="station.address.streetAndHousenumber">
-                        </div>
-                    </div>
-                    <div class="form-group" show-errors>
-                        <label class="control-label col-md-2" translate="stationDetail.form.address.zip">ZIP</label>
-                        <div class="col-md-10">
-                            <input name="zip" type="text" class="form-control" ng-model="station.address.zip">
-                        </div>
-                    </div>
-                    <div class="form-group" show-errors>
-                        <label class="control-label col-md-2" translate="stationDetail.form.address.city">City</label>
-                        <div class="col-md-10">
-                            <input name="city" type="text" class="form-control" ng-model="station.address.city">
-                        </div>
-                    </div>
-                    <div class="form-group" show-errors>
-                        <label class="control-label col-md-2" translate="stationDetail.form.address.country">Country</label>
-                        <div class="col-md-10">
-                            <input name="country" type="text" class="form-control" ng-model="station.address.country">
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group" show-errors>
-                <label class="control-label col-md-2" translate="stationDetail.form.coordinates.title">Coordinates</label>
-                <div class="well well-sm col-md-10 remove-margin" ng-switch-when="false">{{station.locationLatitude + ', ' + station.locationLongitude}}</div>
-                <div ng-show="isEditing" class="col-md-10">
-                    <div class="form-group" show-errors>
-                        <label class="control-label col-md-2" translate="stationDetail.form.coordinates.latitude">Latitude</label>
-                        <div class="col-md-10">
-                            <input name="locationLatitude" type="number" class="form-control" ng-model="station.locationLatitude">
-                        </div>
-                    </div>
-                    <div class="form-group" show-errors>
-                        <label class="control-label col-md-2" translate="stationDetail.form.coordinates.longitude">Longitude</label>
-                        <div class="col-md-10">
-                            <input name="locationLongitude" type="number" class="form-control" ng-model="station.locationLongitude">
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group" show-errors>
-                <label class="control-label col-md-2" translate="stationDetail.form.state">State</label>
-                <div class="well well-sm col-md-10 remove-margin" ng-switch-when="false">{{station.state}}</div>
-                <div ng-show="isEditing" class="col-md-10">
-                    <select name="state" type="text" class="form-control"
-                            ng-model="station.state">
-                        <option value="OPERATIVE">OPERATIVE</option>
-                        <option value="INOPERATIVE">INOPERATIVE</option>
-                    </select>
-                </div>
-            </div>
-            <div class="form-group" show-errors>
-                <label class="control-label col-md-2" translate="stationDetail.form.note">Note</label>
-                <div class="well well-sm col-md-10 remove-margin" ng-switch-when="false">{{station.note}}</div>
-                <div ng-show="isEditing" class="col-md-10"><input name="note" type="text" class="form-control" ng-model="station.note"></div>
+            <div class="well well-sm col-md-10 remove-margin" ng-switch-when="false">{{station.manufacturerId}}</div>
+            <div ng-show="isEditing" class="col-md-10"><input name="manufacturerId" type="text" class="form-control"
+                                                              ng-model="station.manufacturerId" ng-disabled="true">
             </div>
         </div>
-    </form>
+        <div class="form-group" show-errors>
+            <label class="control-label col-md-2" translate="stationDetail.form.name">Name</label>
 
-    <div class="table-responsive">
-        <h4 translate="stationDetail.table.title">Station Slots</h4>
+            <div class="well well-sm col-md-10 remove-margin" ng-switch-when="false">{{station.name}}</div>
+            <div ng-show="isEditing" class="col-md-10"><input name="name" type="text" class="form-control"
+                                                              ng-model="station.name"></div>
+        </div>
+        <div class="form-group" show-errors>
+            <label class="control-label col-md-2" translate="stationDetail.form.address.title">Address</label>
 
-        <table class="table table-striped">
-            <thead>
-            <tr>
-                <th translate="stationDetail.table.header.manufacturerId">Manufacturer ID</th>
-                <th translate="stationDetail.table.header.available">Available</th>
-                <th translate="stationDetail.table.header.state">State</th>
-                <th translate="stationDetail.table.header.pedelec">Pedelec (Manufacturer ID)</th>
-            </tr>
-            </thead>
-            <tbody>
-                <tr ng-repeat="slot in station.slots | orderBy:'stationSlotId'">
-                    <td>{{slot.manufacturerId}}</td>
-                    <td>{{slot.isOccupied | occupiedFilter}}</td>
-                    <td>
-                        <button class="btn btn-sm" type="button" data-target="#operativeModal" data-toggle="modal"
-                                ng-click="initSlotToggle(slot.slotPosition, slot.state)" ng-class="{'btn-success': slot.state == 'OPERATIVE'}">
-                            <span class="glyphicon" ng-class="{'glyphicon-ok': slot.state == 'OPERATIVE', 'glyphicon-remove': slot.state != 'OPERATIVE'}"/>
-                            {{ slot.state }}
-                        </button>
-                    </td>
-                    <td ng-switch="slot.isOccupied">
-                        <a ng-switch-when="true" ui-sref="pedelecDetail({pedelecId: slot.pedelec.pedelecId})">{{slot.pedelec | pedelecViewFilter}}</a>
-                        <span ng-switch-when="false" ui-sref="pedelecDetail({pedelecId: slot.pedelec.pedelecId})">{{slot.pedelec | pedelecViewFilter}}</span>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+            <div class="well well-sm col-md-10 remove-margin" ng-switch-when="false">
+                {{station.address.streetAndHousenumber + ', ' + station.address.zip + ', ' + station.address.city + ', '
+                + station.address.country}}
+            </div>
+            <div ng-show="isEditing" class="col-md-10">
+                <div class="form-group" show-errors>
+                    <label class="control-label col-md-2" translate="stationDetail.form.address.streetAddress">Street
+                        Address</label>
 
-    <div class="modal fade" id="detailModal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title" translate="stationDetail.modal.title">Change Configuration</h4>
+                    <div class="col-md-10">
+                        <input name="streetAndHousenumber" type="text" class="form-control"
+                               ng-model="station.address.streetAndHousenumber">
+                    </div>
                 </div>
-                <div class="modal-body">
-                    <form name="configform" role="from" novalidate class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength form-horizontal">
-                        <div class="panel-body">
-                            <div class="form-group row" show-errors>
-                                <label class="control-label col-md-3" translate="stationDetail.modal.cmsURI">CMS URI</label>
-                                <div class="col-md-9">
-                                    <input class="form-control" type="text" name="cmsURI" placeholder="{{'stationDetail.modal.cmsURIPlaceholder' | translate }}"
-                                           ng-model="stationConfig.cmsURI" ng-minlength="1" ng-maxlength="50" required>
-                                </div>
-                            </div>
-                            <div class="form-group row" show-errors>
-                                <label class="control-label col-md-3" translate="stationDetail.modal.heartbeatInterval">Heartbeat Interval</label>
-                                <div class="col-md-9">
-                                    <input class="form-control" type="number" name="heartbeatInterval" placeholder="{{'stationDetail.modal.heartbeatIntervalPlaceholder' | translate }}"
-                                           ng-model="stationConfig.heartbeatInterval" ng-minlength="1" ng-maxlength="50" required>
-                                </div>
-                            </div>
-                            <div class="form-group row" show-errors>
-                                <label class="control-label col-md-3" translate="stationDetail.modal.openSlotTimeout">Open Slot Timeout</label>
-                                <div class="col-md-9">
-                                    <input class="form-control" type="number" name="openSlotTimeout" placeholder="{{'stationDetail.modal.openSlotTimeoutPlaceholder' | translate }}"
-                                           ng-model="stationConfig.openSlotTimeout" ng-minlength="1" ng-maxlength="50" required>
-                                </div>
-                            </div>
-                            <div class="form-group row" show-errors>
-                                <label class="control-label col-md-3" translate="stationDetail.modal.rebootRetries">Reboot Retries</label>
-                                <div class="col-md-9">
-                                    <input class="form-control" type="number" name="rebootRetries" placeholder="{{'stationDetail.modal.rebootRetriesPlaceholder' | translate }}"
-                                           ng-model="stationConfig.rebootRetries" ng-minlength="1" ng-maxlength="50" required>
-                                </div>
-                            </div>
-                            <div class="form-group row" show-errors>
-                                <label class="control-label col-md-3" translate="stationDetail.modal.chargingStatusInformInterval">Charging Status Information Interval</label>
-                                <div class="col-md-9">
-                                    <input class="form-control" type="number" name="chargingStatusInformInterval" placeholder="{{'stationDetail.modal.chargingStatusInformIntervalPlaceholder' | translate }}"
-                                           ng-model="stationConfig.chargingStatusInformInterval" ng-minlength="1" ng-maxlength="50" required>
-                                </div>
+                <div class="form-group" show-errors>
+                    <label class="control-label col-md-2" translate="stationDetail.form.address.zip">ZIP</label>
+
+                    <div class="col-md-10">
+                        <input name="zip" type="text" class="form-control" ng-model="station.address.zip">
+                    </div>
+                </div>
+                <div class="form-group" show-errors>
+                    <label class="control-label col-md-2" translate="stationDetail.form.address.city">City</label>
+
+                    <div class="col-md-10">
+                        <input name="city" type="text" class="form-control" ng-model="station.address.city">
+                    </div>
+                </div>
+                <div class="form-group" show-errors>
+                    <label class="control-label col-md-2" translate="stationDetail.form.address.country">Country</label>
+
+                    <div class="col-md-10">
+                        <input name="country" type="text" class="form-control" ng-model="station.address.country">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group" show-errors>
+            <label class="control-label col-md-2" translate="stationDetail.form.coordinates.title">Coordinates</label>
+
+            <div class="well well-sm col-md-10 remove-margin" ng-switch-when="false">{{station.locationLatitude + ', ' +
+                station.locationLongitude}}
+            </div>
+            <div ng-show="isEditing" class="col-md-10">
+                <div class="form-group" show-errors>
+                    <label class="control-label col-md-2"
+                           translate="stationDetail.form.coordinates.latitude">Latitude</label>
+
+                    <div class="col-md-10">
+                        <input name="locationLatitude" type="number" class="form-control"
+                               ng-model="station.locationLatitude">
+                    </div>
+                </div>
+                <div class="form-group" show-errors>
+                    <label class="control-label col-md-2"
+                           translate="stationDetail.form.coordinates.longitude">Longitude</label>
+
+                    <div class="col-md-10">
+                        <input name="locationLongitude" type="number" class="form-control"
+                               ng-model="station.locationLongitude">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group" show-errors>
+            <label class="control-label col-md-2" translate="stationDetail.form.state">State</label>
+
+            <div class="well well-sm col-md-10 remove-margin" ng-switch-when="false">{{station.state}}</div>
+            <div ng-show="isEditing" class="col-md-10">
+                <select name="state" type="text" class="form-control"
+                        ng-model="station.state">
+                    <option value="OPERATIVE">OPERATIVE</option>
+                    <option value="INOPERATIVE">INOPERATIVE</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group" show-errors>
+            <label class="control-label col-md-2" translate="stationDetail.form.note">Note</label>
+
+            <div class="well well-sm col-md-10 remove-margin" ng-switch-when="false">{{station.note}}</div>
+            <div ng-show="isEditing" class="col-md-10"><input name="note" type="text" class="form-control"
+                                                              ng-model="station.note"></div>
+        </div>
+    </div>
+</form>
+
+<div class="table-responsive">
+    <h4 translate="stationDetail.table.title">Station Slots</h4>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th translate="stationDetail.table.header.manufacturerId">Manufacturer ID</th>
+            <th translate="stationDetail.table.header.available">Available</th>
+            <th translate="stationDetail.table.header.state">State</th>
+            <th translate="stationDetail.table.header.pedelec">Pedelec (Manufacturer ID)</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="slot in station.slots | orderBy:'stationSlotId'">
+            <td>{{slot.manufacturerId}}</td>
+            <td>{{slot.isOccupied | occupiedFilter}}</td>
+            <td>
+                <button class="btn btn-sm" type="button" data-target="#operativeModal" data-toggle="modal"
+                        ng-click="initSlotToggle(slot.slotPosition, slot.state)"
+                        ng-class="{'btn-success': slot.state == 'OPERATIVE'}">
+                        <span class="glyphicon"
+                              ng-class="{'glyphicon-ok': slot.state == 'OPERATIVE', 'glyphicon-remove': slot.state != 'OPERATIVE'}"/>
+                    {{ slot.state }}
+                </button>
+            </td>
+            <td ng-switch="slot.isOccupied">
+                <a ng-switch-when="true" ui-sref="pedelecDetail({pedelecId: slot.pedelec.pedelecId})">{{slot.pedelec |
+                    pedelecViewFilter}}</a>
+                <span ng-switch-when="false" ui-sref="pedelecDetail({pedelecId: slot.pedelec.pedelecId})">{{slot.pedelec | pedelecViewFilter}}</span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="modal fade" id="detailModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" translate="stationDetail.modal.title">Change Configuration</h4>
+            </div>
+            <div class="modal-body">
+                <form name="configform" role="from" novalidate
+                      class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength form-horizontal">
+                    <div class="panel-body">
+                        <div class="form-group row" show-errors>
+                            <label class="control-label col-md-3" translate="stationDetail.modal.cmsURI">CMS URI</label>
+
+                            <div class="col-md-9">
+                                <input class="form-control" type="text" name="cmsURI"
+                                       placeholder="{{'stationDetail.modal.cmsURIPlaceholder' | translate }}"
+                                       ng-model="stationConfig.cmsURI" ng-minlength="1" ng-maxlength="50" required>
                             </div>
                         </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" translate="stationDetail.modal.buttons.cancel">
-                        Cancel
-                    </button>
-                    <button type="button" class="btn btn-info"  data-dismiss="modal" ng-click="updateConfig()"
-                            translate="stationDetail.modal.buttons.update">
-                        Update
-                    </button>
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
+                        <div class="form-group row" show-errors>
+                            <label class="control-label col-md-3" translate="stationDetail.modal.heartbeatInterval">Heartbeat
+                                Interval</label>
 
-    <div class="modal fade" id="operativeModal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title" translate="stationDetail.operativeModal.title">Disable Station</h4>
-                </div>
-                <div class="modal-body">
-                    <span translate="stationDetail.operativeModal.bodyEnable" ng-show="slot.state == 'INOPERATIVE'">enable slot</span>
-                    <span translate="stationDetail.operativeModal.bodyDisable" ng-show="slot.state == 'OPERATIVE'">disable slot</span>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" translate="stationDetail.operativeModal.buttons.cancel">
-                        Cancel
-                    </button>
-                    <button type="button" class="btn" ng-class="{'btn-danger': slot.state == 'OPERATIVE', 'btn-success': slot.state == 'INOPERATIVE'}" data-dismiss="modal" ng-click="toggleSlotState(slot.stationSlotPosition, slot.state)">
-                        <span translate="stationDetail.operativeModal.enable" ng-show="slot.state == 'INOPERATIVE'">enable </span>
-                        <span translate="stationDetail.operativeModal.disable" ng-show="slot.state == 'OPERATIVE'">disable</span>
-                    </button>
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
+                            <div class="col-md-9">
+                                <input class="form-control" type="number" name="heartbeatInterval"
+                                       placeholder="{{'stationDetail.modal.heartbeatIntervalPlaceholder' | translate }}"
+                                       ng-model="stationConfig.heartbeatInterval" ng-minlength="1" ng-maxlength="50"
+                                       required>
+                            </div>
+                        </div>
+                        <div class="form-group row" show-errors>
+                            <label class="control-label col-md-3" translate="stationDetail.modal.openSlotTimeout">Open
+                                Slot Timeout</label>
 
-    <div class="modal fade" id="rebootModal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title" translate="stationDetail.rebootModal.title">Reboot Station</h4>
+                            <div class="col-md-9">
+                                <input class="form-control" type="number" name="openSlotTimeout"
+                                       placeholder="{{'stationDetail.modal.openSlotTimeoutPlaceholder' | translate }}"
+                                       ng-model="stationConfig.openSlotTimeout" ng-minlength="1" ng-maxlength="50"
+                                       required>
+                            </div>
+                        </div>
+                        <div class="form-group row" show-errors>
+                            <label class="control-label col-md-3" translate="stationDetail.modal.rebootRetries">Reboot
+                                Retries</label>
+
+                            <div class="col-md-9">
+                                <input class="form-control" type="number" name="rebootRetries"
+                                       placeholder="{{'stationDetail.modal.rebootRetriesPlaceholder' | translate }}"
+                                       ng-model="stationConfig.rebootRetries" ng-minlength="1" ng-maxlength="50"
+                                       required>
+                            </div>
+                        </div>
+                        <div class="form-group row" show-errors>
+                            <label class="control-label col-md-3"
+                                   translate="stationDetail.modal.chargingStatusInformInterval">Charging Status
+                                Information Interval</label>
+
+                            <div class="col-md-9">
+                                <input class="form-control" type="number" name="chargingStatusInformInterval"
+                                       placeholder="{{'stationDetail.modal.chargingStatusInformIntervalPlaceholder' | translate }}"
+                                       ng-model="stationConfig.chargingStatusInformInterval" ng-minlength="1"
+                                       ng-maxlength="50" required>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal"
+                        translate="stationDetail.modal.buttons.cancel">
+                    Cancel
+                </button>
+                <button type="button" class="btn btn-info" data-dismiss="modal" ng-click="updateConfig()"
+                        translate="stationDetail.modal.buttons.update">
+                    Update
+                </button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+<div class="modal fade" id="operativeModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" translate="stationDetail.operativeModal.title">Disable Station</h4>
+            </div>
+            <div class="modal-body">
+                <span translate="stationDetail.operativeModal.bodyEnable" ng-show="slot.state == 'INOPERATIVE'">enable slot</span>
+                <span translate="stationDetail.operativeModal.bodyDisable" ng-show="slot.state == 'OPERATIVE'">disable slot</span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal"
+                        translate="stationDetail.operativeModal.buttons.cancel">
+                    Cancel
+                </button>
+                <button type="button" class="btn"
+                        ng-class="{'btn-danger': slot.state == 'OPERATIVE', 'btn-success': slot.state == 'INOPERATIVE'}"
+                        data-dismiss="modal" ng-click="toggleSlotState(slot.stationSlotPosition, slot.state)">
+                        <span translate="stationDetail.operativeModal.enable"
+                              ng-show="slot.state == 'INOPERATIVE'">enable </span>
+                        <span translate="stationDetail.operativeModal.disable"
+                              ng-show="slot.state == 'OPERATIVE'">disable</span>
+                </button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+<div class="modal fade" id="rebootModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" translate="stationDetail.rebootModal.title">Reboot Station</h4>
+            </div>
+            <div class="modal-body">
+                <div translate="stationDetail.rebootModal.body">Are you sure you want to reboot station {{ station.name
+                    }}?
                 </div>
-                <div class="modal-body">
-                    <div translate="stationDetail.rebootModal.body">Are you sure you want to reboot station {{ station.name }}?</div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" translate="stationDetail.rebootModal.buttons.cancel">
-                        Cancel
-                    </button>
-                    <button type="button" class="btn btn-danger"  data-dismiss="modal" ng-click="rebootStation()"
-                            translate="stationDetail.rebootModal.buttons.reboot">
-                        Reboot
-                    </button>
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal"
+                        translate="stationDetail.rebootModal.buttons.cancel">
+                    Cancel
+                </button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="rebootStation()"
+                        translate="stationDetail.rebootModal.buttons.reboot">
+                    Reboot
+                </button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
 
 </div>

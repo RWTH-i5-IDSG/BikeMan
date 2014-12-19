@@ -7,6 +7,7 @@ import de.rwth.idsg.bikeman.domain.CardAccount_;
 import de.rwth.idsg.bikeman.domain.Customer;
 import de.rwth.idsg.bikeman.domain.CustomerType;
 import de.rwth.idsg.bikeman.domain.Customer_;
+import de.rwth.idsg.bikeman.domain.OperationState;
 import de.rwth.idsg.bikeman.domain.login.Authority;
 import de.rwth.idsg.bikeman.security.AuthoritiesConstants;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditAddressDTO;
@@ -246,6 +247,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
                 newCardAccount.setCardId(dto.getCardId());
                 newCardAccount.setCardPin(dto.getCardPin());
                 newCardAccount.setUser(customer);
+                newCardAccount.setOperationState(OperationState.OPERATIVE);
                 customer.setCardAccount(newCardAccount);
 
                 HashSet<Authority> authorities = new HashSet<>();

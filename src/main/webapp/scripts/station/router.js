@@ -31,7 +31,7 @@ bikeManApp
                     }
                 })
                 .state('stationCreate', {
-                    url: '/stations/create/',
+                    url: '/stations/create',
                     templateUrl: 'views/stationCreate.html',
                     controller: 'StationCreateController',
                     access: {
