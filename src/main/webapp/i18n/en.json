@@ -328,7 +328,7 @@
         }
     },
     "majorcustomers": {
-        "title": "Customers",
+        "title": "Major Customers",
         "search": {
             "searchByName": "Search: Max Mustermann",
             "searchByLogin": "Search: majorcustomers@email.com",

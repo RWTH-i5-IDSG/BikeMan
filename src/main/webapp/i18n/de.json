@@ -21,7 +21,9 @@
                 "title": "Verwaltung",
                 "custOverview": "Kundenübersicht",
                 "custCreate": "Kunden anlegen",
-                "fleetOverview": "Fuhrparkleiter Übersicht",
+                "majorcustomerOverview": "Großkundenübersicht",
+                "majorcustomerCreate": "Großkunden anlegen",
+                "fleetOverview": "Fuhrparkleiterübersicht",
                 "fleetCreate": "Fuhrparkleiter anlegen"
             },
             "station": {
@@ -40,6 +42,9 @@
                 "closedTransactions": "Abgeschlossene Transaktionen",
                 "openTransactions": "Offene Transaktionen"
             },
+            "majorcustomerlog" : {
+                "title": "Fahrtenbuch Großkunden"
+            },
             "admin": "Administration",
             "language": "Sprache"
         },
@@ -57,6 +62,38 @@
         "logged": {
             "message": "Sie sind angemeldet als Benutzer \"{{username}}\".",
             "authenticated": "Wenn Sie sich <a ui-sref=\"login\">anmelden</a> wollen, probieren Sie die Standard-Accounts<br/>- Admnistrator (login=\"admin\" and password=\"admin\") <br/>- User (login=\"user\" and password=\"user\")."
+        }
+    },
+    "cardaccounts": {
+        "title": "Kartenkonten",
+        "addModal": {
+            "title": "Kartenkonto hinzufügen",
+            "cardId": "Karten-ID",
+            "cardPin": "Karten-PIN",
+            "buttons": {
+                "cancel": "Abbrechen",
+                "add": "Hinzufügen"
+            }
+        },
+        "deleteModal": {
+            "title": "Kartenkonto löschen",
+            "body": "Sind Sie sicher, dass Sie <b>{{cardaccountToDelete.cardId}}?</b> löschen wollen?",
+            "cancel": "Abbrechen",
+            "delete": "Löschen"
+        },
+        "table": {
+            "header": {
+                "cardId": "Karten-ID",
+                "cardPin": "Karten-PIN",
+                "inTransaction": "In Transaktion",
+                "operationState": "Betriebszustand"
+            },
+            "buttons": {
+                "delete": "Löschen"
+            }
+        },
+        "buttons": {
+            "add": "Kartenkonto hinzufügen"
         }
     },
     "stations": {
@@ -96,7 +133,7 @@
                 "locationLatitude": "Breitengrad",
                 "locationLongitude": "Längengrad"
             },
-            "state": "Stationszustand",
+            "state": "Betriebszustand",
             "note": "Notiz"
         },
         "buttons": {
@@ -121,7 +158,7 @@
                 "latitude": "Breitengrad",
                 "longitude": "Längengrad"
             },
-            "state": "Status",
+            "state": "Betriebszustand",
             "note": "Notiz"
         },
         "table": {
@@ -246,7 +283,9 @@
             "header": {
                 "customerId": "Kunden-ID",
                 "login": "Login",
+                "password": "Passwort",
                 "cardId": "Karten-ID",
+                "cardPin": "Karten-PIN",
                 "name": "Name",
                 "address": {
                     "title": "Adresse",
@@ -261,13 +300,91 @@
             "placeholders": {
                 "customerId": "Kunden-ID...",
                 "login": "customer@bikeman.de",
+                "password": "********",
                 "cardId": "Karten-ID...",
+                "cardPin": "Karten-PIN...",
                 "firstname": "Max",
                 "lastname": "Mustermann",
                 "streetAndHousenumber": "Straße...",
                 "zip": "Postleitzahl...",
                 "city": "Stadt...",
                 "country": "Land..."
+            }
+        },
+        "buttons": {
+            "cancel": "Abbrechen",
+            "save": "Speichern"
+        }
+    },
+    "majorcustomers": {
+        "title": "Großkunden",
+        "search": {
+            "searchByName": "Suchen: Max Mustermann",
+            "searchByLogin": "Suchen: majorcustomers@email.com",
+            "reset": "Zurücksetzen"
+        },
+        "table": {
+            "header": {
+                "majorcustomerId": "Großkunden ID",
+                "name": "Name",
+                "login": "E-Mail",
+                "isActivated": "Aktiviert",
+                "birthday": "Geburtstag"
+            },
+            "body": {
+                "isActivated": "Aktiviert",
+                "details": "Details"
+            }
+        }
+    },
+    "majorcustomerDetail": {
+        "title": "Großkunde: {{ name }}",
+        "buttons": {
+            "back": "Zurück",
+            "edit": "Bearbeiten",
+            "cancel": "Abbrechen",
+            "save": "Speichern"
+        },
+        "table": {
+            "header": {
+                "login": "Login",
+                "name": "Name",
+                "password": "Passwort",
+                "majorcustomerId": "Großkunden-ID",
+                "cardId": "Karten-ID",
+                "cardPin": "Karten-PIN"
+            }
+        },
+        "cardaccounts": {
+            "title": "Kartenkonten",
+            "numberOfCardaccounts": "Anzahl der anzuzeigenden Kartenkonten:",
+            "table": {
+                "header": {
+                    "cardId": "Karten-ID",
+                    "cardPin": "Karten-PIN",
+                    "inTransaction": "In Transaktion",
+                    "operationState": "Betriebszustand"
+                },
+                "buttons": {
+                    "edit": "Bearbeiten"
+                }
+            }
+        }
+    },
+    "majorcustomerCreate": {
+        "title": "Großkunden anlegen",
+        "table": {
+            "header": {
+                "majorcustomerId": "Großkunden-ID",
+                "login": "Login",
+                "password": "Passwort",
+                "name": "Name"
+            },
+            "placeholders": {
+                "majorcustomerId": "Großkunden-ID...",
+                "login": "großkunde@bikeman.de",
+                "password": "*******",
+                "name": "Name"
             }
         },
         "buttons": {
@@ -465,7 +582,8 @@
                 "newpassword": {
                     "required": "Ein neues Passwort wird benötigt.",
                     "minlength": "Das neue Passwort muss mindestens 5 Zeichen lang sein",
-                    "maxlength": "Das neue Passwort darf nicht länger als 50 Zeichen sein"
+                    "maxlength": "Das neue Passwort darf nicht länger als 50 Zeichen sein",
+                    "strength": "Passwortsicherheit:"
                 },
                 "confirmpassword": {
                     "required": "Sie müssen das Passwort bestätigen.",

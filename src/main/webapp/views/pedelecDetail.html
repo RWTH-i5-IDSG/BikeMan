@@ -95,7 +95,6 @@
         <thead>
         <tr>
             <th translate="pedelecDetail.transactions.table.header.customer">Customer</th>
-            <th translate="pedelecDetail.transactions.table.header.pedelec">Pedelec</th>
             <th translate="pedelecDetail.transactions.table.header.startTime">Start Time</th>
             <th translate="pedelecDetail.transactions.table.header.endTime">End Time</th>
             <th translate="pedelecDetail.transactions.table.header.fromLocation">From Location</th>
@@ -105,7 +104,6 @@
         <tbody>
         <tr ng-class='{warning:$first && pedelec.inTransaction}' ng-repeat="transaction in transactions">
             <td>{{transaction.customer.lastname}}, {{transaction.customer.firstname}}</td>
-            <td>{{transaction.pedelec.manufacturerId}}</td>
             <td>{{transaction.startDateTime | date:'medium'}}</td>
             <td><span ng-show="!pedelec.inTransaction || !$first">{{transaction.endDateTime | date:'medium'}}</span>
             </td>
