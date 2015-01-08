@@ -436,7 +436,7 @@
                 <xs:annotation>
                         <xs:documentation>Enumeration for consumption classes.</xs:documentation>
                 </xs:annotation>
-                <xs:restriction base="xs:token"/>
+                <xs:restriction base="xs:token"><xs:enumeration value="Time"/><xs:enumeration value="Energy"/></xs:restriction>
         </xs:simpleType>
 	<xs:simpleType name="AttributeIDType">
 		<xs:annotation>

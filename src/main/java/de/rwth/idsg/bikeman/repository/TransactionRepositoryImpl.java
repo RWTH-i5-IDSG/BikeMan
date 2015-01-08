@@ -506,7 +506,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void stop(StopTransactionDTO dto) throws DatabaseException {
+    public Transaction stop(StopTransactionDTO dto) throws DatabaseException {
 
         // -------------------------------------------------------------------------
         // 1. End transaction
@@ -532,7 +532,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
 
         transaction.setEndDateTime(new LocalDateTime(dto.getTimestamp()));
         transaction.setToSlot(slot);
-        em.merge(transaction);
+        Transaction mergedTransaction = em.merge(transaction);
 
         // -------------------------------------------------------------------------
         // 2. Update related entities
@@ -558,6 +558,8 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         em.merge(user);
         em.merge(pedelec);
         em.merge(slot);
+
+        return mergedTransaction;
     }
 
     @SuppressWarnings("unchecked")

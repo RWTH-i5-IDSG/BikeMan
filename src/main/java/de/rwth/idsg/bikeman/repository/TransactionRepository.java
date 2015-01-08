@@ -88,7 +88,7 @@ public interface TransactionRepository {
     *
     * Important: This is for internal use to stop a transaction, and NOT for the Web UI
     */
-    void stop(StopTransactionDTO dto) throws DatabaseException;
+    Transaction stop(StopTransactionDTO dto) throws DatabaseException;
 
 
 }
