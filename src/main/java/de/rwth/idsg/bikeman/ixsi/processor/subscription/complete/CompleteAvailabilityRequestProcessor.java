@@ -2,7 +2,7 @@ package de.rwth.idsg.bikeman.ixsi.processor.subscription.complete;
 
 import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
 import de.rwth.idsg.bikeman.ixsi.dto.query.AvailabilityResponseDTO;
-import de.rwth.idsg.bikeman.ixsi.processor.AvailabilityStore;
+import de.rwth.idsg.bikeman.ixsi.impl.AvailabilityStore;
 import de.rwth.idsg.bikeman.ixsi.processor.api.SubscriptionRequestMessageProcessor;
 import de.rwth.idsg.bikeman.ixsi.processor.query.user.AvailabilityRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.repository.QueryIXSIRepository;

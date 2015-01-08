@@ -2,7 +2,7 @@ package de.rwth.idsg.bikeman.ixsi.service;
 
 import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
 import de.rwth.idsg.bikeman.ixsi.api.Producer;
-import de.rwth.idsg.bikeman.ixsi.processor.AvailabilityStore;
+import de.rwth.idsg.bikeman.ixsi.impl.AvailabilityStore;
 import de.rwth.idsg.bikeman.ixsi.schema.AvailabilityPushMessageType;
 import de.rwth.idsg.bikeman.ixsi.schema.BookingTargetChangeAvailabilityType;
 import de.rwth.idsg.bikeman.ixsi.schema.BookingTargetIDType;

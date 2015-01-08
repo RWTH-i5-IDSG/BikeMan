@@ -3,7 +3,7 @@ package de.rwth.idsg.bikeman.ixsi.service;
 import de.rwth.idsg.bikeman.domain.Transaction;
 import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
 import de.rwth.idsg.bikeman.ixsi.api.Producer;
-import de.rwth.idsg.bikeman.ixsi.processor.ConsumptionStore;
+import de.rwth.idsg.bikeman.ixsi.impl.ConsumptionStore;
 import de.rwth.idsg.bikeman.ixsi.schema.ConsumptionPushMessageType;
 import de.rwth.idsg.bikeman.ixsi.schema.ConsumptionType;
 import de.rwth.idsg.bikeman.ixsi.schema.IxsiMessageType;

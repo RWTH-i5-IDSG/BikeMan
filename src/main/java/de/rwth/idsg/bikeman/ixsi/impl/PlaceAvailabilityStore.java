@@ -1,22 +1,23 @@
-package de.rwth.idsg.bikeman.ixsi.processor;
+package de.rwth.idsg.bikeman.ixsi.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 
 /**
- * Key : Booking ID
+ * Key : Station ID / PlaceID
  *
  * @author Sevket Goekay <goekay@dbis.rwth-aachen.de>
- * @since 08.01.2015
+ * @since 04.11.2014
  */
 @Slf4j
 @Service
-public class ConsumptionStore extends AbstractSubscriptionStore {
+public class PlaceAvailabilityStore extends AbstractSubscriptionStore {
 
     @PostConstruct
     public void init() {
@@ -26,9 +27,13 @@ public class ConsumptionStore extends AbstractSubscriptionStore {
 
     @PreDestroy
     public void preDestroy() {
-        log.debug("ConsumptionStore is being destroyed");
+        log.debug("PlaceAvailabilityStore is being destroyed");
         scheduler.shutdown();
         // TODO Publish info about going down
     }
 
+    @Override
+    public void subscribe(String systemID, List<String> itemIDs, Integer expireIntervalinMinutes) {
+        // No op: PlaceAvailabilitySubscriptionRequestType defines no EventHorizon
+    }
 }

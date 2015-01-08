@@ -1,5 +1,6 @@
-package de.rwth.idsg.bikeman.ixsi;
+package de.rwth.idsg.bikeman.ixsi.impl;
 
+import de.rwth.idsg.bikeman.ixsi.api.WebSocketSessionStore;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.WebSocketSession;

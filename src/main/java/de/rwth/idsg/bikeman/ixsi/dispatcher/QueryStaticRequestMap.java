@@ -1,9 +1,9 @@
 package de.rwth.idsg.bikeman.ixsi.dispatcher;
 
 import de.rwth.idsg.bikeman.ixsi.IxsiProcessingException;
+import de.rwth.idsg.bikeman.ixsi.processor.api.StaticRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.processor.query.staticdata.BookingTargetsInfoRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.processor.query.staticdata.ChangedProvidersRequestProcessor;
-import de.rwth.idsg.bikeman.ixsi.processor.api.StaticRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.schema.BookingTargetsInfoRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.ChangedProvidersRequestType;
 import de.rwth.idsg.ixsi.jaxb.StaticDataRequestGroup;

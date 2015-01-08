@@ -1,4 +1,4 @@
-package de.rwth.idsg.bikeman.ixsi.processor.api;
+package de.rwth.idsg.bikeman.ixsi.api;
 
 import java.util.List;
 import java.util.Set;

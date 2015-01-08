@@ -1,11 +1,10 @@
 package de.rwth.idsg.bikeman.ixsi.processor.subscription.request;
 
-import de.rwth.idsg.bikeman.ixsi.processor.ConsumptionStore;
+import de.rwth.idsg.bikeman.ixsi.impl.ConsumptionStore;
 import de.rwth.idsg.bikeman.ixsi.processor.api.SubscriptionRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.schema.ConsumptionSubscriptionRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.ConsumptionSubscriptionResponseType;
 import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
-import de.rwth.idsg.bikeman.ixsi.schema.ProviderPlaceIDType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

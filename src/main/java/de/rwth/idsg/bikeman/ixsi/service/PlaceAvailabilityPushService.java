@@ -2,7 +2,7 @@ package de.rwth.idsg.bikeman.ixsi.service;
 
 import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
 import de.rwth.idsg.bikeman.ixsi.api.Producer;
-import de.rwth.idsg.bikeman.ixsi.processor.PlaceAvailabilityStore;
+import de.rwth.idsg.bikeman.ixsi.impl.PlaceAvailabilityStore;
 import de.rwth.idsg.bikeman.ixsi.repository.QueryIXSIRepository;
 import de.rwth.idsg.bikeman.ixsi.schema.IxsiMessageType;
 import de.rwth.idsg.bikeman.ixsi.schema.PlaceAvailabilityPushMessageType;

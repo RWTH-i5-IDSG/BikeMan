@@ -1,6 +1,6 @@
 package de.rwth.idsg.bikeman.ixsi.processor.subscription.request;
 
-import de.rwth.idsg.bikeman.ixsi.processor.PlaceAvailabilityStore;
+import de.rwth.idsg.bikeman.ixsi.impl.PlaceAvailabilityStore;
 import de.rwth.idsg.bikeman.ixsi.processor.api.SubscriptionRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
 import de.rwth.idsg.bikeman.ixsi.schema.PlaceAvailabilitySubscriptionRequestType;

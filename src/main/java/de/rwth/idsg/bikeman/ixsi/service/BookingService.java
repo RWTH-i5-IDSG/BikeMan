@@ -82,8 +82,8 @@ public class BookingService {
         final float lowerLimit = 0.0f;
 
         return OperationState.OPERATIVE.equals(pedelec.getState())
-                || !pedelec.getInTransaction()
-                || pedelec.getStateOfCharge() > lowerLimit;
+                && !pedelec.getInTransaction()
+                && pedelec.getStateOfCharge() > lowerLimit;
     }
 
 }

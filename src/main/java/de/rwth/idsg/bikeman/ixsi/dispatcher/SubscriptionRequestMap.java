@@ -1,6 +1,7 @@
 package de.rwth.idsg.bikeman.ixsi.dispatcher;
 
 import de.rwth.idsg.bikeman.ixsi.IxsiProcessingException;
+import de.rwth.idsg.bikeman.ixsi.processor.api.SubscriptionRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.processor.subscription.request.AvailabilitySubscriptionRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.processor.subscription.request.AvailabilitySubscriptionStatusRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.processor.subscription.request.BookingAlertSubscriptionRequestProcessor;
@@ -9,7 +10,6 @@ import de.rwth.idsg.bikeman.ixsi.processor.subscription.request.ConsumptionSubsc
 import de.rwth.idsg.bikeman.ixsi.processor.subscription.request.ConsumptionSubscriptionStatusRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.processor.subscription.request.PlaceAvailabilitySubscriptionRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.processor.subscription.request.PlaceAvailabilitySubscriptionStatusRequestProcessor;
-import de.rwth.idsg.bikeman.ixsi.processor.api.SubscriptionRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.schema.AvailabilitySubscriptionRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.AvailabilitySubscriptionStatusRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.BookingAlertSubscriptionRequestType;

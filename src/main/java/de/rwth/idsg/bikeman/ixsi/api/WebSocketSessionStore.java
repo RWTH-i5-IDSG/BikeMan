@@ -1,4 +1,4 @@
-package de.rwth.idsg.bikeman.ixsi;
+package de.rwth.idsg.bikeman.ixsi.api;
 
 import org.springframework.web.socket.WebSocketSession;
 

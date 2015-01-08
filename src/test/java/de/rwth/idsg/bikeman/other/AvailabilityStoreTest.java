@@ -1,7 +1,7 @@
 package de.rwth.idsg.bikeman.other;
 
 import de.rwth.idsg.bikeman.Application;
-import de.rwth.idsg.bikeman.ixsi.processor.AvailabilityStore;
+import de.rwth.idsg.bikeman.ixsi.impl.AvailabilityStore;
 import lombok.extern.slf4j.Slf4j;
 import org.hamcrest.CoreMatchers;
 import org.junit.After;
@@ -16,10 +16,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
 
 import static org.junit.Assert.assertThat;

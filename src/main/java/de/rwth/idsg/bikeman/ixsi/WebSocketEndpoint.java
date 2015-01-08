@@ -1,6 +1,7 @@
 package de.rwth.idsg.bikeman.ixsi;
 
 import de.rwth.idsg.bikeman.ixsi.api.Consumer;
+import de.rwth.idsg.bikeman.ixsi.api.WebSocketSessionStore;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

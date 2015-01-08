@@ -1,6 +1,6 @@
 package de.rwth.idsg.bikeman.ixsi.processor.subscription.request;
 
-import de.rwth.idsg.bikeman.ixsi.processor.ConsumptionStore;
+import de.rwth.idsg.bikeman.ixsi.impl.ConsumptionStore;
 import de.rwth.idsg.bikeman.ixsi.processor.api.SubscriptionRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.schema.ConsumptionSubscriptionStatusRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.ConsumptionSubscriptionStatusResponseType;
@@ -8,7 +8,6 @@ import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

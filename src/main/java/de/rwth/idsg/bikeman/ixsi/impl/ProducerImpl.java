@@ -2,9 +2,9 @@ package de.rwth.idsg.bikeman.ixsi.impl;
 
 import de.rwth.idsg.bikeman.ixsi.CommunicationContext;
 import de.rwth.idsg.bikeman.ixsi.IxsiProcessingException;
-import de.rwth.idsg.bikeman.ixsi.WebSocketSessionStore;
 import de.rwth.idsg.bikeman.ixsi.api.Parser;
 import de.rwth.idsg.bikeman.ixsi.api.Producer;
+import de.rwth.idsg.bikeman.ixsi.api.WebSocketSessionStore;
 import de.rwth.idsg.bikeman.ixsi.schema.IxsiMessageType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

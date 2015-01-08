@@ -1,7 +1,7 @@
 package de.rwth.idsg.bikeman.ixsi.processor.subscription.complete;
 
 import de.rwth.idsg.bikeman.domain.Booking;
-import de.rwth.idsg.bikeman.ixsi.processor.ConsumptionStore;
+import de.rwth.idsg.bikeman.ixsi.impl.ConsumptionStore;
 import de.rwth.idsg.bikeman.ixsi.processor.api.SubscriptionRequestMessageProcessor;
 import de.rwth.idsg.bikeman.ixsi.schema.CompleteConsumptionRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.CompleteConsumptionResponseType;

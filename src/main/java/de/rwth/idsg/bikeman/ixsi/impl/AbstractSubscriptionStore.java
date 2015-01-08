@@ -1,7 +1,7 @@
-package de.rwth.idsg.bikeman.ixsi.processor;
+package de.rwth.idsg.bikeman.ixsi.impl;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import de.rwth.idsg.bikeman.ixsi.processor.api.SubscriptionStore;
+import de.rwth.idsg.bikeman.ixsi.api.SubscriptionStore;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
