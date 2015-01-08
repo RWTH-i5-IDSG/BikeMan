@@ -1,4 +1,4 @@
-package de.rwth.idsg.bikeman.psinterface;
+package de.rwth.idsg.bikeman.psinterface.rest.client;
 
 import de.rwth.idsg.bikeman.web.rest.dto.modify.ChangePedelecOperationStateDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.PedelecConfigurationDTO;

@@ -1,4 +1,4 @@
-package de.rwth.idsg.bikeman.psinterface;
+package de.rwth.idsg.bikeman.psinterface.rest.client;
 
 import de.rwth.idsg.bikeman.web.rest.dto.modify.ChangeStationOperationStateDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.StationConfigurationDTO;

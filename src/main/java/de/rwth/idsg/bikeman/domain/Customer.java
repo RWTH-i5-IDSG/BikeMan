@@ -44,6 +44,8 @@ public class Customer extends User {
     @Column(name = "is_activated")
     private Boolean isActivated;
 
+
+
     @Column(name = "in_transaction")
     private Boolean inTransaction;
 

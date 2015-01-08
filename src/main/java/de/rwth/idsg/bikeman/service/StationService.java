@@ -1,6 +1,6 @@
 package de.rwth.idsg.bikeman.service;
 
-import de.rwth.idsg.bikeman.psinterface.StationClient;
+import de.rwth.idsg.bikeman.psinterface.rest.client.StationClient;
 import de.rwth.idsg.bikeman.repository.StationRepository;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.ChangeStationOperationStateDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditStationDTO;
@@ -46,13 +46,15 @@ public class StationService {
     }
 
     public void updateConfig(Long id, StationConfigurationDTO dto) throws DatabaseException {
-        String endpointAddress = stationRepository.getEndpointAddress(id);
-        String inputEndpointAddress = dto.getCmsURI();
+// TODO: cmsURI != endpointAddress. cmsURI refers from station to cms.
 
-        if (!endpointAddress.equals(inputEndpointAddress)) {
-            stationRepository.updateEndpointAddress(id, inputEndpointAddress);
-            endpointAddress = inputEndpointAddress;
-        }
+        String endpointAddress = stationRepository.getEndpointAddress(id);
+//        String inputEndpointAddress = dto.getCmsURI();
+//
+//        if (!endpointAddress.equals(inputEndpointAddress)) {
+//            stationRepository.updateEndpointAddress(id, inputEndpointAddress);
+//            endpointAddress = inputEndpointAddress;
+//        }
 
         stationClient.changeConfig(endpointAddress, dto);
     }
