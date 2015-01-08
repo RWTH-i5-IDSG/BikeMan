@@ -85,8 +85,8 @@
     <xsl:template match="/xs:schema/xs:simpleType[@name='ConsumptionClassType']/xs:restriction">
         <xsl:copy>
             <xsl:apply-templates select="@*|node()"/>
-            <xs:enumeration value="Time"/>
-            <xs:enumeration value="Energy"/>
+            <xs:enumeration value="duration"/>
+            <xs:enumeration value="distance"/>
         </xsl:copy>
     </xsl:template>
 

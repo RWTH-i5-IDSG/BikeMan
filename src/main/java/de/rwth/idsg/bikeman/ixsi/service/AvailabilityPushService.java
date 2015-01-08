@@ -36,6 +36,12 @@ public class AvailabilityPushService {
     }
 
     private void buildAndSend(String bookeeID, String placeID, DateTime dt, boolean isAvailable) {
+        Set<String> systemIdSet = availabilityStore.getSubscribedSystems(bookeeID);
+        if (systemIdSet.isEmpty()) {
+            log.debug("Will not push. There is no subscribed system for bookeeID '{}'", bookeeID);
+            return;
+        }
+
         BookingTargetIDType bookingTargetID = new BookingTargetIDType();
         bookingTargetID.setBookeeID(bookeeID);
         bookingTargetID.setProviderID(IXSIConstants.Provider.id);
@@ -63,7 +69,6 @@ public class AvailabilityPushService {
         IxsiMessageType ixsi = new IxsiMessageType();
         ixsi.setSubscriptionMessage(sub);
 
-        Set<String> systemIdSet = availabilityStore.getSubscribedSystems(bookeeID);
         producer.send(ixsi, systemIdSet);
     }
 

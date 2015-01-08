@@ -1,6 +1,7 @@
 package de.rwth.idsg.bikeman.ixsi;
 
 import de.rwth.idsg.bikeman.ixsi.schema.ClassType;
+import de.rwth.idsg.bikeman.ixsi.schema.ConsumptionClassType;
 import de.rwth.idsg.bikeman.ixsi.schema.EngineType;
 
 /**
@@ -13,6 +14,7 @@ public final class IXSIConstants {
 
     public static final ClassType bookeeClassType = ClassType.BIKE;
     public static final EngineType engineType = EngineType.ELECTRIC;
+    public static final ConsumptionClassType consumptionClass = ConsumptionClassType.DURATION;
 
     public final class Provider {
         public static final String id = "Velocity";

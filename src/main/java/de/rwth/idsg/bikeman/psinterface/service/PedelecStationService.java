@@ -1,18 +1,23 @@
 package de.rwth.idsg.bikeman.psinterface.service;
 
+import de.rwth.idsg.bikeman.domain.Booking;
 import de.rwth.idsg.bikeman.domain.CardAccount;
 import de.rwth.idsg.bikeman.domain.OperationState;
+import de.rwth.idsg.bikeman.domain.Transaction;
+import de.rwth.idsg.bikeman.ixsi.service.ConsumptionPushService;
 import de.rwth.idsg.bikeman.psinterface.dto.request.BootNotificationDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.CustomerAuthorizeDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.StartTransactionDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.StopTransactionDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.response.AuthorizeConfirmationDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.response.BootConfirmationDTO;
+import de.rwth.idsg.bikeman.repository.BookingRepository;
 import de.rwth.idsg.bikeman.repository.CustomerRepository;
 import de.rwth.idsg.bikeman.repository.StationRepository;
 import de.rwth.idsg.bikeman.repository.TransactionRepository;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -29,6 +34,8 @@ public class PedelecStationService {
     @Inject private CustomerRepository customerRepository;
     @Inject private TransactionRepository transactionRepository;
     @Inject private StationRepository stationRepository;
+    @Inject private BookingRepository bookingRepository;
+    @Autowired private ConsumptionPushService consumptionPushService;
 
     private static final Integer HEARTBEAT_INTERVAL_IN_SECONDS = 60;
 
@@ -58,6 +65,10 @@ public class PedelecStationService {
     }
 
     public void handleStopTransaction(StopTransactionDTO stopTransactionDTO) throws DatabaseException {
-        transactionRepository.stop(stopTransactionDTO);
+        Transaction t = transactionRepository.stop(stopTransactionDTO);
+        Booking booking = bookingRepository.findByTransaction(t);
+        if (booking != null) {
+            consumptionPushService.report(booking);
+        }
     }
 }

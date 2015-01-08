@@ -29,6 +29,11 @@ public class PlaceAvailabilityPushService {
     @Autowired private QueryIXSIRepository queryIXSIRepository;
 
     public void reportChange(String placeID) {
+        Set<String> systemIdSet = placeAvailabilityStore.getSubscribedSystems(placeID);
+        if (systemIdSet.isEmpty()) {
+            log.debug("Will not push. There is no subscribed system for placeID '{}'", placeID);
+            return;
+        }
 
         Integer freeSlots = queryIXSIRepository.placeAvailability(Arrays.asList(placeID))
                                                .get(0)
@@ -51,7 +56,6 @@ public class PlaceAvailabilityPushService {
         IxsiMessageType ixsi = new IxsiMessageType();
         ixsi.setSubscriptionMessage(sub);
 
-        Set<String> systemIdSet = placeAvailabilityStore.getSubscribedSystems(placeID);
         producer.send(ixsi, systemIdSet);
     }
 
