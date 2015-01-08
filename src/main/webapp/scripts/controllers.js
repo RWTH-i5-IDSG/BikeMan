@@ -29,6 +29,9 @@ bikeManApp.controller('MainController', ['$scope', '$timeout',
             $scope.errorAlerts[0] = args;
         });
 
+        $scope.closeSuccess = function(index) {
+            $scope.successAlerts.splice(index, 1);
+        };
 
         $scope.closeAlert = function(index) {
             $scope.errorAlerts.splice(index, 1);

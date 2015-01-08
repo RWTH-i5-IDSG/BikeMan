@@ -30,7 +30,7 @@
     your browser</a> to improve your experience.</p>
 <![endif]-->
 
-<alert data-ng-animate="'fade'" class="alert-top-right" ng-repeat="successAlert in successAlerts" type="success" ng-cloak>{{successAlert.msg}}</alert>
+<alert data-ng-animate="'fade'" class="alert-top-right" ng-repeat="successAlert in successAlerts" type="success" close="closeSuccess($index)" ng-cloak>{{successAlert.msg}}</alert>
 
 <div class="development"></div>
 <div id="wrapper">
@@ -283,7 +283,6 @@
 
     <div id="page-wrapper">
         <!-- show global error messages here -->
-        <!--<div class="row messagesList" app-messages></div>-->
         <div class="row">
             <alert class="voffset3" ng-repeat="errorAlert in errorAlerts" type="danger" close="closeAlert($index)" ng-cloak>
                 <h4>{{errorAlert.msg}}</h4>
