@@ -8,7 +8,6 @@ import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,16 +22,12 @@ public class ConsumptionSubscriptionRequestProcessor implements
 
     @Override
     public ConsumptionSubscriptionResponseType process(ConsumptionSubscriptionRequestType request, String systemId) {
-
-        List<String> itemIds = new ArrayList<>();
-        for (String id : request.getBookingID()) {
-            itemIds.add(id);
-        }
+        List<String> bookingIds = request.getBookingID();
 
         if (request.isSetUnsubscription() && request.isUnsubscription()) {
-            consumptionStore.unsubscribe(systemId, itemIds);
+            consumptionStore.unsubscribe(systemId, bookingIds);
         } else {
-            consumptionStore.subscribe(systemId, itemIds);
+            consumptionStore.subscribe(systemId, bookingIds);
         }
 
         return new ConsumptionSubscriptionResponseType();
