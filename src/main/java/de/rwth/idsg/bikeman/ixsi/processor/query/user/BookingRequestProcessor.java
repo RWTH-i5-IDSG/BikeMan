@@ -2,6 +2,7 @@ package de.rwth.idsg.bikeman.ixsi.processor.query.user;
 
 import com.google.common.base.Optional;
 import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
+import de.rwth.idsg.bikeman.ixsi.IxsiProcessingException;
 import de.rwth.idsg.bikeman.ixsi.processor.TokenValidator;
 import de.rwth.idsg.bikeman.ixsi.processor.api.UserRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.schema.BookingRequestType;
@@ -16,7 +17,6 @@ import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.xml.datatype.Duration;
 import java.util.List;
 
 /**
@@ -27,7 +27,6 @@ import java.util.List;
 public class BookingRequestProcessor implements
         UserRequestProcessor<BookingRequestType, BookingResponseType> {
 
-    @Autowired BookingRepository bookingRepository;
     @Autowired BookingService bookingService;
     @Autowired TokenValidator tokenValidator;
 
@@ -62,18 +61,21 @@ public class BookingRequestProcessor implements
         if (!request.isSetBookingTargetID() || !request.isSetTimePeriodProposal()) {
             return buildError(ErrorFactory.invalidRequest("Invalid Parameters", "Invalid Parameters"));
         }
-        // TODO
-        Duration reservationDuration = request.getTimePeriodProposal().getMaxWait();
 
-        // perform reservation and return id
-        BookingType booking = new BookingType();
         try {
-            long bookingId = bookingService.createBookingForUser(request.getBookingTargetID().getBookeeID(), user.getUserID(), reservationDuration);
+            long bookingId = bookingService.createBookingForUser(request.getBookingTargetID().getBookeeID(),
+                                                                 user.getUserID(),
+                                                                 request.getTimePeriodProposal());
+            BookingType booking = new BookingType();
             booking.setID(String.valueOf(bookingId));
             bookingResponse.setBooking(booking);
             return bookingResponse;
+
         } catch (DatabaseException e) {
-            return buildError(ErrorFactory.backendFailed("Booking not possible", "Booking not possible"));
+            return buildError(ErrorFactory.backendFailed(e.getMessage(), "Booking not possible due to backend error"));
+
+        } catch (IxsiProcessingException e) {
+            return buildError(ErrorFactory.bookingTargetNotAvail(e.getMessage(), e.getMessage()));
         }
     }
 

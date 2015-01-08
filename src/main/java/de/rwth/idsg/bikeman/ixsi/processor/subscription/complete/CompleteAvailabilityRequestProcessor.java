@@ -38,7 +38,7 @@ public class CompleteAvailabilityRequestProcessor implements
         List<BookingTargetAvailabilityType> availabilities = availabilityRequestProcessor.getBookingTargetAvailabilities(responseDTOs);
 
         CompleteAvailabilityResponseType response = new CompleteAvailabilityResponseType();
-        // for now, assume that our system is always able to process the full message
+        // for now, assume that client system is always able to process the full message
         // therefore do not split messages!
         response.setLast(true);
         response.setMessageBlockID(String.valueOf(request.hashCode()));

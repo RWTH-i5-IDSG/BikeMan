@@ -34,6 +34,8 @@ public class CompletePlaceAvailabilityRequestProcessor implements
         List<PlaceAvailabilityType> availabilities = placeAvailabilityRequestProcessor.getPlaceAvailabilities(dtos);
 
         CompletePlaceAvailabilityResponseType response = new CompletePlaceAvailabilityResponseType();
+        // for now, assume that client system is always able to process the full message
+        // therefore do not split messages!
         response.setLast(true);
         response.setMessageBlockID(String.valueOf(request.hashCode()));
         response.getPlaceAvailability().addAll(availabilities);

@@ -1756,7 +1756,7 @@
                                                         <xs:documentation>If set, this message is the last one in the corresponding block. Otherwise more messages of the same block will follow</xs:documentation>
                                                 </xs:annotation>
                                         </xs:element>
-                                        <xs:element name="BookingChange" type="BookingChangeType" minOccurs="0" maxOccurs="unbounded"/>
+                                        <xs:element name="Consumption" type="ConsumptionType" minOccurs="0" maxOccurs="unbounded"/>
                                 </xs:sequence>
                         </xs:extension>
                 </xs:complexContent>
@@ -1766,7 +1766,7 @@
                         <xs:documentation>Push message containing alerts for subscribed bookings.</xs:documentation>
                 </xs:annotation>
                 <xs:sequence>
-                        <xs:element name="Conumption" type="ConsumptionType" maxOccurs="unbounded"/>
+                        <xs:element name="Consumption" type="ConsumptionType" maxOccurs="unbounded"/>
                 </xs:sequence>
         </xs:complexType>
         <xs:annotation>

@@ -1,6 +1,6 @@
 package de.rwth.idsg.bikeman.psinterface.service;
 
-import de.rwth.idsg.bikeman.domain.Booking;
+import com.google.common.base.Optional;
 import de.rwth.idsg.bikeman.domain.CardAccount;
 import de.rwth.idsg.bikeman.domain.OperationState;
 import de.rwth.idsg.bikeman.domain.Transaction;
@@ -34,7 +34,7 @@ public class PedelecStationService {
     @Inject private CustomerRepository customerRepository;
     @Inject private TransactionRepository transactionRepository;
     @Inject private StationRepository stationRepository;
-    @Inject private BookingRepository bookingRepository;
+    @Autowired private BookingRepository bookingRepository;
     @Autowired private ConsumptionPushService consumptionPushService;
 
     private static final Integer HEARTBEAT_INTERVAL_IN_SECONDS = 60;
@@ -66,9 +66,10 @@ public class PedelecStationService {
 
     public void handleStopTransaction(StopTransactionDTO stopTransactionDTO) throws DatabaseException {
         Transaction t = transactionRepository.stop(stopTransactionDTO);
-        Booking booking = bookingRepository.findByTransaction(t);
-        if (booking != null) {
-            consumptionPushService.report(booking);
+
+        Optional<Long> optionalId = bookingRepository.findIdByTransaction(t);
+        if (optionalId.isPresent()) {
+            consumptionPushService.report(optionalId.get(), t);
         }
     }
 }

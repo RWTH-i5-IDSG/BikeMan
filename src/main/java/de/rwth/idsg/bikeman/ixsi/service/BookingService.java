@@ -5,6 +5,8 @@ import de.rwth.idsg.bikeman.domain.CardAccount;
 import de.rwth.idsg.bikeman.domain.OperationState;
 import de.rwth.idsg.bikeman.domain.Pedelec;
 import de.rwth.idsg.bikeman.domain.Reservation;
+import de.rwth.idsg.bikeman.ixsi.IxsiProcessingException;
+import de.rwth.idsg.bikeman.ixsi.schema.TimePeriodProposalType;
 import de.rwth.idsg.bikeman.repository.BookingRepository;
 import de.rwth.idsg.bikeman.repository.CardAccountRepository;
 import de.rwth.idsg.bikeman.repository.PedelecRepository;
@@ -16,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.xml.datatype.Duration;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -26,38 +27,39 @@ import java.util.List;
 @Slf4j
 public class BookingService {
 
-    @Autowired BookingRepository bookingRepository;
-    @Autowired ReservationRepository reservationRepository;
-    @Autowired CardAccountRepository cardAccountRepository;
-    @Autowired PedelecRepository pedelecRepository;
+    @Autowired private BookingRepository bookingRepository;
+    @Autowired private ReservationRepository reservationRepository;
+    @Autowired private CardAccountRepository cardAccountRepository;
+    @Autowired private PedelecRepository pedelecRepository;
 
-    public long createBookingForUser(String bookeeId, String cardId, Duration reservationDuration) throws DatabaseException {
-        // TODO time period??
+    public long createBookingForUser(String bookeeId, String cardId, TimePeriodProposalType timePeriodProposal)
+            throws DatabaseException {
 
-        // get pedelecId
         Pedelec pedelec = pedelecRepository.findByManufacturerId(bookeeId);
-
-        if (!checkPedelecAvailability(pedelec)) {
-            return 0;
+        if (!isAvailable(pedelec)) {
+            throw new IxsiProcessingException("The booking target is not available.");
         }
 
         CardAccount cardAccount = cardAccountRepository.findByCardId(cardId);
 
-        LocalDateTime start = LocalDateTime.now();
-        // check if millis is small enough
-        // TODO how to handle wrong durations?
-        Integer delta = safeLongToInt(reservationDuration.getTimeInMillis(new Date()));
-        LocalDateTime end = start.plusMillis(delta);
+        LocalDateTime begin = timePeriodProposal.getBegin().toLocalDateTime();
+        LocalDateTime end = timePeriodProposal.getEnd().toLocalDateTime();
+
+        if (timePeriodProposal.isSetMaxWait()) {
+            // TODO Incorporate maxWait into processing.
+            // Not sure about the approach: range search between begin and begin + maxWait for existing reservations?
+            Duration maxWait = timePeriodProposal.getMaxWait();
+        }
 
         // check for existing reservation in time frame
-        List<Reservation> existingReservations = reservationRepository.findByTimeFrameForPedelec(pedelec.getPedelecId(), start, end);
+        List<Reservation> existingReservations = reservationRepository.findByTimeFrameForPedelec(pedelec.getPedelecId(), begin, end);
         if (existingReservations != null && !existingReservations.isEmpty()) {
-            return 0;
+            throw new IxsiProcessingException("There is an overlapping booking for the target in this time period");
         }
 
         Reservation reservation = Reservation.builder()
                 .cardAccount(cardAccount)
-                .startDateTime(start)
+                .startDateTime(begin)
                 .endDateTime(end)
                 .pedelec(pedelec)
                 .build();
@@ -66,32 +68,22 @@ public class BookingService {
 
         Booking booking = new Booking();
         booking.setReservation(savedReservation);
-
         try {
-            Booking savedBooking = bookingRepository.save(booking);
-            return savedBooking.getBookingId();
+            return bookingRepository.saveAndGetId(booking);
         } catch (Throwable e) {
-            // TODO
-            e.printStackTrace();
-            return 0;
+            throw new DatabaseException("Failed during database operation.", e);
         }
     }
 
-    private int safeLongToInt(long l) {
-        if (l < Integer.MIN_VALUE || l > Integer.MAX_VALUE) {
-            throw new IllegalArgumentException
-                    (l + " cannot be cast to int without changing its value.");
-        }
-        return (int) l;
-    }
+    /**
+     * TODO: What is a reasonable value for lowerLimit?
+     */
+    private boolean isAvailable(Pedelec pedelec) {
+        final float lowerLimit = 0.0f;
 
-    private boolean checkPedelecAvailability(Pedelec pedelec) {
-        if (pedelec.getState() != OperationState.OPERATIVE)
-            return false;
-
-        // TODO further checks?
-
-        return true;
+        return OperationState.OPERATIVE.equals(pedelec.getState())
+                || !pedelec.getInTransaction()
+                || pedelec.getStateOfCharge() > lowerLimit;
     }
 
 }

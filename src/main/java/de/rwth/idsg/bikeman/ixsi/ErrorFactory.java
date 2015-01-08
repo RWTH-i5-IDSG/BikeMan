@@ -24,47 +24,35 @@ public final class ErrorFactory {
     }
 
     public static ErrorType notImplemented(String systemMsg, String userMsg) {
-        ErrorType e = new ErrorType();
-        e.setCode(ErrorCodeType.SYS_NOT_IMPLEMENTED);
-        e.setNonFatal(true);
-        if (systemMsg != null) e.setSystemMessage(systemMsg);
-        if (userMsg != null) e.setUserMessage(userMsg);
-        return e;
+        return setFields(ErrorCodeType.SYS_NOT_IMPLEMENTED, systemMsg, userMsg);
     }
 
     public static ErrorType invalidRequest(String systemMsg, String userMsg) {
-        ErrorType e = new ErrorType();
-        e.setCode(ErrorCodeType.SYS_REQUEST_NOT_PLAUSIBLE);
-        e.setNonFatal(true);
-        if (systemMsg != null) e.setSystemMessage(systemMsg);
-        if (userMsg != null) e.setUserMessage(userMsg);
-        return e;
+        return setFields(ErrorCodeType.SYS_REQUEST_NOT_PLAUSIBLE, systemMsg, userMsg);
     }
 
     public static ErrorType invalidUserToken(String systemMsg, String userMsg) {
-        ErrorType e = new ErrorType();
-        e.setCode(ErrorCodeType.AUTH_INVALID_TOKEN);
-        e.setNonFatal(true);
-        if (systemMsg != null) e.setSystemMessage(systemMsg);
-        if (userMsg != null) e.setUserMessage(userMsg);
-        return e;
+        return setFields(ErrorCodeType.AUTH_INVALID_TOKEN, systemMsg, userMsg);
     }
 
     public static ErrorType invalidProvider(String systemMsg, String userMsg) {
-        ErrorType e = new ErrorType();
-        e.setCode(ErrorCodeType.AUTH_PROVIDER_UNKNOWN);
-        e.setNonFatal(true);
-        if (systemMsg != null) e.setSystemMessage(systemMsg);
-        if (userMsg != null) e.setUserMessage(userMsg);
-        return e;
+        return setFields(ErrorCodeType.AUTH_PROVIDER_UNKNOWN, systemMsg, userMsg);
     }
 
     public static ErrorType backendFailed(String systemMsg, String userMsg) {
+        return setFields(ErrorCodeType.SYS_BACKEND_FAILED, systemMsg, userMsg);
+    }
+
+    public static ErrorType bookingTargetNotAvail(String systemMsg, String userMsg) {
+        return setFields(ErrorCodeType.BOOKING_TARGET_NOT_AVAILABLE, systemMsg, userMsg);
+    }
+
+    private static ErrorType setFields(ErrorCodeType c, String systemMsg, String userMsg) {
         ErrorType e = new ErrorType();
-        e.setCode(ErrorCodeType.SYS_BACKEND_FAILED);
+        e.setCode(c);
         e.setNonFatal(true);
-        if (systemMsg != null) e.setSystemMessage(systemMsg);
-        if (userMsg != null) e.setUserMessage(userMsg);
+        e.setSystemMessage(systemMsg);
+        e.setUserMessage(userMsg);
         return e;
     }
 }

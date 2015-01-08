@@ -1,6 +1,5 @@
 package de.rwth.idsg.bikeman.ixsi.service;
 
-import de.rwth.idsg.bikeman.domain.Booking;
 import de.rwth.idsg.bikeman.domain.Transaction;
 import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
 import de.rwth.idsg.bikeman.ixsi.api.Producer;
@@ -31,28 +30,18 @@ public class ConsumptionPushService {
     private static final String unit = "seconds";
     private static final String description = "Name field contains the booking id";
 
-    public void report(Booking booking) {
-        String bookingId = String.valueOf(booking.getBookingId());
-        Set<String> systemIdSet = consumptionStore.getSubscribedSystems(bookingId);
+    public void report(Long bookingId, Transaction transaction) {
+        String bookingIdSTR = String.valueOf(bookingId);
+        Set<String> systemIdSet = consumptionStore.getSubscribedSystems(bookingIdSTR);
         if (systemIdSet.isEmpty()) {
             log.debug("Will not push. There is no subscribed system for bookingId '{}'", bookingId);
             return;
         }
 
-        Transaction t = booking.getTransaction();
-        LocalDateTime start = t.getStartDateTime();
-        LocalDateTime end = t.getEndDateTime();
-        int seconds = Seconds.secondsBetween(start, end).getSeconds();
-
-        ConsumptionType consumption = new ConsumptionType();
-        consumption.setType(IXSIConstants.consumptionClass);
-        consumption.setUnit(unit);
-        consumption.setDescription(description);
-        consumption.setName(bookingId);
-        consumption.setValue(String.valueOf(seconds));
+        ConsumptionType consumption = createConsumption(bookingIdSTR, transaction);
 
         ConsumptionPushMessageType c = new ConsumptionPushMessageType();
-        c.getConumption().add(consumption);
+        c.getConsumption().add(consumption);
 
         SubscriptionMessageType sub = new SubscriptionMessageType();
         sub.setPushMessageGroup(c);
@@ -61,5 +50,19 @@ public class ConsumptionPushService {
         ixsi.setSubscriptionMessage(sub);
 
         producer.send(ixsi, systemIdSet);
+    }
+
+    public ConsumptionType createConsumption(String bookingId, Transaction t) {
+        LocalDateTime start = t.getStartDateTime();
+        LocalDateTime end = t.getEndDateTime();
+        int rentalPeriodInSeconds = Seconds.secondsBetween(start, end).getSeconds();
+
+        ConsumptionType consumption = new ConsumptionType();
+        consumption.setType(IXSIConstants.consumptionClass);
+        consumption.setUnit(unit);
+        consumption.setDescription(description);
+        consumption.setName(bookingId);
+        consumption.setValue(String.valueOf(rentalPeriodInSeconds));
+        return consumption;
     }
 }
