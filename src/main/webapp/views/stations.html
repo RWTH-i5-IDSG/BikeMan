@@ -50,7 +50,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr ng-repeat="slot in station.slots">
+                                    <tr ng-repeat="slot in station.slots | orderBy : 'slotPosition'">
                                         <td>{{slot.slotPosition}}</td>
                                         <td>{{slot.manufacturerId}}</td>
                                         <td>{{slot.state}}</td>
