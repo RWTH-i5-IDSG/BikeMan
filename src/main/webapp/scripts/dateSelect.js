@@ -36,14 +36,6 @@ angular.module('bikeManApp')
                 now = parseInt(new Date().getFullYear());
                 then = now - amountOfYears;
                 return range(then,now);
-            },
-            validate: function (date) {
-                if (date.day && date.month && date.month) {
-                    var d = new Date(Date.UTC(date.year, date.month, date.day));
-                    if (d && (d.getMonth() === date.month && d.getDate() === Number(date.day))) {
-                        return !!date;
-                    }
-                }
             }
         }
 
@@ -78,9 +70,7 @@ angular.module('bikeManApp')
                 }
 
                 $scope.upDate = function () {
-                    if (dateSelectUtils.validate($scope.dateFields)) {
-                        $scope.model = $scope.formatDate($scope.dateFields);
-                    }
+                    $scope.model = $scope.formatDate($scope.dateFields);
                 }
 
                 $scope.reset = function () {

@@ -118,7 +118,7 @@ bikeManApp.controller('CustomerDetailController', ['$scope', 'resolvedCustomer',
                 "birthday": $scope.customer.birthday,
                 "cardId": $scope.customer.cardId,
                 "cardPin": $scope.customer.cardPin,
-                "isActivated": true
+                "isActivated": $scope.customer.isActivated
             }
 
             Customer.update($scope.saveCustomerDTO, function() {
