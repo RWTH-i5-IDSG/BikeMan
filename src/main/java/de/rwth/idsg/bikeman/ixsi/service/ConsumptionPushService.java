@@ -8,9 +8,9 @@ import de.rwth.idsg.bikeman.ixsi.schema.ConsumptionPushMessageType;
 import de.rwth.idsg.bikeman.ixsi.schema.ConsumptionType;
 import de.rwth.idsg.bikeman.ixsi.schema.IxsiMessageType;
 import de.rwth.idsg.bikeman.ixsi.schema.SubscriptionMessageType;
+import de.rwth.idsg.bikeman.ixsi.schema.TimePeriodType;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.LocalDateTime;
-import org.joda.time.Seconds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,8 +27,7 @@ public class ConsumptionPushService {
     @Autowired private Producer producer;
     @Autowired private ConsumptionStore consumptionStore;
 
-    private static final String unit = "seconds";
-    private static final String description = "Name field contains the booking id";
+    public static final String NAME_FORMAT = "The booking with id %s rented a bike from %s to %s.";
 
     public void report(Long bookingId, Transaction transaction) {
         String bookingIdSTR = String.valueOf(bookingId);
@@ -55,14 +54,16 @@ public class ConsumptionPushService {
     public ConsumptionType createConsumption(String bookingId, Transaction t) {
         LocalDateTime start = t.getStartDateTime();
         LocalDateTime end = t.getEndDateTime();
-        int rentalPeriodInSeconds = Seconds.secondsBetween(start, end).getSeconds();
+
+        TimePeriodType timePeriod = new TimePeriodType();
+        timePeriod.setBegin(start.toDateTime());
+        timePeriod.setEnd(end.toDateTime());
 
         ConsumptionType consumption = new ConsumptionType();
+        consumption.setBookingID(bookingId);
         consumption.setType(IXSIConstants.consumptionClass);
-        consumption.setUnit(unit);
-        consumption.setDescription(description);
-        consumption.setName(bookingId);
-        consumption.setValue(String.valueOf(rentalPeriodInSeconds));
+        consumption.setName(String.format(NAME_FORMAT, bookingId, start, end));
+        consumption.setTimePeriod(timePeriod);
         return consumption;
     }
 }
