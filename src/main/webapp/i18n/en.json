@@ -261,6 +261,7 @@
                 "address": "Address",
                 "customerId": "Customer ID",
                 "cardId": "Card ID",
+                "tariff": "Tariff",
                 "cardPin": "Card PIN",
                 "birthday": "Birthday",
                 "isActivated": "Activated"
@@ -297,6 +298,7 @@
                 "password": "Password",
                 "cardId": "Card ID",
                 "cardPin": "Card PIN",
+                "tariff": "Tarif",
                 "name": "Name",
                 "address": {
                     "title": "Address",

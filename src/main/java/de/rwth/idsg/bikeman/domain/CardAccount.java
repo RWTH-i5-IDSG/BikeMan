@@ -63,6 +63,15 @@ public class CardAccount extends AbstractTimestampClass implements Serializable 
     @Enumerated(EnumType.STRING)
     private OperationState operationState;
 
+    @Column(name = "authentication_trial_count")
+    private Integer authenticationTrialCount;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "cardAccount", orphanRemoval = true)
+    private Set<BookedTariff> bookedTariffs;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "usedCardAccount")
+    private BookedTariff currentTariff;
+
     @PrePersist
     public void prePersist() {
         super.prePersist();
@@ -70,5 +79,16 @@ public class CardAccount extends AbstractTimestampClass implements Serializable 
         if (inTransaction == null) {
             inTransaction = false;
         }
+    }
+    
+    public void setCurrentTariff(BookedTariff bookedTariff) {
+        if (this.currentTariff != null) {
+            this.bookedTariffs.add(this.currentTariff);
+            this.currentTariff.setCardAccount(this);
+            this.currentTariff.setUsedCardAccount(null);
+        }
+        
+        this.currentTariff = bookedTariff;
+        bookedTariff.setUsedCardAccount(this);
     }
 }

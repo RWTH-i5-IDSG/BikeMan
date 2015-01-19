@@ -51,6 +51,17 @@
                            ng-model="customer.cardPin" ng-minlength=1 ng-maxlength=8 required>
                 </div>
             </div>
+
+            <div class="form-group" show-errors>
+                <label class="control-label col-md-2" translate="customerCreate.table.header.tariff">Tariff</label>
+                <div class="col-md-10">
+                    <select class="form-control" ng-model="customer.tariff"
+                            ng-options="tariff as tariff for tariff in tariffs" required>
+                        <option value=''>- Please Choose -</option>
+                    </select>
+                </div>
+            </div>
+            
             <div class="form-group" show-errors>
                 <label class="control-label col-md-2" translate="customerCreate.table.header.name">Name</label>
                 <div class="col-md-10">

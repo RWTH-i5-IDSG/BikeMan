@@ -64,10 +64,14 @@ bikeManApp.controller('CustomerController', ['$scope', 'resolvedCustomer', 'Cust
         };
     }]);
 
-bikeManApp.controller('CustomerDetailController', ['$scope', 'resolvedCustomer', 'Customer', 'Transaction', '$stateParams',
-    function($scope, resolvedCustomer, Customer, Transaction, $stateParams) {
+bikeManApp.controller('CustomerDetailController', ['$scope', 'resolvedCustomer', 'Customer', 'Transaction', '$stateParams', '$http',
+    function($scope, resolvedCustomer, Customer, Transaction, $stateParams, $http) {
 
         $scope.customer = resolvedCustomer;
+
+        $http.get('app/rest/tariffs').success(function(data) {
+            $scope.tariffs = data;
+        });
 
         $scope.resultSizeValues = [10, 20, 50, 100, "all"];
 
@@ -118,6 +122,7 @@ bikeManApp.controller('CustomerDetailController', ['$scope', 'resolvedCustomer',
                 "birthday": $scope.customer.birthday,
                 "cardId": $scope.customer.cardId,
                 "cardPin": $scope.customer.cardPin,
+                "tariff": $scope.customer.tariff,
                 "isActivated": $scope.customer.isActivated
             }
 
@@ -128,11 +133,15 @@ bikeManApp.controller('CustomerDetailController', ['$scope', 'resolvedCustomer',
 
     }]);
 
-bikeManApp.controller('CustomerCreateController', ['$scope', 'Customer', '$timeout', '$filter',
-    function($scope, Customer, $timeout, $filter) {
+bikeManApp.controller('CustomerCreateController', ['$scope', 'Customer', '$timeout', '$filter', '$http',
+    function($scope, Customer, $timeout, $filter, $http) {
 
         $scope.maxDate = new Date();
 
+        $http.get('app/rest/tariffs').success(function(data) {
+            $scope.tariffs = data;
+        });
+        
         $scope.create = function () {
             $scope.$broadcast('show-errors-check-validity');
 
@@ -155,6 +164,7 @@ bikeManApp.controller('CustomerCreateController', ['$scope', 'Customer', '$timeo
                 customerId: null,
                 cardId: null,
                 cardPin: null,
+                tariff: null,
                 firstname: null,
                 lastname: null,
                 address: null,

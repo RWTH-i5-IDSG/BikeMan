@@ -29,4 +29,15 @@ public interface CardAccountRepository extends JpaRepository<CardAccount, Long> 
     @Modifying(clearAutomatically = true)
     @Query("update CardAccount c set c.operationState = ?1 where c.cardId = ?2")
     int setOperationStateForCardId(OperationState operationState, String cardId);
+
+    @Transactional
+    @Modifying(clearAutomatically = true)
+    @Query("update CardAccount c set c.authenticationTrialCount = 0 where c.cardId = ?1")
+    int resetAuthenticationTrialCount(String cardId);
+
+    @Transactional
+    @Modifying(clearAutomatically = true)
+    @Query("update CardAccount c set c.authenticationTrialCount = c.authenticationTrialCount + 1 where c.cardId = ?1")
+    int incrementAuthenticationTrialCount(String cardId);
+
 }

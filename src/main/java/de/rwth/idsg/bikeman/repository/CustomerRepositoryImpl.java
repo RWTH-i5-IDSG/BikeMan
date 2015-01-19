@@ -1,13 +1,11 @@
 package de.rwth.idsg.bikeman.repository;
 
-import de.rwth.idsg.bikeman.domain.Address;
+import de.rwth.idsg.bikeman.domain.*;
 import de.rwth.idsg.bikeman.domain.Address_;
-import de.rwth.idsg.bikeman.domain.CardAccount;
+import de.rwth.idsg.bikeman.domain.BookedTariff_;
 import de.rwth.idsg.bikeman.domain.CardAccount_;
-import de.rwth.idsg.bikeman.domain.Customer;
-import de.rwth.idsg.bikeman.domain.CustomerType;
 import de.rwth.idsg.bikeman.domain.Customer_;
-import de.rwth.idsg.bikeman.domain.OperationState;
+import de.rwth.idsg.bikeman.domain.Tariff_;
 import de.rwth.idsg.bikeman.domain.login.Authority;
 import de.rwth.idsg.bikeman.security.AuthoritiesConstants;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditAddressDTO;
@@ -15,6 +13,7 @@ import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditCustomerDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.view.ViewCustomerDTO;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
+import org.joda.time.LocalDateTime;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,10 +43,19 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     @Inject
     private PasswordEncoder passwordEncoder;
 
-    private enum Operation { CREATE, UPDATE };
-    private enum FindType { ALL, BY_NAME, BY_LOGIN };
+    @Inject
+    private TariffRepository tariffRepository;
 
-    @PersistenceContext private EntityManager em;
+    private enum Operation {CREATE, UPDATE}
+
+    ;
+
+    private enum FindType {ALL, BY_NAME, BY_LOGIN}
+
+    ;
+
+    @PersistenceContext
+    private EntityManager em;
 
     @Override
     @Transactional(readOnly = true)
@@ -109,9 +117,9 @@ public class CustomerRepositoryImpl implements CustomerRepository {
 
         try {
             return (CardAccount) em.createQuery(query)
-                              .setParameter("cardId", cardId)
-                              .setParameter("cardPin", cardPin)
-                              .getSingleResult();
+                    .setParameter("cardId", cardId)
+                    .setParameter("cardPin", cardPin)
+                    .getSingleResult();
         } catch (NoResultException e) {
             throw new DatabaseException("No customer found with cardId " + cardId + " and cardPin " + cardPin, e);
 
@@ -200,7 +208,6 @@ public class CustomerRepositoryImpl implements CustomerRepository {
 
     /**
      * Returns a customer, or throws exception when no customer exists.
-     *
      */
     @Transactional(readOnly = true)
     private Customer getCustomerEntity(long userId) throws DatabaseException {
@@ -214,7 +221,6 @@ public class CustomerRepositoryImpl implements CustomerRepository {
 
     /**
      * This method sets the fields of the customer to the values in DTO.
-     *
      */
     private void setFields(Customer customer, CreateEditCustomerDTO dto, Operation operation) {
 
@@ -250,6 +256,13 @@ public class CustomerRepositoryImpl implements CustomerRepository {
                 newCardAccount.setOperationState(OperationState.OPERATIVE);
                 customer.setCardAccount(newCardAccount);
 
+                BookedTariff newBookedTariff = new BookedTariff();
+                newBookedTariff.setBookedFrom(new LocalDateTime());
+                newBookedTariff.setBookedUntil(new LocalDateTime().plusYears(1));
+                newBookedTariff.setTariff(tariffRepository.findByName(dto.getTariff()));
+                newBookedTariff.setUsedCardAccount(newCardAccount);
+                newCardAccount.setCurrentTariff(newBookedTariff);
+
                 HashSet<Authority> authorities = new HashSet<>();
                 authorities.add(new Authority(AuthoritiesConstants.CUSTOMER));
                 customer.setAuthorities(authorities);
@@ -268,13 +281,20 @@ public class CustomerRepositoryImpl implements CustomerRepository {
                 cardAccount.setOwnerType(CustomerType.CUSTOMER);
                 cardAccount.setCardId(dto.getCardId());
                 cardAccount.setCardPin(dto.getCardPin());
+
+                BookedTariff updateBookedTariff = new BookedTariff();
+                updateBookedTariff.setBookedFrom(new LocalDateTime());
+                updateBookedTariff.setBookedUntil(new LocalDateTime().plusYears(1));
+                updateBookedTariff.setTariff(tariffRepository.findByName(dto.getTariff()));
+                cardAccount.setCurrentTariff(updateBookedTariff);
+
+
                 break;
         }
     }
 
     /**
      * This method returns the query to get information of customers for various lookup cases
-     *
      */
     private CriteriaQuery<ViewCustomerDTO> getQuery(CriteriaBuilder builder, FindType findType,
                                                     String name,
@@ -283,6 +303,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
         Root<Customer> customer = criteria.from(Customer.class);
         Join<Customer, Address> address = customer.join(Customer_.address, JoinType.LEFT);
         Join<Customer, CardAccount> cardAccount = customer.join(Customer_.cardAccount, JoinType.LEFT);
+        Join<CardAccount, BookedTariff> bookedTariff = cardAccount.join(CardAccount_.currentTariff, JoinType.LEFT);
 
         criteria.select(
                 builder.construct(
@@ -296,6 +317,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
                         customer.get(Customer_.birthday),
                         cardAccount.get(CardAccount_.cardId),
                         cardAccount.get(CardAccount_.cardPin),
+                        bookedTariff.get(BookedTariff_.tariff).get(Tariff_.name),
                         address.get(Address_.streetAndHousenumber),
                         address.get(Address_.zip),
                         address.get(Address_.city),

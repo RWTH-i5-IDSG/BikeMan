@@ -1,6 +1,7 @@
 package de.rwth.idsg.bikeman.web.rest.dto.view;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import de.rwth.idsg.bikeman.domain.TariffType;
 import de.rwth.idsg.bikeman.web.rest.dto.util.CustomLocalDateSerializer;
 import lombok.Getter;
 import lombok.ToString;
@@ -21,13 +22,14 @@ public class ViewCustomerDTO {
     private Boolean isActivated;
     private String cardId;
     private String cardPin;
+    private TariffType tariff;
     private ViewAddressDTO address;
 
     @JsonSerialize(using = CustomLocalDateSerializer.class)
     private LocalDate birthday;
 
     public ViewCustomerDTO(Long userId, String login, String customerId, String firstname, String lastname,
-                           Boolean isActivated, LocalDate birthday, String cardId, String cardPin,
+                           Boolean isActivated, LocalDate birthday, String cardId, String cardPin, TariffType tariff,
                            String streetAndHousenumber, String zip, String city, String country) {
         this.userId = userId;
         this.login = login;
@@ -38,6 +40,7 @@ public class ViewCustomerDTO {
         this.birthday = birthday;
         this.cardId = cardId;
         this.cardPin = cardPin;
+        this.tariff = tariff;
 
         if (streetAndHousenumber != null) {
             this.address = new ViewAddressDTO(streetAndHousenumber, zip, city, country);

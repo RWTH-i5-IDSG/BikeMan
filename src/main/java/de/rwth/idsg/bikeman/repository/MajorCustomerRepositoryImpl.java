@@ -1,15 +1,14 @@
 package de.rwth.idsg.bikeman.repository;
 
-import de.rwth.idsg.bikeman.domain.*;
+import de.rwth.idsg.bikeman.domain.CardAccount;
 import de.rwth.idsg.bikeman.domain.CardAccount_;
+import de.rwth.idsg.bikeman.domain.MajorCustomer;
 import de.rwth.idsg.bikeman.domain.MajorCustomer_;
 import de.rwth.idsg.bikeman.domain.login.Authority;
 import de.rwth.idsg.bikeman.domain.login.User_;
 import de.rwth.idsg.bikeman.security.AuthoritiesConstants;
-import de.rwth.idsg.bikeman.security.SecurityUtils;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditMajorCustomerDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.view.ViewCardAccountDTO;
-import de.rwth.idsg.bikeman.web.rest.dto.view.ViewCustomerDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.view.ViewMajorCustomerDTO;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
@@ -20,9 +19,12 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.inject.Inject;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Root;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -38,8 +40,13 @@ public class MajorCustomerRepositoryImpl implements MajorCustomerRepository {
     @Inject
     private PasswordEncoder passwordEncoder;
 
-    private enum Operation { CREATE, UPDATE };
-    private enum FindType { ALL, BY_ID, BY_LOGIN };
+    private enum Operation {CREATE, UPDATE}
+
+    ;
+
+    private enum FindType {ALL, BY_ID, BY_LOGIN}
+
+    ;
 
     @PersistenceContext
     private EntityManager em;
@@ -204,7 +211,6 @@ public class MajorCustomerRepositoryImpl implements MajorCustomerRepository {
 
     /**
      * Returns a customer, or throws exception when no customer exists.
-     *
      */
     @Transactional(readOnly = true)
     private MajorCustomer getMajorCustomerEntity(long userId) throws DatabaseException {
@@ -218,7 +224,6 @@ public class MajorCustomerRepositoryImpl implements MajorCustomerRepository {
 
     /**
      * This method sets the fields of the customer to the values in DTO.
-     *
      */
     private void setFields(MajorCustomer majorCustomer, CreateEditMajorCustomerDTO dto, Operation operation) {
 
@@ -246,7 +251,6 @@ public class MajorCustomerRepositoryImpl implements MajorCustomerRepository {
 
     /**
      * This method returns the query to get information of customers for various lookup cases
-     *
      */
     private CriteriaQuery<ViewMajorCustomerDTO> getMajorCustomerQuery(CriteriaBuilder builder, FindType findType, String login, Long majorCustomerId) {
         CriteriaQuery<ViewMajorCustomerDTO> criteria = builder.createQuery(ViewMajorCustomerDTO.class);

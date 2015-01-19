@@ -44,6 +44,17 @@
                            ng-model="customer.password" ng-minlength=1 ng-maxlength=50 required>
                 </div>
             </div>
+
+            <div class="form-group">
+                <label class="control-label col-md-2" translate="customerCreate.table.header.tariff">Tariff</label>
+                <div class="col-md-10">
+                    <div class="well well-sm remove-margin" ng-switch-when="false" name="tariff">{{customer.tariff}}</div>
+                    <select class="form-control" ng-model="customer.tariff"
+                            ng-options="tariff as tariff for tariff in tariffs" required ng-switch-when="true">
+                    </select>
+                </div>
+            </div>
+
             <div class="form-group" show-errors>
                 <label class="control-label col-md-2" translate="customerCreate.table.header.cardId">Card ID</label>
                 <div class="col-md-10">

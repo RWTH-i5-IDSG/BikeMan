@@ -57,5 +57,8 @@ public class Transaction implements Serializable {
     @JoinColumn(name = "card_account_id")
     private CardAccount cardAccount;
 
+    @ManyToOne
+    @JoinColumn(name = "booked_tariff_id")
+    private BookedTariff bookedTariff;
 
 }

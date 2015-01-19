@@ -1,8 +1,6 @@
 package de.rwth.idsg.bikeman.repository;
 
-import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditCustomerDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditMajorCustomerDTO;
-import de.rwth.idsg.bikeman.web.rest.dto.view.ViewCustomerDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.view.ViewMajorCustomerDTO;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 

@@ -2,6 +2,7 @@ package de.rwth.idsg.bikeman.web.rest.dto.modify;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.datatype.joda.deser.LocalDateDeserializer;
+import de.rwth.idsg.bikeman.domain.TariffType;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -40,6 +41,9 @@ public class CreateEditCustomerDTO {
     @NotNull
     @Pattern(regexp = "^([0-9]{4})$")
     private String cardPin;
+
+    @NotNull
+    private TariffType tariff;
 
     @NotBlank
     private String firstname;
