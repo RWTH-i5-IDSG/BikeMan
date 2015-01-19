@@ -23,6 +23,7 @@
                 <spring.profiles.active>dev</spring.profiles.active>
                 <!-- log configuration -->
                 <logback.loglevel>DEBUG</logback.loglevel>
+                <logback.appender>CONSOLE</logback.appender>
             </properties>
         </profile>
         <profile>
@@ -32,7 +33,7 @@
                 <spring.profiles.active>prod</spring.profiles.active>
                 <!-- log configuration -->
                 <logback.loglevel>INFO</logback.loglevel>
-                <logback.appender>CONSOLE</logback.appender>
+                <logback.appender>FILE</logback.appender>
             </properties>
             <build>
                 <plugins>
