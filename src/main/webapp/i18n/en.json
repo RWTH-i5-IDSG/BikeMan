@@ -298,7 +298,7 @@
                 "password": "Password",
                 "cardId": "Card ID",
                 "cardPin": "Card PIN",
-                "tariff": "Tarif",
+                "tariff": "Tariff",
                 "name": "Name",
                 "address": {
                     "title": "Address",
