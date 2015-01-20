@@ -33,8 +33,8 @@ bikeManApp.controller('MajorcustomerController', ['$scope', 'resolvedMajorcustom
 
     }]);
 
-bikeManApp.controller('MajorcustomerDetailController', ['$scope', 'resolvedMajorcustomer', 'Majorcustomer', '$stateParams', 'CardAccount',
-    function($scope, resolvedMajorcustomer, Majorcustomer, $stateParams, CardAccount) {
+bikeManApp.controller('MajorcustomerDetailController', ['$scope', 'resolvedMajorcustomer', 'Majorcustomer', '$stateParams', 'CardAccount', '$http',
+    function($scope, resolvedMajorcustomer, Majorcustomer, $stateParams, CardAccount, $http) {
 
         $scope.majorcustomer = resolvedMajorcustomer;
 
@@ -42,6 +42,10 @@ bikeManApp.controller('MajorcustomerDetailController', ['$scope', 'resolvedMajor
 
         // set initial resultSize to 10
         $scope.resultSize = 10;
+
+        $http.get('app/rest/tariffs').success(function(data) {
+            $scope.tariffs = data;
+        });
 
         // TODO: card accounts
 //        $scope.transactions = Transaction.queryTransactionsOfMajorcustomerWithSize({login : $stateParams.login, resultSize : $scope.resultSize});

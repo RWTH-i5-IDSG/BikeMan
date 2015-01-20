@@ -51,6 +51,9 @@ public class CardAccount extends AbstractTimestampClass implements Serializable 
     @Column(name = "owner_type")
     @Enumerated(EnumType.STRING)
     private CustomerType ownerType;
+    
+    @Column(name = "activation_key")
+    private String activationKey;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "cardAccount", orphanRemoval = true)
     private Set<Transaction> transactions;

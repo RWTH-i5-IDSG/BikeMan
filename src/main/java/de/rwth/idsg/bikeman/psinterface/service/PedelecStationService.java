@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 
 /**
@@ -39,7 +40,12 @@ public class PedelecStationService {
 
     private static final Integer HEARTBEAT_INTERVAL_IN_SECONDS = 60;
 
-    public BootConfirmationDTO handleBootNotification(BootNotificationDTO bootNotificationDTO) throws DatabaseException {
+    public BootConfirmationDTO handleBootNotification(BootNotificationDTO bootNotificationDTO, HttpServletResponse response) throws DatabaseException {
+        
+        if (stationRepository.findOneByManufacturerId(bootNotificationDTO.getStationManufacturerId()) == null) {
+            response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
+        }
+        
         stationRepository.updateAfterBoot(bootNotificationDTO);
 
         BootConfirmationDTO bootConfirmationDTO = new BootConfirmationDTO();
@@ -55,8 +61,7 @@ public class PedelecStationService {
             throw new DatabaseException("Card is not operational!");
         }
 
-        AuthorizeConfirmationDTO authorizeConfirmationDTO = new AuthorizeConfirmationDTO();
-        authorizeConfirmationDTO.setCardId(cardAccount.getCardId());
+        AuthorizeConfirmationDTO authorizeConfirmationDTO = new AuthorizeConfirmationDTO(cardAccount.getCardId());
         return authorizeConfirmationDTO;
     }
 

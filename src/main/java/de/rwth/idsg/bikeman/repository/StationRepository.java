@@ -1,6 +1,7 @@
 package de.rwth.idsg.bikeman.repository;
 
 import de.rwth.idsg.bikeman.domain.OperationState;
+import de.rwth.idsg.bikeman.domain.Station;
 import de.rwth.idsg.bikeman.psinterface.dto.request.BootNotificationDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditStationDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.view.ViewStationDTO;
@@ -18,6 +19,8 @@ public interface StationRepository {
     List<ViewStationDTO> findByLocation(BigDecimal latitude, BigDecimal longitude) throws DatabaseException;
     ViewStationDTO findOne(long stationId) throws DatabaseException;
 
+    Station findOneByManufacturerId(String manufacturerId) throws DatabaseException;
+    
     String getEndpointAddress(long stationId) throws DatabaseException;
     void updateEndpointAddress(long stationId, String endpointAddress) throws DatabaseException;
 

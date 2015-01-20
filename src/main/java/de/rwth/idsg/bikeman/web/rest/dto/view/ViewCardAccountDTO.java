@@ -1,6 +1,7 @@
 package de.rwth.idsg.bikeman.web.rest.dto.view;
 
 import de.rwth.idsg.bikeman.domain.OperationState;
+import de.rwth.idsg.bikeman.domain.TariffType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.experimental.Builder;
@@ -17,4 +18,5 @@ public class ViewCardAccountDTO {
     private String cardPin;
     private Boolean inTransaction;
     private OperationState operationState;
+    private TariffType tariff;
 }

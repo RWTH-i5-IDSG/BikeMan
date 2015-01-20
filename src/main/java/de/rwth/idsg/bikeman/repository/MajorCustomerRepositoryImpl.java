@@ -1,9 +1,12 @@
 package de.rwth.idsg.bikeman.repository;
 
+import de.rwth.idsg.bikeman.domain.BookedTariff;
+import de.rwth.idsg.bikeman.domain.BookedTariff_;
 import de.rwth.idsg.bikeman.domain.CardAccount;
 import de.rwth.idsg.bikeman.domain.CardAccount_;
 import de.rwth.idsg.bikeman.domain.MajorCustomer;
 import de.rwth.idsg.bikeman.domain.MajorCustomer_;
+import de.rwth.idsg.bikeman.domain.Tariff_;
 import de.rwth.idsg.bikeman.domain.login.Authority;
 import de.rwth.idsg.bikeman.domain.login.User_;
 import de.rwth.idsg.bikeman.security.AuthoritiesConstants;
@@ -23,6 +26,8 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Root;
 import java.util.HashSet;
@@ -82,6 +87,7 @@ public class MajorCustomerRepositoryImpl implements MajorCustomerRepository {
 
         CriteriaQuery<ViewCardAccountDTO> cardAccountCriteria = builder.createQuery(ViewCardAccountDTO.class);
         Root<CardAccount> cardAccount = cardAccountCriteria.from(CardAccount.class);
+        Join<CardAccount, BookedTariff> bookedTariff = cardAccount.join(CardAccount_.currentTariff, JoinType.LEFT);
 
         cardAccountCriteria.select(
                 builder.construct(
@@ -89,7 +95,8 @@ public class MajorCustomerRepositoryImpl implements MajorCustomerRepository {
                         cardAccount.get(CardAccount_.cardId),
                         cardAccount.get(CardAccount_.cardPin),
                         cardAccount.get(CardAccount_.inTransaction),
-                        cardAccount.get(CardAccount_.operationState)
+                        cardAccount.get(CardAccount_.operationState),
+                        bookedTariff.get(BookedTariff_.tariff).get(Tariff_.name)
                 )
         ).where(builder.equal(cardAccount.get(CardAccount_.user).get(User_.login), login));
 
@@ -129,6 +136,7 @@ public class MajorCustomerRepositoryImpl implements MajorCustomerRepository {
 
         CriteriaQuery<ViewCardAccountDTO> cardAccountCriteria = builder.createQuery(ViewCardAccountDTO.class);
         Root<CardAccount> cardAccount = cardAccountCriteria.from(CardAccount.class);
+        Join<CardAccount, BookedTariff> bookedTariff = cardAccount.join(CardAccount_.currentTariff, JoinType.LEFT);
 
         cardAccountCriteria.select(
                 builder.construct(
@@ -136,7 +144,8 @@ public class MajorCustomerRepositoryImpl implements MajorCustomerRepository {
                         cardAccount.get(CardAccount_.cardId),
                         cardAccount.get(CardAccount_.cardPin),
                         cardAccount.get(CardAccount_.inTransaction),
-                        cardAccount.get(CardAccount_.operationState)
+                        cardAccount.get(CardAccount_.operationState),
+                        bookedTariff.get(BookedTariff_.tariff).get(Tariff_.name)
                 )
         ).where(builder.equal(cardAccount.get(CardAccount_.user).get(User_.userId), majorCustomerId));
 

@@ -8,5 +8,5 @@ import lombok.Data;
 
 @Data
 public class AuthorizeConfirmationDTO {
-    private String cardId;
+    private final String cardId;
 }

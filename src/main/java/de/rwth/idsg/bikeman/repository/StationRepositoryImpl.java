@@ -114,6 +114,21 @@ public class StationRepositoryImpl implements StationRepository {
 
     @Override
     @Transactional(readOnly = true)
+    public Station findOneByManufacturerId(String manufacturerId) throws DatabaseException {
+        final String q = "SELECT s FROM Station s where s.manufacturerId = :stationManufacturerId";
+        
+        try {
+            return em.createQuery(q, Station.class)
+                    .setParameter("stationManufacturerId", manufacturerId)
+                    .getSingleResult();
+        } catch (Exception e) {
+            throw new DatabaseException("Station with ManufacturerId " + manufacturerId + " is not registered", e);
+        }
+        
+    }
+    
+    @Override
+    @Transactional(readOnly = true)
     public String getEndpointAddress(long stationId) throws DatabaseException {
         final String q = "SELECT s.endpointAddress FROM Station s WHERE s.stationId = :stationId";
         try {

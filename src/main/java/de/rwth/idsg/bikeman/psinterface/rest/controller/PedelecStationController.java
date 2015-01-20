@@ -3,11 +3,13 @@ package de.rwth.idsg.bikeman.psinterface.rest.controller;
 import com.codahale.metrics.annotation.Timed;
 import de.rwth.idsg.bikeman.psinterface.Utils;
 import de.rwth.idsg.bikeman.psinterface.dto.request.BootNotificationDTO;
+import de.rwth.idsg.bikeman.psinterface.dto.request.CardActivationDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.CustomerAuthorizeDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.response.AuthorizeConfirmationDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.response.BootConfirmationDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.response.HeartbeatDTO;
 import de.rwth.idsg.bikeman.psinterface.service.PedelecStationService;
+import de.rwth.idsg.bikeman.service.CardAccountService;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 
 /**
@@ -31,16 +34,20 @@ public class PedelecStationController {
     @Inject
     private PedelecStationService pedelecStationService;
 
+    @Inject
+    private CardAccountService cardAccountService;
+
     private static final String BASE_PATH_BOOTNOTIFICATION = "/boot";
     private static final String BASE_PATH_AUTHORIZE = "/authorize";
     private static final String BASE_PATH_HEARTBEAT = "/heartbeat";
+    private static final String BASE_PATH_ACTIVATE_CARD = "/activate-card";
 
     @Timed
     @RequestMapping(value = BASE_PATH_BOOTNOTIFICATION, method = RequestMethod.POST)
     public BootConfirmationDTO bootNotification(@RequestBody BootNotificationDTO bootNotificationDTO,
-                                                HttpServletRequest request) throws DatabaseException {
+                                                HttpServletRequest request, HttpServletResponse response) throws DatabaseException {
         log.debug("[From: {}] Received bootNotification", Utils.getFrom(request));
-        return pedelecStationService.handleBootNotification(bootNotificationDTO);
+        return pedelecStationService.handleBootNotification(bootNotificationDTO, response);
     }
 
     @Timed
@@ -64,4 +71,12 @@ public class PedelecStationController {
         return heartbeatDTO;
     }
 
+    @Timed
+    @RequestMapping(value = BASE_PATH_ACTIVATE_CARD, method = RequestMethod.POST)
+    public AuthorizeConfirmationDTO activateCard(@RequestBody CardActivationDTO cardActivationDTO, HttpServletRequest request, HttpServletResponse response) {
+        log.info("[From: {}] Received activate card request for activation key'{}'", Utils.getFrom(request), cardActivationDTO.getActivationKey());
+
+        return cardAccountService.activateCardAccount(cardActivationDTO, response);
+    }
+    
 }

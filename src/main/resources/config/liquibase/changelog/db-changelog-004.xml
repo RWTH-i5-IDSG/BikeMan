@@ -360,5 +360,11 @@
                                  referencedTableName="T_BOOKED_TARIFF"
                                  referencedColumnNames="booked_tariff_id"/>
     </changeSet>
+    
+    <changeSet id="1409564974607-41" author="wkluth">
+        <addColumn tableName="T_CARD_ACCOUNT">
+            <column name="activation_key" type="VARCHAR(255)"/>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>

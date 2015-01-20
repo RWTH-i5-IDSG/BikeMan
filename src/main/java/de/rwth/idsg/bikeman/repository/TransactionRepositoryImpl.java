@@ -483,6 +483,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         transaction.setCardAccount(cardAccount);
         transaction.setPedelec(pedelec);
         transaction.setFromSlot(slot);
+        transaction.setBookedTariff(cardAccount.getCurrentTariff());
         em.persist(transaction);
 
         // -------------------------------------------------------------------------

@@ -1,21 +1,29 @@
 package de.rwth.idsg.bikeman.service;
 
+import de.rwth.idsg.bikeman.domain.BookedTariff;
 import de.rwth.idsg.bikeman.domain.CardAccount;
 import de.rwth.idsg.bikeman.domain.CustomerType;
 import de.rwth.idsg.bikeman.domain.MajorCustomer;
 import de.rwth.idsg.bikeman.domain.OperationState;
 import de.rwth.idsg.bikeman.domain.login.User;
+import de.rwth.idsg.bikeman.psinterface.dto.request.CardActivationDTO;
+import de.rwth.idsg.bikeman.psinterface.dto.response.AuthorizeConfirmationDTO;
 import de.rwth.idsg.bikeman.repository.CardAccountRepository;
+import de.rwth.idsg.bikeman.repository.TariffRepository;
 import de.rwth.idsg.bikeman.repository.UserRepository;
 import de.rwth.idsg.bikeman.security.SecurityUtils;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditCardAccountDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.view.ViewCardAccountDTO;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.RandomStringUtils;
+import org.joda.time.LocalDateTime;
+import org.json.HTTP;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -33,7 +41,28 @@ public class CardAccountService {
 
     @Inject
     private UserRepository userRepository;
+    
+    @Inject
+    private TariffRepository tariffRepository;
 
+    
+    public AuthorizeConfirmationDTO activateCardAccount(CardActivationDTO cardActivationDTO, HttpServletResponse response) {
+        CardAccount cardAccount = cardAccountRepository.findByActivationKey(cardActivationDTO.getActivationKey());
+        
+        if (cardAccount == null) {
+            response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
+            return null;
+        }
+        
+        cardAccount.setOperationState(OperationState.OPERATIVE);
+        cardAccount.setActivationKey(null);
+        cardAccount.setCardPin(cardActivationDTO.getCardPIN());
+        cardAccountRepository.save(cardAccount);
+
+        return new AuthorizeConfirmationDTO(cardAccount.getCardId());
+        
+    }
+    
     @Transactional(readOnly = true)
     public List<ViewCardAccountDTO> getCardAccountsOfCurrentUser() {
 
@@ -62,14 +91,22 @@ public class CardAccountService {
             user = userRepository.findByLoginIgnoreCase(createEditCardAccountDTO.getLogin());
         }
 
+        BookedTariff bookedTariff = new BookedTariff();
+        bookedTariff.setTariff(tariffRepository.findByName(createEditCardAccountDTO.getTariff()));
+        bookedTariff.setBookedFrom(LocalDateTime.now());
+        bookedTariff.setBookedUntil(LocalDateTime.now().plusYears(1));
+
         CardAccount cardAccount = CardAccount.builder()
                 .cardId(createEditCardAccountDTO.getCardId())
                 .cardPin(createEditCardAccountDTO.getCardPin())
+                .activationKey(RandomStringUtils.randomNumeric(12))
                 .inTransaction(false)
                 .operationState(OperationState.OPERATIVE)
                 .ownerType(CustomerType.MAJOR_CUSTOMER)
                 .user(user)
                 .build();
+        
+        cardAccount.setCurrentTariff(bookedTariff);
 
         try {
             cardAccountRepository.save(cardAccount);

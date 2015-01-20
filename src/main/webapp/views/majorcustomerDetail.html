@@ -1,16 +1,22 @@
 <div>
 
-    <h2 translate="majorcustomerDetail.title" translate-values="{firstname: '{{majorcustomer.firstname}}', lastname: '{{majorcustomer.lastname}}'}">Major Customer: {{majorcustomer.name}}</h2>
+    <h2 translate="majorcustomerDetail.title"
+        translate-values="{firstname: '{{majorcustomer.firstname}}', lastname: '{{majorcustomer.lastname}}'}">Major
+        Customer: {{majorcustomer.name}}</h2>
 
     <div ng-switch="isEditing">
         <button type="button" ui-sref="majorcustomers" class="btn btn-default" ng-disabled="isEditing">
-            <span class="glyphicon glyphicon-arrow-left"></span> <span translate="majorcustomerDetail.buttons.back"> Back</span></button>
+            <span class="glyphicon glyphicon-arrow-left"></span> <span translate="majorcustomerDetail.buttons.back"> Back</span>
+        </button>
         <button type="button" ng-switch-when="false" ng-click="toggleEdit()" class="btn btn-default">
-            <span class="glyphicon glyphicon-pencil"></span> <span translate="majorcustomerDetail.buttons.edit"> Edit Major Customer</span></button>
+            <span class="glyphicon glyphicon-pencil"></span> <span translate="majorcustomerDetail.buttons.edit"> Edit Major Customer</span>
+        </button>
         <button type="button" ng-switch-when="true" ng-click="toggleEdit()" class="btn btn-warning">
-            <span class="glyphicon glyphicon-pencil"></span> <span translate="majorcustomerDetail.buttons.cancel"> Cancel</span></button>
+            <span class="glyphicon glyphicon-pencil"></span> <span translate="majorcustomerDetail.buttons.cancel"> Cancel</span>
+        </button>
         <button type="button" ng-click="saveMajorcustomer()" class="btn btn-primary" ng-show="isEditing">
-            <span class="glyphicon glyphicon-pencil"></span> <span translate="majorcustomerDetail.buttons.save"> Save Major Customer</span></button>
+            <span class="glyphicon glyphicon-pencil"></span> <span translate="majorcustomerDetail.buttons.save"> Save Major Customer</span>
+        </button>
 
         <button class="btn btn-primary" data-toggle="modal" data-target="#addModal">
             <span class="glyphicon glyphicon-flash"></span>
@@ -24,8 +30,11 @@
         <div class="panel-body">
             <div class="form-group">
                 <label class="control-label col-md-2" translate="majorcustomerCreate.table.header.login">Login</label>
+
                 <div class="col-md-10">
-                    <div class="well well-sm remove-margin" ng-switch-when="false"  name="loginValue">{{majorcustomer.login}}</div>
+                    <div class="well well-sm remove-margin" ng-switch-when="false" name="loginValue">
+                        {{majorcustomer.login}}
+                    </div>
                     <input type="text" class="form-control" name="login"
                            placeholder="{{'majorcustomerCreate.table.placeholders.login' | translate}}"
                            ng-model="majorcustomer.login" ng-minlength=1 ng-maxlength=50 required
@@ -33,7 +42,9 @@
                 </div>
             </div>
             <div class="form-group" ng-switch-when="true">
-                <label class="control-label col-md-2" translate="majorcustomerCreate.table.header.password">Password</label>
+                <label class="control-label col-md-2"
+                       translate="majorcustomerCreate.table.header.password">Password</label>
+
                 <div class="col-md-10">
                     <input type="password" class="form-control" name="password"
                            placeholder="{{'majorcustomerCreate.table.placeholders.password' | translate}}"
@@ -42,8 +53,11 @@
             </div>
             <div class="form-group">
                 <label class="control-label col-md-2" translate="majorcustomerCreate.table.header.name">Name</label>
+
                 <div class="col-md-10">
-                    <div class="well well-sm remove-margin" ng-switch-when="false" name="nameValue">{{majorcustomer.name}}</div>
+                    <div class="well well-sm remove-margin" ng-switch-when="false" name="nameValue">
+                        {{majorcustomer.name}}
+                    </div>
                     <input type="text" class="form-control" name="name"
                            placeholder="{{'majorcustomerCreate.table.placeholders.name' | translate}}"
                            ng-model="majorcustomer.name" ng-minlength=1 ng-maxlength=50 required ng-switch-when="true">
@@ -62,18 +76,27 @@
                 <th translate="majorcustomerDetail.cardaccounts.table.header.cardPin">Card PIN</th>
                 <th translate="majorcustomerDetail.cardaccounts.table.header.inTransaction">In Transaction</th>
                 <th translate="majorcustomerDetail.cardaccounts.table.header.operationState">Operation State</th>
+                <th translate="customerCreate.table.header.tariff">Tariff</th>
                 <th></th>
             </tr>
             </thead>
             <tbody>
-            <tr ng-class='{warning:transaction.toStation.stationId == null}'  ng-repeat="cardaccount in majorcustomer.cardAccountDTOs | orderBy: 'cardId'">
+            <tr ng-class='{warning:transaction.toStation.stationId == null}'
+                ng-repeat="cardaccount in majorcustomer.cardAccountDTOs | orderBy: 'cardId'">
                 <td>{{cardaccount.cardId}}</td>
                 <td>{{cardaccount.cardPin}}</td>
                 <td>{{cardaccount.inTransaction | occupiedFilter}}</td>
-                <td><button class="btn" ng-class="(cardaccount.operationState == 'OPERATIVE') ? 'btn-default' : ''" ng-click="toggleCardAccount(cardaccount)">{{cardaccount.operationState}}</button></td>
+                <td>
+                    <button class="btn" ng-class="(cardaccount.operationState == 'OPERATIVE') ? 'btn-default' : ''"
+                            ng-click="toggleCardAccount(cardaccount)">{{cardaccount.operationState}}
+                    </button>
+                </td>
+                <td>
+                    {{cardaccount.tariff}}
+                </td>
                 <td>
                     <!--<button type="button" class="btn btn-sm" ng-click="updateCardAccount(cardaccount)"><span class="glyphicon glyphicon-wrench"></span>-->
-                        <!--<span translate="majorCustomerDetail.cardaccounts.table.buttons.edit">Edit</span>-->
+                    <!--<span translate="majorCustomerDetail.cardaccounts.table.buttons.edit">Edit</span>-->
                     <!--</button>-->
                 </td>
             </tr>
@@ -98,11 +121,20 @@
                         </div>
                         <div class="form-group">
                             <label class="control-label" translate="cardaccounts.addModal.cardPin">Card PIN</label>
-                            <input type="text" class="form-control" ng-model="newCardaccount.cardPin" ng-minlength="4" ng-maxlength="4">
+                            <input type="text" class="form-control" ng-model="newCardaccount.cardPin" ng-minlength="4"
+                                   ng-maxlength="4">
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" translate="customerCreate.table.header.tariff">Tariff</label>
+                            <select class="form-control" ng-model="newCardaccount.tariff"
+                                    ng-options="tariff as tariff for tariff in tariffs" required>
+                                <option value=''>- Please Choose -</option>
+                            </select>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clear()" translate="cardaccounts.addModal.buttons.cancel">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clear()"
+                                translate="cardaccounts.addModal.buttons.cancel">
                             Cancel
                         </button>
                         <button type="submit" class="btn btn-primary"
@@ -111,8 +143,11 @@
                         </button>
                     </div>
                 </form>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
 
 </div>

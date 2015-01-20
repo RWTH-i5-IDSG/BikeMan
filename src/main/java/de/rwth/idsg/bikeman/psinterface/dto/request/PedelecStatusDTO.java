@@ -9,7 +9,7 @@ import lombok.Data;
 
 @Data
 public class PedelecStatusDTO {
-    private String pedelecmanufacturerId;
+    private String pedelecManufacturerId;
     private String pedelecErrorCode;
     private String pedelecErrorInfo;
     private OperationState pedelecState;
