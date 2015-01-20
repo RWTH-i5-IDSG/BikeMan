@@ -30,7 +30,7 @@
                     <td><small>{{station.address.streetAndHousenumber + ', ' + station.address.zip + ', '
                         + station.address.city + ', ' + station.address.country}}</small></td>
                     <td>{{station.state}}</td>
-                    <td>{{station.numFreeSlots}} / {{station.numAllSlots}}</td>
+                    <td>{{station.numAllSlots - station.numFreeSlots}} / {{station.numAllSlots}}</td>
                     <td><button type="button" class="btn btn-info pull-right" ui-sref="stationDetail({stationId:{{station.stationId}}})">
                         <span class="glyphicon glyphicon-eye-open"></span>
                         <span translate="stations.table.body.details">Details</span>

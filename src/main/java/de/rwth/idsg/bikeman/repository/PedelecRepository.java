@@ -1,6 +1,7 @@
 package de.rwth.idsg.bikeman.repository;
 
 import de.rwth.idsg.bikeman.domain.Pedelec;
+import de.rwth.idsg.bikeman.psinterface.dto.response.AvailablePedelecDTO;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditPedelecDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.view.ViewPedelecDTO;
@@ -14,6 +15,7 @@ import java.util.List;
 public interface PedelecRepository {
 
     List<ViewPedelecDTO> findAll() throws DatabaseException;
+    List<AvailablePedelecDTO> findAvailablePedelecs(Long stationId) throws DatabaseException;
     ViewPedelecDTO findOneDTO(Long pedelecId) throws DatabaseException;
     Pedelec findOne(long pedelecId) throws DatabaseException;
     public Pedelec findByManufacturerId(String manufacturerId) throws DatabaseException;

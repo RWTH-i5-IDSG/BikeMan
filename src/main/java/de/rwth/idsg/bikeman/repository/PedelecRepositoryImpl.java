@@ -13,6 +13,7 @@ import de.rwth.idsg.bikeman.domain.StationSlot_;
 import de.rwth.idsg.bikeman.domain.Station_;
 import de.rwth.idsg.bikeman.domain.Transaction;
 import de.rwth.idsg.bikeman.domain.Transaction_;
+import de.rwth.idsg.bikeman.psinterface.dto.response.AvailablePedelecDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditPedelecDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.view.ViewPedelecDTO;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
@@ -48,6 +49,27 @@ public class PedelecRepositoryImpl implements PedelecRepository {
         list.addAll(findPedelecsInTransactionWithMajorCustomer(builder));
         list.addAll(findStationaryPedelecs(builder));
         return list;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<AvailablePedelecDTO> findAvailablePedelecs(Long stationId) throws DatabaseException {
+
+        final String q = "SELECT new de.rwth.idsg.bikeman.psinterface.dto.response." +
+                "AvailablePedelecDTO(p.manufacturerId) " +
+                "from Pedelec p " +
+                "where p.stationSlot.station.stationId = :stationId " +
+                "and p.state = de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE " +
+                "order by p.stateOfCharge desc";
+
+        try {
+            return em.createQuery(q, AvailablePedelecDTO.class)
+                    .setParameter("stationId", stationId)
+                    .setMaxResults(5)
+                    .getResultList();
+        } catch (Exception e) {
+            throw new DatabaseException("Failed to find pedelec with stationId" + stationId, e);
+        }
     }
 
     @SuppressWarnings("unchecked")

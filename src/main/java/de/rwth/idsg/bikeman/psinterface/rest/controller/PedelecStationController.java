@@ -6,6 +6,7 @@ import de.rwth.idsg.bikeman.psinterface.dto.request.BootNotificationDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.CardActivationDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.CustomerAuthorizeDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.response.AuthorizeConfirmationDTO;
+import de.rwth.idsg.bikeman.psinterface.dto.response.AvailablePedelecDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.response.BootConfirmationDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.response.HeartbeatDTO;
 import de.rwth.idsg.bikeman.psinterface.service.PedelecStationService;
@@ -21,6 +22,7 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by swam on 31/07/14.
@@ -41,6 +43,7 @@ public class PedelecStationController {
     private static final String BASE_PATH_AUTHORIZE = "/authorize";
     private static final String BASE_PATH_HEARTBEAT = "/heartbeat";
     private static final String BASE_PATH_ACTIVATE_CARD = "/activate-card";
+    private static final String BASE_PATH_AVAIL_PEDELECS = "/available-pedelecs";
 
     @Timed
     @RequestMapping(value = BASE_PATH_BOOTNOTIFICATION, method = RequestMethod.POST)
@@ -77,6 +80,17 @@ public class PedelecStationController {
         log.info("[From: {}] Received activate card request for activation key'{}'", Utils.getFrom(request), cardActivationDTO.getActivationKey());
 
         return cardAccountService.activateCardAccount(cardActivationDTO, response);
+    }
+    
+    @Timed
+    @RequestMapping(value = BASE_PATH_AVAIL_PEDELECS, method = RequestMethod.GET)
+    public List<AvailablePedelecDTO> getAvailablePedelecs(HttpServletRequest request) throws DatabaseException{
+        log.debug("[From: {}] Received Get Available Pedelecs Request", Utils.getFrom(request));        
+        
+        // TODO: get current station here and set stationId
+        Long stationId = 1L;
+        
+        return pedelecStationService.getAvailablePedelecs(stationId);
     }
     
 }

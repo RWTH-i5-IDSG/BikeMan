@@ -10,9 +10,11 @@ import de.rwth.idsg.bikeman.psinterface.dto.request.CustomerAuthorizeDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.StartTransactionDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.StopTransactionDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.response.AuthorizeConfirmationDTO;
+import de.rwth.idsg.bikeman.psinterface.dto.response.AvailablePedelecDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.response.BootConfirmationDTO;
 import de.rwth.idsg.bikeman.repository.BookingRepository;
 import de.rwth.idsg.bikeman.repository.CustomerRepository;
+import de.rwth.idsg.bikeman.repository.PedelecRepository;
 import de.rwth.idsg.bikeman.repository.StationRepository;
 import de.rwth.idsg.bikeman.repository.TransactionRepository;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
@@ -23,6 +25,7 @@ import org.springframework.stereotype.Service;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by swam on 04/08/14.
@@ -37,6 +40,7 @@ public class PedelecStationService {
     @Inject private StationRepository stationRepository;
     @Autowired private BookingRepository bookingRepository;
     @Autowired private ConsumptionPushService consumptionPushService;
+    @Autowired private PedelecRepository pedelecRepository;
 
     private static final Integer HEARTBEAT_INTERVAL_IN_SECONDS = 60;
 
@@ -76,5 +80,10 @@ public class PedelecStationService {
         if (optionalId.isPresent()) {
             consumptionPushService.report(optionalId.get(), t);
         }
+    }
+    
+    public List<AvailablePedelecDTO> getAvailablePedelecs(Long stationId) throws DatabaseException{
+        
+        return pedelecRepository.findAvailablePedelecs(stationId);
     }
 }
