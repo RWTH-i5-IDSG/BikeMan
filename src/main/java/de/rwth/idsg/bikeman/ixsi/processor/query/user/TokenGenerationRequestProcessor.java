@@ -47,8 +47,8 @@ public class TokenGenerationRequestProcessor implements
         UserInfoType userInfo = userInfoList.get(0);
         try {
             String token = ixsiUserRepository.setUserToken(userInfo.getUserID(), userInfo.getPassword());
-            TokenGenerationResponseType r = new TokenGenerationResponseType();
-            r.setToken(token);
+            TokenGenerationResponseType r = new TokenGenerationResponseType()
+                .withToken(token);
             return r;
 
         } catch (DatabaseException e) {
@@ -63,8 +63,7 @@ public class TokenGenerationRequestProcessor implements
 
     @Override
     public TokenGenerationResponseType buildError(ErrorType e) {
-        TokenGenerationResponseType res = new TokenGenerationResponseType();
-        res.getError().add(e);
-        return res;
+        return new TokenGenerationResponseType()
+            .withError(e);
     }
 }

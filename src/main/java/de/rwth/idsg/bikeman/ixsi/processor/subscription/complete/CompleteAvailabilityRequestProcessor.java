@@ -31,9 +31,9 @@ public class CompleteAvailabilityRequestProcessor implements
 
     @Override
     public CompleteAvailabilityResponseType process(CompleteAvailabilityRequestType request, String systemId) {
-        List<String> targetIds = availabilityStore.getSubscriptions(systemId);
+        List<BookingTargetIDType> targetIds = availabilityStore.getSubscriptions(systemId);
 
-        List<AvailabilityResponseDTO> responseDTOs = queryIXSIRepository.availability(getBookingTargetIdsFromString(targetIds));
+        List<AvailabilityResponseDTO> responseDTOs = queryIXSIRepository.availability(targetIds);
 
         List<BookingTargetAvailabilityType> availabilities = availabilityRequestProcessor.getBookingTargetAvailabilities(responseDTOs);
 
@@ -49,9 +49,9 @@ public class CompleteAvailabilityRequestProcessor implements
     private List<BookingTargetIDType> getBookingTargetIdsFromString(List<String> ids) {
         List<BookingTargetIDType> res = new ArrayList<>();
         for (String id : ids) {
-            BookingTargetIDType t = new BookingTargetIDType();
-            t.setBookeeID(id);
-            t.setProviderID(IXSIConstants.Provider.id);
+            BookingTargetIDType t = new BookingTargetIDType()
+                .withBookeeID(id)
+                .withProviderID(IXSIConstants.Provider.id);
             res.add(t);
         }
         return res;
@@ -63,9 +63,8 @@ public class CompleteAvailabilityRequestProcessor implements
 
     @Override
     public CompleteAvailabilityResponseType buildError(ErrorType e) {
-        CompleteAvailabilityResponseType b = new CompleteAvailabilityResponseType();
-        b.getError().add(e);
-        return b;
+        return new CompleteAvailabilityResponseType()
+            .withError(e);
     }
 
 }

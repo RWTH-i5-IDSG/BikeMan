@@ -26,8 +26,7 @@ public class BookingAlertSubscriptionRequestProcessor implements
 
     @Override
     public BookingAlertSubscriptionResponseType buildError(ErrorType e) {
-        BookingAlertSubscriptionResponseType b = new BookingAlertSubscriptionResponseType();
-        b.getError().add(e);
-        return b;
+        return new BookingAlertSubscriptionResponseType()
+            .withError(e);
     }
 }

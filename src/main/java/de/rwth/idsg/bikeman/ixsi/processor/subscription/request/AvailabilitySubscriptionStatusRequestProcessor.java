@@ -24,18 +24,10 @@ public class AvailabilitySubscriptionStatusRequestProcessor implements
 
     @Override
     public AvailabilitySubscriptionStatusResponseType process(AvailabilitySubscriptionStatusRequestType request, String systemId) {
-        List<String> subscriptions = availabilityStore.getSubscriptions(systemId);
+        List<BookingTargetIDType> subscriptions = availabilityStore.getSubscriptions(systemId);
 
-        List<BookingTargetIDType> ids = new ArrayList<>();
-        for (String s : subscriptions) {
-            BookingTargetIDType idType = new BookingTargetIDType();
-            idType.setBookeeID(s);
-            ids.add(idType);
-        }
-
-        AvailabilitySubscriptionStatusResponseType response = new AvailabilitySubscriptionStatusResponseType();
-        response.getBookingTargetID().addAll(ids);
-        return response;
+        return new AvailabilitySubscriptionStatusResponseType()
+                .withBookingTargetID(subscriptions);
     }
 
     // -------------------------------------------------------------------------
@@ -44,8 +36,7 @@ public class AvailabilitySubscriptionStatusRequestProcessor implements
 
     @Override
     public AvailabilitySubscriptionStatusResponseType buildError(ErrorType e) {
-        AvailabilitySubscriptionStatusResponseType b = new AvailabilitySubscriptionStatusResponseType();
-        b.getError().add(e);
-        return b;
+        return new AvailabilitySubscriptionStatusResponseType()
+            .withError(e);
     }
 }

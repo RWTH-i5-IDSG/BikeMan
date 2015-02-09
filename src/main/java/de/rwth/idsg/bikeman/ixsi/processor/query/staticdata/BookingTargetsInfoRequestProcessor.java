@@ -80,8 +80,8 @@ public class BookingTargetsInfoRequestProcessor implements
         placegroup.getPlaceID().addAll(placeIds);
 
         // TODO: set probability (Why do we even need this?)
-        PercentType percent = new PercentType();
-        percent.setValue(100);
+        PercentType percent = new PercentType()
+            .withValue(100);
         placegroup.setProbability(percent);
 
         response.getPlaceGroup().add(placegroup);
@@ -96,12 +96,14 @@ public class BookingTargetsInfoRequestProcessor implements
             BookingTargetType target = new BookingTargetType();
 
             // set pedelecId
-            target.setID(ped.getManufacturerId());
+            target.setID(new BookingTargetIDType()
+                .withBookeeID(ped.getManufacturerId())
+                .withProviderID(IXSIConstants.Provider.id));
 
             // TODO: In our case pedelecs have no names,
             // for now we just set the manufacturerId
-            TextType name = new TextType();
-            name.setText(ped.getManufacturerId());
+            TextType name = new TextType()
+                .withText(ped.getManufacturerId());
             target.getName().add(name);
 
             target.setMaxDistance(ped.getMaxDistance());
@@ -120,8 +122,7 @@ public class BookingTargetsInfoRequestProcessor implements
 
         for (PlaceType placeType : placeTypes) {
             // add the placeId to placeGroup list
-            ProbabilityPlaceIDType probPlaceId = new ProbabilityPlaceIDType();
-            probPlaceId.setID(placeType.getID());
+            ProbabilityPlaceIDType probPlaceId = new ProbabilityPlaceIDType().withID(placeType.getID());
             placeIds.add(probPlaceId);
         }
 
@@ -137,21 +138,21 @@ public class BookingTargetsInfoRequestProcessor implements
             place.setID(stat.getManufacturerId());
 
             // set place coordinates
-            CoordType coords = new CoordType();
-            coords.setLatitude(stat.getLocation_latitude());
-            coords.setLongitude(stat.getLocation_longitude());
+            CoordType coords = new CoordType()
+                .withLatitude(stat.getLocation_latitude())
+                .withLongitude(stat.getLocation_longitude());
 
             ViewAddressDTO viewAddressDTO = stat.getAddress();
 
-            AddressType address = new AddressType();
-            address.setCountry(viewAddressDTO.getCountry());
-            address.setPostalCode(viewAddressDTO.getZip());
-            address.setCity(viewAddressDTO.getCity());
-            address.setStreetHouseNr(viewAddressDTO.getStreetAndHousenumber());
+            AddressType address = new AddressType()
+                .withCountry(viewAddressDTO.getCountry())
+                .withPostalCode(viewAddressDTO.getZip())
+                .withCity(viewAddressDTO.getCity())
+                .withStreetHouseNr(viewAddressDTO.getStreetAndHousenumber());
 
-            GeoPositionType geoPosition = new GeoPositionType();
-            geoPosition.setAddress(address);
-            geoPosition.setCoord(coords);
+            GeoPositionType geoPosition = new GeoPositionType()
+                .withAddress(address)
+                .withCoord(coords);
 
             place.setGeoPosition(geoPosition);
 
@@ -159,8 +160,8 @@ public class BookingTargetsInfoRequestProcessor implements
             place.setCapacity(stat.getSlotCount());
 
             // set place name
-            TextType name = new TextType();
-            name.setText(stat.getName());
+            TextType name = new TextType()
+                .withText(stat.getName());
             place.getName().add(name);
 
             // set place providerId
@@ -178,8 +179,7 @@ public class BookingTargetsInfoRequestProcessor implements
 
     @Override
     public BookingTargetsInfoResponseType buildError(ErrorType e) {
-        BookingTargetsInfoResponseType b = new BookingTargetsInfoResponseType();
-        b.getError().add(e);
-        return b;
+        return new BookingTargetsInfoResponseType()
+            .withError(e);
     }
 }

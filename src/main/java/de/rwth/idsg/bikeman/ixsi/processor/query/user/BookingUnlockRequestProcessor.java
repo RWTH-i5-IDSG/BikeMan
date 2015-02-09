@@ -41,8 +41,7 @@ public class BookingUnlockRequestProcessor implements
 
     @Override
     public BookingUnlockResponseType buildError(ErrorType e) {
-        BookingUnlockResponseType b = new BookingUnlockResponseType();
-        b.getError().add(e);
-        return b;
+        return new BookingUnlockResponseType()
+            .withError(e);
     }
 }

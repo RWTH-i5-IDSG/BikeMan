@@ -39,9 +39,8 @@ public class ConsumptionSubscriptionRequestProcessor implements
 
     @Override
     public ConsumptionSubscriptionResponseType buildError(ErrorType e) {
-        ConsumptionSubscriptionResponseType b = new ConsumptionSubscriptionResponseType();
-        b.getError().add(e);
-        return b;
+        return new ConsumptionSubscriptionResponseType()
+            .withError(e);
     }
 
 }

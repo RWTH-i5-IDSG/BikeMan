@@ -37,11 +37,11 @@ public class CompleteConsumptionRequestProcessor implements
         }
         List<Booking> bookingList = bookingRepository.findClosedBookings(bookingIdListLong);
 
-        CompleteConsumptionResponseType response = new CompleteConsumptionResponseType();
         // for now, assume that client system is always able to process the full message
         // therefore do not split messages!
-        response.setLast(true);
-        response.setMessageBlockID(String.valueOf(request.hashCode()));
+        CompleteConsumptionResponseType response = new CompleteConsumptionResponseType()
+            .withLast(true)
+            .withMessageBlockID(String.valueOf(request.hashCode()));
 
         List<ConsumptionType> consumptionList = response.getConsumption();
         for (Booking b : bookingList) {
@@ -53,8 +53,7 @@ public class CompleteConsumptionRequestProcessor implements
 
     @Override
     public CompleteConsumptionResponseType buildError(ErrorType e) {
-        CompleteConsumptionResponseType b = new CompleteConsumptionResponseType();
-        b.getError().add(e);
-        return b;
+        return new CompleteConsumptionResponseType()
+            .withError(e);
     }
 }

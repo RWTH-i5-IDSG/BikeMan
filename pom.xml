@@ -576,6 +576,8 @@
                             <extension>true</extension>
                             <args>
                                 <arg>-Xinheritance</arg>
+                                <arg>-Xfluent-api</arg>
+                                <arg>-Xannotate</arg>
                             </args>
                             <plugins>
                                 <plugin>
@@ -583,10 +585,28 @@
                                     <artifactId>jaxb2-basics</artifactId>
                                     <version>0.9.0</version>
                                 </plugin>
+                                <plugin>
+                                    <groupId>org.jvnet.jaxb2_commons</groupId>
+                                    <artifactId>jaxb2-basics-annotate</artifactId>
+                                    <version>1.0.1</version>
+                                </plugin>
+                                <plugin>
+                                    <groupId>org.jvnet.jaxb2_commons</groupId>
+                                    <artifactId>jaxb2-fluent-api</artifactId>
+                                    <version>3.0</version>
+                                </plugin>
                             </plugins>
                         </configuration>
                     </execution>
                 </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.projectlombok</groupId>
+                        <artifactId>lombok</artifactId>
+                        <version>1.14.8</version>
+                    </dependency>
+                </dependencies>
+
             </plugin>
             <plugin>
                 <groupId>org.bsc.maven</groupId>
@@ -617,7 +637,7 @@
         </plugins>
         <pluginManagement>
             <plugins>
-                <!--This plugin's configuration is used to store Eclipse m2e settings only. 
+                <!--This plugin's configuration is used to store Eclipse m2e settings only.
                 It has no influence on the Maven build itself.-->
                 <plugin>
                     <groupId>org.eclipse.m2e</groupId>

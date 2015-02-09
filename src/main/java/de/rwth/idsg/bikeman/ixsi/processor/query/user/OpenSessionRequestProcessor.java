@@ -40,8 +40,7 @@ public class OpenSessionRequestProcessor implements
 
     @Override
     public OpenSessionResponseType buildError(ErrorType e) {
-        OpenSessionResponseType res = new OpenSessionResponseType();
-        res.getError().add(e);
-        return res;
+        return new OpenSessionResponseType()
+            .withError(e);
     }
 }

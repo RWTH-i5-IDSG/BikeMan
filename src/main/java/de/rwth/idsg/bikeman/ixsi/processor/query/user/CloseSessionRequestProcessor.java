@@ -40,9 +40,8 @@ public class CloseSessionRequestProcessor implements
 
     @Override
     public CloseSessionResponseType buildError(ErrorType e) {
-        CloseSessionResponseType res = new CloseSessionResponseType();
-        res.getError().add(e);
-        return res;
+        return new CloseSessionResponseType()
+            .withError(e);
     }
 
 }

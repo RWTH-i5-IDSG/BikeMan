@@ -4,7 +4,8 @@
                xmlns:xs="http://www.w3.org/2001/XMLSchema"
                xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
                xmlns:inheritance="http://jaxb2-commons.dev.java.net/basic/inheritance"
-               jaxb:extensionBindingPrefixes="xjc inheritance">
+               xmlns:annox="http://annox.dev.java.net"
+               jaxb:extensionBindingPrefixes="xjc inheritance annox">
 
     <jaxb:globalBindings mapSimpleTypeDef="true" generateIsSetMethod="true">
 
@@ -20,6 +21,14 @@
     </jaxb:globalBindings>
 
     <jaxb:bindings schemaLocation="IXSI-with-enums.xsd" node="/xs:schema">
+
+        <!-- annotate classes to generate utility functions -->
+
+        <jaxb:bindings node="xs:complexType[@name='BookingTargetIDType']">
+            <annox:annotateClass>@lombok.EqualsAndHashCode</annox:annotateClass>
+            <annox:annotateClass>@lombok.ToString</annox:annotateClass>
+        </jaxb:bindings>
+
 
         <!-- Map ID type definitions directly to String
         rather than to Type classes that encapsulate the String value -->

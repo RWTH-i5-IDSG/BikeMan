@@ -33,12 +33,12 @@ public class CompletePlaceAvailabilityRequestProcessor implements
         List<PlaceAvailabilityResponseDTO> dtos = queryIXSIRepository.placeAvailability(ids);
         List<PlaceAvailabilityType> availabilities = placeAvailabilityRequestProcessor.getPlaceAvailabilities(dtos);
 
-        CompletePlaceAvailabilityResponseType response = new CompletePlaceAvailabilityResponseType();
         // for now, assume that client system is always able to process the full message
         // therefore do not split messages!
-        response.setLast(true);
-        response.setMessageBlockID(String.valueOf(request.hashCode()));
-        response.getPlaceAvailability().addAll(availabilities);
+        CompletePlaceAvailabilityResponseType response = new CompletePlaceAvailabilityResponseType()
+            .withLast(true)
+            .withMessageBlockID(String.valueOf(request.hashCode()))
+            .withPlaceAvailability(availabilities);
 
         return response;
     }
@@ -49,8 +49,7 @@ public class CompletePlaceAvailabilityRequestProcessor implements
 
     @Override
     public CompletePlaceAvailabilityResponseType buildError(ErrorType e) {
-        CompletePlaceAvailabilityResponseType b = new CompletePlaceAvailabilityResponseType();
-        b.getError().add(e);
-        return b;
+        return new CompletePlaceAvailabilityResponseType()
+            .withError(e);
     }
 }

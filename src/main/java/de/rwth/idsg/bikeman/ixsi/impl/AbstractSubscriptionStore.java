@@ -43,7 +43,7 @@ public abstract class AbstractSubscriptionStore<T> implements SubscriptionStore<
 
     @Override
     public void subscribe(String systemID, List<T> itemIDs, Integer expireIntervalinMinutes) {
-        subscribe(systemID, itemIDs);
+        subscribeInternal(systemID, itemIDs);
         scheduleRemove(systemID, itemIDs, expireIntervalinMinutes);
         log.debug("System '{}' subscribed to '{}'. This subscription is scheduled to expire in {} minutes",
                 systemID, itemIDs, expireIntervalinMinutes);

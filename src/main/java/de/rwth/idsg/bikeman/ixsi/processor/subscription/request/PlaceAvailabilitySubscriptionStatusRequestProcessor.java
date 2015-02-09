@@ -28,14 +28,13 @@ public class PlaceAvailabilitySubscriptionStatusRequestProcessor implements
 
         List<ProviderPlaceIDType> ids = new ArrayList<>();
         for (String s : subscriptions) {
-            ProviderPlaceIDType idType = new ProviderPlaceIDType();
-            idType.setPlaceID(s);
+            ProviderPlaceIDType idType = new ProviderPlaceIDType()
+                .withPlaceID(s);
             ids.add(idType);
         }
 
-        PlaceAvailabilitySubscriptionStatusResponseType response = new PlaceAvailabilitySubscriptionStatusResponseType();
-        response.getPlaceID().addAll(ids);
-        return response;
+        return new PlaceAvailabilitySubscriptionStatusResponseType()
+            .withPlaceID(ids);
     }
 
     // -------------------------------------------------------------------------
@@ -44,8 +43,7 @@ public class PlaceAvailabilitySubscriptionStatusRequestProcessor implements
 
     @Override
     public PlaceAvailabilitySubscriptionStatusResponseType buildError(ErrorType e) {
-        PlaceAvailabilitySubscriptionStatusResponseType b = new PlaceAvailabilitySubscriptionStatusResponseType();
-        b.getError().add(e);
-        return b;
+        return new PlaceAvailabilitySubscriptionStatusResponseType()
+            .withError(e);
     }
 }

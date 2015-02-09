@@ -45,8 +45,7 @@ public class PlaceAvailabilitySubscriptionRequestProcessor implements
 
     @Override
     public PlaceAvailabilitySubscriptionResponseType buildError(ErrorType e) {
-        PlaceAvailabilitySubscriptionResponseType b = new PlaceAvailabilitySubscriptionResponseType();
-        b.getError().add(e);
-        return b;
+        return new PlaceAvailabilitySubscriptionResponseType()
+            .withError(e);
     }
 }

@@ -55,8 +55,8 @@ public class AvailabilityRequestProcessor implements
         List<BookingTargetAvailabilityType> availabilityList = getBookingTargetAvailabilities(dtos);
 
 
-        AvailabilityResponseType a = new AvailabilityResponseType();
-        a.getBookingTarget().addAll(availabilityList);
+        AvailabilityResponseType a = new AvailabilityResponseType()
+            .withBookingTarget(availabilityList);
         return a;
     }
 
@@ -85,23 +85,23 @@ public class AvailabilityRequestProcessor implements
         List<BookingTargetAvailabilityType> availabilityList = new ArrayList<>();
         for (AvailabilityResponseDTO ardto : dtos) {
             // BookingTargetId
-            BookingTargetIDType bookingTargetIDType = new BookingTargetIDType();
             String bookeeId = String.valueOf(ardto.getManufacturerId());
-            bookingTargetIDType.setBookeeID(bookeeId);
-            bookingTargetIDType.setProviderID(IXSIConstants.Provider.id);
+            BookingTargetIDType bookingTargetIDType = new BookingTargetIDType()
+                .withBookeeID(bookeeId)
+                .withProviderID(IXSIConstants.Provider.id);
             // PlaceID
             String placeId = String.valueOf(ardto.getStationManufacturerId());
             // GeoPosition
-            CoordType coordType = new CoordType();
-            coordType.setLatitude(ardto.getLocationLatitude());
-            coordType.setLongitude(ardto.getLocationLongitude());
+            CoordType coordType = new CoordType()
+                .withLatitude(ardto.getLocationLatitude())
+                .withLongitude(ardto.getLocationLongitude());
             // CurrentStateOfCharge
-            PercentType percentType = new PercentType();
-            percentType.setValue(roundPercent(ardto.getStateOfCharge()));
+            PercentType percentType = new PercentType()
+                .withValue(roundPercent(ardto.getStateOfCharge()));
 
-            BookingTargetAvailabilityType bType = new BookingTargetAvailabilityType();
-            bType.setID(bookingTargetIDType);
-            bType.setPlaceID(placeId);
+            BookingTargetAvailabilityType bType = new BookingTargetAvailabilityType()
+                .withID(bookingTargetIDType)
+                .withPlaceID(placeId);
 
             bType.setCurrentStateOfCharge(percentType);
 
@@ -123,9 +123,8 @@ public class AvailabilityRequestProcessor implements
 
     @Override
     public AvailabilityResponseType buildError(ErrorType e) {
-        AvailabilityResponseType res = new AvailabilityResponseType();
-        res.getError().add(e);
-        return res;
+        return new AvailabilityResponseType()
+            .withError(e);
     }
 
 }

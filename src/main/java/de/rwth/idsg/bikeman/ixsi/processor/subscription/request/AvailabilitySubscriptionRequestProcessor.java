@@ -25,10 +25,7 @@ public class AvailabilitySubscriptionRequestProcessor implements
     @Override
     public AvailabilitySubscriptionResponseType process(AvailabilitySubscriptionRequestType request, String systemId) {
 
-        List<String> itemIds = new ArrayList<>();
-        for (BookingTargetIDType id : request.getBookingTargetID()) {
-            itemIds.add(id.getBookeeID());
-        }
+        List<BookingTargetIDType> itemIds = request.getBookingTargetID();
 
         if (request.isSetUnsubscription() && request.isUnsubscription()) {
             availabilityStore.unsubscribe(systemId, itemIds);
@@ -50,8 +47,7 @@ public class AvailabilitySubscriptionRequestProcessor implements
 
     @Override
     public AvailabilitySubscriptionResponseType buildError(ErrorType e) {
-        AvailabilitySubscriptionResponseType b = new AvailabilitySubscriptionResponseType();
-        b.getError().add(e);
-        return b;
+        return new AvailabilitySubscriptionResponseType()
+            .withError(e);
     }
 }

@@ -65,8 +65,8 @@ public class BookingRequestProcessor implements
             long bookingId = bookingService.createBookingForUser(request.getBookingTargetID().getBookeeID(),
                                                                  user.getUserID(),
                                                                  request.getTimePeriodProposal());
-            BookingType booking = new BookingType();
-            booking.setID(String.valueOf(bookingId));
+            BookingType booking = new BookingType()
+                .withID(String.valueOf(bookingId));
             bookingResponse.setBooking(booking);
             return bookingResponse;
 
@@ -84,8 +84,7 @@ public class BookingRequestProcessor implements
 
     @Override
     public BookingResponseType buildError(ErrorType e) {
-        BookingResponseType res = new BookingResponseType();
-        res.getError().add(e);
-        return res;
+        return new BookingResponseType()
+            .withError(e);
     }
 }
