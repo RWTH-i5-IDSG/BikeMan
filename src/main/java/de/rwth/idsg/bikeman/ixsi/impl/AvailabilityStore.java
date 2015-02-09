@@ -1,5 +1,6 @@
 package de.rwth.idsg.bikeman.ixsi.impl;
 
+import de.rwth.idsg.bikeman.ixsi.schema.BookingTargetIDType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +17,7 @@ import java.util.concurrent.Executors;
  */
 @Slf4j
 @Service
-public class AvailabilityStore extends AbstractSubscriptionStore {
+public class AvailabilityStore extends AbstractSubscriptionStore<BookingTargetIDType> {
 
     @PostConstruct
     public void init() {

@@ -16,7 +16,7 @@ import java.util.concurrent.Executors;
  */
 @Slf4j
 @Service
-public class ConsumptionStore extends AbstractSubscriptionStore {
+public class ConsumptionStore extends AbstractSubscriptionStore<String> {
 
     @PostConstruct
     public void init() {

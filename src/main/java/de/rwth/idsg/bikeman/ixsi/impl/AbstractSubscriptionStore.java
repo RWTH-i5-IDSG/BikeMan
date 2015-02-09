@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
  * @author Sevket Goekay <goekay@dbis.rwth-aachen.de>
  * @since 04.11.2014
  */
-public abstract class AbstractSubscriptionStore implements SubscriptionStore {
+public abstract class AbstractSubscriptionStore<T> implements SubscriptionStore<T> {
 
     // Want to get the logger of the extending class and not of this abstract one
     private final Logger log = LoggerFactory.getLogger(getClass());
@@ -31,10 +31,10 @@ public abstract class AbstractSubscriptionStore implements SubscriptionStore {
             .build();
 
     /**
-     * Key   (String)      = ID of the item
+     * Key   (T)           = ID of the item
      * Value (Set<String>) = IDs of the subscribed systems
      */
-    ConcurrentHashMap<String, Set<String>> lookupTable;
+    ConcurrentHashMap<T, Set<String>> lookupTable;
 
     /**
      * Service to remove expired subscriptions
@@ -42,7 +42,7 @@ public abstract class AbstractSubscriptionStore implements SubscriptionStore {
     ScheduledExecutorService scheduler;
 
     @Override
-    public void subscribe(String systemID, List<String> itemIDs, Integer expireIntervalinMinutes) {
+    public void subscribe(String systemID, List<T> itemIDs, Integer expireIntervalinMinutes) {
         subscribe(systemID, itemIDs);
         scheduleRemove(systemID, itemIDs, expireIntervalinMinutes);
         log.debug("System '{}' subscribed to '{}'. This subscription is scheduled to expire in {} minutes",
@@ -50,14 +50,14 @@ public abstract class AbstractSubscriptionStore implements SubscriptionStore {
     }
 
     @Override
-    public void subscribe(String systemID, List<String> itemIDs) {
+    public void subscribe(String systemID, List<T> itemIDs) {
         subscribeInternal(systemID, itemIDs);
         log.debug("System '{}' subscribed to '{}'", systemID, itemIDs);
     }
 
-    private void subscribeInternal(String systemID, List<String> itemIDs) {
+    private void subscribeInternal(String systemID, List<T> itemIDs) {
         Set<String> systemIDSet;
-        for (String itemID : itemIDs) {
+        for (T itemID : itemIDs) {
             systemIDSet = lookupTable.get(itemID);
 
             if (systemIDSet == null) {
@@ -72,9 +72,9 @@ public abstract class AbstractSubscriptionStore implements SubscriptionStore {
     }
 
     @Override
-    public void unsubscribe(String systemID, List<String> itemIDs) {
+    public void unsubscribe(String systemID, List<T> itemIDs) {
         Set<String> systemIDSet;
-        for (String itemID : itemIDs) {
+        for (T itemID : itemIDs) {
             systemIDSet = lookupTable.get(itemID);
 
             if (systemIDSet != null) {
@@ -85,14 +85,14 @@ public abstract class AbstractSubscriptionStore implements SubscriptionStore {
     }
 
     @Override
-    public Set<String> getSubscribedSystems(String itemID) {
+    public Set<String> getSubscribedSystems(T itemID) {
         return lookupTable.get(itemID);
     }
 
     @Override
-    public List<String> getSubscriptions(String systemID) {
-        List<String> subscriptions = new ArrayList<>();
-        for (Map.Entry<String, Set<String>> entry : lookupTable.entrySet()) {
+    public List<T> getSubscriptions(String systemID) {
+        List<T> subscriptions = new ArrayList<>();
+        for (Map.Entry<T, Set<String>> entry : lookupTable.entrySet()) {
             if (entry.getValue().contains(systemID)) {
                 subscriptions.add(entry.getKey());
             }
@@ -115,7 +115,7 @@ public abstract class AbstractSubscriptionStore implements SubscriptionStore {
     // Schedule to remove subscriptions
     // -------------------------------------------------------------------------
 
-    private void scheduleRemove(String systemID, List<String> itemIDs, long expireIntervalinMinutes) {
+    private void scheduleRemove(String systemID, List<T> itemIDs, long expireIntervalinMinutes) {
         scheduler.schedule(new RemoveJob(systemID, itemIDs), expireIntervalinMinutes, TimeUnit.MINUTES);
     }
 
@@ -123,7 +123,7 @@ public abstract class AbstractSubscriptionStore implements SubscriptionStore {
     private class RemoveJob implements Runnable {
 
         private final String systemID;
-        private final List<String> itemIDs;
+        private final List<T> itemIDs;
 
         @Override
         public void run() {

@@ -702,7 +702,7 @@
 			<xs:documentation>Type for booking target information.</xs:documentation>
 		</xs:annotation>
 		<xs:sequence>
-			<xs:element name="ID" type="BookeeIDType">
+			<xs:element name="ID" type="BookingTargetIDType">
 				<xs:annotation>
 					<xs:documentation>Bookee ID. For one physical bookee this ID has to remain constant for subsequent responses.</xs:documentation>
 				</xs:annotation>
