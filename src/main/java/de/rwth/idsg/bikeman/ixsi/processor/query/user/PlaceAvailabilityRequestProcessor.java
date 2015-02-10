@@ -50,9 +50,8 @@ public class PlaceAvailabilityRequestProcessor implements
         List<PlaceAvailabilityType> placeAvailList = getPlaceAvailabilities(dtos);
 
 
-        PlaceAvailabilityResponseType response = new PlaceAvailabilityResponseType()
+        return new PlaceAvailabilityResponseType()
             .withPlace(placeAvailList);
-        return response;
     }
 
     /**

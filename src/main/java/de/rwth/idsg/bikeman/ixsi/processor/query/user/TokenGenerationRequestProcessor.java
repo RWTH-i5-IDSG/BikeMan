@@ -47,9 +47,8 @@ public class TokenGenerationRequestProcessor implements
         UserInfoType userInfo = userInfoList.get(0);
         try {
             String token = ixsiUserRepository.setUserToken(userInfo.getUserID(), userInfo.getPassword());
-            TokenGenerationResponseType r = new TokenGenerationResponseType()
+            return new TokenGenerationResponseType()
                 .withToken(token);
-            return r;
 
         } catch (DatabaseException e) {
             log.error("Error occurred", e);

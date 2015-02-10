@@ -28,9 +28,7 @@ public class PlaceAvailabilitySubscriptionStatusRequestProcessor implements
 
         List<ProviderPlaceIDType> ids = new ArrayList<>();
         for (String s : subscriptions) {
-            ProviderPlaceIDType idType = new ProviderPlaceIDType()
-                .withPlaceID(s);
-            ids.add(idType);
+            ids.add(new ProviderPlaceIDType().withPlaceID(s));
         }
 
         return new PlaceAvailabilitySubscriptionStatusResponseType()

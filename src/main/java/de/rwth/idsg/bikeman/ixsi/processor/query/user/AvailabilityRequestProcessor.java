@@ -7,16 +7,7 @@ import de.rwth.idsg.bikeman.ixsi.dto.query.AvailabilityResponseDTO;
 import de.rwth.idsg.bikeman.ixsi.processor.TokenValidator;
 import de.rwth.idsg.bikeman.ixsi.processor.api.UserRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.repository.QueryIXSIRepository;
-import de.rwth.idsg.bikeman.ixsi.schema.AvailabilityRequestType;
-import de.rwth.idsg.bikeman.ixsi.schema.AvailabilityResponseType;
-import de.rwth.idsg.bikeman.ixsi.schema.BookingTargetAvailabilityType;
-import de.rwth.idsg.bikeman.ixsi.schema.BookingTargetIDType;
-import de.rwth.idsg.bikeman.ixsi.schema.CoordType;
-import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
-import de.rwth.idsg.bikeman.ixsi.schema.GeoPositionType;
-import de.rwth.idsg.bikeman.ixsi.schema.Language;
-import de.rwth.idsg.bikeman.ixsi.schema.PercentType;
-import de.rwth.idsg.bikeman.ixsi.schema.UserInfoType;
+import de.rwth.idsg.bikeman.ixsi.schema.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -56,9 +47,8 @@ public class AvailabilityRequestProcessor implements
         List<BookingTargetAvailabilityType> availabilityList = getBookingTargetAvailabilities(dtos);
 
 
-        AvailabilityResponseType a = new AvailabilityResponseType()
+        return new AvailabilityResponseType()
             .withBookingTarget(availabilityList);
-        return a;
     }
 
     /**
