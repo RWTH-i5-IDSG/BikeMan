@@ -111,6 +111,7 @@
         <jhipsterloaded.version>0.11</jhipsterloaded.version>
         <postgresql.version>9.3-1100-jdbc41</postgresql.version>
         <liquibase-slf4j.version>1.2.1</liquibase-slf4j.version>
+        <lombok.version>1.16.0</lombok.version>
     </properties>
 
     <repositories>
@@ -195,7 +196,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.14.8</version>
+            <version>${lombok.version}</version>
             <scope>provided</scope>
         </dependency>
 
@@ -603,7 +604,7 @@
                     <dependency>
                         <groupId>org.projectlombok</groupId>
                         <artifactId>lombok</artifactId>
-                        <version>1.14.8</version>
+                        <version>${lombok.version}</version>
                     </dependency>
                 </dependencies>
 
