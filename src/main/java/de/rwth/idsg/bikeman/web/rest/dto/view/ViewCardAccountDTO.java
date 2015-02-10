@@ -4,7 +4,7 @@ import de.rwth.idsg.bikeman.domain.OperationState;
 import de.rwth.idsg.bikeman.domain.TariffType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.experimental.Builder;
+import lombok.Builder;
 
 /**
  * Created by swam on 16/10/14.

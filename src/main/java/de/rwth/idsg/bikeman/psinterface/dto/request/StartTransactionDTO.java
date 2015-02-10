@@ -3,7 +3,7 @@ package de.rwth.idsg.bikeman.psinterface.dto.request;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.Builder;
+import lombok.Builder;
 
 /**
  * Created by swam on 31/07/14.

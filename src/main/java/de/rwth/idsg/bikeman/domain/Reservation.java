@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import lombok.experimental.Builder;
+import lombok.Builder;
 import org.hibernate.annotations.Type;
 import org.joda.time.LocalDateTime;
 
