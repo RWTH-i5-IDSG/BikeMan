@@ -13,6 +13,7 @@ import de.rwth.idsg.bikeman.ixsi.schema.BookingTargetAvailabilityType;
 import de.rwth.idsg.bikeman.ixsi.schema.BookingTargetIDType;
 import de.rwth.idsg.bikeman.ixsi.schema.CoordType;
 import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
+import de.rwth.idsg.bikeman.ixsi.schema.GeoPositionType;
 import de.rwth.idsg.bikeman.ixsi.schema.Language;
 import de.rwth.idsg.bikeman.ixsi.schema.PercentType;
 import de.rwth.idsg.bikeman.ixsi.schema.UserInfoType;
@@ -95,18 +96,19 @@ public class AvailabilityRequestProcessor implements
             CoordType coordType = new CoordType()
                 .withLatitude(ardto.getLocationLatitude())
                 .withLongitude(ardto.getLocationLongitude());
+            GeoPositionType geoPosition = new GeoPositionType()
+                .withCoord(coordType);
             // CurrentStateOfCharge
             PercentType percentType = new PercentType()
                 .withValue(roundPercent(ardto.getStateOfCharge()));
 
+            // TODO get the actual driving range from pedelec!
             BookingTargetAvailabilityType bType = new BookingTargetAvailabilityType()
                 .withID(bookingTargetIDType)
-                .withPlaceID(placeId);
-
-            bType.setCurrentStateOfCharge(percentType);
-
-            // TODO get the actual driving range from pedelec!
-            bType.setCurrentDrivingRange(0);
+                .withPlaceID(placeId)
+                .withGeoPosition(geoPosition)
+                .withCurrentStateOfCharge(percentType)
+                .withCurrentDrivingRange(0);
 
             availabilityList.add(bType);
         }
