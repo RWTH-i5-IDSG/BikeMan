@@ -79,9 +79,8 @@ public class SubscriptionRequestTypeDispatcher implements Dispatcher {
     private SubscriptionResponseType buildHeartbeat() {
         log.trace("Entered buildHeartbeat...");
 
-        SubscriptionResponseType s = new SubscriptionResponseType();
-        s.setHeartBeat(new HeartBeatResponseType());
-        return s;
+        return new SubscriptionResponseType()
+                .withHeartBeat(new HeartBeatResponseType());
     }
 
     @SuppressWarnings("unchecked")
@@ -101,9 +100,8 @@ public class SubscriptionRequestTypeDispatcher implements Dispatcher {
             res = p.buildError(ErrorFactory.invalidSystem());
         }
 
-        SubscriptionResponseType s = new SubscriptionResponseType();
-        s.setSubscriptionResponseGroup(res);
-        return s;
+        return new SubscriptionResponseType()
+                .withSubscriptionResponseGroup(res);
     }
 
     @SuppressWarnings("unchecked")
@@ -123,8 +121,7 @@ public class SubscriptionRequestTypeDispatcher implements Dispatcher {
             res = p.buildError(ErrorFactory.invalidSystem());
         }
 
-        SubscriptionResponseType s = new SubscriptionResponseType();
-        s.setResponseMessageGroup(res);
-        return s;
+        return new SubscriptionResponseType()
+                .withResponseMessageGroup(res);
     }
 }

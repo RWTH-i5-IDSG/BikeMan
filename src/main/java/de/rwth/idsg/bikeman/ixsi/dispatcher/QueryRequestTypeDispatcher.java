@@ -96,9 +96,8 @@ public class QueryRequestTypeDispatcher implements Dispatcher {
             res = p.buildError(ErrorFactory.invalidSystem());
         }
 
-        QueryResponseType response = new QueryResponseType();
-        response.setStaticDataResponseGroup(res);
-        return response;
+        return new QueryResponseType()
+                .withStaticDataResponseGroup(res);
     }
 
     @SuppressWarnings("unchecked")
@@ -117,9 +116,8 @@ public class QueryRequestTypeDispatcher implements Dispatcher {
             responseChoice = p.buildError(ErrorFactory.invalidSystem());
         }
 
-        QueryResponseType response = new QueryResponseType();
-        response.setUserTriggeredResponseGroup(responseChoice);
-        return response;
+        return new QueryResponseType()
+                .withUserTriggeredResponseGroup(responseChoice);
     }
 
     @SuppressWarnings("unchecked")
