@@ -37,18 +37,18 @@ public class CompleteConsumptionRequestProcessor implements
         }
         List<Booking> bookingList = bookingRepository.findClosedBookings(bookingIdListLong);
 
-        // for now, assume that client system is always able to process the full message
-        // therefore do not split messages!
-        CompleteConsumptionResponseType response = new CompleteConsumptionResponseType()
-            .withLast(true)
-            .withMessageBlockID(String.valueOf(request.hashCode()));
-
-        List<ConsumptionType> consumptionList = response.getConsumption();
+        List<ConsumptionType> consumptionList = new ArrayList<>();
         for (Booking b : bookingList) {
             String bookingId = String.valueOf(b.getBookingId());
             consumptionList.add(consumptionPushService.createConsumption(bookingId, b.getTransaction()));
         }
-        return response;
+
+        // for now, assume that client system is always able to process the full message
+        // therefore do not split messages!
+        return new CompleteConsumptionResponseType()
+                .withLast(true)
+                .withMessageBlockID(String.valueOf(request.hashCode()))
+                .withConsumption(consumptionList);
     }
 
     @Override

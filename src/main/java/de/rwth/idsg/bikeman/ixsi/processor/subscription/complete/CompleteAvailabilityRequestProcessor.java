@@ -1,6 +1,5 @@
 package de.rwth.idsg.bikeman.ixsi.processor.subscription.complete;
 
-import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
 import de.rwth.idsg.bikeman.ixsi.dto.query.AvailabilityResponseDTO;
 import de.rwth.idsg.bikeman.ixsi.impl.AvailabilityStore;
 import de.rwth.idsg.bikeman.ixsi.processor.api.SubscriptionRequestMessageProcessor;
@@ -14,7 +13,6 @@ import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,24 +35,12 @@ public class CompleteAvailabilityRequestProcessor implements
 
         List<BookingTargetAvailabilityType> availabilities = availabilityRequestProcessor.getBookingTargetAvailabilities(responseDTOs);
 
-        CompleteAvailabilityResponseType response = new CompleteAvailabilityResponseType();
         // for now, assume that client system is always able to process the full message
         // therefore do not split messages!
-        response.setLast(true);
-        response.setMessageBlockID(String.valueOf(request.hashCode()));
-        response.getBookingTarget().addAll(availabilities);
-        return response;
-    }
-
-    private List<BookingTargetIDType> getBookingTargetIdsFromString(List<String> ids) {
-        List<BookingTargetIDType> res = new ArrayList<>();
-        for (String id : ids) {
-            BookingTargetIDType t = new BookingTargetIDType()
-                .withBookeeID(id)
-                .withProviderID(IXSIConstants.Provider.id);
-            res.add(t);
-        }
-        return res;
+        return new CompleteAvailabilityResponseType()
+            .withLast(true)
+            .withMessageBlockID(String.valueOf(request.hashCode()))
+            .withBookingTarget(availabilities);
     }
 
     // -------------------------------------------------------------------------

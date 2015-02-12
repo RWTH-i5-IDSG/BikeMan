@@ -49,7 +49,6 @@ public class PlaceAvailabilityRequestProcessor implements
 
         List<PlaceAvailabilityType> placeAvailList = getPlaceAvailabilities(dtos);
 
-
         return new PlaceAvailabilityResponseType()
             .withPlace(placeAvailList);
     }
@@ -63,17 +62,17 @@ public class PlaceAvailabilityRequestProcessor implements
         return null;
     }
 
-    public List<PlaceAvailabilityType> getPlaceAvailabilities(List<PlaceAvailabilityResponseDTO> dtos) {
+    public List<PlaceAvailabilityType> getPlaceAvailabilities(List<PlaceAvailabilityResponseDTO> dtoList) {
         List<PlaceAvailabilityType> placeAvailList = new ArrayList<>();
-        for (PlaceAvailabilityResponseDTO plavdto : dtos) {
+        for (PlaceAvailabilityResponseDTO dto : dtoList) {
             // Id
             ProviderPlaceIDType providerPlaceIDType = new ProviderPlaceIDType()
-                .withPlaceID(plavdto.getManufacturerId())
+                .withPlaceID(dto.getManufacturerId())
                 .withProviderID(IXSIConstants.Provider.id);
 
             PlaceAvailabilityType placeAvailabilityType = new PlaceAvailabilityType()
                 .withID(providerPlaceIDType)
-                .withAvailability(plavdto.getAvailableSlots());
+                .withAvailability(dto.getAvailableSlots());
 
             placeAvailList.add(placeAvailabilityType);
         }

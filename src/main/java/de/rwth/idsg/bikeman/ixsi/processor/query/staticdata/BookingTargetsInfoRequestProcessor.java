@@ -29,118 +29,71 @@ public class BookingTargetsInfoRequestProcessor implements
 
     @Override
     public BookingTargetsInfoResponseType process(BookingTargetsInfoRequestType request) {
-        BookingTargetsInfoResponseType response = new BookingTargetsInfoResponseType();
-
-        BookingTargetsInfoResponseDTO responseDTO = queryIXSIRepository.bookingTargetInfos();
+        BookingTargetsInfoResponseDTO dto = queryIXSIRepository.bookingTargetInfos();
 
         // response timestamp
-        long timestamp = responseDTO.getTimestamp();
-        response.setTimestamp(new DateTime(timestamp));
+        long timestamp = dto.getTimestamp();
 
-        // BEGIN response pedelecs
-        List<PedelecDTO> pedelecs = responseDTO.getPedelecs();
-        List<BookingTargetType> bookingTargets = getBookingTargetsFromDTO(pedelecs);
-        response.getBookee().addAll(bookingTargets);
-        // END response pedelecs
+        // pedelecs
+        List<BookingTargetType> bookingTargets = getBookingTargetsFromDTO(dto.getPedelecs());
 
-        // BEGIN response stations
-        List<StationDTO> stations = responseDTO.getStations();
-        List<PlaceType> places = getPlaceTypesFromDTO(stations);
-        response.getPlace().addAll(places);
-        // END response stations
+        // stations
+        List<PlaceType> places = getPlaceTypesFromDTO(dto.getStations());
 
-        // BEGIN response providers
-        ProviderType provider = new ProviderType();
+        // providers
+        ProviderType provider = new ProviderType()
+                .withID(IXSIConstants.Provider.id)
+                .withName(IXSIConstants.Provider.name)
+                .withShortName(IXSIConstants.Provider.shortName);
 
-        // set providerId
-        provider.setID(IXSIConstants.Provider.id);
+        // placegroups
+        PlaceGroupType placegroup = new PlaceGroupType()
+                .withID(IXSIConstants.PlaceGroup.id)
+                .withPlaceID(getPlaceIdsFromPlaceTypes(places))
+                .withProbability(new PercentType().withValue(100)); // TODO: set probability (Why do we even need this?)
 
-        // set provider name
-        provider.setName(IXSIConstants.Provider.name);
-        provider.setShortName(IXSIConstants.Provider.shortName);
-
-        // set provider URLs
-        //TODO: new IXSI does not contain these.
-//        provider.setURL(IXSIConstants.Provider.url);
-//        provider.setLogoURL(IXSIConstants.Provider.logoUrl);
-//        provider.setInterAppBaseURL(IXSIConstants.Provider.interAppBaseUrl);
-//        provider.setWebAppBaseURL(IXSIConstants.Provider.webAppBaseUrl);
-
-        response.getProvider().add(provider);
-        // END response providers
-
-        // BEGIN response placegroups
-        PlaceGroupType placegroup = new PlaceGroupType();
-
-        // set placegroupId
-        placegroup.setID(IXSIConstants.PlaceGroup.id);
-
-        // set placegroup placeIds
-        List<ProbabilityPlaceIDType> placeIds = getPlaceIdsFromPlaceTypes(places);
-        placegroup.getPlaceID().addAll(placeIds);
-
-        // TODO: set probability (Why do we even need this?)
-        PercentType percent = new PercentType()
-            .withValue(100);
-        placegroup.setProbability(percent);
-
-        response.getPlaceGroup().add(placegroup);
-        // END response placegroups
-
-        return response;
+        return new BookingTargetsInfoResponseType()
+            .withTimestamp(new DateTime(timestamp))
+            .withBookee(bookingTargets)
+            .withPlace(places)
+            .withProvider(provider)
+            .withPlaceGroup(placegroup);
     }
 
     private List<BookingTargetType> getBookingTargetsFromDTO(List<PedelecDTO> pedelecs) {
         List<BookingTargetType> bookingTargets = new ArrayList<>();
         for (PedelecDTO ped : pedelecs) {
-            BookingTargetType target = new BookingTargetType();
 
-            // set pedelecId
-            target.setID(new BookingTargetIDType()
-                .withBookeeID(ped.getManufacturerId())
-                .withProviderID(IXSIConstants.Provider.id));
+            BookingTargetIDType id = new BookingTargetIDType()
+                    .withBookeeID(ped.getManufacturerId())
+                    .withProviderID(IXSIConstants.Provider.id);
 
-            // TODO: In our case pedelecs have no names,
-            // for now we just set the manufacturerId
+            // TODO: In our case pedelecs have no names, for now we just set the manufacturerId
             TextType name = new TextType()
                 .withText(ped.getManufacturerId());
-            target.getName().add(name);
 
-            target.setMaxDistance(ped.getMaxDistance());
-            target.setPlaceGroupID(IXSIConstants.PlaceGroup.id);
-            target.setClazz(IXSIConstants.bookeeClassType);
-            target.setEngine(IXSIConstants.engineType);
-
-            bookingTargets.add(target);
+            bookingTargets.add(new BookingTargetType()
+                    .withID(id)
+                    .withName(name)
+                    .withMaxDistance(ped.getMaxDistance())
+                    .withPlaceGroupID(IXSIConstants.PlaceGroup.id)
+                    .withClazz(IXSIConstants.bookeeClassType)
+                    .withEngine(IXSIConstants.engineType));
         }
-
         return bookingTargets;
     }
 
     private List<ProbabilityPlaceIDType> getPlaceIdsFromPlaceTypes(List<PlaceType> placeTypes) {
         List<ProbabilityPlaceIDType> placeIds = new ArrayList<>();
-
         for (PlaceType placeType : placeTypes) {
-            // add the placeId to placeGroup list
-            ProbabilityPlaceIDType probPlaceId = new ProbabilityPlaceIDType().withID(placeType.getID());
-            placeIds.add(probPlaceId);
+            placeIds.add(new ProbabilityPlaceIDType().withID(placeType.getID()));
         }
-
         return placeIds;
     }
 
     private List<PlaceType> getPlaceTypesFromDTO(List<StationDTO> stations) {
         List<PlaceType> places = new ArrayList<>();
         for (StationDTO stat : stations) {
-            PlaceType place = new PlaceType();
-
-            // set placeID
-            place.setID(stat.getManufacturerId());
-
-            // set place coordinates
-            CoordType coords = new CoordType()
-                .withLatitude(stat.getLocation_latitude())
-                .withLongitude(stat.getLocation_longitude());
 
             ViewAddressDTO viewAddressDTO = stat.getAddress();
 
@@ -150,26 +103,24 @@ public class BookingTargetsInfoRequestProcessor implements
                 .withCity(viewAddressDTO.getCity())
                 .withStreetHouseNr(viewAddressDTO.getStreetAndHousenumber());
 
+            CoordType coords = new CoordType()
+                    .withLatitude(stat.getLocation_latitude())
+                    .withLongitude(stat.getLocation_longitude());
+
             GeoPositionType geoPosition = new GeoPositionType()
                 .withAddress(address)
                 .withCoord(coords);
 
-            place.setGeoPosition(geoPosition);
-
-            // set place capacity
-            place.setCapacity(stat.getSlotCount());
-
-            // set place name
             TextType name = new TextType()
                 .withText(stat.getName());
-            place.getName().add(name);
 
-            // set place providerId
-            place.setProviderID(IXSIConstants.Provider.id);
-
-            places.add(place);
+            places.add(new PlaceType()
+                        .withGeoPosition(geoPosition)
+                        .withID(stat.getManufacturerId())
+                        .withCapacity(stat.getSlotCount())
+                        .withName(name)
+                        .withProviderID(IXSIConstants.Provider.id));
         }
-
         return places;
     }
 
