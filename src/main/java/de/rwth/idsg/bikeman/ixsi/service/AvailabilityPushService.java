@@ -27,12 +27,25 @@ public class AvailabilityPushService {
     @Autowired private Producer producer;
     @Autowired private AvailabilityStore availabilityStore;
 
+    /**
+     * @param bookeeID      Manufacturer ID of the pedelec.
+     * @param placeID       Manufacturer ID of the station.
+     * @param departure     Date/time of the start of the transaction.
+     */
     public void takenFromPlace(String bookeeID, String placeID, DateTime departure) {
-        buildAndSend(bookeeID, placeID, departure, true);
+        buildAndSend(bookeeID, placeID, departure, false);
     }
 
-    public void arrivedAtPlace(String bookeeID, String placeID, DateTime arrival) {
-        buildAndSend(bookeeID, placeID, arrival, false);
+    /**
+     * @param bookeeID      Manufacturer ID of the pedelec.
+     * @param placeID       Manufacturer ID of the station.
+     * @param departure     Date/time of the start of the transaction. This is rightfully so and not the date/time
+     *                      of the arrival, because in client system we want to invalidate the time period that
+     *                      was sent earlier with {@link #takenFromPlace(String, String, org.joda.time.DateTime)}.
+     *                      Therefore, the two values have to match.
+     */
+    public void arrivedAtPlace(String bookeeID, String placeID, DateTime departure) {
+        buildAndSend(bookeeID, placeID, departure, true);
     }
 
     private void buildAndSend(String bookeeID, String placeID, DateTime dt, boolean isAvailable) {
@@ -46,13 +59,13 @@ public class AvailabilityPushService {
             return;
         }
 
-        TimePeriodType period = new TimePeriodType();
-        period.setBegin(dt);
-        period.setEnd(new DateTime().plusHours(6)); // TODO: Does not make sense at all. Find a solution!
+        TimePeriodType period = new TimePeriodType()
+                .withBegin(dt)
+                .withEnd(dt.plusHours(6)); // TODO: Does not make sense at all. Find a solution!
 
-        BookingTargetChangeAvailabilityType targetChange = new BookingTargetChangeAvailabilityType();
-        targetChange.setID(bookingTargetID);
-        targetChange.setPlaceID(placeID);
+        BookingTargetChangeAvailabilityType targetChange = new BookingTargetChangeAvailabilityType()
+                .withID(bookingTargetID)
+                .withPlaceID(placeID);
 
         if (isAvailable) {
             targetChange.setAvailability(period);
@@ -60,14 +73,9 @@ public class AvailabilityPushService {
             targetChange.setInavailability(period);
         }
 
-        AvailabilityPushMessageType avail = new AvailabilityPushMessageType();
-        avail.getAvailabilityChange().add(targetChange);
-
-        SubscriptionMessageType sub = new SubscriptionMessageType();
-        sub.setPushMessageGroup(avail);
-
-        IxsiMessageType ixsi = new IxsiMessageType();
-        ixsi.setSubscriptionMessage(sub);
+        AvailabilityPushMessageType avail = new AvailabilityPushMessageType().withAvailabilityChange(targetChange);
+        SubscriptionMessageType sub = new SubscriptionMessageType().withPushMessageGroup(avail);
+        IxsiMessageType ixsi = new IxsiMessageType().withSubscriptionMessage(sub);
 
         producer.send(ixsi, systemIdSet);
     }

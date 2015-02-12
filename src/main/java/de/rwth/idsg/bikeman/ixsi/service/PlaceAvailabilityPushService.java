@@ -39,22 +39,17 @@ public class PlaceAvailabilityPushService {
                                                .get(0)
                                                .getAvailableSlots();
 
-        ProviderPlaceIDType placeIDType = new ProviderPlaceIDType();
-        placeIDType.setPlaceID(placeID);
-        placeIDType.setProviderID(IXSIConstants.Provider.id);
+        ProviderPlaceIDType placeIDType = new ProviderPlaceIDType()
+                .withPlaceID(placeID)
+                .withProviderID(IXSIConstants.Provider.id);
 
-        PlaceAvailabilityType avail = new PlaceAvailabilityType();
-        avail.setAvailability(freeSlots);
-        avail.setID(placeIDType);
+        PlaceAvailabilityType avail = new PlaceAvailabilityType()
+                .withAvailability(freeSlots)
+                .withID(placeIDType);
 
-        PlaceAvailabilityPushMessageType push = new PlaceAvailabilityPushMessageType();
-        push.getPlaceAvailability().add(avail);
-
-        SubscriptionMessageType sub = new SubscriptionMessageType();
-        sub.setPushMessageGroup(push);
-
-        IxsiMessageType ixsi = new IxsiMessageType();
-        ixsi.setSubscriptionMessage(sub);
+        PlaceAvailabilityPushMessageType push = new PlaceAvailabilityPushMessageType().withPlaceAvailability(avail);
+        SubscriptionMessageType sub = new SubscriptionMessageType().withPushMessageGroup(push);
+        IxsiMessageType ixsi = new IxsiMessageType().withSubscriptionMessage(sub);
 
         producer.send(ixsi, systemIdSet);
     }

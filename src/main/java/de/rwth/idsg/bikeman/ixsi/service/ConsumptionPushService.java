@@ -39,14 +39,9 @@ public class ConsumptionPushService {
 
         ConsumptionType consumption = createConsumption(bookingIdSTR, transaction);
 
-        ConsumptionPushMessageType c = new ConsumptionPushMessageType();
-        c.getConsumption().add(consumption);
-
-        SubscriptionMessageType sub = new SubscriptionMessageType();
-        sub.setPushMessageGroup(c);
-
-        IxsiMessageType ixsi = new IxsiMessageType();
-        ixsi.setSubscriptionMessage(sub);
+        ConsumptionPushMessageType c = new ConsumptionPushMessageType().withConsumption(consumption);
+        SubscriptionMessageType sub = new SubscriptionMessageType().withPushMessageGroup(c);
+        IxsiMessageType ixsi = new IxsiMessageType().withSubscriptionMessage(sub);
 
         producer.send(ixsi, systemIdSet);
     }
@@ -55,15 +50,14 @@ public class ConsumptionPushService {
         LocalDateTime start = t.getStartDateTime();
         LocalDateTime end = t.getEndDateTime();
 
-        TimePeriodType timePeriod = new TimePeriodType();
-        timePeriod.setBegin(start.toDateTime());
-        timePeriod.setEnd(end.toDateTime());
+        TimePeriodType timePeriod = new TimePeriodType()
+            .withBegin(start.toDateTime())
+            .withEnd(end.toDateTime());
 
-        ConsumptionType consumption = new ConsumptionType();
-        consumption.setBookingID(bookingId);
-        consumption.setType(IXSIConstants.consumptionClass);
-        consumption.setName(String.format(NAME_FORMAT, bookingId, start, end));
-        consumption.setTimePeriod(timePeriod);
-        return consumption;
+        return new ConsumptionType()
+            .withBookingID(bookingId)
+            .withType(IXSIConstants.consumptionClass)
+            .withName(String.format(NAME_FORMAT, bookingId, start, end))
+            .withTimePeriod(timePeriod);
     }
 }
