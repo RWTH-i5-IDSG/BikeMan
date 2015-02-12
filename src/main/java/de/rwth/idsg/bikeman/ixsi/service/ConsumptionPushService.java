@@ -51,13 +51,13 @@ public class ConsumptionPushService {
         LocalDateTime end = t.getEndDateTime();
 
         TimePeriodType timePeriod = new TimePeriodType()
-            .withBegin(start.toDateTime())
-            .withEnd(end.toDateTime());
+                .withBegin(start.toDateTime())
+                .withEnd(end.toDateTime());
 
         return new ConsumptionType()
-            .withBookingID(bookingId)
-            .withType(IXSIConstants.consumptionClass)
-            .withName(String.format(NAME_FORMAT, bookingId, start, end))
-            .withTimePeriod(timePeriod);
+                .withBookingID(bookingId)
+                .withType(IXSIConstants.consumptionClass)
+                .withName(String.format(NAME_FORMAT, bookingId, start, end))
+                .withTimePeriod(timePeriod);
     }
 }

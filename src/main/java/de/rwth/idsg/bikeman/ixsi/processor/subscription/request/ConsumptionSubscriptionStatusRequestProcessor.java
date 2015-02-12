@@ -24,8 +24,7 @@ public class ConsumptionSubscriptionStatusRequestProcessor implements
     public ConsumptionSubscriptionStatusResponseType process(ConsumptionSubscriptionStatusRequestType request, String systemId) {
         List<String> bookingIds = consumptionStore.getSubscriptions(systemId);
 
-        return new ConsumptionSubscriptionStatusResponseType()
-            .withBookingID(bookingIds);
+        return new ConsumptionSubscriptionStatusResponseType().withBookingID(bookingIds);
     }
 
     // -------------------------------------------------------------------------
@@ -34,7 +33,6 @@ public class ConsumptionSubscriptionStatusRequestProcessor implements
 
     @Override
     public ConsumptionSubscriptionStatusResponseType buildError(ErrorType e) {
-        return new ConsumptionSubscriptionStatusResponseType()
-            .withError(e);
+        return new ConsumptionSubscriptionStatusResponseType().withError(e);
     }
 }

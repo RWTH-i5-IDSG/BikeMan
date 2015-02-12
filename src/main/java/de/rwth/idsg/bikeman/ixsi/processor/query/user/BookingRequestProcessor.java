@@ -66,7 +66,7 @@ public class BookingRequestProcessor implements
                                                                  user.getUserID(),
                                                                  request.getTimePeriodProposal());
             BookingType booking = new BookingType()
-                .withID(String.valueOf(bookingId));
+                    .withID(String.valueOf(bookingId));
             bookingResponse.setBooking(booking);
             return bookingResponse;
 
@@ -84,7 +84,6 @@ public class BookingRequestProcessor implements
 
     @Override
     public BookingResponseType buildError(ErrorType e) {
-        return new BookingResponseType()
-            .withError(e);
+        return new BookingResponseType().withError(e);
     }
 }

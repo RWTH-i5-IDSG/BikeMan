@@ -26,8 +26,7 @@ public class BookingAlertSubscriptionStatusRequestProcessor implements
 
     @Override
     public BookingAlertSubscriptionStatusResponseType buildError(ErrorType e) {
-        return new BookingAlertSubscriptionStatusResponseType()
-            .withError(e);
+        return new BookingAlertSubscriptionStatusResponseType().withError(e);
     }
 
 }

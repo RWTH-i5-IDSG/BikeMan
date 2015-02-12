@@ -53,7 +53,6 @@ public class CompleteConsumptionRequestProcessor implements
 
     @Override
     public CompleteConsumptionResponseType buildError(ErrorType e) {
-        return new CompleteConsumptionResponseType()
-            .withError(e);
+        return new CompleteConsumptionResponseType().withError(e);
     }
 }

@@ -26,7 +26,6 @@ public class CompleteBookingAlertRequestProcessor implements
 
     @Override
     public CompleteBookingAlertResponseType buildError(ErrorType e) {
-        return new CompleteBookingAlertResponseType()
-            .withError(e);
+        return new CompleteBookingAlertResponseType().withError(e);
     }
 }

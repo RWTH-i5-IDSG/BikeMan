@@ -53,11 +53,11 @@ public class BookingTargetsInfoRequestProcessor implements
                 .withProbability(new PercentType().withValue(100)); // TODO: set probability (Why do we even need this?)
 
         return new BookingTargetsInfoResponseType()
-            .withTimestamp(new DateTime(timestamp))
-            .withBookee(bookingTargets)
-            .withPlace(places)
-            .withProvider(provider)
-            .withPlaceGroup(placegroup);
+                .withTimestamp(new DateTime(timestamp))
+                .withBookee(bookingTargets)
+                .withPlace(places)
+                .withProvider(provider)
+                .withPlaceGroup(placegroup);
     }
 
     private List<BookingTargetType> getBookingTargetsFromDTO(List<PedelecDTO> pedelecs) {
@@ -70,7 +70,7 @@ public class BookingTargetsInfoRequestProcessor implements
 
             // TODO: In our case pedelecs have no names, for now we just set the manufacturerId
             TextType name = new TextType()
-                .withText(ped.getManufacturerId());
+                    .withText(ped.getManufacturerId());
 
             bookingTargets.add(new BookingTargetType()
                     .withID(id)
@@ -98,28 +98,28 @@ public class BookingTargetsInfoRequestProcessor implements
             ViewAddressDTO viewAddressDTO = stat.getAddress();
 
             AddressType address = new AddressType()
-                .withCountry(viewAddressDTO.getCountry())
-                .withPostalCode(viewAddressDTO.getZip())
-                .withCity(viewAddressDTO.getCity())
-                .withStreetHouseNr(viewAddressDTO.getStreetAndHousenumber());
+                    .withCountry(viewAddressDTO.getCountry())
+                    .withPostalCode(viewAddressDTO.getZip())
+                    .withCity(viewAddressDTO.getCity())
+                    .withStreetHouseNr(viewAddressDTO.getStreetAndHousenumber());
 
             CoordType coords = new CoordType()
                     .withLatitude(stat.getLocation_latitude())
                     .withLongitude(stat.getLocation_longitude());
 
             GeoPositionType geoPosition = new GeoPositionType()
-                .withAddress(address)
-                .withCoord(coords);
+                    .withAddress(address)
+                    .withCoord(coords);
 
             TextType name = new TextType()
-                .withText(stat.getName());
+                    .withText(stat.getName());
 
             places.add(new PlaceType()
-                        .withGeoPosition(geoPosition)
-                        .withID(stat.getManufacturerId())
-                        .withCapacity(stat.getSlotCount())
-                        .withName(name)
-                        .withProviderID(IXSIConstants.Provider.id));
+                    .withGeoPosition(geoPosition)
+                    .withID(stat.getManufacturerId())
+                    .withCapacity(stat.getSlotCount())
+                    .withName(name)
+                    .withProviderID(IXSIConstants.Provider.id));
         }
         return places;
     }
@@ -130,7 +130,6 @@ public class BookingTargetsInfoRequestProcessor implements
 
     @Override
     public BookingTargetsInfoResponseType buildError(ErrorType e) {
-        return new BookingTargetsInfoResponseType()
-            .withError(e);
+        return new BookingTargetsInfoResponseType().withError(e);
     }
 }

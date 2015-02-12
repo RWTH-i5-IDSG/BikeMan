@@ -41,7 +41,6 @@ public class ChangedProvidersRequestProcessor implements
 
     @Override
     public ChangedProvidersResponseType buildError(ErrorType e) {
-        return new ChangedProvidersResponseType()
-            .withError(e);
+        return new ChangedProvidersResponseType().withError(e);
     }
 }

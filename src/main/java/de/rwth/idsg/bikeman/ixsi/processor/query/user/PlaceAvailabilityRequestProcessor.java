@@ -49,8 +49,7 @@ public class PlaceAvailabilityRequestProcessor implements
 
         List<PlaceAvailabilityType> placeAvailList = getPlaceAvailabilities(dtos);
 
-        return new PlaceAvailabilityResponseType()
-            .withPlace(placeAvailList);
+        return new PlaceAvailabilityResponseType().withPlace(placeAvailList);
     }
 
     /**
@@ -65,16 +64,14 @@ public class PlaceAvailabilityRequestProcessor implements
     public List<PlaceAvailabilityType> getPlaceAvailabilities(List<PlaceAvailabilityResponseDTO> dtoList) {
         List<PlaceAvailabilityType> placeAvailList = new ArrayList<>();
         for (PlaceAvailabilityResponseDTO dto : dtoList) {
-            // Id
+
             ProviderPlaceIDType providerPlaceIDType = new ProviderPlaceIDType()
-                .withPlaceID(dto.getManufacturerId())
-                .withProviderID(IXSIConstants.Provider.id);
+                    .withPlaceID(dto.getManufacturerId())
+                    .withProviderID(IXSIConstants.Provider.id);
 
-            PlaceAvailabilityType placeAvailabilityType = new PlaceAvailabilityType()
-                .withID(providerPlaceIDType)
-                .withAvailability(dto.getAvailableSlots());
-
-            placeAvailList.add(placeAvailabilityType);
+            placeAvailList.add(new PlaceAvailabilityType()
+                    .withID(providerPlaceIDType)
+                    .withAvailability(dto.getAvailableSlots()));
         }
         return placeAvailList;
     }
@@ -85,7 +82,6 @@ public class PlaceAvailabilityRequestProcessor implements
 
     @Override
     public PlaceAvailabilityResponseType buildError(ErrorType e) {
-        return new PlaceAvailabilityResponseType()
-            .withError(e);
+        return new PlaceAvailabilityResponseType().withError(e);
     }
 }

@@ -31,8 +31,7 @@ public class PlaceAvailabilitySubscriptionStatusRequestProcessor implements
             ids.add(new ProviderPlaceIDType().withPlaceID(s));
         }
 
-        return new PlaceAvailabilitySubscriptionStatusResponseType()
-            .withPlaceID(ids);
+        return new PlaceAvailabilitySubscriptionStatusResponseType().withPlaceID(ids);
     }
 
     // -------------------------------------------------------------------------
@@ -41,7 +40,6 @@ public class PlaceAvailabilitySubscriptionStatusRequestProcessor implements
 
     @Override
     public PlaceAvailabilitySubscriptionStatusResponseType buildError(ErrorType e) {
-        return new PlaceAvailabilitySubscriptionStatusResponseType()
-            .withError(e);
+        return new PlaceAvailabilitySubscriptionStatusResponseType().withError(e);
     }
 }

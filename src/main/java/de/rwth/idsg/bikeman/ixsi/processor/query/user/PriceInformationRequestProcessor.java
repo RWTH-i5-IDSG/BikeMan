@@ -41,7 +41,6 @@ public class PriceInformationRequestProcessor implements
 
     @Override
     public PriceInformationResponseType buildError(ErrorType e) {
-        return new PriceInformationResponseType()
-            .withError(e);
+        return new PriceInformationResponseType().withError(e);
     }
 }

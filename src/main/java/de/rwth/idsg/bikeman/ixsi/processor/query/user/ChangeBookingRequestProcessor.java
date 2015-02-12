@@ -39,7 +39,6 @@ public class ChangeBookingRequestProcessor implements
 
     @Override
     public ChangeBookingResponseType buildError(ErrorType e) {
-        return new ChangeBookingResponseType()
-            .withError(e);
+        return new ChangeBookingResponseType().withError(e);
     }
 }

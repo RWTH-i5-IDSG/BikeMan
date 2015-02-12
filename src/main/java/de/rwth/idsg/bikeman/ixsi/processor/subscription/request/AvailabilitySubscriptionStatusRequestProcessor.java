@@ -9,7 +9,6 @@ import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,8 +25,7 @@ public class AvailabilitySubscriptionStatusRequestProcessor implements
     public AvailabilitySubscriptionStatusResponseType process(AvailabilitySubscriptionStatusRequestType request, String systemId) {
         List<BookingTargetIDType> subscriptions = availabilityStore.getSubscriptions(systemId);
 
-        return new AvailabilitySubscriptionStatusResponseType()
-                .withBookingTargetID(subscriptions);
+        return new AvailabilitySubscriptionStatusResponseType().withBookingTargetID(subscriptions);
     }
 
     // -------------------------------------------------------------------------
@@ -36,7 +34,6 @@ public class AvailabilitySubscriptionStatusRequestProcessor implements
 
     @Override
     public AvailabilitySubscriptionStatusResponseType buildError(ErrorType e) {
-        return new AvailabilitySubscriptionStatusResponseType()
-            .withError(e);
+        return new AvailabilitySubscriptionStatusResponseType().withError(e);
     }
 }

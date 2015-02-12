@@ -46,8 +46,7 @@ public class AvailabilityRequestProcessor implements
 
         List<BookingTargetAvailabilityType> availabilityList = getBookingTargetAvailabilities(dtos);
 
-        return new AvailabilityResponseType()
-            .withBookingTarget(availabilityList);
+        return new AvailabilityResponseType().withBookingTarget(availabilityList);
     }
 
     /**
@@ -77,34 +76,29 @@ public class AvailabilityRequestProcessor implements
 
             // BookingTargetId
             String bookeeId = String.valueOf(dto.getManufacturerId());
-
             BookingTargetIDType bookingTargetIDType = new BookingTargetIDType()
-                .withBookeeID(bookeeId)
-                .withProviderID(IXSIConstants.Provider.id);
+                    .withBookeeID(bookeeId)
+                    .withProviderID(IXSIConstants.Provider.id);
 
             // PlaceID
             String placeId = String.valueOf(dto.getStationManufacturerId());
 
-            // GeoPosition
             CoordType coordType = new CoordType()
-                .withLatitude(dto.getLocationLatitude())
-                .withLongitude(dto.getLocationLongitude());
+                    .withLatitude(dto.getLocationLatitude())
+                    .withLongitude(dto.getLocationLongitude());
 
             GeoPositionType geoPosition = new GeoPositionType()
-                .withCoord(coordType);
+                    .withCoord(coordType);
 
-            // CurrentStateOfCharge
             PercentType percentType = new PercentType()
-                .withValue(roundPercent(dto.getStateOfCharge()));
+                    .withValue(roundPercent(dto.getStateOfCharge()));
 
-            BookingTargetAvailabilityType bType = new BookingTargetAvailabilityType()
-                .withID(bookingTargetIDType)
-                .withPlaceID(placeId)
-                .withGeoPosition(geoPosition)
-                .withCurrentStateOfCharge(percentType)
-                .withCurrentDrivingRange(0);    // TODO get the actual driving range from pedelec!
-
-            availabilityList.add(bType);
+            availabilityList.add(new BookingTargetAvailabilityType()
+                    .withID(bookingTargetIDType)
+                    .withPlaceID(placeId)
+                    .withGeoPosition(geoPosition)
+                    .withCurrentStateOfCharge(percentType)
+                    .withCurrentDrivingRange(0)); // TODO get the actual driving range from pedelec!
         }
         return availabilityList;
     }
@@ -119,8 +113,7 @@ public class AvailabilityRequestProcessor implements
 
     @Override
     public AvailabilityResponseType buildError(ErrorType e) {
-        return new AvailabilityResponseType()
-            .withError(e);
+        return new AvailabilityResponseType().withError(e);
     }
 
 }

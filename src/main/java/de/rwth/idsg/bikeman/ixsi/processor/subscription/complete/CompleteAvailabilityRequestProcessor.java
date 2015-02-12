@@ -38,9 +38,9 @@ public class CompleteAvailabilityRequestProcessor implements
         // for now, assume that client system is always able to process the full message
         // therefore do not split messages!
         return new CompleteAvailabilityResponseType()
-            .withLast(true)
-            .withMessageBlockID(String.valueOf(request.hashCode()))
-            .withBookingTarget(availabilities);
+                .withLast(true)
+                .withMessageBlockID(String.valueOf(request.hashCode()))
+                .withBookingTarget(availabilities);
     }
 
     // -------------------------------------------------------------------------
@@ -49,8 +49,7 @@ public class CompleteAvailabilityRequestProcessor implements
 
     @Override
     public CompleteAvailabilityResponseType buildError(ErrorType e) {
-        return new CompleteAvailabilityResponseType()
-            .withError(e);
+        return new CompleteAvailabilityResponseType().withError(e);
     }
 
 }
