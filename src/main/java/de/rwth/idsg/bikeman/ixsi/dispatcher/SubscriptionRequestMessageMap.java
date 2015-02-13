@@ -32,11 +32,6 @@ public class SubscriptionRequestMessageMap extends HashMap<Class<?>, Subscriptio
     @Autowired private CompleteBookingAlertRequestProcessor completeBookingAlertRequestProcessor;
     @Autowired private CompleteConsumptionRequestProcessor completeConsumptionRequestProcessor;
 
-    public SubscriptionRequestMessageMap() {
-        super();
-        log.trace("Initialized");
-    }
-
     @PostConstruct
     public void init() {
         super.put(CompleteAvailabilityRequestType.class, completeAvailabilityRequestProcessor);

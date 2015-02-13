@@ -26,13 +26,11 @@ public class ChangedProvidersRequestProcessor implements
         long timestamp = request.getTimestamp().getMillis();
         ChangedProvidersResponseDTO responseDTO = queryIXSIRepository.changedProviders(timestamp);
 
-        ChangedProvidersResponseType response = new ChangedProvidersResponseType();
-
         if (responseDTO.isProvidersChanged()) {
-            response.getProvider().add(IXSIConstants.Provider.id);
+            return new ChangedProvidersResponseType().withProvider(IXSIConstants.Provider.id);
+        } else {
+            return new ChangedProvidersResponseType();
         }
-
-        return response;
     }
 
     // -------------------------------------------------------------------------

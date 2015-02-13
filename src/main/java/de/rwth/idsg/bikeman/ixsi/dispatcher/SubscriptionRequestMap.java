@@ -44,11 +44,6 @@ public class SubscriptionRequestMap extends HashMap<Class<?>, SubscriptionReques
     @Autowired private ConsumptionSubscriptionRequestProcessor consumptionSubscriptionRequestProcessor;
     @Autowired private ConsumptionSubscriptionStatusRequestProcessor consumptionSubscriptionStatusRequestProcessor;
 
-    public SubscriptionRequestMap() {
-        super();
-        log.trace("Initialized");
-    }
-
     @PostConstruct
     public void init() {
         super.put(AvailabilitySubscriptionRequestType.class, availabilitySubscriptionRequestProcessor);

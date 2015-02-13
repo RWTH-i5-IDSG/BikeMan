@@ -44,8 +44,8 @@ public class TokenGenerationRequestProcessor implements
             return buildError(ErrorFactory.invalidRequest(null, null));
         }
 
-        UserInfoType userInfo = userInfoList.get(0);
         try {
+            UserInfoType userInfo = userInfoList.get(0);
             String token = ixsiUserRepository.setUserToken(userInfo.getUserID(), userInfo.getPassword());
             return new TokenGenerationResponseType().withToken(token);
 

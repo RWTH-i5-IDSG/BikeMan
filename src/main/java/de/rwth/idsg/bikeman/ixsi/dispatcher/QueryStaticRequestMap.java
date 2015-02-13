@@ -26,11 +26,6 @@ public class QueryStaticRequestMap extends HashMap<Class<?>, StaticRequestProces
     @Autowired private BookingTargetsInfoRequestProcessor bookingTargetsInfoRequestProcessor;
     @Autowired private ChangedProvidersRequestProcessor changedProvidersRequestProcessor;
 
-    public QueryStaticRequestMap() {
-        super();
-        log.trace("Initialized");
-    }
-
     @PostConstruct
     public void init() {
         super.put(BookingTargetsInfoRequestType.class, bookingTargetsInfoRequestProcessor);

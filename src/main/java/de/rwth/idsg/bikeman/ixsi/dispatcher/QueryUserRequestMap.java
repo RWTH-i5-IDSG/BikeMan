@@ -47,11 +47,6 @@ public class QueryUserRequestMap extends HashMap<Class<?>, UserRequestProcessor>
     @Autowired private ChangeBookingRequestProcessor changeBookingRequestProcessor;
     @Autowired private BookingUnlockRequestProcessor bookingUnlockRequestProcessor;
 
-    public QueryUserRequestMap() {
-        super();
-        log.trace("Initialized");
-    }
-
     @PostConstruct
     public void init() {
         super.put(OpenSessionRequestType.class, openSessionRequestProcessor);

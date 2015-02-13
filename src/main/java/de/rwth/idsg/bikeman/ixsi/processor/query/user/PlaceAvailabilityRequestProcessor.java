@@ -47,9 +47,7 @@ public class PlaceAvailabilityRequestProcessor implements
             dtos = queryIXSIRepository.placeAvailability(request.getCircle());
         }
 
-        List<PlaceAvailabilityType> placeAvailList = getPlaceAvailabilities(dtos);
-
-        return new PlaceAvailabilityResponseType().withPlace(placeAvailList);
+        return new PlaceAvailabilityResponseType().withPlace(getPlaceAvailabilities(dtos));
     }
 
     /**

@@ -29,10 +29,9 @@ public class CompleteAvailabilityRequestProcessor implements
 
     @Override
     public CompleteAvailabilityResponseType process(CompleteAvailabilityRequestType request, String systemId) {
+
         List<BookingTargetIDType> targetIds = availabilityStore.getSubscriptions(systemId);
-
         List<AvailabilityResponseDTO> responseDTOs = queryIXSIRepository.availability(targetIds);
-
         List<BookingTargetAvailabilityType> availabilities = availabilityRequestProcessor.getBookingTargetAvailabilities(responseDTOs);
 
         // for now, assume that client system is always able to process the full message

@@ -28,8 +28,8 @@ public class CompletePlaceAvailabilityRequestProcessor implements
 
     @Override
     public CompletePlaceAvailabilityResponseType process(CompletePlaceAvailabilityRequestType request, String systemId) {
-        List<String> ids = placeAvailabilityStore.getSubscriptions(systemId);
 
+        List<String> ids = placeAvailabilityStore.getSubscriptions(systemId);
         List<PlaceAvailabilityResponseDTO> dtos = queryIXSIRepository.placeAvailability(ids);
         List<PlaceAvailabilityType> availabilities = placeAvailabilityRequestProcessor.getPlaceAvailabilities(dtos);
 

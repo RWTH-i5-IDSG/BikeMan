@@ -12,8 +12,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -23,23 +23,22 @@ import java.util.concurrent.TimeUnit;
 public abstract class AbstractSubscriptionStore<T> implements SubscriptionStore<T> {
 
     // Want to get the logger of the extending class and not of this abstract one
-    private final Logger log = LoggerFactory.getLogger(getClass());
-
-    final ThreadFactory threadFactory = new ThreadFactoryBuilder()
-            .setNameFormat(getClass().getSimpleName() + "-Thread-%d")
-            .setDaemon(true)
-            .build();
+    protected final Logger log = LoggerFactory.getLogger(getClass());
 
     /**
      * Key   (T)           = ID of the item
      * Value (Set<String>) = IDs of the subscribed systems
      */
-    ConcurrentHashMap<T, Set<String>> lookupTable;
+    private final ConcurrentHashMap<T, Set<String>> lookupTable = new ConcurrentHashMap<>();
 
     /**
      * Service to remove expired subscriptions
      */
-    ScheduledExecutorService scheduler;
+    private static final ScheduledExecutorService executor =
+            Executors.newScheduledThreadPool(3, new ThreadFactoryBuilder()
+                    .setNameFormat("subscriptionStoreScheduler-Thread-%d")
+                    .setDaemon(true)
+                    .build());
 
     @Override
     public void subscribe(String systemID, List<T> itemIDs, Integer expireIntervalinMinutes) {
@@ -111,12 +110,18 @@ public abstract class AbstractSubscriptionStore<T> implements SubscriptionStore<
         return lookupTable.toString();
     }
 
+    public void shutDownExecutor() {
+        if (!executor.isShutdown()) {
+            executor.shutdownNow();
+        }
+    }
+
     // -------------------------------------------------------------------------
     // Schedule to remove subscriptions
     // -------------------------------------------------------------------------
 
     private void scheduleRemove(String systemID, List<T> itemIDs, long expireIntervalinMinutes) {
-        scheduler.schedule(new RemoveJob(systemID, itemIDs), expireIntervalinMinutes, TimeUnit.MINUTES);
+        executor.schedule(new RemoveJob(systemID, itemIDs), expireIntervalinMinutes, TimeUnit.MINUTES);
     }
 
     @RequiredArgsConstructor
