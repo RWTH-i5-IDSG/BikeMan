@@ -48,9 +48,9 @@ public class PedelecStationController {
     @Timed
     @RequestMapping(value = BASE_PATH_BOOTNOTIFICATION, method = RequestMethod.POST)
     public BootConfirmationDTO bootNotification(@RequestBody BootNotificationDTO bootNotificationDTO,
-                                                HttpServletRequest request, HttpServletResponse response) throws DatabaseException {
+                                                HttpServletRequest request) throws DatabaseException {
         log.debug("[From: {}] Received bootNotification", Utils.getFrom(request));
-        return pedelecStationService.handleBootNotification(bootNotificationDTO, response);
+        return pedelecStationService.handleBootNotification(bootNotificationDTO);
     }
 
     @Timed

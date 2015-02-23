@@ -21,7 +21,7 @@ import java.util.Locale;
 /**
  * Created by sgokay on 14.07.14.
  */
-@ControllerAdvice
+@ControllerAdvice(basePackages = "de.rwth.idsg.bikeman.web.rest")
 @Slf4j
 public class GeneralExceptionHandler {
 

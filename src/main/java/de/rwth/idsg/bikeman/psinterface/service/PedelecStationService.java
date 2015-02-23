@@ -5,6 +5,7 @@ import de.rwth.idsg.bikeman.domain.CardAccount;
 import de.rwth.idsg.bikeman.domain.OperationState;
 import de.rwth.idsg.bikeman.domain.Transaction;
 import de.rwth.idsg.bikeman.ixsi.service.ConsumptionPushService;
+import de.rwth.idsg.bikeman.psinterface.Utils;
 import de.rwth.idsg.bikeman.psinterface.dto.request.BootNotificationDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.CustomerAuthorizeDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.StartTransactionDTO;
@@ -23,8 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletResponse;
-import java.util.Date;
+import javax.persistence.NoResultException;
 import java.util.List;
 
 /**
@@ -44,16 +44,11 @@ public class PedelecStationService {
 
     private static final Integer HEARTBEAT_INTERVAL_IN_SECONDS = 60;
 
-    public BootConfirmationDTO handleBootNotification(BootNotificationDTO bootNotificationDTO, HttpServletResponse response) throws DatabaseException {
-        
-        if (stationRepository.findOneByManufacturerId(bootNotificationDTO.getStationManufacturerId()) == null) {
-            response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
-        }
-        
+    public BootConfirmationDTO handleBootNotification(BootNotificationDTO bootNotificationDTO) throws DatabaseException {
         stationRepository.updateAfterBoot(bootNotificationDTO);
 
         BootConfirmationDTO bootConfirmationDTO = new BootConfirmationDTO();
-        bootConfirmationDTO.setTimestamp(new Date().getTime());
+        bootConfirmationDTO.setTimestamp(Utils.getSecondsOfNow());
         bootConfirmationDTO.setHeartbeatInterval(HEARTBEAT_INTERVAL_IN_SECONDS);
         return bootConfirmationDTO;
     }
@@ -61,7 +56,7 @@ public class PedelecStationService {
     public AuthorizeConfirmationDTO handleAuthorize(CustomerAuthorizeDTO customerAuthorizeDTO) throws DatabaseException {
         CardAccount cardAccount = customerRepository.findByCardIdAndCardPin(customerAuthorizeDTO.getCardId(), customerAuthorizeDTO.getPin());
 
-        if (cardAccount.getOperationState().equals(OperationState.INOPERATIVE)) {
+        if (OperationState.INOPERATIVE.equals(cardAccount.getOperationState())) {
             throw new DatabaseException("Card is not operational!");
         }
 
