@@ -1,7 +1,6 @@
-package de.rwth.idsg.bikeman.psinterface.rest;
+package de.rwth.idsg.bikeman.psinterface.exception;
 
 import de.rwth.idsg.bikeman.psinterface.Utils;
-import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,14 +15,28 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @Slf4j
 public class PsExceptionHandler {
 
-    @ExceptionHandler(DatabaseException.class)
-    public ResponseEntity<PsExceptionMessage> processDatabaseException(DatabaseException e) {
+    @ExceptionHandler(PsException.class)
+    public ResponseEntity<PsExceptionMessage> processPsException(PsException e) {
         log.error("Exception happened", e);
 
-        HttpStatus status = HttpStatus.NOT_ACCEPTABLE;
+        HttpStatus status;
+        PsErrorCode errorCode = e.getErrorCode();
+        switch (errorCode) {
+            case NOT_REGISTERED:
+                status = HttpStatus.NOT_ACCEPTABLE;
+                break;
+
+            case AUTH_ATTEMPTS_EXCEEDED:
+                status = HttpStatus.FORBIDDEN;
+                break;
+
+            default:
+                status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+
         PsExceptionMessage msg = new PsExceptionMessage(
                 Utils.getSecondsOfNow(),
-                e.getErrorCode(),
+                errorCode.name(),
                 e.getMessage()
         );
         return new ResponseEntity<>(msg, status);

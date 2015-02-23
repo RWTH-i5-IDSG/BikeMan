@@ -1,4 +1,4 @@
-package de.rwth.idsg.bikeman.psinterface.rest;
+package de.rwth.idsg.bikeman.psinterface.exception;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

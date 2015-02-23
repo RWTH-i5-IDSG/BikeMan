@@ -11,6 +11,8 @@ import de.rwth.idsg.bikeman.domain.StationSlot_;
 import de.rwth.idsg.bikeman.domain.Station_;
 import de.rwth.idsg.bikeman.psinterface.dto.request.BootNotificationDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.SlotDTO;
+import de.rwth.idsg.bikeman.psinterface.exception.PsErrorCode;
+import de.rwth.idsg.bikeman.psinterface.exception.PsException;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditAddressDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditStationDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.view.ViewStationDTO;
@@ -24,7 +26,6 @@ import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
@@ -111,15 +112,10 @@ public class StationRepositoryImpl implements StationRepository {
 
     @Override
     @Transactional(readOnly = true)
-    public Station findOneByManufacturerId(String manufacturerId) throws DatabaseException {
-        final String q = "SELECT s FROM Station s where s.manufacturerId = :stationManufacturerId";
-        try {
-            return em.createQuery(q, Station.class)
-                    .setParameter("stationManufacturerId", manufacturerId)
-                    .getSingleResult();
-        } catch (NoResultException ex) {
-            throw new DatabaseException("Station with manufacturerId '" + manufacturerId + "' is not registered", ex);
-        }
+    public Station findOneByManufacturerId(String manufacturerId) {
+        return em.createQuery("SELECT s FROM Station s where s.manufacturerId = :stationManufacturerId", Station.class)
+                .setParameter("stationManufacturerId", manufacturerId)
+                .getSingleResult();
     }
     
     @Override
@@ -201,7 +197,14 @@ public class StationRepositoryImpl implements StationRepository {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateAfterBoot(BootNotificationDTO dto) throws DatabaseException {
-        Station station = findOneByManufacturerId(dto.getStationManufacturerId());
+        Station station;
+        String manufacturerId = dto.getStationManufacturerId();
+        try {
+            station = findOneByManufacturerId(manufacturerId);
+        } catch (NoResultException e) {
+            throw new PsException("Station with manufacturerId '" + manufacturerId + "' is not registered", e, PsErrorCode.NOT_REGISTERED);
+        }
+
         station.setFirmwareVersion(dto.getFirmwareVersion());
         Set<StationSlot> stationSlots = station.getStationSlots();
 

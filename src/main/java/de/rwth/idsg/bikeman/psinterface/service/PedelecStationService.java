@@ -13,6 +13,7 @@ import de.rwth.idsg.bikeman.psinterface.dto.request.StopTransactionDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.response.AuthorizeConfirmationDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.response.AvailablePedelecDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.response.BootConfirmationDTO;
+import de.rwth.idsg.bikeman.psinterface.exception.PsException;
 import de.rwth.idsg.bikeman.repository.BookingRepository;
 import de.rwth.idsg.bikeman.repository.CustomerRepository;
 import de.rwth.idsg.bikeman.repository.PedelecRepository;
@@ -44,7 +45,7 @@ public class PedelecStationService {
 
     private static final Integer HEARTBEAT_INTERVAL_IN_SECONDS = 60;
 
-    public BootConfirmationDTO handleBootNotification(BootNotificationDTO bootNotificationDTO) throws DatabaseException {
+    public BootConfirmationDTO handleBootNotification(BootNotificationDTO bootNotificationDTO) throws PsException {
         stationRepository.updateAfterBoot(bootNotificationDTO);
 
         BootConfirmationDTO bootConfirmationDTO = new BootConfirmationDTO();
