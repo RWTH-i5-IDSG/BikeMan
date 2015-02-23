@@ -35,7 +35,7 @@ public class PsExceptionHandler {
         }
 
         PsExceptionMessage msg = new PsExceptionMessage(
-                Utils.getSecondsOfNow(),
+                Utils.nowInSeconds(),
                 errorCode.name(),
                 e.getMessage()
         );

@@ -6,7 +6,7 @@ package de.rwth.idsg.bikeman.psinterface.exception;
  */
 public enum PsErrorCode {
     NOT_REGISTERED,
-    MISSING_REQUIRED_PARAMETER,
+    CONSTRAINT_FAILED,
     AUTH_ATTEMPTS_EXCEEDED,
     DATABASE_OPERATION_FAILED,
     UNKNOWN_SERVER_ERROR
