@@ -7,6 +7,8 @@ import de.rwth.idsg.bikeman.domain.CardAccount_;
 import de.rwth.idsg.bikeman.domain.Customer_;
 import de.rwth.idsg.bikeman.domain.Tariff_;
 import de.rwth.idsg.bikeman.domain.login.Authority;
+import de.rwth.idsg.bikeman.psinterface.exception.PsErrorCode;
+import de.rwth.idsg.bikeman.psinterface.exception.PsException;
 import de.rwth.idsg.bikeman.security.AuthoritiesConstants;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditAddressDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditCustomerDTO;
@@ -40,19 +42,11 @@ import java.util.List;
 @Slf4j
 public class CustomerRepositoryImpl implements CustomerRepository {
 
-    @Inject
-    private PasswordEncoder passwordEncoder;
-
-    @Inject
-    private TariffRepository tariffRepository;
+    @Inject private PasswordEncoder passwordEncoder;
+    @Inject private TariffRepository tariffRepository;
 
     private enum Operation {CREATE, UPDATE}
-
-    ;
-
     private enum FindType {ALL, BY_NAME, BY_LOGIN}
-
-    ;
 
     @PersistenceContext
     private EntityManager em;
@@ -112,19 +106,17 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     @Override
     @Transactional(readOnly = true)
     public CardAccount findByCardIdAndCardPin(String cardId, String cardPin) throws DatabaseException {
-
         final String query = "SELECT c FROM CardAccount c WHERE c.cardId = :cardId AND c.cardPin = :cardPin";
-
         try {
-            return (CardAccount) em.createQuery(query)
+            return em.createQuery(query, CardAccount.class)
                     .setParameter("cardId", cardId)
                     .setParameter("cardPin", cardPin)
                     .getSingleResult();
         } catch (NoResultException e) {
-            throw new DatabaseException("No customer found with cardId " + cardId + " and cardPin " + cardPin, e);
+            throw new PsException("No customer found with cardId " + cardId + " and cardPin " + cardPin, e, PsErrorCode.CONSTRAINT_FAILED);
 
         } catch (Exception e) {
-            throw new DatabaseException("Failed during database operation.", e);
+            throw new PsException("Failed during database operation.", e, PsErrorCode.DATABASE_OPERATION_FAILED);
         }
     }
 

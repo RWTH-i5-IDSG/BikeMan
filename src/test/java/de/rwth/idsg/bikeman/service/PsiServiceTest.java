@@ -4,16 +4,12 @@ import de.rwth.idsg.bikeman.Application;
 import de.rwth.idsg.bikeman.psinterface.dto.OperationState;
 import de.rwth.idsg.bikeman.psinterface.dto.request.BootNotificationDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.SlotDTO;
-import de.rwth.idsg.bikeman.psinterface.dto.request.StartTransactionDTO;
-import de.rwth.idsg.bikeman.psinterface.dto.request.StopTransactionDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.response.BootConfirmationDTO;
-import de.rwth.idsg.bikeman.psinterface.service.PedelecStationService;
+import de.rwth.idsg.bikeman.psinterface.rest.PsiService;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.RandomStringUtils;
-import org.joda.time.DateTime;
 import org.junit.Ignore;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.annotation.DirtiesContext;
@@ -36,9 +32,9 @@ import java.util.List;
 @DirtiesContext(classMode= DirtiesContext.ClassMode.AFTER_CLASS)
 @ActiveProfiles("dev")
 @Slf4j
-public class PedelecStationServiceTest {
+public class PsiServiceTest {
 
-    @Inject private PedelecStationService service;
+    @Inject private PsiService service;
 
     /**
      * The values are from my DB, so they are not really generic tests

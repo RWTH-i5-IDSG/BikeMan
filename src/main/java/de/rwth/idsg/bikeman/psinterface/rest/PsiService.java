@@ -1,10 +1,11 @@
-package de.rwth.idsg.bikeman.psinterface.service;
+package de.rwth.idsg.bikeman.psinterface.rest;
 
 import com.google.common.base.Optional;
 import de.rwth.idsg.bikeman.domain.CardAccount;
 import de.rwth.idsg.bikeman.domain.OperationState;
 import de.rwth.idsg.bikeman.domain.Transaction;
 import de.rwth.idsg.bikeman.ixsi.service.ConsumptionPushService;
+import de.rwth.idsg.bikeman.psinterface.Utils;
 import de.rwth.idsg.bikeman.psinterface.dto.request.BootNotificationDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.CustomerAuthorizeDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.StartTransactionDTO;
@@ -12,6 +13,8 @@ import de.rwth.idsg.bikeman.psinterface.dto.request.StopTransactionDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.response.AuthorizeConfirmationDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.response.AvailablePedelecDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.response.BootConfirmationDTO;
+import de.rwth.idsg.bikeman.psinterface.exception.PsErrorCode;
+import de.rwth.idsg.bikeman.psinterface.exception.PsException;
 import de.rwth.idsg.bikeman.repository.BookingRepository;
 import de.rwth.idsg.bikeman.repository.CustomerRepository;
 import de.rwth.idsg.bikeman.repository.PedelecRepository;
@@ -19,12 +22,9 @@ import de.rwth.idsg.bikeman.repository.StationRepository;
 import de.rwth.idsg.bikeman.repository.TransactionRepository;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletResponse;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -33,27 +33,22 @@ import java.util.List;
 
 @Service
 @Slf4j
-public class PedelecStationService {
+public class PsiService {
 
     @Inject private CustomerRepository customerRepository;
     @Inject private TransactionRepository transactionRepository;
     @Inject private StationRepository stationRepository;
-    @Autowired private BookingRepository bookingRepository;
-    @Autowired private ConsumptionPushService consumptionPushService;
-    @Autowired private PedelecRepository pedelecRepository;
+    @Inject private BookingRepository bookingRepository;
+    @Inject private ConsumptionPushService consumptionPushService;
+    @Inject private PedelecRepository pedelecRepository;
 
     private static final Integer HEARTBEAT_INTERVAL_IN_SECONDS = 60;
 
-    public BootConfirmationDTO handleBootNotification(BootNotificationDTO bootNotificationDTO, HttpServletResponse response) throws DatabaseException {
-        
-        if (stationRepository.findOneByManufacturerId(bootNotificationDTO.getStationManufacturerId()) == null) {
-            response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
-        }
-        
+    public BootConfirmationDTO handleBootNotification(BootNotificationDTO bootNotificationDTO) throws DatabaseException {
         stationRepository.updateAfterBoot(bootNotificationDTO);
 
         BootConfirmationDTO bootConfirmationDTO = new BootConfirmationDTO();
-        bootConfirmationDTO.setTimestamp(new Date().getTime());
+        bootConfirmationDTO.setTimestamp(Utils.nowInSeconds());
         bootConfirmationDTO.setHeartbeatInterval(HEARTBEAT_INTERVAL_IN_SECONDS);
         return bootConfirmationDTO;
     }
@@ -61,12 +56,11 @@ public class PedelecStationService {
     public AuthorizeConfirmationDTO handleAuthorize(CustomerAuthorizeDTO customerAuthorizeDTO) throws DatabaseException {
         CardAccount cardAccount = customerRepository.findByCardIdAndCardPin(customerAuthorizeDTO.getCardId(), customerAuthorizeDTO.getPin());
 
-        if (cardAccount.getOperationState().equals(OperationState.INOPERATIVE)) {
-            throw new DatabaseException("Card is not operational!");
+        if (OperationState.INOPERATIVE.equals(cardAccount.getOperationState())) {
+            throw new PsException("Card is not operational!", PsErrorCode.CONSTRAINT_FAILED);
         }
 
-        AuthorizeConfirmationDTO authorizeConfirmationDTO = new AuthorizeConfirmationDTO(cardAccount.getCardId());
-        return authorizeConfirmationDTO;
+        return new AuthorizeConfirmationDTO(cardAccount.getCardId());
     }
 
     public void handleStartTransaction(StartTransactionDTO startTransactionDTO) throws DatabaseException {
@@ -82,8 +76,11 @@ public class PedelecStationService {
         }
     }
     
-    public List<AvailablePedelecDTO> getAvailablePedelecs(Long stationId) throws DatabaseException{
-        
+    public List<AvailablePedelecDTO> getAvailablePedelecs(Long stationId) throws DatabaseException {
         return pedelecRepository.findAvailablePedelecs(stationId);
+    }
+
+    public Long getStationIdByEndpointAddress(String endpointAddress) throws DatabaseException {
+        return stationRepository.getStationIdByEndpointAddress(endpointAddress);
     }
 }

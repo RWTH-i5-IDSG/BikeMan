@@ -11,6 +11,8 @@ import de.rwth.idsg.bikeman.domain.Transaction_;
 import de.rwth.idsg.bikeman.domain.login.User;
 import de.rwth.idsg.bikeman.psinterface.dto.request.StartTransactionDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.StopTransactionDTO;
+import de.rwth.idsg.bikeman.psinterface.exception.PsErrorCode;
+import de.rwth.idsg.bikeman.psinterface.exception.PsException;
 import de.rwth.idsg.bikeman.web.rest.dto.view.ViewTransactionDTO;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
@@ -21,316 +23,335 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Root;
 import java.util.List;
 
 /**
- * Created by sgokay on 27.05.14.
+ * @author Sevket Goekay <goekay@dbis.rwth-aachen.de>
+ * @since 27.05.2014
  */
 @Repository
 @Slf4j
 public class TransactionRepositoryImpl implements TransactionRepository {
 
-    private enum FindType { ALL, CLOSED, BY_PEDELEC_ID, BY_LOGIN };
+    private enum FindType { ALL, CLOSED, BY_PEDELEC_ID, BY_LOGIN }
 
     @PersistenceContext private EntityManager em;
 
     @Override
     @Transactional(readOnly = true)
     public List<ViewTransactionDTO> findAll() throws DatabaseException {
-        CriteriaBuilder builder = em.getCriteriaBuilder();
+        List<ViewTransactionDTO> list = findAllCustomerTransactions();
+        list.addAll(findAllMajorCustomerTransactions());
+        return list;
+    }
 
-        List<ViewTransactionDTO> list = null;
+    @Override
+    @Transactional(readOnly = true)
+    public List<ViewTransactionDTO> findClosed() throws DatabaseException {
+        List<ViewTransactionDTO> list = findClosedCustomerTransactions();
+        list.addAll(findClosedMajorCustomerTransactions());
+        return list;
+    }
 
-        try {
-            list = em.createQuery(getCustomerTransactionQuery(builder, FindType.ALL, null, null)).getResultList();
-            list.addAll(em.createQuery(getMajorCustomerTransactionQuery(builder, FindType.ALL, null, null)).getResultList());
-        } catch (Exception e) {
-            throw new DatabaseException("Failed during database operation.", e);
-        }
-
+    @Override
+    @Transactional(readOnly = true)
+    public List<ViewTransactionDTO> findOpen() throws DatabaseException {
+        List<ViewTransactionDTO> list = findOpenCustomerTransactions();
+        list.addAll(findOpenMajorCustomerTransactions());
         return list;
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<ViewTransactionDTO> findAllCustomerTransactions() throws DatabaseException {
-        CriteriaBuilder builder = em.getCriteriaBuilder();
-
-        List<ViewTransactionDTO> list = null;
-
-        try {
-            list = em.createQuery(getCustomerTransactionQuery(builder, FindType.ALL, null, null)).getResultList();
-        } catch (Exception e) {
-            throw new DatabaseException("Failed during database operation.", e);
-        }
-
-        return list;
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<ViewTransactionDTO> findAllMajorCustomerTransactions() throws DatabaseException {
-        CriteriaBuilder builder = em.getCriteriaBuilder();
-
-        List<ViewTransactionDTO> list = null;
-
-        try {
-            list = em.createQuery(getMajorCustomerTransactionQuery(builder, FindType.ALL, null, null)).getResultList();
-        } catch (Exception e) {
-            throw new DatabaseException("Failed during database operation.", e);
-        }
-
-        return list;
-    }
-
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<ViewTransactionDTO> findClosed() throws DatabaseException {
-        CriteriaBuilder builder = em.getCriteriaBuilder();
-
-        List<ViewTransactionDTO> list = null;
-
-        try {
-            list = em.createQuery(getCustomerTransactionQuery(builder, FindType.CLOSED, null, null)).getResultList();
-            list.addAll(em.createQuery(getMajorCustomerTransactionQuery(builder, FindType.CLOSED, null, null)).getResultList());
-        } catch (Exception e) {
-            throw new DatabaseException("Failed during database operation.", e);
-        }
-
-        return list;
+        return internalFindCustomer(FindType.ALL);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<ViewTransactionDTO> findClosedCustomerTransactions() throws DatabaseException {
-        CriteriaBuilder builder = em.getCriteriaBuilder();
+        return internalFindCustomer(FindType.CLOSED);
+    }
 
-        List<ViewTransactionDTO> list = null;
+    @Override
+    @Transactional(readOnly = true)
+    public List<ViewTransactionDTO> findOpenCustomerTransactions() throws DatabaseException {
+        return findCustomerTransactions(em.getCriteriaBuilder());
+    }
 
-        try {
-            list = em.createQuery(getCustomerTransactionQuery(builder, FindType.CLOSED, null, null)).getResultList();
-        } catch (Exception e) {
-            throw new DatabaseException("Failed during database operation.", e);
-        }
-
-        return list;
+    @Override
+    @Transactional(readOnly = true)
+    public List<ViewTransactionDTO> findAllMajorCustomerTransactions() throws DatabaseException {
+        return internalFindMajorCustomer(FindType.ALL);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<ViewTransactionDTO> findClosedMajorCustomerTransactions() throws DatabaseException {
-        CriteriaBuilder builder = em.getCriteriaBuilder();
+        return internalFindMajorCustomer(FindType.CLOSED);
+    }
 
-        List<ViewTransactionDTO> list = null;
-
-        try {
-            list = em.createQuery(getMajorCustomerTransactionQuery(builder, FindType.CLOSED, null, null)).getResultList();
-        } catch (Exception e) {
-            throw new DatabaseException("Failed during database operation.", e);
-        }
-
-        return list;
+    @Override
+    @Transactional(readOnly = true)
+    public List<ViewTransactionDTO> findOpenMajorCustomerTransactions() throws DatabaseException {
+        return findMajorCustomerTransactions(em.getCriteriaBuilder());
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<ViewTransactionDTO> findByPedelecId(Long pedelecId, Integer resultSize) throws DatabaseException {
-
         CriteriaBuilder builder = em.getCriteriaBuilder();
-
-        List<ViewTransactionDTO> list = null;
-
-        try {
-            TypedQuery<ViewTransactionDTO> tqc = em.createQuery(
-                    getCustomerTransactionQuery(builder, FindType.BY_PEDELEC_ID, pedelecId, null)
-            );
-
-            TypedQuery<ViewTransactionDTO> tqmc = em.createQuery(
-                    getMajorCustomerTransactionQuery(builder, FindType.BY_PEDELEC_ID, pedelecId, null)
-            );
-
-            if (resultSize != null) {
-                tqc.setMaxResults(resultSize/2);
-                tqmc.setMaxResults(resultSize/2);
-            }
-
-            list = tqc.getResultList();
-            list.addAll(tqmc.getResultList());
-
-        } catch (Exception e) {
-            throw new DatabaseException("Failed during database operation.", e);
-        }
-
-        return list;
-    }
-
-    @Override
-         @Transactional(readOnly = true)
-         public List<ViewTransactionDTO> findCustomerTransactionsByPedelecId(Long pedelecId, Integer resultSize) throws DatabaseException {
-
-        CriteriaBuilder builder = em.getCriteriaBuilder();
-
-        List<ViewTransactionDTO> list = null;
-
-        try {
-            TypedQuery<ViewTransactionDTO> tqc = em.createQuery(
-                    getCustomerTransactionQuery(builder, FindType.BY_PEDELEC_ID, pedelecId, null)
-            );
-
-            if (resultSize != null) {
-                tqc.setMaxResults(resultSize);
-            }
-
-            list = tqc.getResultList();
-
-        } catch (Exception e) {
-            throw new DatabaseException("Failed during database operation.", e);
-        }
-
-        return list;
+        return setResultSizeAndGet(
+                em.createQuery(getCustomerTransactionQuery(builder, FindType.BY_PEDELEC_ID, pedelecId, null)),
+                em.createQuery(getMajorCustomerTransactionQuery(builder, FindType.BY_PEDELEC_ID, pedelecId, null)),
+                resultSize
+        );
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<ViewTransactionDTO> findMajorCustomerTransactionsByPedelecId(Long pedelecId, Integer resultSize) throws DatabaseException {
-
+    public List<ViewTransactionDTO> findCustomerTransactionsByPedelecId(Long pedelecId, Integer resultSize)
+            throws DatabaseException {
         CriteriaBuilder builder = em.getCriteriaBuilder();
+        return setResultSizeAndGet(
+                em.createQuery(getCustomerTransactionQuery(builder, FindType.BY_PEDELEC_ID, pedelecId, null)),
+                resultSize
+        );
+    }
 
-        List<ViewTransactionDTO> list = null;
-
-        try {
-            TypedQuery<ViewTransactionDTO> tqc = em.createQuery(
-                    getMajorCustomerTransactionQuery(builder, FindType.BY_PEDELEC_ID, pedelecId, null)
-            );
-
-            if (resultSize != null) {
-                tqc.setMaxResults(resultSize);
-            }
-
-            list = tqc.getResultList();
-
-        } catch (Exception e) {
-            throw new DatabaseException("Failed during database operation.", e);
-        }
-
-        return list;
+    @Override
+    @Transactional(readOnly = true)
+    public List<ViewTransactionDTO> findMajorCustomerTransactionsByPedelecId(Long pedelecId, Integer resultSize)
+            throws DatabaseException {
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        return setResultSizeAndGet(
+                em.createQuery(getMajorCustomerTransactionQuery(builder, FindType.BY_PEDELEC_ID, pedelecId, null)),
+                resultSize
+        );
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<ViewTransactionDTO> findByLogin(String login, Integer resultSize) throws DatabaseException {
         CriteriaBuilder builder = em.getCriteriaBuilder();
+        return setResultSizeAndGet(
+                em.createQuery(getCustomerTransactionQuery(builder, FindType.BY_LOGIN, null, login)),
+                em.createQuery(getMajorCustomerTransactionQuery(builder, FindType.BY_LOGIN, null, login)),
+                resultSize
+        );
+    }
 
-        List<ViewTransactionDTO> list = null;
+    @Override
+    @Transactional(readOnly = true)
+    public List<ViewTransactionDTO> findCustomerTransactionsByLogin(String login, Integer resultSize)
+            throws DatabaseException {
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        return setResultSizeAndGet(
+                em.createQuery(getCustomerTransactionQuery(builder, FindType.BY_LOGIN, null, login)),
+                resultSize
+        );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ViewTransactionDTO> findMajorCustomerTransactionsByLogin(String login, Integer resultSize)
+            throws DatabaseException {
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        return setResultSizeAndGet(
+                em.createQuery(getMajorCustomerTransactionQuery(builder, FindType.BY_LOGIN, null, login)),
+                resultSize
+        );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Transaction findOpenByPedelecId(Long pedelecId) {
+        // TODO
+        return null;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void start(StartTransactionDTO dto) throws DatabaseException {
+
+        // -------------------------------------------------------------------------
+        // 1. Start transaction
+        // -------------------------------------------------------------------------
+
+        final String pedelecQuery = "SELECT p FROM Pedelec p WHERE p.manufacturerId = :pedelecManufacturerId";
+
+        final String cardAccQuery = "SELECT ca FROM CardAccount ca WHERE ca.cardId = :cardId";
+
+        Pedelec pedelec = em.createQuery(pedelecQuery, Pedelec.class)
+                            .setParameter("pedelecManufacturerId", dto.getPedelecManufacturerId())
+                            .getSingleResult();
+
+        CardAccount cardAccount = em.createQuery(cardAccQuery, CardAccount.class)
+                                    .setParameter("cardId", dto.getCardId())
+                                    .getSingleResult();
+
+        User user = cardAccount.getUser();
+        StationSlot slot = pedelec.getStationSlot();
+
+        // Check integrity of station slot
+        String entitySlotManId = slot.getManufacturerId();
+        String dtoSlotManId = dto.getSlotManufacturerId();
+        boolean slotOK = entitySlotManId.equalsIgnoreCase(dtoSlotManId);
+        if (!slotOK) {
+            throw new PsException("Integrity check of station slot manufacturerId failed: " +
+                    dtoSlotManId  + " (sent from station) != " + entitySlotManId + " (DB value)", PsErrorCode.CONSTRAINT_FAILED);
+        }
+
+        // Check integrity of station
+        String entityStationManId = slot.getStation().getManufacturerId();
+        String dtoStationManId = dto.getStationManufacturerId();
+        boolean stationOK = entityStationManId.equalsIgnoreCase(dtoStationManId);
+        if (!stationOK) {
+            throw new PsException("Integrity check of station manufacturerId failed: " +
+                    dtoStationManId  + " (sent from station) != " + entityStationManId + " (DB value)", PsErrorCode.CONSTRAINT_FAILED);
+        }
+
+        Transaction transaction = new Transaction();
+        transaction.setStartDateTime(new LocalDateTime(dto.getTimestamp()));
+        transaction.setCardAccount(cardAccount);
+        transaction.setPedelec(pedelec);
+        transaction.setFromSlot(slot);
+        transaction.setBookedTariff(cardAccount.getCurrentTariff());
+        em.persist(transaction);
+
+        // -------------------------------------------------------------------------
+        // 2. Update related entities
+        // -------------------------------------------------------------------------
+
+        if (user instanceof Customer) {
+            ((Customer) user).setInTransaction(true);
+        }
+
+        cardAccount.setInTransaction(true);
+        pedelec.setInTransaction(true);
+        pedelec.setStationSlot(null);
+        slot.setIsOccupied(false);
+        slot.setPedelec(null);
+
+        em.merge(user);
+        em.merge(cardAccount);
+        em.merge(pedelec);
+        em.merge(slot);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Transaction stop(StopTransactionDTO dto) throws DatabaseException {
+
+        // -------------------------------------------------------------------------
+        // 1. End transaction
+        // -------------------------------------------------------------------------
+
+        final String endQuery = "SELECT t FROM Transaction t " +
+                                "WHERE t.pedelec = (SELECT p FROM Pedelec p WHERE p.manufacturerId = :pedelecManufacturerId) " +
+                                "AND t.toSlot IS NULL " +
+                                "AND t.endDateTime IS NULL";
+
+        final String slotQuery = "SELECT ss FROM StationSlot ss " +
+                                 "WHERE ss.manufacturerId = :slotManufacturerId " +
+                                 "AND ss.station = (SELECT s FROM Station s WHERE s.manufacturerId = :stationManufacturerId)";
+
+        Transaction transaction = em.createQuery(endQuery, Transaction.class)
+                                    .setParameter("pedelecManufacturerId", dto.getPedelecManufacturerId())
+                                    .getSingleResult();
+
+        StationSlot slot = em.createQuery(slotQuery, StationSlot.class)
+                             .setParameter("slotManufacturerId", dto.getSlotManufacturerId())
+                             .setParameter("stationManufacturerId", dto.getStationManufacturerId())
+                             .getSingleResult();
+
+        transaction.setEndDateTime(new LocalDateTime(dto.getTimestamp()));
+        transaction.setToSlot(slot);
+        Transaction mergedTransaction = em.merge(transaction);
+
+        // -------------------------------------------------------------------------
+        // 2. Update related entities
+        // -------------------------------------------------------------------------
+
+        CardAccount cardAccount = transaction.getCardAccount();
+        Pedelec pedelec = transaction.getPedelec();
+        User user = cardAccount.getUser();
+
+        if (user instanceof Customer) {
+            ((Customer) user).setInTransaction(false);
+        }
+
+        cardAccount.setInTransaction(false);
+        pedelec.setInTransaction(false);
+        pedelec.setStationSlot(slot);
+        slot.setIsOccupied(true);
+        slot.setPedelec(pedelec);
+
+        em.merge(cardAccount);
+        em.merge(user);
+        em.merge(pedelec);
+        em.merge(slot);
+
+        return mergedTransaction;
+    }
+
+    // -------------------------------------------------------------------------
+    // Private helpers
+    // -------------------------------------------------------------------------
+
+    private List<ViewTransactionDTO> internalFindCustomer(FindType findType) throws DatabaseException {
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        try {
+            return em.createQuery(getCustomerTransactionQuery(builder, findType, null, null)).getResultList();
+        } catch (Exception e) {
+            throw new DatabaseException("Failed during database operation.", e);
+        }
+    }
+
+    private List<ViewTransactionDTO> internalFindMajorCustomer(FindType findType) throws DatabaseException {
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        try {
+            return em.createQuery(getMajorCustomerTransactionQuery(builder, findType, null, null)).getResultList();
+        } catch (Exception e) {
+            throw new DatabaseException("Failed during database operation.", e);
+        }
+    }
+
+    private List<ViewTransactionDTO> setResultSizeAndGet(TypedQuery<ViewTransactionDTO> tqc, Integer resultSize) {
+        if (resultSize != null) {
+            tqc.setMaxResults(resultSize);
+        }
 
         try {
-            TypedQuery<ViewTransactionDTO> tqc = em.createQuery(
-                    getCustomerTransactionQuery(builder, FindType.BY_LOGIN, null, login)
-            );
+            return tqc.getResultList();
+        } catch (Exception e) {
+            throw new DatabaseException("Failed during database operation.", e);
+        }
+    }
 
-            TypedQuery<ViewTransactionDTO> tqmc = em.createQuery(
-                    getMajorCustomerTransactionQuery(builder, FindType.BY_LOGIN, null, login)
-            );
+    private List<ViewTransactionDTO> setResultSizeAndGet(
+            TypedQuery<ViewTransactionDTO> tqc, TypedQuery<ViewTransactionDTO> tqmc, Integer resultSize) {
+        if (resultSize != null) {
+            tqc.setMaxResults(resultSize/2);
+            tqmc.setMaxResults(resultSize/2);
+        }
 
-            if (resultSize != null) {
-                tqc.setMaxResults(resultSize/2);
-                tqmc.setMaxResults(resultSize/2);
-            }
-
-            list = tqc.getResultList();
+        try {
+            List<ViewTransactionDTO> list = tqc.getResultList();
             list.addAll(tqmc.getResultList());
-
+            return list;
         } catch (Exception e) {
             throw new DatabaseException("Failed during database operation.", e);
         }
-
-        return list;
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<ViewTransactionDTO> findCustomerTransactionsByLogin(String login, Integer resultSize) throws DatabaseException {
-        CriteriaBuilder builder = em.getCriteriaBuilder();
-
-        List<ViewTransactionDTO> list = null;
-
-        try {
-            TypedQuery<ViewTransactionDTO> tqc = em.createQuery(
-                    getCustomerTransactionQuery(builder, FindType.BY_LOGIN, null, login)
-            );
-
-            if (resultSize != null) {
-                tqc.setMaxResults(resultSize);
-            }
-
-            list = tqc.getResultList();
-
-        } catch (Exception e) {
-            throw new DatabaseException("Failed during database operation.", e);
-        }
-
-        return list;
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<ViewTransactionDTO> findMajorCustomerTransactionsByLogin(String login, Integer resultSize) throws DatabaseException {
-        CriteriaBuilder builder = em.getCriteriaBuilder();
-
-        List<ViewTransactionDTO> list = null;
-
-        try {
-            TypedQuery<ViewTransactionDTO> tqc = em.createQuery(
-                    getMajorCustomerTransactionQuery(builder, FindType.BY_LOGIN, null, login)
-            );
-
-            if (resultSize != null) {
-                tqc.setMaxResults(resultSize);
-            }
-
-            list = tqc.getResultList();
-
-        } catch (Exception e) {
-            throw new DatabaseException("Failed during database operation.", e);
-        }
-
-        return list;
-    }
-
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<ViewTransactionDTO> findOpen() throws DatabaseException {
-        CriteriaBuilder builder = em.getCriteriaBuilder();
-
-        List<ViewTransactionDTO> list = findCustomerTransactions(builder);
-        list.addAll(findMajorCustomerTransactions(builder));
-        return list;
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<ViewTransactionDTO> findOpenCustomerTransactions() throws DatabaseException {
-        CriteriaBuilder builder = em.getCriteriaBuilder();
-
-        List<ViewTransactionDTO> list = findCustomerTransactions(builder);
-        return list;
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<ViewTransactionDTO> findOpenMajorCustomerTransactions() throws DatabaseException {
-        CriteriaBuilder builder = em.getCriteriaBuilder();
-
-        List<ViewTransactionDTO> list = findMajorCustomerTransactions(builder);
-        return list;
     }
 
     @SuppressWarnings("unchecked")
-    private List<ViewTransactionDTO> findCustomerTransactions(CriteriaBuilder builder) throws DatabaseException {
-
+    private List<ViewTransactionDTO> findMajorCustomerTransactions(CriteriaBuilder builder) throws DatabaseException {
         CriteriaQuery<ViewTransactionDTO> criteria = builder.createQuery(ViewTransactionDTO.class);
         Root<Transaction> transaction = criteria.from(Transaction.class);
 
@@ -339,6 +360,46 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         Join<Transaction, StationSlot> fromStationSlot = transaction.join(Transaction_.fromSlot, JoinType.LEFT);
         Join<StationSlot, Station> fromStation = fromStationSlot.join(StationSlot_.station, JoinType.LEFT);
 
+        Join<Transaction, CardAccount> cardAccount = transaction.join(Transaction_.cardAccount, JoinType.LEFT);
+        Join majorCustomer = cardAccount.join(CardAccount_.user, JoinType.LEFT);
+
+        criteria.select(
+                builder.construct(
+                        ViewTransactionDTO.class,
+                        transaction.get(Transaction_.transactionId),
+                        transaction.get(Transaction_.startDateTime),
+                        fromStation.get(Station_.stationId),
+                        fromStation.get(Station_.name),
+                        fromStationSlot.get(StationSlot_.stationSlotPosition),
+                        cardAccount.get(CardAccount_.cardId),
+                        majorCustomer.get(MajorCustomer_.name),
+                        pedelec.get(Pedelec_.pedelecId),
+                        pedelec.get(Pedelec_.manufacturerId)
+                )
+        ).where(
+                builder.and(
+                        builder.equal(cardAccount.get(CardAccount_.ownerType), CustomerType.MAJOR_CUSTOMER),
+                        builder.isNull(transaction.get(Transaction_.toSlot)),
+                        builder.isNull(transaction.get(Transaction_.endDateTime))
+                )
+        );
+
+        try {
+            return em.createQuery(criteria).getResultList();
+        } catch (Exception e) {
+            throw new DatabaseException("Failed during database operation.");
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<ViewTransactionDTO> findCustomerTransactions(CriteriaBuilder builder) throws DatabaseException {
+        CriteriaQuery<ViewTransactionDTO> criteria = builder.createQuery(ViewTransactionDTO.class);
+        Root<Transaction> transaction = criteria.from(Transaction.class);
+
+        Join<Transaction, Pedelec> pedelec = transaction.join(Transaction_.pedelec, JoinType.LEFT);
+
+        Join<Transaction, StationSlot> fromStationSlot = transaction.join(Transaction_.fromSlot, JoinType.LEFT);
+        Join<StationSlot, Station> fromStation = fromStationSlot.join(StationSlot_.station, JoinType.LEFT);
 
         Join<Transaction, CardAccount> cardAccount = transaction.join(Transaction_.cardAccount, JoinType.LEFT);
         Join customer = cardAccount.join(CardAccount_.user, JoinType.LEFT);
@@ -374,207 +435,17 @@ public class TransactionRepositoryImpl implements TransactionRepository {
     }
 
     @SuppressWarnings("unchecked")
-    private List<ViewTransactionDTO> findMajorCustomerTransactions(CriteriaBuilder builder) throws DatabaseException {
-
-        CriteriaQuery<ViewTransactionDTO> criteria = builder.createQuery(ViewTransactionDTO.class);
-        Root<Transaction> transaction = criteria.from(Transaction.class);
-
-        Join<Transaction, Pedelec> pedelec = transaction.join(Transaction_.pedelec, JoinType.LEFT);
-
-        Join<Transaction, StationSlot> fromStationSlot = transaction.join(Transaction_.fromSlot, JoinType.LEFT);
-        Join<StationSlot, Station> fromStation = fromStationSlot.join(StationSlot_.station, JoinType.LEFT);
-
-
-        Join<Transaction, CardAccount> cardAccount = transaction.join(Transaction_.cardAccount, JoinType.LEFT);
-        Join majorCustomer = cardAccount.join(CardAccount_.user, JoinType.LEFT);
-
-        criteria.select(
-                builder.construct(
-                        ViewTransactionDTO.class,
-                        transaction.get(Transaction_.transactionId),
-                        transaction.get(Transaction_.startDateTime),
-                        fromStation.get(Station_.stationId),
-                        fromStation.get(Station_.name),
-                        fromStationSlot.get(StationSlot_.stationSlotPosition),
-                        cardAccount.get(CardAccount_.cardId),
-                        majorCustomer.get(MajorCustomer_.name),
-                        pedelec.get(Pedelec_.pedelecId),
-                        pedelec.get(Pedelec_.manufacturerId)
-                )
-        ).where(
-                builder.and(
-                        builder.equal(cardAccount.get(CardAccount_.ownerType), CustomerType.MAJOR_CUSTOMER),
-                        builder.isNull(transaction.get(Transaction_.toSlot)),
-                        builder.isNull(transaction.get(Transaction_.endDateTime))
-                )
-        );
-
-        try {
-            return em.createQuery(criteria).getResultList();
-        } catch (Exception e) {
-            throw new DatabaseException("Failed during database operation.");
-        }
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Transaction findOpenByPedelecId(Long pedelecId) {
-        // TODO
-        return null;
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void start(StartTransactionDTO dto) throws DatabaseException {
-
-        // -------------------------------------------------------------------------
-        // 1. Start transaction
-        // -------------------------------------------------------------------------
-
-        final String startQuery = "SELECT p FROM Pedelec p WHERE p.manufacturerId = :pedelecManufacturerId";
-
-        Pedelec pedelec = (Pedelec) em.createQuery(startQuery)
-                                      .setParameter("pedelecManufacturerId", dto.getPedelecManufacturerId())
-                                      .getSingleResult();
-
-//        Customer customer = em.find(Customer.class, dto.getUserId());
-
-//        CriteriaBuilder builder = em.getCriteriaBuilder();
-//        CriteriaQuery<CardAccount> criteria = builder.createQuery(CardAccount.class);
-//        Root<CardAccount> cardAccountRoot = criteria.from(CardAccount.class);
-//
-//        criteria.select(cardAccountRoot).where(builder.equal(cardAccountRoot.get(CardAccount_.cardId), dto.getCardId()));
-//        TypedQuery<CardAccount> query = em.createQuery(criteria);
-
-//        CardAccount cardAccount = query.getSingleResult();
-
-
-        final String cardAccountQuery =  "SELECT ca FROM CardAccount ca WHERE ca.cardId = :cardId";
-
-        CardAccount cardAccount = em.createQuery(cardAccountQuery, CardAccount.class)
-                .setParameter("cardId", dto.getCardId())
-                .getSingleResult();
-
-        User user = cardAccount.getUser();
-
-        StationSlot slot = pedelec.getStationSlot();
-
-        // Check integrity of station slot
-        String entitySlotManId = slot.getManufacturerId();
-        String dtoSlotManId = dto.getSlotManufacturerId();
-        boolean slotOK = entitySlotManId.equalsIgnoreCase(dtoSlotManId);
-        if (!slotOK) {
-            throw new DatabaseException("Integrity check of station slot manufacturerId failed: FromDTO[" +
-                    dtoSlotManId + "] != FromDB[" + entitySlotManId + "]");
-        }
-
-        // Check integrity of station
-        String entityStationManId = slot.getStation().getManufacturerId();
-        String dtoStationManId = dto.getStationManufacturerId();
-        boolean stationOK = entityStationManId.equalsIgnoreCase(dtoStationManId);
-        if (!stationOK) {
-            throw new DatabaseException("Integrity check of station manufacturerId failed: FromDTO[" +
-                    dtoStationManId + "] != FromDB[" + entityStationManId + "]");
-        }
-
-        Transaction transaction = new Transaction();
-        transaction.setStartDateTime(new LocalDateTime(dto.getTimestamp()));
-//        transaction.setCustomer(customer);
-        transaction.setCardAccount(cardAccount);
-        transaction.setPedelec(pedelec);
-        transaction.setFromSlot(slot);
-        transaction.setBookedTariff(cardAccount.getCurrentTariff());
-        em.persist(transaction);
-
-        // -------------------------------------------------------------------------
-        // 2. Update related entities
-        // -------------------------------------------------------------------------
-
-        if (user.getClass().equals(Customer.class)) {
-            ((Customer)user).setInTransaction(true);
-        }
-        cardAccount.setInTransaction(true);
-        pedelec.setInTransaction(true);
-        pedelec.setStationSlot(null);
-        slot.setIsOccupied(false);
-        slot.setPedelec(null);
-
-        em.merge(user);
-        em.merge(cardAccount);
-        em.merge(pedelec);
-        em.merge(slot);
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public Transaction stop(StopTransactionDTO dto) throws DatabaseException {
-
-        // -------------------------------------------------------------------------
-        // 1. End transaction
-        // -------------------------------------------------------------------------
-
-        final String endQuery = "SELECT t FROM Transaction t " +
-                                "WHERE t.pedelec = (SELECT p FROM Pedelec p WHERE p.manufacturerId = :pedelecManufacturerId) " +
-                                "AND t.toSlot IS NULL " +
-                                "AND t.endDateTime IS NULL";
-
-        final String slotQuery = "SELECT ss FROM StationSlot ss " +
-                                 "WHERE ss.manufacturerId = :slotManufacturerId " +
-                                 "AND ss.station = (SELECT s FROM Station s WHERE s.manufacturerId = :stationManufacturerId)";
-
-        Transaction transaction = (Transaction) em.createQuery(endQuery)
-                                                  .setParameter("pedelecManufacturerId", dto.getPedelecManufacturerId())
-                                                  .getSingleResult();
-
-        StationSlot slot = (StationSlot) em.createQuery(slotQuery)
-                                           .setParameter("slotManufacturerId", dto.getSlotManufacturerId())
-                                           .setParameter("stationManufacturerId", dto.getStationManufacturerId())
-                                           .getSingleResult();
-
-        transaction.setEndDateTime(new LocalDateTime(dto.getTimestamp()));
-        transaction.setToSlot(slot);
-        Transaction mergedTransaction = em.merge(transaction);
-
-        // -------------------------------------------------------------------------
-        // 2. Update related entities
-        // -------------------------------------------------------------------------
-
-        CardAccount cardAccount = transaction.getCardAccount();
-//        Customer customer = transaction.getCustomer();
-        User user = cardAccount.getUser();
-        Pedelec pedelec = transaction.getPedelec();
-
-        cardAccount.setInTransaction(false);
-
-        if (user.getClass().equals(Customer.class)) {
-            ((Customer)user).setInTransaction(false);
-        }
-
-        pedelec.setInTransaction(false);
-        pedelec.setStationSlot(slot);
-        slot.setIsOccupied(true);
-        slot.setPedelec(pedelec);
-
-        em.merge(cardAccount);
-        em.merge(user);
-        em.merge(pedelec);
-        em.merge(slot);
-
-        return mergedTransaction;
-    }
-
-    @SuppressWarnings("unchecked")
     private CriteriaQuery<ViewTransactionDTO> getCustomerTransactionQuery(CriteriaBuilder builder, FindType findType, Long pedelecId, String login) {
         CriteriaQuery<ViewTransactionDTO> criteria = builder.createQuery(ViewTransactionDTO.class);
         Root<Transaction> transaction = criteria.from(Transaction.class);
 
         Join<Transaction, Pedelec> pedelec = transaction.join(Transaction_.pedelec, JoinType.LEFT);
 
-        Join<Transaction, CardAccount> cardAccount = transaction.join(Transaction_.cardAccount, JoinType.LEFT);
-        Join customer = cardAccount.join(CardAccount_.user, JoinType.LEFT);
-
         Join<Transaction, StationSlot> fromStationSlot = transaction.join(Transaction_.fromSlot, JoinType.LEFT);
         Join<StationSlot, Station> fromStation = fromStationSlot.join(StationSlot_.station, JoinType.LEFT);
+
+        Join<Transaction, CardAccount> cardAccount = transaction.join(Transaction_.cardAccount, JoinType.LEFT);
+        Join customer = cardAccount.join(CardAccount_.user, JoinType.LEFT);
 
         Join<Transaction, StationSlot> toStationSlot = transaction.join(Transaction_.toSlot, JoinType.LEFT);
         Join<StationSlot, Station> toStation = toStationSlot.join(StationSlot_.station, JoinType.LEFT);
