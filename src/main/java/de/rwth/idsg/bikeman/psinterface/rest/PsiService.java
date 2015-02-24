@@ -22,6 +22,7 @@ import de.rwth.idsg.bikeman.repository.StationRepository;
 import de.rwth.idsg.bikeman.repository.TransactionRepository;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
+import org.joda.time.LocalDateTime;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -67,13 +68,15 @@ public class PsiService {
         transactionRepository.start(startTransactionDTO);
     }
 
-    public void handleStopTransaction(StopTransactionDTO stopTransactionDTO) throws DatabaseException {
+    public LocalDateTime handleStopTransaction(StopTransactionDTO stopTransactionDTO) throws DatabaseException {
         Transaction t = transactionRepository.stop(stopTransactionDTO);
 
         Optional<Long> optionalId = bookingRepository.findIdByTransaction(t);
         if (optionalId.isPresent()) {
             consumptionPushService.report(optionalId.get(), t);
         }
+
+        return t.getStartDateTime();
     }
     
     public List<AvailablePedelecDTO> getAvailablePedelecs(Long stationId) throws DatabaseException {

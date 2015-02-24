@@ -1,5 +1,6 @@
 package de.rwth.idsg.bikeman.psinterface.rest;
 
+import de.rwth.idsg.bikeman.ixsi.service.AvailabilityPushService;
 import de.rwth.idsg.bikeman.psinterface.Utils;
 import de.rwth.idsg.bikeman.psinterface.dto.request.*;
 import de.rwth.idsg.bikeman.psinterface.dto.response.AuthorizeConfirmationDTO;
@@ -9,6 +10,8 @@ import de.rwth.idsg.bikeman.psinterface.dto.response.HeartbeatDTO;
 import de.rwth.idsg.bikeman.service.CardAccountService;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
+import org.joda.time.DateTime;
+import org.joda.time.LocalDateTime;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -31,6 +34,7 @@ public class PsiController {
 
     @Inject private PsiService psiService;
     @Inject private CardAccountService cardAccountService;
+    @Inject private AvailabilityPushService availabilityPushService;
 
     private static final String BOOT_NOTIFICATION_PATH = "/boot";
     private static final String AUTHORIZE_PATH = "/authorize";
@@ -111,6 +115,8 @@ public class PsiController {
                                  HttpServletRequest request) throws DatabaseException {
         log.info("[From: {}] Received startTransaction: {}", Utils.getFrom(request), startTransactionDTO);
         psiService.handleStartTransaction(startTransactionDTO);
+        availabilityPushService.takenFromPlace(startTransactionDTO.getPedelecManufacturerId(),
+                startTransactionDTO.getStationManufacturerId(), new DateTime(startTransactionDTO.getTimestamp()));
     }
 
     @RequestMapping(value = TRANSACTION_STOP_PATH, method = RequestMethod.POST)
@@ -118,6 +124,9 @@ public class PsiController {
                                 HttpServletRequest request) throws DatabaseException {
         log.info("[From: {}] Received stopTransaction: {}", Utils.getFrom(request), stopTransactionDTO);
         psiService.handleStopTransaction(stopTransactionDTO);
+        LocalDateTime stopTime = psiService.handleStopTransaction(stopTransactionDTO);
+        DateTime correctStopTime = stopTime.toDateTime();
+        availabilityPushService.arrivedAtPlace(stopTransactionDTO.getPedelecManufacturerId(), stopTransactionDTO.getStationManufacturerId(), correctStopTime);
     }
 
     // -------------------------------------------------------------------------
