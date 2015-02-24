@@ -24,6 +24,11 @@
 
         <!-- annotate classes to generate utility functions -->
 
+        <jaxb:bindings node="xs:complexType[@name='UserInfoType']">
+            <annox:annotateClass>@lombok.EqualsAndHashCode</annox:annotateClass>
+            <annox:annotateClass>@lombok.ToString</annox:annotateClass>
+        </jaxb:bindings>
+
         <jaxb:bindings node="xs:complexType[@name='BookingTargetIDType']">
             <annox:annotateClass>@lombok.EqualsAndHashCode</annox:annotateClass>
             <annox:annotateClass>@lombok.ToString</annox:annotateClass>
