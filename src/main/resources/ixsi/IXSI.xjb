@@ -109,7 +109,8 @@
         @name='AvailabilityPushMessageType' or
         @name='PlaceAvailabilityPushMessageType' or
         @name='BookingAlertPushMessageType' or
-        @name='ConsumptionPushMessageType']">
+        @name='ConsumptionPushMessageType' or
+        @name='ExternalBookingPushMessageType']">
             <inheritance:implements>de.rwth.idsg.ixsi.jaxb.PushMessageGroup</inheritance:implements>
         </jaxb:bindings>
 
@@ -117,7 +118,8 @@
         @name='CompleteAvailabilityRequestType' or
         @name='CompletePlaceAvailabilityRequestType' or
         @name='CompleteBookingAlertRequestType' or
-        @name='CompleteConsumptionRequestType']">
+        @name='CompleteConsumptionRequestType' or
+        @name='CompleteExternalBookingRequestType']">
             <inheritance:implements>de.rwth.idsg.ixsi.jaxb.RequestMessageGroup</inheritance:implements>
         </jaxb:bindings>
 
@@ -125,7 +127,8 @@
         @name='CompleteAvailabilityResponseType' or
         @name='CompletePlaceAvailabilityResponseType' or
         @name='CompleteBookingAlertResponseType' or
-        @name='CompleteConsumptionResponseType']">
+        @name='CompleteConsumptionResponseType' or
+        @name='CompleteExternalBookingResponseType']">
             <inheritance:implements>de.rwth.idsg.ixsi.jaxb.ResponseMessageGroup</inheritance:implements>
         </jaxb:bindings>
 
@@ -149,7 +152,9 @@
         @name='BookingAlertSubscriptionRequestType' or
         @name='BookingAlertSubscriptionStatusRequestType' or
         @name='ConsumptionSubscriptionRequestType' or
-        @name='ConsumptionSubscriptionStatusRequestType']">
+        @name='ConsumptionSubscriptionStatusRequestType' or
+        @name='ExternalBookingSubscriptionRequestType' or
+        @name='ExternalBookingSubscriptionStatusRequestType']">
             <inheritance:implements>de.rwth.idsg.ixsi.jaxb.SubscriptionRequestGroup</inheritance:implements>
         </jaxb:bindings>
 
@@ -161,7 +166,9 @@
         @name='BookingAlertSubscriptionResponseType' or
         @name='BookingAlertSubscriptionStatusResponseType' or
         @name='ConsumptionSubscriptionResponseType' or
-        @name='ConsumptionSubscriptionStatusResponseType']">
+        @name='ConsumptionSubscriptionStatusResponseType' or
+        @name='ExternalBookingSubscriptionResponseType' or
+        @name='ExternalBookingSubscriptionStatusResponseType']">
             <inheritance:implements>de.rwth.idsg.ixsi.jaxb.SubscriptionResponseGroup</inheritance:implements>
         </jaxb:bindings>
 
