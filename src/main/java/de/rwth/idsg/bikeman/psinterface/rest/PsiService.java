@@ -4,6 +4,7 @@ import com.google.common.base.Optional;
 import de.rwth.idsg.bikeman.domain.CardAccount;
 import de.rwth.idsg.bikeman.domain.OperationState;
 import de.rwth.idsg.bikeman.domain.Transaction;
+import de.rwth.idsg.bikeman.ixsi.service.AvailabilityPushService;
 import de.rwth.idsg.bikeman.ixsi.service.ConsumptionPushService;
 import de.rwth.idsg.bikeman.psinterface.Utils;
 import de.rwth.idsg.bikeman.psinterface.dto.request.BootNotificationDTO;
@@ -22,6 +23,7 @@ import de.rwth.idsg.bikeman.repository.StationRepository;
 import de.rwth.idsg.bikeman.repository.TransactionRepository;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
+import org.joda.time.DateTime;
 import org.joda.time.LocalDateTime;
 import org.springframework.stereotype.Service;
 
@@ -40,8 +42,10 @@ public class PsiService {
     @Inject private TransactionRepository transactionRepository;
     @Inject private StationRepository stationRepository;
     @Inject private BookingRepository bookingRepository;
-    @Inject private ConsumptionPushService consumptionPushService;
     @Inject private PedelecRepository pedelecRepository;
+
+    @Inject private ConsumptionPushService consumptionPushService;
+    @Inject private AvailabilityPushService availabilityPushService;
 
     private static final Integer HEARTBEAT_INTERVAL_IN_SECONDS = 60;
 
@@ -66,9 +70,13 @@ public class PsiService {
 
     public void handleStartTransaction(StartTransactionDTO startTransactionDTO) throws DatabaseException {
         transactionRepository.start(startTransactionDTO);
+        availabilityPushService.takenFromPlace(
+                startTransactionDTO.getPedelecManufacturerId(),
+                startTransactionDTO.getStationManufacturerId(),
+                new DateTime(startTransactionDTO.getTimestamp()));
     }
 
-    public LocalDateTime handleStopTransaction(StopTransactionDTO stopTransactionDTO) throws DatabaseException {
+    public void handleStopTransaction(StopTransactionDTO stopTransactionDTO) throws DatabaseException {
         Transaction t = transactionRepository.stop(stopTransactionDTO);
 
         Optional<Long> optionalId = bookingRepository.findIdByTransaction(t);
@@ -76,7 +84,11 @@ public class PsiService {
             consumptionPushService.report(optionalId.get(), t);
         }
 
-        return t.getStartDateTime();
+        DateTime startDateTime = t.getStartDateTime().toDateTime();
+        availabilityPushService.arrivedAtPlace(
+                stopTransactionDTO.getPedelecManufacturerId(),
+                stopTransactionDTO.getStationManufacturerId(),
+                startDateTime);
     }
     
     public List<AvailablePedelecDTO> getAvailablePedelecs(Long stationId) throws DatabaseException {
