@@ -18,7 +18,7 @@ import java.util.Set;
 @Table(name = "T_BOOKED_TARIFF")
 @TableGenerator(name = "booked_tariff_gen", initialValue = 0, allocationSize = 1)
 @EqualsAndHashCode(of = {"bookedTariffId"})
-@ToString(includeFieldNames = true)
+@ToString(includeFieldNames = true, exclude = {"transactions", "usedCardAccount"})
 @Getter
 @Setter
 public class BookedTariff extends AbstractTimestampClass {

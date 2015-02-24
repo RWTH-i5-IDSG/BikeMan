@@ -22,7 +22,7 @@ import java.io.Serializable;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @TableGenerator(name="transaction_gen", initialValue=0, allocationSize=1)
 @EqualsAndHashCode(of = {"transactionId"})
-@ToString(includeFieldNames = true)
+@ToString(includeFieldNames = true, exclude = {"cardAccount"})
 @Getter
 @Setter
 public class Transaction implements Serializable {
