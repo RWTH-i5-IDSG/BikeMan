@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -85,7 +86,12 @@ public abstract class AbstractSubscriptionStore<T> implements SubscriptionStore<
 
     @Override
     public Set<String> getSubscribedSystems(T itemID) {
-        return lookupTable.get(itemID);
+        Set<String> set = lookupTable.get(itemID);
+        if (set == null) {
+            return Collections.emptySet();
+        } else {
+            return set;
+        }
     }
 
     @Override
