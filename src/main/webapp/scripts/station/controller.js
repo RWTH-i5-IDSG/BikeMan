@@ -1,7 +1,7 @@
 'use strict';
 
-bikeManApp.controller('StationController', ['$scope', 'resolvedStation', 'Station', 'CreateEditStation', 'StationSlot',
-    function ($scope, resolvedStation, Station, CreateEditStation, StationSlot) {
+bikeManApp.controller('StationController', ['$scope', 'resolvedStation', 'Station',
+    function ($scope, resolvedStation, Station) {
 
         $scope.stations = resolvedStation;
 

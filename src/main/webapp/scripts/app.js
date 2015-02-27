@@ -1,10 +1,10 @@
 'use strict';
 
 /* App Module */
-var httpHeaders;
-
 var bikeManApp = angular.module('bikeManApp', ['http-auth-interceptor', 'tmh.dynamicLocale',
     'ngResource', 'ngCookies', 'bikeManAppUtils', 'pascalprecht.translate', 'truncate', 'ui.router', 'ui.bootstrap', 'ui.bootstrap.showErrors']);
+
+var httpHeaders;
 
 bikeManApp
     .config(['$stateProvider', '$urlRouterProvider', '$httpProvider', '$translateProvider', 'tmhDynamicLocaleProvider', 'USER_ROLES',
@@ -113,7 +113,7 @@ bikeManApp
 
 
             // GLOBAL MESSAGES
-            $httpProvider.responseInterceptors.push(function ($timeout, $q, $rootScope) {
+            $httpProvider.responseInterceptors.push(['$timeout', '$q', '$rootScope', function ($timeout, $q, $rootScope) {
                 return function (promise) {
                     var errorInterval = 3000;
                     var successInterval = 1500;
@@ -163,7 +163,7 @@ bikeManApp
                         return $q.reject(errorResponse);
                     });
                 };
-            });
+            }]);
 
 //            $compileProvider.directive('appMessages', function() {
 //                var directiveDefinitionObject = {

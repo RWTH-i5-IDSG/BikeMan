@@ -8,7 +8,7 @@ bikeManApp
                     url: '/pedelecs',
                     templateUrl: 'views/pedelecs.html',
                     controller: 'PedelecController',
-                    resolve:{
+                    resolve: {
                         resolvedPedelec: ['Pedelec', function (Pedelec) {
                             return Pedelec.query();
                         }]
@@ -21,10 +21,11 @@ bikeManApp
                     url: '/pedelecs/:pedelecId',
                     templateUrl: 'views/pedelecDetail.html',
                     controller: 'PedelecDetailController',
-                    resolve:{
-                        resolvedPedelec: function (Pedelec, $stateParams) {
-                            return Pedelec.get({id: $stateParams.pedelecId});
-                        }
+                    resolve: {
+                        resolvedPedelec: ['Pedelec', '$stateParams',
+                            function (Pedelec, $stateParams) {
+                                return Pedelec.get({id: $stateParams.pedelecId});
+                            }]
                     },
                     access: {
                         authorizedRoles: [USER_ROLES.all]

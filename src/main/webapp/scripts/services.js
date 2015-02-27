@@ -232,7 +232,8 @@ bikeManApp.constant('USER_ROLES', {
 //        };
 //    }]);
 
-bikeManApp.factory('AuthenticationSharedService', function ($rootScope, $http, authService, Session, Account, Base64Service, AccessToken, $q) {
+bikeManApp.factory('AuthenticationSharedService', ['$rootScope', '$http', 'authService', 'Session', 'Account', 'Base64Service', 'AccessToken', '$q',
+    function ($rootScope, $http, authService, Session, Account, Base64Service, AccessToken, $q) {
     return {
         login: function (param) {
             var data = "username=" + param.username + "&password=" + param.password + "&grant_type=password&scope=read%20write&client_secret=mySecretOAuthSecret&client_id=bikeManApp";
@@ -343,4 +344,4 @@ bikeManApp.factory('AuthenticationSharedService', function ($rootScope, $http, a
             authService.loginCancelled();
         }
     };
-});
+}]);

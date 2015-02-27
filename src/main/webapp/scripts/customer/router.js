@@ -8,7 +8,7 @@ bikeManApp
                     url: '/customers',
                     templateUrl: 'views/customers.html',
                     controller: 'CustomerController',
-                    resolve:{
+                    resolve: {
                         resolvedCustomer: ['Customer', function (Customer) {
                             return Customer.query();
                         }]
@@ -21,10 +21,11 @@ bikeManApp
                     url: '/customers/:login',
                     templateUrl: 'views/customerDetail.html',
                     controller: 'CustomerDetailController',
-                    resolve:{
-                        resolvedCustomer: function (Customer, $stateParams) {
-                            return Customer.searchByLogin({login: $stateParams.login});
-                        }
+                    resolve: {
+                        resolvedCustomer: ['Customer', '$stateParams',
+                            function (Customer, $stateParams) {
+                                return Customer.searchByLogin({login: $stateParams.login});
+                            }]
                     },
                     access: {
                         authorizedRoles: [USER_ROLES.all]

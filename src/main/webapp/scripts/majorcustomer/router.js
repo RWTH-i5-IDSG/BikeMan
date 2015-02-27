@@ -29,10 +29,11 @@ bikeManApp
                     url: '/majorcustomers/{login}/',
                     templateUrl: 'views/majorcustomerDetail.html',
                     controller: 'MajorcustomerDetailController',
-                    resolve:{
-                        resolvedMajorcustomer: function (Majorcustomer, $stateParams) {
-                            return Majorcustomer.searchByLogin({login: $stateParams.login});
-                        }
+                    resolve: {
+                        resolvedMajorcustomer: ['Majorcustomer', '$stateParams',
+                            function (Majorcustomer, $stateParams) {
+                                return Majorcustomer.searchByLogin({login: $stateParams.login});
+                            }]
                     },
                     access: {
                         authorizedRoles: [USER_ROLES.all]

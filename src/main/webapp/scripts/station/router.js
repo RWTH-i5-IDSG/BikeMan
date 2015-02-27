@@ -8,7 +8,7 @@ bikeManApp
                     url: '/stations',
                     templateUrl: 'views/stations.html',
                     controller: 'StationController',
-                    resolve:{
+                    resolve: {
                         resolvedStation: ['Station', function (Station) {
                             return Station.query();
                         }]
@@ -21,10 +21,10 @@ bikeManApp
                     url: '/stations/:stationId',
                     templateUrl: 'views/stationDetail.html',
                     controller: 'StationDetailController',
-                    resolve:{
-                        resolvedStation: function (Station, $stateParams) {
+                    resolve: {
+                        resolvedStation: ['Station', '$stateParams', function (Station, $stateParams) {
                             return Station.get({id: $stateParams.stationId});
-                        }
+                        }]
                     },
                     access: {
                         authorizedRoles: [USER_ROLES.all]
