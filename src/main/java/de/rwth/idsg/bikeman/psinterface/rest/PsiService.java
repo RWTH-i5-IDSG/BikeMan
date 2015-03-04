@@ -9,7 +9,9 @@ import de.rwth.idsg.bikeman.ixsi.service.ConsumptionPushService;
 import de.rwth.idsg.bikeman.psinterface.Utils;
 import de.rwth.idsg.bikeman.psinterface.dto.request.BootNotificationDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.CustomerAuthorizeDTO;
+import de.rwth.idsg.bikeman.psinterface.dto.request.PedelecStatusDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.StartTransactionDTO;
+import de.rwth.idsg.bikeman.psinterface.dto.request.StationStatusDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.StopTransactionDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.response.AuthorizeConfirmationDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.response.AvailablePedelecDTO;
@@ -97,5 +99,13 @@ public class PsiService {
 
     public Long getStationIdByEndpointAddress(String endpointAddress) throws DatabaseException {
         return stationRepository.getStationIdByEndpointAddress(endpointAddress);
+    }
+
+    public void handleStationStatusNotification(StationStatusDTO stationStatusDTO) {
+        stationRepository.updateStationStatus(stationStatusDTO);
+    }
+
+    public void handlePedelecStatusNotification(PedelecStatusDTO pedelecStatusDTO) {
+        pedelecRepository.updatePedelecStatus(pedelecStatusDTO);
     }
 }

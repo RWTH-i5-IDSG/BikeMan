@@ -1,18 +1,15 @@
 package de.rwth.idsg.bikeman.repository;
 
-import de.rwth.idsg.bikeman.domain.CardAccount;
+import de.rwth.idsg.bikeman.domain.*;
 import de.rwth.idsg.bikeman.domain.CardAccount_;
-import de.rwth.idsg.bikeman.domain.CustomerType;
 import de.rwth.idsg.bikeman.domain.Customer_;
 import de.rwth.idsg.bikeman.domain.MajorCustomer_;
-import de.rwth.idsg.bikeman.domain.Pedelec;
 import de.rwth.idsg.bikeman.domain.Pedelec_;
-import de.rwth.idsg.bikeman.domain.Station;
-import de.rwth.idsg.bikeman.domain.StationSlot;
 import de.rwth.idsg.bikeman.domain.StationSlot_;
 import de.rwth.idsg.bikeman.domain.Station_;
-import de.rwth.idsg.bikeman.domain.Transaction;
 import de.rwth.idsg.bikeman.domain.Transaction_;
+import de.rwth.idsg.bikeman.psinterface.Utils;
+import de.rwth.idsg.bikeman.psinterface.dto.request.PedelecStatusDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.response.AvailablePedelecDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditPedelecDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.view.ViewPedelecDTO;
@@ -29,6 +26,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Root;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -256,6 +254,29 @@ public class PedelecRepositoryImpl implements PedelecRepository {
 
         } catch (Exception e) {
             throw new DatabaseException("Failed to delete pedelec with pedelec " + pedelecId, e);
+        }
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void updatePedelecStatus(PedelecStatusDTO dto) {
+        final String s = "UPDATE Pedelec p SET " +
+                         "p.errorCode = :pedelecErrorCode, " +
+                         "p.errorInfo = :pedelecErrorInfo, " +
+                         "p.state = :pedelecState, " +
+                         "p.updated = :updated " +
+                         "WHERE p.manufacturerId = :pedelecManufacturerId";
+
+        try {
+            em.createQuery(s)
+              .setParameter("pedelecErrorCode", dto.getPedelecErrorCode())
+              .setParameter("pedelecErrorInfo", dto.getPedelecErrorInfo())
+              .setParameter("pedelecState", OperationState.valueOf(dto.getPedelecState().name()))
+              .setParameter("updated", new Date(Utils.toMillis(dto.getTimestamp())))
+              .setParameter("pedelecManufacturerId", dto.getPedelecManufacturerId())
+              .executeUpdate();
+        } catch (Exception e) {
+            throw new DatabaseException("Failed to update the pedelec status with manufacturerId " + dto.getPedelecManufacturerId(), e);
         }
     }
 

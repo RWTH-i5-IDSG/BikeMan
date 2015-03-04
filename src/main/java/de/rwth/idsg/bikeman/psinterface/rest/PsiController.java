@@ -128,14 +128,14 @@ public class PsiController {
     public void stationStatusNotification(@RequestBody StationStatusDTO stationStatusDTO,
                                           HttpServletRequest request) {
         log.debug("[From: {}] Received stationStatusNotification: {}", Utils.getFrom(request), stationStatusDTO);
-        // TODO
+        psiService.handleStationStatusNotification(stationStatusDTO);
     }
 
     @RequestMapping(value = PEDELEC_STATUS_PATH, method = RequestMethod.POST)
     public void pedelecStatusNotification(@RequestBody PedelecStatusDTO pedelecStatusDTO,
                                           HttpServletRequest request) {
         log.debug("[From: {}] Received pedelecStatusNotification: {}", Utils.getFrom(request), pedelecStatusDTO);
-        // TODO
+        psiService.handlePedelecStatusNotification(pedelecStatusDTO);
     }
 
     @RequestMapping(value = CHARGING_STATUS_PATH, method = RequestMethod.POST)
