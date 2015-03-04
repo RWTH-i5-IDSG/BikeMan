@@ -27,6 +27,10 @@ public final class Utils {
         return TimeUnit.MILLISECONDS.toSeconds(millis);
     }
 
+    public static long toMillis(long seconds) {
+        return TimeUnit.SECONDS.toMillis(seconds);
+    }
+
     public static long nowInSeconds() {
         return toSeconds(new DateTime().getMillis());
     }

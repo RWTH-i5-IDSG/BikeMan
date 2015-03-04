@@ -10,8 +10,10 @@ import de.rwth.idsg.bikeman.domain.Station;
 import de.rwth.idsg.bikeman.domain.StationSlot;
 import de.rwth.idsg.bikeman.domain.StationSlot_;
 import de.rwth.idsg.bikeman.domain.Station_;
+import de.rwth.idsg.bikeman.psinterface.Utils;
 import de.rwth.idsg.bikeman.psinterface.dto.request.BootNotificationDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.SlotDTO;
+import de.rwth.idsg.bikeman.psinterface.dto.request.StationStatusDTO;
 import de.rwth.idsg.bikeman.psinterface.exception.PsErrorCode;
 import de.rwth.idsg.bikeman.psinterface.exception.PsException;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditAddressDTO;
@@ -36,6 +38,7 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Root;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -292,7 +295,7 @@ public class StationRepositoryImpl implements StationRepository {
                         throw new PsException(e.getMessage(), e, PsErrorCode.NOT_REGISTERED);
                     }
                 }
-                
+
                 em.persist(newSlot);
             }
         }
@@ -305,6 +308,57 @@ public class StationRepositoryImpl implements StationRepository {
             em.createQuery("DELETE FROM StationSlot ss WHERE ss.manufacturerId IN :slotManufacturerIdList")
               .setParameter("slotManufacturerIdList", deleteList)
               .executeUpdate();
+        }
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void updateStationStatus(StationStatusDTO dto) throws DatabaseException {
+
+        // -------------------------------------------------------------------------
+        // Update Station
+        // -------------------------------------------------------------------------
+
+        final String s = "UPDATE Station s SET " +
+                         "s.errorCode = :stationErrorCode, " +
+                         "s.errorInfo = :stationErrorInfo, " +
+                         "s.state = :stationState, " +
+                         "s.updated = :updated " +
+                         "WHERE s.manufacturerId = :stationManufacturerId";
+
+        try {
+            em.createQuery(s)
+              .setParameter("stationErrorCode", dto.getStationErrorCode())
+              .setParameter("stationErrorInfo", dto.getStationErrorInfo())
+              .setParameter("stationState", OperationState.valueOf(dto.getStationState().name()))
+              .setParameter("updated", new Date(Utils.toMillis(dto.getTimestamp())))
+              .setParameter("stationManufacturerId", dto.getStationManufacturerId())
+              .executeUpdate();
+        } catch (Exception e) {
+            throw new DatabaseException("Failed to update the station status with manufacturerId " + dto.getStationManufacturerId(), e);
+        }
+
+        // -------------------------------------------------------------------------
+        // Update Slots
+        // -------------------------------------------------------------------------
+
+        final String ss = "UPDATE StationSlot ss SET " +
+                          "ss.errorCode = :slotErrorCode, " +
+                          "ss.errorInfo = :slotErrorInfo, " +
+                          "ss.state = :slotState " +
+                          "WHERE ss.manufacturerId = :slotManufacturerId";
+
+        for (SlotDTO slot : dto.getSlots()) {
+            try {
+                em.createQuery(ss)
+                  .setParameter("slotErrorCode", slot.getSlotErrorCode())
+                  .setParameter("slotErrorInfo", slot.getSlotErrorInfo())
+                  .setParameter("slotState", OperationState.valueOf(slot.getSlotState().name()))
+                  .setParameter("slotManufacturerId", slot.getSlotManufacturerId())
+                  .executeUpdate();
+            } catch (Exception e) {
+                throw new DatabaseException("Failed to update the slot status with manufacturerId " + slot.getSlotManufacturerId(), e);
+            }
         }
     }
 
