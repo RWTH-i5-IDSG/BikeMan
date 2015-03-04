@@ -241,8 +241,8 @@ public class StationRepositoryImpl implements StationRepository {
         final String q = "SELECT ss.manufacturerId FROM StationSlot ss WHERE ss.station = :station";
 
         List<String> dbList = em.createQuery(q, String.class)
-                .setParameter("station", station)
-                .getResultList();
+                                .setParameter("station", station)
+                                .getResultList();
 
         ItemIdComparator<String> idComparator = new ItemIdComparator<>();
         idComparator.setDatabaseList(dbList);
@@ -257,35 +257,35 @@ public class StationRepositoryImpl implements StationRepository {
         // -------------------------------------------------------------------------
 
         final String updateQuery = "UPDATE StationSlot ss " +
-                "SET ss.isOccupied = CASE WHEN :pedelecManufacturerId IS NULL THEN FALSE ELSE TRUE END, " +
-                "ss.stationSlotPosition = :slotPosition, " +
-                "ss.pedelec = (SELECT p FROM Pedelec p WHERE p.manufacturerId = :pedelecManufacturerId)" +
-                "WHERE ss.station = :station " +
-                "AND ss.manufacturerId = :slotManufacturerId";
+                                   "SET ss.isOccupied = :isOccupied, " +
+                                   "ss.stationSlotPosition = :slotPosition, " +
+                                   "ss.pedelec = (SELECT p FROM Pedelec p WHERE p.manufacturerId = :pedelecManufacturerId) " +
+                                   "WHERE ss.station = :station " +
+                                   "AND ss.manufacturerId = :slotManufacturerId";
 
         for (SlotDTO slot : stationSlotList) {
             String manuId = slot.getSlotManufacturerId();
+            boolean hasPedelec = slot.getPedelecManufacturerId() != null;
 
             if (updateList.contains(manuId)) {
                 em.createQuery(updateQuery)
-                        .setParameter("slotPosition", slot.getSlotPosition())
-                        .setParameter("pedelecManufacturerId", slot.getPedelecManufacturerId())
-                        .setParameter("station", station)
-                        .setParameter("slotManufacturerId", slot.getSlotManufacturerId())
-                        .executeUpdate();
+                  .setParameter("isOccupied", hasPedelec)
+                  .setParameter("slotPosition", slot.getSlotPosition())
+                  .setParameter("pedelecManufacturerId", slot.getPedelecManufacturerId())
+                  .setParameter("station", station)
+                  .setParameter("slotManufacturerId", manuId)
+                  .executeUpdate();
 
             } else if (insertList.contains(manuId)) {
                 StationSlot newSlot = new StationSlot();
-                newSlot.setManufacturerId(slot.getSlotManufacturerId());
+                newSlot.setManufacturerId(manuId);
                 newSlot.setStationSlotPosition(slot.getSlotPosition());
                 newSlot.setStation(station);
+                newSlot.setIsOccupied(hasPedelec);
 
-                if (slot.getPedelecManufacturerId() == null) {
-                    newSlot.setIsOccupied(false);
-                } else {
+                if (hasPedelec) {
                     Pedelec pedelec = pedelecRepository.findByManufacturerId(slot.getPedelecManufacturerId());
                     newSlot.setPedelec(pedelec);
-                    newSlot.setIsOccupied(true);
                 }
 
                 em.persist(newSlot);
@@ -295,10 +295,11 @@ public class StationRepositoryImpl implements StationRepository {
         // -------------------------------------------------------------------------
         // Delete
         // -------------------------------------------------------------------------
+
         if (!deleteList.isEmpty()) {
             em.createQuery("DELETE FROM StationSlot ss WHERE ss.manufacturerId IN :slotManufacturerIdList")
-                    .setParameter("slotManufacturerIdList", deleteList)
-                    .executeUpdate();
+              .setParameter("slotManufacturerIdList", deleteList)
+              .executeUpdate();
         }
     }
 
