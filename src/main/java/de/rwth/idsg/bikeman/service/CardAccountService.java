@@ -56,7 +56,7 @@ public class CardAccountService {
         
         cardAccount.setOperationState(OperationState.OPERATIVE);
         cardAccount.setActivationKey(null);
-        cardAccount.setCardPin(cardActivationDTO.getCardPIN());
+        cardAccount.setCardPin(cardActivationDTO.getCardPin());
         cardAccountRepository.save(cardAccount);
 
         return new AuthorizeConfirmationDTO(cardAccount.getCardId());

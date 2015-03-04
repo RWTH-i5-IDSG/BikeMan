@@ -51,7 +51,7 @@ public class PsiService {
 
     public BootConfirmationDTO handleBootNotification(BootNotificationDTO bootNotificationDTO) throws DatabaseException {
         stationRepository.updateAfterBoot(bootNotificationDTO);
-
+        
         BootConfirmationDTO bootConfirmationDTO = new BootConfirmationDTO();
         bootConfirmationDTO.setTimestamp(Utils.nowInSeconds());
         bootConfirmationDTO.setHeartbeatInterval(HEARTBEAT_INTERVAL_IN_SECONDS);
@@ -59,7 +59,7 @@ public class PsiService {
     }
 
     public AuthorizeConfirmationDTO handleAuthorize(CustomerAuthorizeDTO customerAuthorizeDTO) throws DatabaseException {
-        CardAccount cardAccount = customerRepository.findByCardIdAndCardPin(customerAuthorizeDTO.getCardId(), customerAuthorizeDTO.getPin());
+        CardAccount cardAccount = customerRepository.findByCardIdAndCardPin(customerAuthorizeDTO.getCardId(), customerAuthorizeDTO.getCardPin());
 
         if (OperationState.INOPERATIVE.equals(cardAccount.getOperationState())) {
             throw new PsException("Card is not operational!", PsErrorCode.CONSTRAINT_FAILED);

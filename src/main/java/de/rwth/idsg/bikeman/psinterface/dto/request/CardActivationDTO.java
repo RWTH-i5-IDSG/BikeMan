@@ -9,5 +9,5 @@ import lombok.Data;
 @Data
 public class CardActivationDTO {
     private String activationKey;
-    private String cardPIN;
+    private String cardPin;
 }
