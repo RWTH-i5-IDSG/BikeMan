@@ -12,5 +12,6 @@ import java.util.List;
 public class BootNotificationDTO {
     private String stationManufacturerId;
     private String firmwareVersion;
-    private List<SlotDTO> slotDTOs;
+    private List<SlotDTO> slots;
+    private String callbackUrl;
 }

@@ -50,7 +50,8 @@ public class StationRepositoryImpl implements StationRepository {
     @PersistenceContext
     private EntityManager em;
 
-    @Autowired private PedelecRepository pedelecRepository;
+    @Autowired
+    private PedelecRepository pedelecRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -231,7 +232,7 @@ public class StationRepositoryImpl implements StationRepository {
         // -------------------------------------------------------------------------
 
         List<String> newList = new ArrayList<>();
-        List<SlotDTO> stationSlotList = dto.getSlotDTOs();
+        List<SlotDTO> stationSlotList = dto.getSlots();
 
         for (SlotDTO slot : stationSlotList) {
             newList.add(slot.getSlotManufacturerId());
@@ -240,8 +241,8 @@ public class StationRepositoryImpl implements StationRepository {
         final String q = "SELECT ss.manufacturerId FROM StationSlot ss WHERE ss.station = :station";
 
         List<String> dbList = em.createQuery(q, String.class)
-                                .setParameter("station", station)
-                                .getResultList();
+                .setParameter("station", station)
+                .getResultList();
 
         ItemIdComparator<String> idComparator = new ItemIdComparator<>();
         idComparator.setDatabaseList(dbList);
@@ -256,22 +257,22 @@ public class StationRepositoryImpl implements StationRepository {
         // -------------------------------------------------------------------------
 
         final String updateQuery = "UPDATE StationSlot ss " +
-                                   "SET ss.isOccupied = CASE WHEN :pedelecManufacturerId IS NULL THEN FALSE ELSE TRUE END, " +
-                                   "ss.stationSlotPosition = :slotPosition, " +
-                                   "ss.pedelec = (SELECT p FROM Pedelec p WHERE p.manufacturerId = :pedelecManufacturerId)" +
-                                   "WHERE ss.station = :station " +
-                                   "AND ss.manufacturerId = :slotManufacturerId";
+                "SET ss.isOccupied = CASE WHEN :pedelecManufacturerId IS NULL THEN FALSE ELSE TRUE END, " +
+                "ss.stationSlotPosition = :slotPosition, " +
+                "ss.pedelec = (SELECT p FROM Pedelec p WHERE p.manufacturerId = :pedelecManufacturerId)" +
+                "WHERE ss.station = :station " +
+                "AND ss.manufacturerId = :slotManufacturerId";
 
         for (SlotDTO slot : stationSlotList) {
-            String manuId = slot.getPedelecManufacturerId();
+            String manuId = slot.getSlotManufacturerId();
 
             if (updateList.contains(manuId)) {
                 em.createQuery(updateQuery)
-                  .setParameter("slotPosition", slot.getSlotPosition())
-                  .setParameter("pedelecManufacturerId", slot.getPedelecManufacturerId())
-                  .setParameter("station", station)
-                  .setParameter("slotManufacturerId", slot.getSlotManufacturerId())
-                  .executeUpdate();
+                        .setParameter("slotPosition", slot.getSlotPosition())
+                        .setParameter("pedelecManufacturerId", slot.getPedelecManufacturerId())
+                        .setParameter("station", station)
+                        .setParameter("slotManufacturerId", slot.getSlotManufacturerId())
+                        .executeUpdate();
 
             } else if (insertList.contains(manuId)) {
                 StationSlot newSlot = new StationSlot();
@@ -294,10 +295,11 @@ public class StationRepositoryImpl implements StationRepository {
         // -------------------------------------------------------------------------
         // Delete
         // -------------------------------------------------------------------------
-
-        em.createQuery("DELETE FROM StationSlot ss WHERE ss.manufacturerId IN :slotManufacturerIdList")
-          .setParameter("slotManufacturerIdList", deleteList)
-          .executeUpdate();
+        if (!deleteList.isEmpty()) {
+            em.createQuery("DELETE FROM StationSlot ss WHERE ss.manufacturerId IN :slotManufacturerIdList")
+                    .setParameter("slotManufacturerIdList", deleteList)
+                    .executeUpdate();
+        }
     }
 
     @Override
