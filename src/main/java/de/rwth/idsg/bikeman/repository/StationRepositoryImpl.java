@@ -1,5 +1,6 @@
 package de.rwth.idsg.bikeman.repository;
 
+import de.rwth.idsg.bikeman.ItemIdComparator;
 import de.rwth.idsg.bikeman.domain.Address;
 import de.rwth.idsg.bikeman.domain.Address_;
 import de.rwth.idsg.bikeman.domain.OperationState;
@@ -19,6 +20,7 @@ import de.rwth.idsg.bikeman.web.rest.dto.view.ViewStationDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.view.ViewStationSlotDTO;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,8 +35,8 @@ import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Root;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by sgokay on 26.05.14.
@@ -47,6 +49,8 @@ public class StationRepositoryImpl implements StationRepository {
 
     @PersistenceContext
     private EntityManager em;
+
+    @Autowired private PedelecRepository pedelecRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -205,96 +209,95 @@ public class StationRepositoryImpl implements StationRepository {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateAfterBoot(BootNotificationDTO dto) throws DatabaseException {
+
+        // -------------------------------------------------------------------------
+        // Find the station and update
+        // -------------------------------------------------------------------------
+
         Station station;
-        String manufacturerId = dto.getStationManufacturerId();
+        String stationManufacturerId = dto.getStationManufacturerId();
         try {
-            station = findOneByManufacturerId(manufacturerId);
+            station = findOneByManufacturerId(stationManufacturerId);
+            station.setFirmwareVersion(dto.getFirmwareVersion());
+            em.merge(station);
+
         } catch (NoResultException e) {
-            throw new PsException("Station with manufacturerId '" + manufacturerId + "' is not registered", e, PsErrorCode.NOT_REGISTERED);
+            throw new PsException("Station with manufacturerId '" + stationManufacturerId + "' is not registered", e,
+                    PsErrorCode.NOT_REGISTERED);
         }
 
-        station.setFirmwareVersion(dto.getFirmwareVersion());
-        Set<StationSlot> stationSlots = station.getStationSlots();
+        // -------------------------------------------------------------------------
+        // Find the slots, and decide whether to Update/Insert/Delete
+        // -------------------------------------------------------------------------
 
-        // TODO: updating slots is not correct. deleting missing slots? adding new ones?
-        for (StationSlot slot : stationSlots) {
-            for (SlotDTO slotDTO : dto.getSlotDTOs()) {
-                if (!slot.getManufacturerId().equals(slotDTO.getSlotManufacturerId())) {
-                    continue;
-                }
+        List<String> newList = new ArrayList<>();
+        List<SlotDTO> stationSlotList = dto.getSlotDTOs();
 
-                slot.setManufacturerId(slotDTO.getSlotManufacturerId());
-                slot.setErrorCode(slotDTO.getSlotErrorCode());
-                slot.setErrorInfo(slotDTO.getSlotErrorInfo());
-                slot.setStationSlotPosition(slotDTO.getSlotPosition());
-                slot.setStation(station);
-                slot.setState(OperationState.valueOf(slotDTO.getSlotState().toString()));
-
-                Pedelec pedelecAtSlot = slot.getPedelec();
-
-                if (pedelecAtSlot != null) {
-                    pedelecAtSlot.setStationSlot(null);
-                    slot.setPedelec(null);
-                    slot.setIsOccupied(false);
-                }
-
-                if (slotDTO.getPedelecManufacturerId() == null) {
-                    continue;
-                }
-
-                Pedelec pedelec = getPedelecByManufacturerIdOrCreate(slotDTO.getPedelecManufacturerId());
-
-                if (pedelec.getStationSlot() != null) {
-                    pedelec.getStationSlot().setPedelec(null);
-                    em.merge(pedelec.getStationSlot());
-                }
-
-                pedelec.setManufacturerId(slotDTO.getPedelecManufacturerId());
-                pedelec.setStationSlot(slot);
-                slot.setPedelec(pedelec);
-                slot.setIsOccupied(true);
-                em.merge(pedelec);
-            }
-
-            stationSlots.add(slot);
+        for (SlotDTO slot : stationSlotList) {
+            newList.add(slot.getSlotManufacturerId());
         }
 
-        // first boot notification, initilize slots
-        if (stationSlots.size() == 0) {
-            for (SlotDTO slotDTO : dto.getSlotDTOs()) {
-                StationSlot newStationSlot = new StationSlot();
-                newStationSlot.setManufacturerId(slotDTO.getSlotManufacturerId());
-                newStationSlot.setErrorCode(slotDTO.getSlotErrorCode());
-                newStationSlot.setErrorInfo(slotDTO.getSlotErrorInfo());
-                newStationSlot.setStationSlotPosition(slotDTO.getSlotPosition());
-                newStationSlot.setStation(station);
-                newStationSlot.setState(OperationState.valueOf(slotDTO.getSlotState().toString()));
+        final String q = "SELECT ss.manufacturerId FROM StationSlot ss WHERE ss.station = :station";
 
-                if (slotDTO.getPedelecManufacturerId() != null) {
-                    Pedelec pedelec = getPedelecByManufacturerIdOrCreate(slotDTO.getPedelecManufacturerId());
-                    StationSlot pedelecStationSlot = pedelec.getStationSlot();
+        List<String> dbList = em.createQuery(q, String.class)
+                                .setParameter("station", station)
+                                .getResultList();
 
-                    if (pedelecStationSlot != null) {
-                        pedelecStationSlot.setPedelec(null);
-                        em.merge(pedelecStationSlot);
-                    }
+        ItemIdComparator<String> idComparator = new ItemIdComparator<>();
+        idComparator.setDatabaseList(dbList);
+        idComparator.setNewList(newList);
 
-                    pedelec.setStationSlot(newStationSlot);
-                    newStationSlot.setPedelec(pedelec);
-                    newStationSlot.setIsOccupied(true);
+        List<String> updateList = idComparator.getForUpdate();
+        List<String> insertList = idComparator.getForInsert();
+        List<String> deleteList = idComparator.getForDelete();
+
+        // -------------------------------------------------------------------------
+        // Update/Insert
+        // -------------------------------------------------------------------------
+
+        final String updateQuery = "UPDATE StationSlot ss " +
+                                   "SET ss.isOccupied = CASE WHEN :pedelecManufacturerId IS NULL THEN FALSE ELSE TRUE END, " +
+                                   "ss.stationSlotPosition = :slotPosition, " +
+                                   "ss.pedelec = (SELECT p FROM Pedelec p WHERE p.manufacturerId = :pedelecManufacturerId)" +
+                                   "WHERE ss.station = :station " +
+                                   "AND ss.manufacturerId = :slotManufacturerId";
+
+        for (SlotDTO slot : stationSlotList) {
+            String manuId = slot.getPedelecManufacturerId();
+
+            if (updateList.contains(manuId)) {
+                em.createQuery(updateQuery)
+                  .setParameter("slotPosition", slot.getSlotPosition())
+                  .setParameter("pedelecManufacturerId", slot.getPedelecManufacturerId())
+                  .setParameter("station", station)
+                  .setParameter("slotManufacturerId", slot.getSlotManufacturerId())
+                  .executeUpdate();
+
+            } else if (insertList.contains(manuId)) {
+                StationSlot newSlot = new StationSlot();
+                newSlot.setManufacturerId(slot.getSlotManufacturerId());
+                newSlot.setStationSlotPosition(slot.getSlotPosition());
+                newSlot.setStation(station);
+
+                if (slot.getPedelecManufacturerId() == null) {
+                    newSlot.setIsOccupied(false);
                 } else {
-                    newStationSlot.setIsOccupied(false);
+                    Pedelec pedelec = pedelecRepository.findByManufacturerId(slot.getPedelecManufacturerId());
+                    newSlot.setPedelec(pedelec);
+                    newSlot.setIsOccupied(true);
                 }
 
-                em.persist(newStationSlot);
-                stationSlots.add(newStationSlot);
+                em.persist(newSlot);
             }
-
-            station.setStationSlots(stationSlots);
         }
 
-        station.setStationSlots(stationSlots);
-        em.persist(station);
+        // -------------------------------------------------------------------------
+        // Delete
+        // -------------------------------------------------------------------------
+
+        em.createQuery("DELETE FROM StationSlot ss WHERE ss.manufacturerId IN :slotManufacturerIdList")
+          .setParameter("slotManufacturerIdList", deleteList)
+          .executeUpdate();
     }
 
     @Override
@@ -328,17 +331,6 @@ public class StationRepositoryImpl implements StationRepository {
             throw new DatabaseException("No station with stationId " + stationId);
         } else {
             return station;
-        }
-    }
-
-    private Pedelec getPedelecByManufacturerIdOrCreate(String pedelecManufacturerId) {
-        try {
-            return em.createQuery("select p from Pedelec p where p.manufacturerId = :manufacturerId", Pedelec.class)
-                    .setParameter("manufacturerId", pedelecManufacturerId)
-                    .getSingleResult();
-        } catch (NoResultException ex) {
-            log.warn("Pedelec with manufacturerId '{}' was unknown. Adding one to the system", pedelecManufacturerId);
-            return new Pedelec();
         }
     }
 
