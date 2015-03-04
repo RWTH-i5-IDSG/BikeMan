@@ -284,10 +284,14 @@ public class StationRepositoryImpl implements StationRepository {
                 newSlot.setIsOccupied(hasPedelec);
 
                 if (hasPedelec) {
-                    Pedelec pedelec = pedelecRepository.findByManufacturerId(slot.getPedelecManufacturerId());
-                    newSlot.setPedelec(pedelec);
+                    try {
+                        Pedelec pedelec = pedelecRepository.findByManufacturerId(slot.getPedelecManufacturerId());
+                        newSlot.setPedelec(pedelec);
+                    } catch (DatabaseException e) {
+                        throw new PsException(e.getMessage(), e, PsErrorCode.NOT_REGISTERED);
+                    }
                 }
-
+                
                 em.persist(newSlot);
             }
         }
