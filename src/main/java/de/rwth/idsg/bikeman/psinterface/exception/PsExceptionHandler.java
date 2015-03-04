@@ -1,11 +1,15 @@
 package de.rwth.idsg.bikeman.psinterface.exception;
 
 import de.rwth.idsg.bikeman.psinterface.Utils;
+import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.HibernateException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+
+import javax.persistence.PersistenceException;
 
 /**
  * @author Sevket Goekay <goekay@dbis.rwth-aachen.de>
@@ -37,6 +41,36 @@ public class PsExceptionHandler {
         PsExceptionMessage msg = new PsExceptionMessage(
                 Utils.nowInSeconds(),
                 errorCode.name(),
+                e.getMessage()
+        );
+        return new ResponseEntity<>(msg, status);
+    }
+
+    @ExceptionHandler({HibernateException.class, PersistenceException.class, DatabaseException.class})
+    public ResponseEntity<PsExceptionMessage> processDatabaseException(Exception e) {
+        log.error("Exception happened", e);
+
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+        PsExceptionMessage msg = new PsExceptionMessage(
+                Utils.nowInSeconds(),
+                PsErrorCode.DATABASE_OPERATION_FAILED.name(),
+                e.getMessage()
+        );
+        return new ResponseEntity<>(msg, status);
+    }
+
+    // -------------------------------------------------------------------------
+    // Fall-back
+    // -------------------------------------------------------------------------
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<PsExceptionMessage> processException(Exception e) {
+        log.error("Exception happened", e);
+
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+        PsExceptionMessage msg = new PsExceptionMessage(
+                Utils.nowInSeconds(),
+                PsErrorCode.UNKNOWN_SERVER_ERROR.name(),
                 e.getMessage()
         );
         return new ResponseEntity<>(msg, status);
