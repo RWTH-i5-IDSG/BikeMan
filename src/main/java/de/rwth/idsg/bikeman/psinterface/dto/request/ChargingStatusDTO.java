@@ -10,7 +10,6 @@ import lombok.Data;
 @Data
 public class ChargingStatusDTO {
     private String pedelecManufacturerId;
-    private String slotManufacturerId;
     private Long timestamp;
     private ChargingState chargingState;
     private Double meterValue;

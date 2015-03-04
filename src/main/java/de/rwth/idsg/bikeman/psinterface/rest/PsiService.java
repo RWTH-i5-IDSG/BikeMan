@@ -49,9 +49,11 @@ public class PsiService {
 
     private static final Integer HEARTBEAT_INTERVAL_IN_SECONDS = 60;
 
-    public BootConfirmationDTO handleBootNotification(BootNotificationDTO bootNotificationDTO) throws DatabaseException {
-        stationRepository.updateAfterBoot(bootNotificationDTO);
-        
+    public BootConfirmationDTO handleBootNotification(BootNotificationDTO bootNotificationDTO,
+                                                      String endpointAddress) throws DatabaseException {
+
+        stationRepository.updateAfterBoot(bootNotificationDTO, endpointAddress);
+
         BootConfirmationDTO bootConfirmationDTO = new BootConfirmationDTO();
         bootConfirmationDTO.setTimestamp(Utils.nowInSeconds());
         bootConfirmationDTO.setHeartbeatInterval(HEARTBEAT_INTERVAL_IN_SECONDS);
@@ -90,7 +92,7 @@ public class PsiService {
                 stopTransactionDTO.getStationManufacturerId(),
                 startDateTime);
     }
-    
+
     public List<AvailablePedelecDTO> getAvailablePedelecs(Long stationId) throws DatabaseException {
         return pedelecRepository.findAvailablePedelecs(stationId);
     }

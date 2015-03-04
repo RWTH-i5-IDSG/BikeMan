@@ -13,7 +13,14 @@ public final class Utils {
     private Utils() {}
 
     public static String getFrom(HttpServletRequest request) {
-        return request.getScheme() + "://" + request.getRemoteAddr() + ":" + request.getRemotePort();
+
+        String remoteAddress = request.getHeader("X-Real-IP");
+
+        if (remoteAddress == null) {
+            remoteAddress = request.getRemoteAddr();
+        }
+
+        return request.getScheme() + "://" + remoteAddress + ":" + request.getRemotePort();
     }
 
     public static long toSeconds(long millis) {

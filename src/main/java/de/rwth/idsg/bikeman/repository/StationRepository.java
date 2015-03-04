@@ -29,7 +29,7 @@ public interface StationRepository {
     void update(CreateEditStationDTO dto) throws DatabaseException;
     void delete(long stationId) throws DatabaseException;
 
-    void updateAfterBoot(BootNotificationDTO dto) throws DatabaseException;
+    void updateAfterBoot(BootNotificationDTO dto, String endpointAddress) throws DatabaseException;
     void changeSlotState(long stationId, int slotPosition, OperationState state);
 
 //    @Query("SELECT bs FROM Station bs ORDER BY ((6371 * 2 * ASIN(SQRT(POWER(SIN((bs.locationLatitude - abs(:latitude)) * pi()/180 / 2),2) +" +

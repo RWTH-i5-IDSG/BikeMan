@@ -55,7 +55,8 @@ public class PsiController {
     public BootConfirmationDTO bootNotification(@RequestBody BootNotificationDTO bootNotificationDTO,
                                                 HttpServletRequest request) throws DatabaseException {
         log.debug("[From: {}] Received bootNotification", Utils.getFrom(request));
-        return psiService.handleBootNotification(bootNotificationDTO);
+        
+        return psiService.handleBootNotification(bootNotificationDTO, Utils.getFrom(request));
     }
 
     @RequestMapping(value = HEARTBEAT_PATH, method = RequestMethod.GET)
@@ -73,9 +74,9 @@ public class PsiController {
         log.debug("[From: {}] Received getAvailablePedelecs", endpointAddress);
 
         // TODO: uncomment this when in production
-        //Long stationId = psiService.getStationIdByEndpointAddress(endpointAddress);
+        Long stationId = psiService.getStationIdByEndpointAddress(endpointAddress);
 
-        Long stationId = 1L;
+        //Long stationId = 1L;
         return psiService.getAvailablePedelecs(stationId);
     }
 

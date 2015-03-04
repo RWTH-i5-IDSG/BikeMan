@@ -209,7 +209,7 @@ public class StationRepositoryImpl implements StationRepository {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void updateAfterBoot(BootNotificationDTO dto) throws DatabaseException {
+    public void updateAfterBoot(BootNotificationDTO dto, String endpointAddress) throws DatabaseException {
 
         // -------------------------------------------------------------------------
         // Find the station and update
@@ -220,6 +220,7 @@ public class StationRepositoryImpl implements StationRepository {
         try {
             station = findOneByManufacturerId(stationManufacturerId);
             station.setFirmwareVersion(dto.getFirmwareVersion());
+            station.setEndpointAddress(endpointAddress);
             em.merge(station);
 
         } catch (NoResultException e) {
