@@ -94,12 +94,8 @@ public class PsiService {
                 startDateTime);
     }
 
-    public List<AvailablePedelecDTO> getAvailablePedelecs(Long stationId) throws DatabaseException {
-        return pedelecRepository.findAvailablePedelecs(stationId);
-    }
-
-    public Long getStationIdByEndpointAddress(String endpointAddress) throws DatabaseException {
-        return stationRepository.getStationIdByEndpointAddress(endpointAddress);
+    public List<AvailablePedelecDTO> getAvailablePedelecs(String endpointAddress) throws DatabaseException {
+        return pedelecRepository.findAvailablePedelecs(endpointAddress);
     }
 
     public void handleStationStatusNotification(StationStatusDTO stationStatusDTO) {

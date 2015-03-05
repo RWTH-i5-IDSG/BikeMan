@@ -128,14 +128,6 @@ public class StationRepositoryImpl implements StationRepository {
 
     @Override
     @Transactional(readOnly = true)
-    public Long getStationIdByEndpointAddress(String endpointAddress) {
-        return em.createQuery("SELECT s.stationId FROM Station s where s.endpointAddress = :endpointAddress", Long.class)
-                .setParameter("endpointAddress", endpointAddress)
-                .getSingleResult();
-    }
-
-    @Override
-    @Transactional(readOnly = true)
     public String getEndpointAddress(long stationId) throws DatabaseException {
         final String q = "SELECT s.endpointAddress FROM Station s WHERE s.stationId = :stationId";
         try {

@@ -15,7 +15,7 @@ import java.util.List;
 public interface PedelecRepository {
 
     List<ViewPedelecDTO> findAll() throws DatabaseException;
-    List<AvailablePedelecDTO> findAvailablePedelecs(Long stationId) throws DatabaseException;
+    List<AvailablePedelecDTO> findAvailablePedelecs(String endpointAddress) throws DatabaseException;
     ViewPedelecDTO findOneDTO(Long pedelecId) throws DatabaseException;
     Pedelec findOne(long pedelecId) throws DatabaseException;
     public Pedelec findByManufacturerId(String manufacturerId) throws DatabaseException;

@@ -1,5 +1,6 @@
 package de.rwth.idsg.bikeman.service;
 
+import com.google.common.base.Optional;
 import de.rwth.idsg.bikeman.domain.BookedTariff;
 import de.rwth.idsg.bikeman.domain.CardAccount;
 import de.rwth.idsg.bikeman.domain.CustomerType;
@@ -36,22 +37,14 @@ import java.util.Set;
 @Slf4j
 public class CardAccountService {
 
-    @Inject
-    private CardAccountRepository cardAccountRepository;
-
-    @Inject
-    private UserRepository userRepository;
+    @Inject private CardAccountRepository cardAccountRepository;
+    @Inject private UserRepository userRepository;
+    @Inject private TariffRepository tariffRepository;
     
-    @Inject
-    private TariffRepository tariffRepository;
-
-    
-    public AuthorizeConfirmationDTO activateCardAccount(CardActivationDTO cardActivationDTO, HttpServletResponse response) {
+    public Optional<AuthorizeConfirmationDTO> activateCardAccount(CardActivationDTO cardActivationDTO) {
         CardAccount cardAccount = cardAccountRepository.findByActivationKey(cardActivationDTO.getActivationKey());
-        
         if (cardAccount == null) {
-            response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
-            return null;
+            return Optional.absent();
         }
         
         cardAccount.setOperationState(OperationState.OPERATIVE);
@@ -59,8 +52,8 @@ public class CardAccountService {
         cardAccount.setCardPin(cardActivationDTO.getCardPin());
         cardAccountRepository.save(cardAccount);
 
-        return new AuthorizeConfirmationDTO(cardAccount.getCardId());
-        
+        AuthorizeConfirmationDTO dto = new AuthorizeConfirmationDTO(cardAccount.getCardId());
+        return Optional.of(dto);
     }
     
     @Transactional(readOnly = true)

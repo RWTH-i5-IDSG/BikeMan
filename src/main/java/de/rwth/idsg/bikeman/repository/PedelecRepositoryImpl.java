@@ -51,22 +51,21 @@ public class PedelecRepositoryImpl implements PedelecRepository {
 
     @Override
     @Transactional(readOnly = true)
-    public List<AvailablePedelecDTO> findAvailablePedelecs(Long stationId) throws DatabaseException {
-
+    public List<AvailablePedelecDTO> findAvailablePedelecs(String endpointAddress) throws DatabaseException {
         final String q = "SELECT new de.rwth.idsg.bikeman.psinterface.dto.response." +
-                "AvailablePedelecDTO(p.manufacturerId) " +
-                "from Pedelec p " +
-                "where p.stationSlot.station.stationId = :stationId " +
-                "and p.state = de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE " +
-                "order by p.stateOfCharge desc";
+                         "AvailablePedelecDTO(p.manufacturerId) " +
+                         "from Pedelec p " +
+                         "where p.stationSlot.station.endpointAddress = :endpointAddress " +
+                         "and p.state = de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE " +
+                         "order by p.stateOfCharge desc";
 
         try {
             return em.createQuery(q, AvailablePedelecDTO.class)
-                    .setParameter("stationId", stationId)
+                    .setParameter("endpointAddress", endpointAddress)
                     .setMaxResults(5)
                     .getResultList();
         } catch (Exception e) {
-            throw new DatabaseException("Failed to find pedelec with stationId" + stationId, e);
+            throw new DatabaseException("Failed to find pedelecs in station with endpoint address" + endpointAddress, e);
         }
     }
 

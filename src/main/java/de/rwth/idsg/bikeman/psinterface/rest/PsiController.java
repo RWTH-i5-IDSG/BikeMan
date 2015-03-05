@@ -1,5 +1,6 @@
 package de.rwth.idsg.bikeman.psinterface.rest;
 
+import com.google.common.base.Optional;
 import de.rwth.idsg.bikeman.psinterface.Utils;
 import de.rwth.idsg.bikeman.psinterface.dto.request.*;
 import de.rwth.idsg.bikeman.psinterface.dto.response.AuthorizeConfirmationDTO;
@@ -72,12 +73,7 @@ public class PsiController {
     public List<AvailablePedelecDTO> getAvailablePedelecs(HttpServletRequest request) throws DatabaseException {
         String endpointAddress = Utils.getFrom(request);
         log.debug("[From: {}] Received getAvailablePedelecs", endpointAddress);
-
-        // TODO: uncomment this when in production
-        Long stationId = psiService.getStationIdByEndpointAddress(endpointAddress);
-
-        //Long stationId = 1L;
-        return psiService.getAvailablePedelecs(stationId);
+        return psiService.getAvailablePedelecs(endpointAddress);
     }
 
     // -------------------------------------------------------------------------
@@ -90,7 +86,13 @@ public class PsiController {
         log.info("[From: {}] Received activate card request for activation key'{}'",
                 Utils.getFrom(request), cardActivationDTO.getActivationKey());
 
-        return cardAccountService.activateCardAccount(cardActivationDTO, response);
+        Optional<AuthorizeConfirmationDTO> optional = cardAccountService.activateCardAccount(cardActivationDTO);
+        if (optional.isPresent()) {
+            return optional.get();
+        } else {
+            response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
+            return null;
+        }
     }
 
     @RequestMapping(value = AUTHORIZE_PATH, method = RequestMethod.POST)

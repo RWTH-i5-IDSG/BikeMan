@@ -22,7 +22,6 @@ public interface StationRepository {
 
     Station findOneByManufacturerId(String manufacturerId) throws DatabaseException;
 
-    Long getStationIdByEndpointAddress(String endpointAddress) throws DatabaseException;
     String getEndpointAddress(long stationId) throws DatabaseException;
     void updateEndpointAddress(long stationId, String endpointAddress) throws DatabaseException;
 
