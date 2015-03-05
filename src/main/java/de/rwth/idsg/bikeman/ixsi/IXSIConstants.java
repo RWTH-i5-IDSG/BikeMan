@@ -18,7 +18,7 @@ public final class IXSIConstants {
 
     public final class Provider {
         public static final String id = "Velocity";
-        public static final String name = "Velocity Aachen";
+        public static final String name = "Velocity";
         public static final String shortName = "Velocity";
         public static final String url = "http://www.velocity-aachen.de/";
         public static final String logoUrl = "";
