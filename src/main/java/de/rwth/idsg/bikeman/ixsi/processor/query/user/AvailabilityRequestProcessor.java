@@ -83,22 +83,24 @@ public class AvailabilityRequestProcessor implements
             // PlaceID
             String placeId = String.valueOf(dto.getStationManufacturerId());
 
-            CoordType coordType = new CoordType()
-                    .withLatitude(dto.getLocationLatitude())
-                    .withLongitude(dto.getLocationLongitude());
-
-            GeoPositionType geoPosition = new GeoPositionType()
-                    .withCoord(coordType);
-
             PercentType percentType = new PercentType()
                     .withValue(roundPercent(dto.getStateOfCharge()));
 
-            availabilityList.add(new BookingTargetAvailabilityType()
+            BookingTargetAvailabilityType b = new BookingTargetAvailabilityType()
                     .withID(bookingTargetIDType)
                     .withPlaceID(placeId)
-                    .withGeoPosition(geoPosition)
                     .withCurrentStateOfCharge(percentType)
-                    .withCurrentDrivingRange(0)); // TODO get the actual driving range from pedelec!
+                    .withCurrentDrivingRange(0); // TODO get the actual driving range from pedelec!
+
+            // For geo-location queries
+            if (dto.getLocationLatitude() != null && dto.getLocationLongitude() != null ) {
+                CoordType coordType = new CoordType()
+                        .withLatitude(dto.getLocationLatitude())
+                        .withLongitude(dto.getLocationLongitude());
+
+                b.setGeoPosition(new GeoPositionType().withCoord(coordType));
+            }
+            availabilityList.add(b);
         }
         return availabilityList;
     }

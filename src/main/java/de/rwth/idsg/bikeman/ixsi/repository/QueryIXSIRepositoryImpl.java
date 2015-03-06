@@ -99,12 +99,16 @@ public class QueryIXSIRepositoryImpl implements QueryIXSIRepository {
         return res;
     }
 
+    // -------------------------------------------------------------------------
+    // Pedelec availability
+    // -------------------------------------------------------------------------
+
     @Override
     @SuppressWarnings("unchecked")
     public List<AvailabilityResponseDTO> availability(List<BookingTargetIDType> targets) {
         Query q = em.createQuery(
                 "SELECT new de.rwth.idsg.bikeman.ixsi.dto.query.AvailabilityResponseDTO(" +
-                "p.manufacturerId, s.manufacturerId, s.locationLatitude, s.locationLongitude, p.stateOfCharge) " +
+                "p.manufacturerId, s.manufacturerId, p.stateOfCharge) " +
                 "FROM Pedelec p JOIN p.stationSlot slot JOIN slot.station s " +
                 "WHERE p.manufacturerId in :targets");
 
@@ -170,6 +174,10 @@ public class QueryIXSIRepositoryImpl implements QueryIXSIRepository {
         }
         return myList;
     }
+
+    // -------------------------------------------------------------------------
+    // Station availability
+    // -------------------------------------------------------------------------
 
     @Override
     @SuppressWarnings("unchecked")

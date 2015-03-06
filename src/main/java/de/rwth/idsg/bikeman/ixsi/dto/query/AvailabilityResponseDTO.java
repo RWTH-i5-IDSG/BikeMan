@@ -1,20 +1,42 @@
 package de.rwth.idsg.bikeman.ixsi.dto.query;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.math.BigDecimal;
 
 /**
  * Created by max on 06/10/14.
  */
-@Data
+@ToString
+@EqualsAndHashCode
+@Getter
+@Setter
 public class AvailabilityResponseDTO {
 
-    private final String manufacturerId;
-    private final String stationManufacturerId;
-    private final BigDecimal locationLatitude;
-    private final BigDecimal locationLongitude;
-    private final Float stateOfCharge;
+    private String manufacturerId;
+    private String stationManufacturerId;
+    private BigDecimal locationLatitude;
+    private BigDecimal locationLongitude;
+    private Float stateOfCharge;
 //    private Float drivingRange;
 
+    // For simple queries
+    public AvailabilityResponseDTO(String manufacturerId, String stationManufacturerId, Float stateOfCharge) {
+        this.manufacturerId = manufacturerId;
+        this.stationManufacturerId = stationManufacturerId;
+        this.stateOfCharge = stateOfCharge;
+    }
+
+    // For geo-location queries
+    public AvailabilityResponseDTO(String manufacturerId, String stationManufacturerId,
+                                   BigDecimal locationLatitude, BigDecimal locationLongitude, Float stateOfCharge) {
+        this.manufacturerId = manufacturerId;
+        this.stationManufacturerId = stationManufacturerId;
+        this.locationLatitude = locationLatitude;
+        this.locationLongitude = locationLongitude;
+        this.stateOfCharge = stateOfCharge;
+    }
 }
