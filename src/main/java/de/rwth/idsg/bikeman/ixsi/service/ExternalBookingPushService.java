@@ -35,16 +35,10 @@ public class ExternalBookingPushService {
 
     @Autowired private Producer producer;
     @Autowired private ExternalBookingStore externalBookingStore;
-
-    //@Inject CardAccountRepository cardAccountRepository;
-    //@Inject MajorCustomerRepository majorCustomerRepository;
-    @Inject IxsiUserRepository ixsiUserRepository;
+    @Autowired private IxsiUserRepository ixsiUserRepository;
 
     public void report(Long bookingId, Transaction transaction) {
         String cardId = transaction.getCardAccount().getCardId();
-        //CardAccount cardAccount = cardAccountRepository.findByCardId(cardId);
-        //ViewMajorCustomerDTO majorCustomer = majorCustomerRepository.findByLogin(cardAccount.getUser().getLogin());
-
         Optional<String> optionalMJ = ixsiUserRepository.getMajorCustomerName(cardId);
 
         if (optionalMJ.isPresent()) {
@@ -71,7 +65,8 @@ public class ExternalBookingPushService {
             ExternalBookingType extBooking = new ExternalBookingType()
                     .withBookingID(String.valueOf(bookingId))
                     .withBookingTargetID(bookingTarget)
-                    .withUserInfo(userInfo).withTimePeriod(time);
+                    .withUserInfo(userInfo)
+                    .withTimePeriod(time);
 
             ExternalBookingPushMessageType bookingPush = new ExternalBookingPushMessageType().withExternalBooking(extBooking);
             SubscriptionMessageType subscriptionMessageType = new SubscriptionMessageType().withPushMessageGroup(bookingPush);
