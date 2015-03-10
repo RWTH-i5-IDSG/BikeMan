@@ -9,6 +9,7 @@ import de.rwth.idsg.bikeman.domain.StationSlot_;
 import de.rwth.idsg.bikeman.domain.Station_;
 import de.rwth.idsg.bikeman.domain.Transaction_;
 import de.rwth.idsg.bikeman.domain.login.User;
+import de.rwth.idsg.bikeman.psinterface.Utils;
 import de.rwth.idsg.bikeman.psinterface.dto.request.StartTransactionDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.StopTransactionDTO;
 import de.rwth.idsg.bikeman.psinterface.exception.PsErrorCode;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -28,6 +30,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Root;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -177,7 +180,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void start(StartTransactionDTO dto) throws DatabaseException {
+    public Transaction start(StartTransactionDTO dto) throws DatabaseException {
 
         // -------------------------------------------------------------------------
         // 1. Start transaction
@@ -187,6 +190,12 @@ public class TransactionRepositoryImpl implements TransactionRepository {
 
         final String cardAccQuery = "SELECT ca FROM CardAccount ca WHERE ca.cardId = :cardId";
 
+        final String bookingQuery = "SELECT b FROM Booking b INNER JOIN b.reservation r " +
+                    "WHERE r.cardAccount.cardAccountId = :cardAccountId " +
+                    "AND r.pedelec.pedelecId = :pedelecId " +
+                    "AND r.startDateTime <= :transTime " +
+                    "AND :transTime <= r.endDateTime";
+
         Pedelec pedelec = em.createQuery(pedelecQuery, Pedelec.class)
                             .setParameter("pedelecManufacturerId", dto.getPedelecManufacturerId())
                             .getSingleResult();
@@ -194,6 +203,19 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         CardAccount cardAccount = em.createQuery(cardAccQuery, CardAccount.class)
                                     .setParameter("cardId", dto.getCardId())
                                     .getSingleResult();
+
+        // check for existing reservation -> get corresponding booking
+        LocalDateTime dt = new LocalDateTime(Utils.toMillis(dto.getTimestamp()));
+        Booking booking = null;
+        try {
+            booking = em.createQuery(bookingQuery, Booking.class)
+                    .setParameter("cardAccountId", cardAccount.getCardAccountId())
+                    .setParameter("pedelecId", pedelec.getPedelecId())
+                    .setParameter("transTime", dt)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            log.debug("No booking found for pedelec {}", dto.getPedelecManufacturerId());
+        }
 
         User user = cardAccount.getUser();
         StationSlot slot = pedelec.getStationSlot();
@@ -242,6 +264,16 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         em.merge(cardAccount);
         em.merge(pedelec);
         em.merge(slot);
+
+        // update booking
+        if (booking == null) {
+            // no reservation present: create new booking for transaction
+            booking = new Booking();
+        }
+        booking.setTransaction(transaction);
+        em.merge(booking);
+
+        return transaction;
     }
 
     @Override

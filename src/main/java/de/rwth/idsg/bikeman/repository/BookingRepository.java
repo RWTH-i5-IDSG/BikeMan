@@ -11,6 +11,6 @@ import java.util.List;
  */
 public interface BookingRepository {
     long saveAndGetId(Booking booking);
-    Optional<Long> findIdByTransaction(Transaction transaction);
+    Long findIdByTransaction(Transaction transaction);
     List<Booking> findClosedBookings(List<Long> bookingIdList);
 }

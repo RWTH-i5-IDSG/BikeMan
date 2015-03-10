@@ -3,6 +3,7 @@ package de.rwth.idsg.bikeman.repository;
 import com.google.common.base.Optional;
 import de.rwth.idsg.bikeman.domain.Booking;
 import de.rwth.idsg.bikeman.domain.Transaction;
+import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,16 +33,15 @@ public class BookingRepositoryImpl implements BookingRepository {
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<Long> findIdByTransaction(Transaction transaction) {
+    public Long findIdByTransaction(Transaction transaction) {
         final String query = "SELECT b.bookingId FROM Booking b WHERE b.transaction = :transaction";
         try {
-            Long boid = em.createQuery(query, Long.class)
+            return em.createQuery(query, Long.class)
                           .setParameter("transaction", transaction)
                           .getSingleResult();
-            return Optional.of(boid);
 
         } catch (NoResultException e) {
-            return Optional.absent();
+            throw new DatabaseException("Could not find booking for specified transaction.", e);
         }
     }
 

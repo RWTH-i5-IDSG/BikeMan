@@ -82,7 +82,7 @@ public interface TransactionRepository {
     *
     * Important: This is for internal use to start a transaction, and NOT for the Web UI
     */
-    void start(StartTransactionDTO dto) throws DatabaseException;
+    Transaction start(StartTransactionDTO dto) throws DatabaseException;
 
     /*
     *

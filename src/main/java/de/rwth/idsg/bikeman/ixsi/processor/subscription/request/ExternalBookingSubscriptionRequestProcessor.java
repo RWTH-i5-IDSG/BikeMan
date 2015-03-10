@@ -1,10 +1,15 @@
 package de.rwth.idsg.bikeman.ixsi.processor.subscription.request;
 
+import de.rwth.idsg.bikeman.ixsi.impl.ExternalBookingStore;
 import de.rwth.idsg.bikeman.ixsi.processor.api.SubscriptionRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
 import de.rwth.idsg.bikeman.ixsi.schema.ExternalBookingSubscriptionRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.ExternalBookingSubscriptionResponseType;
+import de.rwth.idsg.bikeman.ixsi.schema.UserInfoType;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /**
  * @author Sevket Goekay <goekay@dbis.rwth-aachen.de>
@@ -14,10 +19,20 @@ import org.springframework.stereotype.Component;
 public class ExternalBookingSubscriptionRequestProcessor implements
         SubscriptionRequestProcessor<ExternalBookingSubscriptionRequestType, ExternalBookingSubscriptionResponseType> {
 
+    @Autowired private ExternalBookingStore externalBookingStore;
+
     @Override
     public ExternalBookingSubscriptionResponseType process(ExternalBookingSubscriptionRequestType request, String systemId) {
-        // TODO
-        return null;
+
+        List<UserInfoType> users = request.getUserInfo();
+
+        if (request.isSetUnsubscription() && request.isUnsubscription()) {
+            externalBookingStore.unsubscribe(systemId, users);
+        } else {
+            externalBookingStore.subscribe(systemId, users);
+        }
+
+        return new ExternalBookingSubscriptionResponseType();
     }
 
     // -------------------------------------------------------------------------
