@@ -1,5 +1,6 @@
 package de.rwth.idsg.bikeman.repository;
 
+import com.google.common.base.Optional;
 import de.rwth.idsg.bikeman.Application;
 import de.rwth.idsg.bikeman.ixsi.repository.IxsiUserRepository;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
@@ -60,6 +61,17 @@ public class IxsiUserRepositoryImplTest {
 
         boolean isValid = ixsiUserRepository.validateUserToken(CARD_ID, userToken);
         assertTrue(isValid);
+    }
+
+    @Test
+    public void test_getMajorCustomer() throws DatabaseException {
+        Optional<String> optionalMJ = ixsiUserRepository.getMajorCustomerName(CARD_ID);
+
+        boolean isPresent = optionalMJ.isPresent();
+        if (isPresent) {
+            log.debug("Major customer name: {}", optionalMJ.get());
+        }
+        assertTrue(isPresent);
     }
 
 }
