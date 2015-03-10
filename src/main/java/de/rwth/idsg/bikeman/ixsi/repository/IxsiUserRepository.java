@@ -1,5 +1,6 @@
 package de.rwth.idsg.bikeman.ixsi.repository;
 
+import com.google.common.base.Optional;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 
 /**
@@ -9,4 +10,5 @@ import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 public interface IxsiUserRepository {
     String setUserToken(String login, String password) throws DatabaseException;
     boolean validateUserToken(String login, String ixsiToken);
+    Optional<String> getMajorCustomerName(String cardId);
 }

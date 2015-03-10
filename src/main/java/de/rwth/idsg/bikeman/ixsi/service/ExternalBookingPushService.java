@@ -1,10 +1,12 @@
 package de.rwth.idsg.bikeman.ixsi.service;
 
+import com.google.common.base.Optional;
 import de.rwth.idsg.bikeman.domain.CardAccount;
 import de.rwth.idsg.bikeman.domain.Transaction;
 import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
 import de.rwth.idsg.bikeman.ixsi.api.Producer;
 import de.rwth.idsg.bikeman.ixsi.impl.ExternalBookingStore;
+import de.rwth.idsg.bikeman.ixsi.repository.IxsiUserRepository;
 import de.rwth.idsg.bikeman.ixsi.schema.BookingTargetIDType;
 import de.rwth.idsg.bikeman.ixsi.schema.ExternalBookingPushMessageType;
 import de.rwth.idsg.bikeman.ixsi.schema.ExternalBookingType;
@@ -34,19 +36,23 @@ public class ExternalBookingPushService {
     @Autowired private Producer producer;
     @Autowired private ExternalBookingStore externalBookingStore;
 
-    @Inject CardAccountRepository cardAccountRepository;
-    @Inject MajorCustomerRepository majorCustomerRepository;
+    //@Inject CardAccountRepository cardAccountRepository;
+    //@Inject MajorCustomerRepository majorCustomerRepository;
+    @Inject IxsiUserRepository ixsiUserRepository;
 
     public void report(Long bookingId, Transaction transaction) {
         String cardId = transaction.getCardAccount().getCardId();
-        CardAccount cardAccount = cardAccountRepository.findByCardId(cardId);
-        ViewMajorCustomerDTO majorCustomer = majorCustomerRepository.findByLogin(cardAccount.getUser().getLogin());
+        //CardAccount cardAccount = cardAccountRepository.findByCardId(cardId);
+        //ViewMajorCustomerDTO majorCustomer = majorCustomerRepository.findByLogin(cardAccount.getUser().getLogin());
 
+        Optional<String> optionalMJ = ixsiUserRepository.getMajorCustomerName(cardId);
 
-        if (majorCustomer != null) {
-            UserInfoType userInfo = new UserInfoType().withUserID(cardId).withProviderID(majorCustomer.getName());
+        if (optionalMJ.isPresent()) {
+            UserInfoType userInfo = new UserInfoType()
+                    .withUserID(cardId)
+                    .withProviderID(optionalMJ.get());
+
             Set<String> subscribed = externalBookingStore.getSubscribedSystems(userInfo);
-
             if (subscribed.isEmpty()) {
                 log.debug("Will not push. There is no subscribed system for user '{}'", userInfo);
                 return;
@@ -73,8 +79,6 @@ public class ExternalBookingPushService {
 
             producer.send(ixsiMessageType, subscribed);
         }
-
-
     }
 
 }

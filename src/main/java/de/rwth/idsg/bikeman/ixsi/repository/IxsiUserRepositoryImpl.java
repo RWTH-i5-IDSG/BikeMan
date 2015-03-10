@@ -1,5 +1,6 @@
 package de.rwth.idsg.bikeman.ixsi.repository;
 
+import com.google.common.base.Optional;
 import de.rwth.idsg.bikeman.domain.CardAccount;
 import de.rwth.idsg.bikeman.domain.ixsi.IxsiToken;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
@@ -82,6 +83,23 @@ public class IxsiUserRepositoryImpl implements IxsiUserRepository {
         } catch (Exception e) {
             log.error("Error occurred", e);
             return false;
+        }
+    }
+
+    @Override
+    public Optional<String> getMajorCustomerName(String cardId) {
+        final String p = "SELECT mj.name FROM MajorCustomer mj " +
+                         "WHERE (SELECT ca FROM CardAccount ca WHERE ca.cardId = :cardId) " +
+                         "MEMBER OF mj.cardAccounts";
+
+        try {
+            String name = em.createQuery(p, String.class)
+                            .setParameter("cardId", cardId)
+                            .getSingleResult();
+            return Optional.of(name);
+
+        } catch (NoResultException e) {
+            return Optional.absent();
         }
     }
 
