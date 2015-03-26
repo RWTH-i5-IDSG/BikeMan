@@ -16,6 +16,9 @@ import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StopWatch;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Swagger configuration.
  *
@@ -31,6 +34,7 @@ public class SwaggerConfiguration implements EnvironmentAware {
     private final Logger log = LoggerFactory.getLogger(SwaggerConfiguration.class);
 
     public static final String DEFAULT_INCLUDE_PATTERN = "/api/.*";
+    public static final String APP_INCLUDE_PATTERN = "/apptest/.*";
 
     private RelaxedPropertyResolver propertyResolver;
 
@@ -49,8 +53,8 @@ public class SwaggerConfiguration implements EnvironmentAware {
         watch.start();
         SwaggerSpringMvcPlugin swaggerSpringMvcPlugin = new SwaggerSpringMvcPlugin(springSwaggerConfig)
             .apiInfo(apiInfo())
-            .genericModelSubstitutes(ResponseEntity.class)
-            .includePatterns(DEFAULT_INCLUDE_PATTERN);
+                .genericModelSubstitutes(ResponseEntity.class)
+                .includePatterns(DEFAULT_INCLUDE_PATTERN, APP_INCLUDE_PATTERN);
 
         swaggerSpringMvcPlugin.build();
         watch.stop();
