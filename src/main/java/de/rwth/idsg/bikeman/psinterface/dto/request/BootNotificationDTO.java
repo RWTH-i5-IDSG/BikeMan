@@ -13,5 +13,4 @@ public class BootNotificationDTO {
     private String stationManufacturerId;
     private String firmwareVersion;
     private List<SlotDTO> slots;
-    private String callbackUrl;
 }

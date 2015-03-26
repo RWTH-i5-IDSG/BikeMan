@@ -19,7 +19,8 @@ import org.springframework.web.client.RestTemplate;
 @Component
 public class StationClient {
 
-    @Autowired private RestTemplate restTemplate;
+    @Autowired
+    private RestTemplate restTemplate;
 
     private static final String STATE_PATH = "/state";
     private static final String CONFIG_PATH = "/config";

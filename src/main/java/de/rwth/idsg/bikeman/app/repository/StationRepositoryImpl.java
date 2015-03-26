@@ -5,15 +5,10 @@ import de.rwth.idsg.bikeman.app.dto.ViewStationSlotsDTO;
 import de.rwth.idsg.bikeman.app.exception.AppErrorCode;
 import de.rwth.idsg.bikeman.app.exception.AppException;
 import de.rwth.idsg.bikeman.domain.*;
-import de.rwth.idsg.bikeman.domain.Address_;
-import de.rwth.idsg.bikeman.domain.Pedelec_;
-import de.rwth.idsg.bikeman.domain.StationSlot_;
-import de.rwth.idsg.bikeman.domain.Station_;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import scala.App;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;

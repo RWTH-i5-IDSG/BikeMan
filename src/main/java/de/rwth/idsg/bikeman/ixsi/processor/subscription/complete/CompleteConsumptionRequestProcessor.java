@@ -23,9 +23,12 @@ import java.util.List;
 public class CompleteConsumptionRequestProcessor implements
         SubscriptionRequestMessageProcessor<CompleteConsumptionRequestType, CompleteConsumptionResponseType> {
 
-    @Autowired private ConsumptionStore consumptionStore;
-    @Autowired private BookingRepository bookingRepository;
-    @Autowired private ConsumptionPushService consumptionPushService;
+    @Autowired
+    private ConsumptionStore consumptionStore;
+    @Autowired
+    private BookingRepository bookingRepository;
+    @Autowired
+    private ConsumptionPushService consumptionPushService;
 
     @Override
     public CompleteConsumptionResponseType process(CompleteConsumptionRequestType request, String systemId) {

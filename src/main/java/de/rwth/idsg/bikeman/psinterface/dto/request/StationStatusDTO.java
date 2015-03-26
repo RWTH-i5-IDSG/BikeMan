@@ -2,10 +2,6 @@ package de.rwth.idsg.bikeman.psinterface.dto.request;
 
 import de.rwth.idsg.bikeman.psinterface.dto.OperationState;
 import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 
 import java.util.List;
 

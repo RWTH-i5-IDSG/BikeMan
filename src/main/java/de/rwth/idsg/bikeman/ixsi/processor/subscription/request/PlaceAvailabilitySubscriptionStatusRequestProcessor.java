@@ -20,7 +20,8 @@ import java.util.List;
 public class PlaceAvailabilitySubscriptionStatusRequestProcessor implements
         SubscriptionRequestProcessor<PlaceAvailabilitySubscriptionStatusRequestType, PlaceAvailabilitySubscriptionStatusResponseType> {
 
-    @Autowired private PlaceAvailabilityStore placeAvailabilityStore;
+    @Autowired
+    private PlaceAvailabilityStore placeAvailabilityStore;
 
     @Override
     public PlaceAvailabilitySubscriptionStatusResponseType process(PlaceAvailabilitySubscriptionStatusRequestType request, String systemId) {

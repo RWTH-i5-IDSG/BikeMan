@@ -2,18 +2,18 @@ server:
     port: 8080
 
 spring:
-    profiles: dev
-    
+    profiles:
+        active: dev
     datasource:
         dataSourceClassName: org.postgresql.ds.PGSimpleDataSource
-        url: 
-        databaseName: bikeman
+        url:
+        databaseName: BikeMan
         serverName: localhost
-        username: bikeman
+        username: BikeMan
         password:
 
     jpa:
-        database-platform: org.hibernate.dialect.PostgreSQLDialect
+        database-platform: org.hibernate.dialect.PostgreSQL82Dialect
         database: POSTGRESQL
         openInView: false
         show_sql: true
@@ -27,33 +27,26 @@ spring:
             hibernate.generate_statistics: true
             hibernate.cache.region.factory_class: org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory
 
+    mail:
+        baseUrl: http://localhost:8080
+
     thymeleaf:
         mode: XHTML
         cache: false
 
 metrics:
     jmx.enabled: true
+    spark:
+        enabled: false
+        host: localhost
+        port: 9999
     graphite:
         enabled: false
         host: localhost
         port: 2003
+        prefix: BikeMan
 
 cache:
     timeToLiveSeconds: 3600
     ehcache:
         maxBytesLocalHeap: 16M
-
-# You can add as many as folders to watch
-# You just need to add a dash + the directory to watch
-hotReload:
-    enabled: true
-    package:
-      project: de.rwth.idsg.bikeman
-      domain: de.rwth.idsg.bikeman.domain
-      restdto: de.rwth.idsg.bikeman.web.rest.dto
-    liquibase:
-      defaultCatalogName:
-      defaultSchema: public
-      excludeTables: T_AUTHORITY,T_PERSISTENT_AUDIT_EVENT,T_PERSISTENT_AUDIT_EVENT_DATA,T_PERSISTENT_TOKEN,T_USER,T_USER_AUTHORITY,OAUTH_ACCESS_TOKEN,OAUTH_APPROVALS,OAUTH_CLIENT_DETAILS,OAUTH_CLIENT_TOKEN,OAUTH_CODE,OAUTH_REFRESH_TOKEN
-    watchdir:
-      - target/classes

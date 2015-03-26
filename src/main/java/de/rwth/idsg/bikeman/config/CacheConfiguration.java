@@ -2,13 +2,15 @@ package de.rwth.idsg.bikeman.config;
 
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.ehcache.InstrumentedEhcache;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.cache.ehcache.EhCacheCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
+import org.springframework.cache.ehcache.EhCacheCacheManager;
 import org.springframework.core.env.Environment;
 import org.springframework.util.Assert;
 
@@ -23,8 +25,10 @@ import java.util.SortedSet;
 @Configuration
 @EnableCaching
 @AutoConfigureAfter(value = {MetricsConfiguration.class, DatabaseConfiguration.class})
-@Slf4j
+@Profile("!" + Constants.SPRING_PROFILE_FAST)
 public class CacheConfiguration {
+
+    private final Logger log = LoggerFactory.getLogger(CacheConfiguration.class);
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -41,9 +45,7 @@ public class CacheConfiguration {
     public void destroy() {
         log.info("Remove Cache Manager metrics");
         SortedSet<String> names = metricRegistry.getNames();
-        for (String name : names) {
-            metricRegistry.remove(name);
-        }
+        names.forEach(metricRegistry::remove);
         log.info("Closing Cache Manager");
         cacheManager.shutdown();
     }
@@ -53,19 +55,19 @@ public class CacheConfiguration {
         log.debug("Starting Ehcache");
         cacheManager = net.sf.ehcache.CacheManager.create();
         cacheManager.getConfiguration().setMaxBytesLocalHeap(env.getProperty("cache.ehcache.maxBytesLocalHeap", String.class, "16M"));
-        log.debug("Registring Ehcache Metrics gauges");
+        log.debug("Registering Ehcache Metrics gauges");
         Set<EntityType<?>> entities = entityManager.getMetamodel().getEntities();
         for (EntityType<?> entity : entities) {
-            
+
             String name = entity.getName();
             if (name == null || entity.getJavaType() != null) {
                 name = entity.getJavaType().getName();
             }
             Assert.notNull(name, "entity cannot exist without a identifier");
-            
+
             net.sf.ehcache.Cache cache = cacheManager.getCache(name);
             if (cache != null) {
-                cache.getCacheConfiguration().setTimeToLiveSeconds(env.getProperty("cache.timeToLiveSeconds", Integer.class, 3600));
+                cache.getCacheConfiguration().setTimeToLiveSeconds(env.getProperty("cache.timeToLiveSeconds", Long.class, 3600L));
                 net.sf.ehcache.Ehcache decoratedCache = InstrumentedEhcache.instrument(metricRegistry, cache);
                 cacheManager.replaceCacheWithDecoratedCache(cache, decoratedCache);
             }

@@ -1,12 +1,7 @@
 package de.rwth.idsg.bikeman.ixsi.repository;
 
 import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
-import de.rwth.idsg.bikeman.ixsi.dto.query.AvailabilityResponseDTO;
-import de.rwth.idsg.bikeman.ixsi.dto.query.BookingTargetsInfoResponseDTO;
-import de.rwth.idsg.bikeman.ixsi.dto.query.ChangedProvidersResponseDTO;
-import de.rwth.idsg.bikeman.ixsi.dto.query.PedelecDTO;
-import de.rwth.idsg.bikeman.ixsi.dto.query.PlaceAvailabilityResponseDTO;
-import de.rwth.idsg.bikeman.ixsi.dto.query.StationDTO;
+import de.rwth.idsg.bikeman.ixsi.dto.query.*;
 import de.rwth.idsg.bikeman.ixsi.schema.BookingTargetIDType;
 import de.rwth.idsg.bikeman.ixsi.schema.BookingTargetPropertiesType;
 import de.rwth.idsg.bikeman.ixsi.schema.GeoCircleType;

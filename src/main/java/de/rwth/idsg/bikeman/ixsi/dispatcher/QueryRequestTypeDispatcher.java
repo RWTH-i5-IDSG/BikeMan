@@ -31,10 +31,14 @@ import java.util.List;
 @Component
 public class QueryRequestTypeDispatcher implements Dispatcher {
 
-    @Autowired private QueryUserRequestMap userRequestMap;
-    @Autowired private QueryStaticRequestMap staticRequestMap;
-    @Autowired private DatatypeFactory factory;
-    @Autowired private SystemValidator systemValidator;
+    @Autowired
+    private QueryUserRequestMap userRequestMap;
+    @Autowired
+    private QueryStaticRequestMap staticRequestMap;
+    @Autowired
+    private DatatypeFactory factory;
+    @Autowired
+    private SystemValidator systemValidator;
 
     @Override
     public void handle(CommunicationContext context) {

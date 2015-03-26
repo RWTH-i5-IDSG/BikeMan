@@ -28,8 +28,10 @@ import javax.xml.datatype.DatatypeFactory;
 @Slf4j
 public class IxsiConfiguration implements WebSocketConfigurer {
 
-    @Autowired private WebSocketEndpoint webSocketEndpoint;
-    @Autowired private SystemValidator systemValidator;
+    @Autowired
+    private WebSocketEndpoint webSocketEndpoint;
+    @Autowired
+    private SystemValidator systemValidator;
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {

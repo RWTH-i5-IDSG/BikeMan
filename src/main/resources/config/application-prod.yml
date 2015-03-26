@@ -2,18 +2,18 @@ server:
     port: 8080
 
 spring:
-    profiles: prod
-    
+    profiles:
+        active: prod
     datasource:
         dataSourceClassName: org.postgresql.ds.PGSimpleDataSource
         url: 
-        databaseName: bikeman
+        databaseName: BikeMan
         serverName: localhost
-        username: bikeman
-        password:
+        username: BikeMan
+        password: 
 
     jpa:
-        database-platform: org.hibernate.dialect.PostgreSQLDialect
+        database-platform: org.hibernate.dialect.PostgreSQL82Dialect
         database: POSTGRESQL
         openInView: false
         show_sql: false
@@ -28,17 +28,24 @@ spring:
             hibernate.cache.region.factory_class: org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory
             
 
+    mail:
+        baseUrl: http://localhost:8080
+
     thymeleaf:
         mode: XHTML
         cache: true
 
-
 metrics:
     jmx.enabled: true
+    spark:
+        enabled: false
+        host: localhost
+        port: 9999
     graphite:
         enabled: false
         host: localhost
         port: 2003
+        prefix: BikeMan
 
 cache:
     timeToLiveSeconds: 3600

@@ -1,6 +1,7 @@
 package de.rwth.idsg.bikeman.web.filter.gzip;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -9,8 +10,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.zip.GZIPOutputStream;
 
-@Slf4j
 public class GZipServletFilter implements Filter {
+
+    private Logger log = LoggerFactory.getLogger(GZipServletFilter.class);
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -92,9 +94,8 @@ public class GZipServletFilter implements Filter {
      * Checks if the request uri is an include. These cannot be gzipped.
      */
     private boolean isIncluded(final HttpServletRequest request) {
-        final String uri = (String) request.getAttribute("javax.servlet.include.request_uri");
-        final boolean includeRequest = !(uri == null);
-
+        String uri = (String) request.getAttribute("javax.servlet.include.request_uri");
+        boolean includeRequest = !(uri == null);
         if (includeRequest && log.isDebugEnabled()) {
             log.debug("{} resulted in an include request. This is unusable, because"
                     + "the response will be assembled into the overrall response. Not gzipping.",

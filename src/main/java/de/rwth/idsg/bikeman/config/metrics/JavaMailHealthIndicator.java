@@ -28,13 +28,14 @@ public class JavaMailHealthIndicator extends AbstractHealthIndicator {
         log.debug("Initializing JavaMail health indicator");
         try {
             javaMailSender.getSession().getTransport().connect(javaMailSender.getHost(),
+                    javaMailSender.getPort(),
                     javaMailSender.getUsername(),
                     javaMailSender.getPassword());
 
             builder.up();
 
         } catch (MessagingException e) {
-            log.debug("Cannot connect to e-mail server.", e);
+            log.debug("Cannot connect to e-mail server. Error: {}", e.getMessage());
             builder.down(e);
         }
     }

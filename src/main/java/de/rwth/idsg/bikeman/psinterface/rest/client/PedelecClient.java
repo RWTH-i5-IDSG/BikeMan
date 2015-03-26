@@ -2,13 +2,11 @@ package de.rwth.idsg.bikeman.psinterface.rest.client;
 
 import de.rwth.idsg.bikeman.web.rest.dto.modify.ChangePedelecOperationStateDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.PedelecConfigurationDTO;
-import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -19,7 +17,8 @@ import org.springframework.web.client.RestTemplate;
 @Component
 public class PedelecClient {
 
-    @Autowired private RestTemplate restTemplate;
+    @Autowired
+    private RestTemplate restTemplate;
 
     private static final String STATE_PATH = "/pedelecs/{pedelecManufacturerId}/state";
     private static final String CONFIG_PATH = "/pedelecs/{pedelecManufacturerId}/config";

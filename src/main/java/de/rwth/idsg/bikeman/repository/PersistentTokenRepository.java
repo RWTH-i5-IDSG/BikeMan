@@ -1,7 +1,7 @@
 package de.rwth.idsg.bikeman.repository;
 
-import de.rwth.idsg.bikeman.domain.login.PersistentToken;
-import de.rwth.idsg.bikeman.domain.login.User;
+import de.rwth.idsg.bikeman.domain.PersistentToken;
+import de.rwth.idsg.bikeman.domain.User;
 import org.joda.time.LocalDate;
 import org.springframework.data.jpa.repository.JpaRepository;
 

@@ -19,8 +19,10 @@ import java.io.IOException;
 @Component
 public class WebSocketEndpoint extends TextWebSocketHandler {
 
-    @Autowired private WebSocketSessionStore webSocketSessionStore;
-    @Autowired private Consumer consumer;
+    @Autowired
+    private WebSocketSessionStore webSocketSessionStore;
+    @Autowired
+    private Consumer consumer;
 
     @Override
     public void handleTextMessage(WebSocketSession session, TextMessage webSocketMessage) throws Exception {

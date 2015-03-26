@@ -7,27 +7,25 @@ import de.rwth.idsg.bikeman.web.rest.dto.view.ViewManagerDTO;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import java.util.List;
 
 /**
  * REST controller for managing Pedelec.
  */
 @RestController
-@RequestMapping("/app")
-@Produces(MediaType.APPLICATION_JSON)
+@RequestMapping(value = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
 public class ManagerResource {
 
     @Autowired
     private ManagerRepository managerRepository;
 
-    private static final String BASE_PATH = "/rest/managers";
-    private static final String ID_PATH = "/rest/managers/{id}";
+    private static final String BASE_PATH = "/managers";
+    private static final String ID_PATH = "/managers/{id}";
 
     @Timed
     @RequestMapping(value = BASE_PATH, method = RequestMethod.GET)

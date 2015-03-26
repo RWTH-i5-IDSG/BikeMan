@@ -22,8 +22,10 @@ import java.util.Set;
 @Component
 public class ProducerImpl implements Producer {
 
-    @Autowired private Parser parser;
-    @Autowired private WebSocketSessionStore webSocketSessionStore;
+    @Autowired
+    private Parser parser;
+    @Autowired
+    private WebSocketSessionStore webSocketSessionStore;
 
     @Override
     public void send(CommunicationContext context) {

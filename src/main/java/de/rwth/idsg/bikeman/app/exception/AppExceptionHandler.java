@@ -2,7 +2,6 @@ package de.rwth.idsg.bikeman.app.exception;
 
 import de.rwth.idsg.bikeman.psinterface.Utils;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
-import de.rwth.idsg.bikeman.web.rest.exception.GeneralExceptionHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.HibernateException;
 import org.springframework.beans.TypeMismatchException;

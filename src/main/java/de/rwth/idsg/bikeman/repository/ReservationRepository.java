@@ -15,7 +15,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, String
 
     @Query("SELECT r FROM Reservation r WHERE r.pedelec.pedelecId = :pedelecId AND (r.startDateTime <= :endTime AND :startTime <= r.endDateTime)")
     public List<Reservation> findByTimeFrameForPedelec(@Param("pedelecId") long pedelecId,
-                                                 @Param("startTime") LocalDateTime start,
-                                                 @Param("endTime") LocalDateTime end);
+                                                       @Param("startTime") LocalDateTime start,
+                                                       @Param("endTime") LocalDateTime end);
 
 }

@@ -1,28 +1,17 @@
 package de.rwth.idsg.bikeman.ixsi.service;
 
 import com.google.common.base.Optional;
-import de.rwth.idsg.bikeman.domain.CardAccount;
 import de.rwth.idsg.bikeman.domain.Transaction;
 import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
 import de.rwth.idsg.bikeman.ixsi.api.Producer;
 import de.rwth.idsg.bikeman.ixsi.impl.ExternalBookingStore;
 import de.rwth.idsg.bikeman.ixsi.repository.IxsiUserRepository;
-import de.rwth.idsg.bikeman.ixsi.schema.BookingTargetIDType;
-import de.rwth.idsg.bikeman.ixsi.schema.ExternalBookingPushMessageType;
-import de.rwth.idsg.bikeman.ixsi.schema.ExternalBookingType;
-import de.rwth.idsg.bikeman.ixsi.schema.IxsiMessageType;
-import de.rwth.idsg.bikeman.ixsi.schema.SubscriptionMessageType;
-import de.rwth.idsg.bikeman.ixsi.schema.TimePeriodType;
-import de.rwth.idsg.bikeman.ixsi.schema.UserInfoType;
-import de.rwth.idsg.bikeman.repository.CardAccountRepository;
-import de.rwth.idsg.bikeman.repository.MajorCustomerRepository;
-import de.rwth.idsg.bikeman.web.rest.dto.view.ViewMajorCustomerDTO;
+import de.rwth.idsg.bikeman.ixsi.schema.*;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.inject.Inject;
 import java.util.Set;
 
 /**
@@ -33,9 +22,12 @@ import java.util.Set;
 @Service
 public class ExternalBookingPushService {
 
-    @Autowired private Producer producer;
-    @Autowired private ExternalBookingStore externalBookingStore;
-    @Autowired private IxsiUserRepository ixsiUserRepository;
+    @Autowired
+    private Producer producer;
+    @Autowired
+    private ExternalBookingStore externalBookingStore;
+    @Autowired
+    private IxsiUserRepository ixsiUserRepository;
 
     public void report(Long bookingId, Transaction transaction) {
         String cardId = transaction.getCardAccount().getCardId();

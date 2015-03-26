@@ -5,11 +5,7 @@ import de.rwth.idsg.bikeman.ixsi.impl.AvailabilityStore;
 import de.rwth.idsg.bikeman.ixsi.processor.api.SubscriptionRequestMessageProcessor;
 import de.rwth.idsg.bikeman.ixsi.processor.query.user.AvailabilityRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.repository.QueryIXSIRepository;
-import de.rwth.idsg.bikeman.ixsi.schema.BookingTargetAvailabilityType;
-import de.rwth.idsg.bikeman.ixsi.schema.BookingTargetIDType;
-import de.rwth.idsg.bikeman.ixsi.schema.CompleteAvailabilityRequestType;
-import de.rwth.idsg.bikeman.ixsi.schema.CompleteAvailabilityResponseType;
-import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
+import de.rwth.idsg.bikeman.ixsi.schema.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -23,9 +19,12 @@ import java.util.List;
 public class CompleteAvailabilityRequestProcessor implements
         SubscriptionRequestMessageProcessor<CompleteAvailabilityRequestType, CompleteAvailabilityResponseType> {
 
-    @Autowired private AvailabilityStore availabilityStore;
-    @Autowired private QueryIXSIRepository queryIXSIRepository;
-    @Autowired private AvailabilityRequestProcessor availabilityRequestProcessor;
+    @Autowired
+    private AvailabilityStore availabilityStore;
+    @Autowired
+    private QueryIXSIRepository queryIXSIRepository;
+    @Autowired
+    private AvailabilityRequestProcessor availabilityRequestProcessor;
 
     @Override
     public CompleteAvailabilityResponseType process(CompleteAvailabilityRequestType request, String systemId) {

@@ -43,7 +43,7 @@ bikeManApp.controller('MajorcustomerDetailController', ['$scope', 'resolvedMajor
         // set initial resultSize to 10
         $scope.resultSize = 10;
 
-        $http.get('app/rest/tariffs').success(function(data) {
+        $http.get('api/tariffs').success(function(data) {
             $scope.tariffs = data;
         });
 

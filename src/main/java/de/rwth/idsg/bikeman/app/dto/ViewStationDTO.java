@@ -2,7 +2,6 @@ package de.rwth.idsg.bikeman.app.dto;
 
 import de.rwth.idsg.bikeman.domain.OperationState;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.ToString;
 
 import java.math.BigDecimal;

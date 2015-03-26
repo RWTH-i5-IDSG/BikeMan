@@ -22,9 +22,12 @@ import java.util.List;
 public class CompletePlaceAvailabilityRequestProcessor implements
         SubscriptionRequestMessageProcessor<CompletePlaceAvailabilityRequestType, CompletePlaceAvailabilityResponseType> {
 
-    @Autowired private PlaceAvailabilityStore placeAvailabilityStore;
-    @Autowired private QueryIXSIRepository queryIXSIRepository;
-    @Autowired private PlaceAvailabilityRequestProcessor placeAvailabilityRequestProcessor;
+    @Autowired
+    private PlaceAvailabilityStore placeAvailabilityStore;
+    @Autowired
+    private QueryIXSIRepository queryIXSIRepository;
+    @Autowired
+    private PlaceAvailabilityRequestProcessor placeAvailabilityRequestProcessor;
 
     @Override
     public CompletePlaceAvailabilityResponseType process(CompletePlaceAvailabilityRequestType request, String systemId) {

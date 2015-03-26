@@ -6,37 +6,35 @@ import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditCustomerDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.view.ViewCustomerDTO;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import java.util.List;
 
 /**
  * REST controller for managing Customer.
  */
 @RestController
-@RequestMapping("/app")
-@Produces(MediaType.APPLICATION_JSON)
+@RequestMapping(value = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
 public class CustomerResource {
 
     @Inject
     private CustomerRepository customerRepository;
 
-    private static final String BASE_PATH = "/rest/customers";
-    private static final String ID_PATH = "/rest/customers/{id}";
-    private static final String ID_PATH_ACTIVATE = "/rest/customers/{id}/activate";
-    private static final String ID_PATH_DEACTIVATE = "/rest/customers/{id}/deactivate";
+    private static final String BASE_PATH = "/customers";
+    private static final String ID_PATH = "/customers/{id}";
+    private static final String ID_PATH_ACTIVATE = "/customers/{id}/activate";
+    private static final String ID_PATH_DEACTIVATE = "/customers/{id}/deactivate";
 
     // If name should include first AND last name, there must be '+' sign in-between.
-    private static final String NAME_PATH = "/rest/customers/name/{name}";
+    private static final String NAME_PATH = "/customers/name/{name}";
 
     // Restriction: Customers login with an e-mail address
     // Regular expression for Spring MVC to interpret domain extensions as part of the path variable
-    private static final String LOGIN_PATH = "/rest/customers/login/{login:.+}";
+    private static final String LOGIN_PATH = "/customers/login/{login:.+}";
 
     @Timed
     @RequestMapping(value = BASE_PATH, method = RequestMethod.GET)

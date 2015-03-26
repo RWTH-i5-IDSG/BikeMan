@@ -1,6 +1,6 @@
 package de.rwth.idsg.bikeman.repository;
 
-import de.rwth.idsg.bikeman.domain.login.Authority;
+import de.rwth.idsg.bikeman.domain.Authority;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**

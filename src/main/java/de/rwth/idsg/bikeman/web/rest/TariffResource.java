@@ -10,27 +10,25 @@ import de.rwth.idsg.bikeman.repository.TariffRepository;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import java.util.List;
 
 /**
  * REST controller for managing Tariffs.
  */
 @RestController
-@RequestMapping("/app")
-@Produces(MediaType.APPLICATION_JSON)
+@RequestMapping(value = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
 public class TariffResource {
 
     @Autowired
     private TariffRepository tariffRepository;
 
-    private static final String BASE_PATH = "/rest/tariffs";
+    private static final String BASE_PATH = "/tariffs";
 
     @Timed
     @RequestMapping(value = BASE_PATH, method = RequestMethod.GET)

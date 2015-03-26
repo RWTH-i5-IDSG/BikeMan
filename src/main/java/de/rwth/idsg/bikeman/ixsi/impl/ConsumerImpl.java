@@ -19,8 +19,10 @@ import javax.xml.bind.JAXBException;
 @Component
 public class ConsumerImpl implements Consumer {
 
-    @Autowired private Parser parser;
-    @Autowired private IncomingIxsiDispatcher dispatcher;
+    @Autowired
+    private Parser parser;
+    @Autowired
+    private IncomingIxsiDispatcher dispatcher;
 
     @Override
     public void consume(CommunicationContext context) {

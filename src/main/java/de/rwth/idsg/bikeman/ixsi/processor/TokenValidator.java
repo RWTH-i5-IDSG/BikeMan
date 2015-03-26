@@ -22,7 +22,8 @@ import java.util.List;
 @Component
 public class TokenValidator {
 
-    @Autowired private IxsiUserRepository ixsiUserRepository;
+    @Autowired
+    private IxsiUserRepository ixsiUserRepository;
 
     public Results validate(List<UserInfoType> userInfoList) {
         Results r = new Results();

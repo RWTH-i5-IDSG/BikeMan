@@ -2,11 +2,7 @@ package de.rwth.idsg.bikeman.ixsi.processor.query.user;
 
 import com.google.common.base.Optional;
 import de.rwth.idsg.bikeman.ixsi.processor.api.UserRequestProcessor;
-import de.rwth.idsg.bikeman.ixsi.schema.ChangeBookingRequestType;
-import de.rwth.idsg.bikeman.ixsi.schema.ChangeBookingResponseType;
-import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
-import de.rwth.idsg.bikeman.ixsi.schema.Language;
-import de.rwth.idsg.bikeman.ixsi.schema.UserInfoType;
+import de.rwth.idsg.bikeman.ixsi.schema.*;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

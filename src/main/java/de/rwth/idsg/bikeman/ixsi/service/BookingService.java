@@ -1,10 +1,6 @@
 package de.rwth.idsg.bikeman.ixsi.service;
 
-import de.rwth.idsg.bikeman.domain.Booking;
-import de.rwth.idsg.bikeman.domain.CardAccount;
-import de.rwth.idsg.bikeman.domain.OperationState;
-import de.rwth.idsg.bikeman.domain.Pedelec;
-import de.rwth.idsg.bikeman.domain.Reservation;
+import de.rwth.idsg.bikeman.domain.*;
 import de.rwth.idsg.bikeman.ixsi.IxsiProcessingException;
 import de.rwth.idsg.bikeman.ixsi.schema.TimePeriodProposalType;
 import de.rwth.idsg.bikeman.repository.BookingRepository;
@@ -27,10 +23,14 @@ import java.util.List;
 @Slf4j
 public class BookingService {
 
-    @Autowired private BookingRepository bookingRepository;
-    @Autowired private ReservationRepository reservationRepository;
-    @Autowired private CardAccountRepository cardAccountRepository;
-    @Autowired private PedelecRepository pedelecRepository;
+    @Autowired
+    private BookingRepository bookingRepository;
+    @Autowired
+    private ReservationRepository reservationRepository;
+    @Autowired
+    private CardAccountRepository cardAccountRepository;
+    @Autowired
+    private PedelecRepository pedelecRepository;
 
     public long createBookingForUser(String bookeeId, String cardId, TimePeriodProposalType timePeriodProposal)
             throws DatabaseException {

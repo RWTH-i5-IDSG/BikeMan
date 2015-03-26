@@ -2,10 +2,10 @@
 
 bikeManApp.factory('Majorcustomer', ['$resource',
     function ($resource) {
-        return $resource('app/rest/majorcustomers/:id', {}, {
+        return $resource('api/majorcustomers/:id', {}, {
             'query': { method: 'GET', isArray: true},
             'get': { method: 'GET'},
             'update': { method: 'PUT'},
-            'searchByLogin': { method: 'GET', url: 'app/rest/majorcustomers/:login'}
+            'searchByLogin': { method: 'GET', url: 'api/majorcustomers/:login'}
         });
     }]);

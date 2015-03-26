@@ -6,12 +6,11 @@ import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditMajorCustomerDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.view.ViewMajorCustomerDTO;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import java.util.List;
 
 /**
@@ -19,17 +18,16 @@ import java.util.List;
  */
 
 @RestController
-@RequestMapping("/app")
-@Produces(MediaType.APPLICATION_JSON)
+@RequestMapping(value = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
 public class MajorCustomerResource {
 
     @Inject
     private MajorCustomerRepository majorCustomerRepository;
 
-    private static final String BASE_PATH = "/rest/majorcustomers";
-    private static final String ID_PATH = "/rest/majorcustomers/{login:.+}";
-    private static final String CARD_ACCOUNT_PATH = "/rest/majorcustomers/{login.+}/card-accounts";
+    private static final String BASE_PATH = "/majorcustomers";
+    private static final String ID_PATH = "/majorcustomers/{login:.+}";
+    private static final String CARD_ACCOUNT_PATH = "/majorcustomers/{login.+}/card-accounts";
 
     @Timed
     @RequestMapping(value = BASE_PATH, method = RequestMethod.GET)

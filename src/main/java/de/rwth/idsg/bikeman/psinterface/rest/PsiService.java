@@ -1,36 +1,20 @@
 package de.rwth.idsg.bikeman.psinterface.rest;
 
-import com.google.common.base.Optional;
 import de.rwth.idsg.bikeman.domain.CardAccount;
-import de.rwth.idsg.bikeman.domain.MajorCustomer;
 import de.rwth.idsg.bikeman.domain.OperationState;
 import de.rwth.idsg.bikeman.domain.Transaction;
-import de.rwth.idsg.bikeman.domain.login.User;
 import de.rwth.idsg.bikeman.ixsi.impl.ExternalBookingStore;
-import de.rwth.idsg.bikeman.ixsi.schema.UserInfoType;
 import de.rwth.idsg.bikeman.ixsi.service.AvailabilityPushService;
 import de.rwth.idsg.bikeman.ixsi.service.ConsumptionPushService;
 import de.rwth.idsg.bikeman.ixsi.service.ExternalBookingPushService;
 import de.rwth.idsg.bikeman.psinterface.Utils;
-import de.rwth.idsg.bikeman.psinterface.dto.request.BootNotificationDTO;
-import de.rwth.idsg.bikeman.psinterface.dto.request.CustomerAuthorizeDTO;
-import de.rwth.idsg.bikeman.psinterface.dto.request.PedelecStatusDTO;
-import de.rwth.idsg.bikeman.psinterface.dto.request.StartTransactionDTO;
-import de.rwth.idsg.bikeman.psinterface.dto.request.StationStatusDTO;
-import de.rwth.idsg.bikeman.psinterface.dto.request.StopTransactionDTO;
+import de.rwth.idsg.bikeman.psinterface.dto.request.*;
 import de.rwth.idsg.bikeman.psinterface.dto.response.AuthorizeConfirmationDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.response.AvailablePedelecDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.response.BootConfirmationDTO;
 import de.rwth.idsg.bikeman.psinterface.exception.PsErrorCode;
 import de.rwth.idsg.bikeman.psinterface.exception.PsException;
-import de.rwth.idsg.bikeman.repository.BookingRepository;
-import de.rwth.idsg.bikeman.repository.CardAccountRepository;
-import de.rwth.idsg.bikeman.repository.CustomerRepository;
-import de.rwth.idsg.bikeman.repository.MajorCustomerRepository;
-import de.rwth.idsg.bikeman.repository.PedelecRepository;
-import de.rwth.idsg.bikeman.repository.StationRepository;
-import de.rwth.idsg.bikeman.repository.TransactionRepository;
-import de.rwth.idsg.bikeman.web.rest.dto.view.ViewMajorCustomerDTO;
+import de.rwth.idsg.bikeman.repository.*;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
@@ -38,7 +22,6 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by swam on 04/08/14.
@@ -48,19 +31,30 @@ import java.util.Set;
 @Slf4j
 public class PsiService {
 
-    @Inject private CustomerRepository customerRepository;
-    @Inject private TransactionRepository transactionRepository;
-    @Inject private StationRepository stationRepository;
-    @Inject private BookingRepository bookingRepository;
-    @Inject private PedelecRepository pedelecRepository;
-    @Inject private CardAccountRepository cardAccountRepository;
-    @Inject private MajorCustomerRepository majorCustomerRepository;
+    @Inject
+    private CustomerRepository customerRepository;
+    @Inject
+    private TransactionRepository transactionRepository;
+    @Inject
+    private StationRepository stationRepository;
+    @Inject
+    private BookingRepository bookingRepository;
+    @Inject
+    private PedelecRepository pedelecRepository;
+    @Inject
+    private CardAccountRepository cardAccountRepository;
+    @Inject
+    private MajorCustomerRepository majorCustomerRepository;
 
-    @Inject private ConsumptionPushService consumptionPushService;
-    @Inject private AvailabilityPushService availabilityPushService;
-    @Inject private ExternalBookingPushService externalBookingPushService;
+    @Inject
+    private ConsumptionPushService consumptionPushService;
+    @Inject
+    private AvailabilityPushService availabilityPushService;
+    @Inject
+    private ExternalBookingPushService externalBookingPushService;
 
-    @Inject private ExternalBookingStore externalBookingStore;
+    @Inject
+    private ExternalBookingStore externalBookingStore;
 
     private static final Integer HEARTBEAT_INTERVAL_IN_SECONDS = 60;
 
@@ -92,9 +86,9 @@ public class PsiService {
         externalBookingPushService.report(bookingId, t);
 
         availabilityPushService.takenFromPlace(
-                startTransactionDTO.getPedelecManufacturerId(),
-                startTransactionDTO.getStationManufacturerId(),
-                new DateTime(startTransactionDTO.getTimestamp()));
+            startTransactionDTO.getPedelecManufacturerId(),
+            startTransactionDTO.getStationManufacturerId(),
+            new DateTime(startTransactionDTO.getTimestamp()));
     }
 
     public void handleStopTransaction(StopTransactionDTO stopTransactionDTO) throws DatabaseException {
@@ -105,9 +99,9 @@ public class PsiService {
 
         DateTime startDateTime = t.getStartDateTime().toDateTime();
         availabilityPushService.arrivedAtPlace(
-                stopTransactionDTO.getPedelecManufacturerId(),
-                stopTransactionDTO.getStationManufacturerId(),
-                startDateTime);
+            stopTransactionDTO.getPedelecManufacturerId(),
+            stopTransactionDTO.getStationManufacturerId(),
+            startDateTime);
     }
 
     public List<AvailablePedelecDTO> getAvailablePedelecs(String endpointAddress) throws DatabaseException {

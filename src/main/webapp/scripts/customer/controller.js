@@ -69,7 +69,7 @@ bikeManApp.controller('CustomerDetailController', ['$scope', 'resolvedCustomer',
 
         $scope.customer = resolvedCustomer;
 
-        $http.get('app/rest/tariffs').success(function(data) {
+        $http.get('api/tariffs').success(function(data) {
             $scope.tariffs = data;
         });
 
@@ -138,10 +138,10 @@ bikeManApp.controller('CustomerCreateController', ['$scope', 'Customer', '$timeo
 
         $scope.maxDate = new Date();
 
-        $http.get('app/rest/tariffs').success(function(data) {
+        $http.get('api/tariffs').success(function(data) {
             $scope.tariffs = data;
         });
-        
+
         $scope.create = function () {
             $scope.$broadcast('show-errors-check-validity');
 

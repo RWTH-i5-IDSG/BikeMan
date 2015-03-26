@@ -1,7 +1,7 @@
 package de.rwth.idsg.bikeman.security;
 
-import de.rwth.idsg.bikeman.domain.login.Authority;
-import de.rwth.idsg.bikeman.domain.login.User;
+import de.rwth.idsg.bikeman.domain.Authority;
+import de.rwth.idsg.bikeman.domain.User;
 import de.rwth.idsg.bikeman.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
@@ -43,6 +43,6 @@ public class UserDetailsService implements org.springframework.security.core.use
         }
 
         return new org.springframework.security.core.userdetails.User(lowercaseLogin, userFromDatabase.getPassword(),
-                grantedAuthorities);
+            grantedAuthorities);
     }
 }

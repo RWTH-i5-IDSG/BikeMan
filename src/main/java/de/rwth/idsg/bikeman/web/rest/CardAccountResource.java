@@ -8,12 +8,11 @@ import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditCardAccountDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.view.ViewCardAccountDTO;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import java.util.List;
 
 /**
@@ -21,8 +20,7 @@ import java.util.List;
  */
 
 @RestController
-@RequestMapping("/app")
-@Produces(MediaType.APPLICATION_JSON)
+@RequestMapping(value = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
 public class CardAccountResource {
 
@@ -32,9 +30,9 @@ public class CardAccountResource {
     @Inject
     private CardAccountService cardAccountService;
 
-    private static final String ENABLE_CARDACCOUNT = "/rest/cardaccounts/{cardId}/enable";
-    private static final String DISABLE_CARDACCOUNT = "/rest/cardaccounts/{cardId}/disable";
-    private static final String BASE_CARDACCOUNTS = "/rest/cardaccounts";
+    private static final String ENABLE_CARDACCOUNT = "/cardaccounts/{cardId}/enable";
+    private static final String DISABLE_CARDACCOUNT = "/cardaccounts/{cardId}/disable";
+    private static final String BASE_CARDACCOUNTS = "/cardaccounts";
 
 
     @Timed

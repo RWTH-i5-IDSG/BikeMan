@@ -11,11 +11,7 @@ import org.xml.sax.SAXException;
 
 import javax.annotation.PostConstruct;
 import javax.xml.XMLConstants;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.*;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
@@ -31,7 +27,8 @@ import java.net.URL;
 @Component
 public class ParserImpl implements Parser {
 
-    @Autowired private JAXBContext jaxbContext;
+    @Autowired
+    private JAXBContext jaxbContext;
     private static final ObjectFactory OBJECT_FACTORY = new ObjectFactory();
     private Schema schema;
 

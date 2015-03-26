@@ -1,8 +1,8 @@
 package de.rwth.idsg.bikeman.repository;
 
-import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditManagerDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.view.ViewManagerDTO;
+import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 
 import java.util.List;
 

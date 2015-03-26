@@ -27,10 +27,14 @@ import java.util.HashMap;
 public class SubscriptionRequestMessageMap extends HashMap<Class<?>, SubscriptionRequestMessageProcessor> {
     private static final long serialVersionUID = -3926494758975242383L;
 
-    @Autowired private CompleteAvailabilityRequestProcessor completeAvailabilityRequestProcessor;
-    @Autowired private CompletePlaceAvailabilityRequestProcessor completePlaceAvailabilityRequestProcessor;
-    @Autowired private CompleteBookingAlertRequestProcessor completeBookingAlertRequestProcessor;
-    @Autowired private CompleteConsumptionRequestProcessor completeConsumptionRequestProcessor;
+    @Autowired
+    private CompleteAvailabilityRequestProcessor completeAvailabilityRequestProcessor;
+    @Autowired
+    private CompletePlaceAvailabilityRequestProcessor completePlaceAvailabilityRequestProcessor;
+    @Autowired
+    private CompleteBookingAlertRequestProcessor completeBookingAlertRequestProcessor;
+    @Autowired
+    private CompleteConsumptionRequestProcessor completeConsumptionRequestProcessor;
 
     @PostConstruct
     public void init() {

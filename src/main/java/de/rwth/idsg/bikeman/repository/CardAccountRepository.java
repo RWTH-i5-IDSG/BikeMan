@@ -2,7 +2,7 @@ package de.rwth.idsg.bikeman.repository;
 
 import de.rwth.idsg.bikeman.domain.CardAccount;
 import de.rwth.idsg.bikeman.domain.OperationState;
-import de.rwth.idsg.bikeman.domain.login.User;
+import de.rwth.idsg.bikeman.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -25,7 +25,7 @@ public interface CardAccountRepository extends JpaRepository<CardAccount, Long> 
     @Query("select c from CardAccount c where UPPER(c.user.login) = UPPER(?1)")
     List<CardAccount> findByUserLogin(String login);
 
-    
+
     @Query("select c from CardAccount c where c.activationKey = ?1")
     CardAccount findByActivationKey(String activationKey);
 

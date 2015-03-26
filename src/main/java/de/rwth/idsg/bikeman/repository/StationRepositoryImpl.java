@@ -1,13 +1,9 @@
 package de.rwth.idsg.bikeman.repository;
 
 import de.rwth.idsg.bikeman.ItemIdComparator;
-import de.rwth.idsg.bikeman.domain.Address;
+import de.rwth.idsg.bikeman.domain.*;
 import de.rwth.idsg.bikeman.domain.Address_;
-import de.rwth.idsg.bikeman.domain.OperationState;
-import de.rwth.idsg.bikeman.domain.Pedelec;
 import de.rwth.idsg.bikeman.domain.Pedelec_;
-import de.rwth.idsg.bikeman.domain.Station;
-import de.rwth.idsg.bikeman.domain.StationSlot;
 import de.rwth.idsg.bikeman.domain.StationSlot_;
 import de.rwth.idsg.bikeman.domain.Station_;
 import de.rwth.idsg.bikeman.psinterface.Utils;
@@ -30,12 +26,7 @@ import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.Path;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;

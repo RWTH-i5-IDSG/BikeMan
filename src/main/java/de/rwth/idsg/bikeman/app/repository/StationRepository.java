@@ -1,9 +1,8 @@
 package de.rwth.idsg.bikeman.app.repository;
 
+import de.rwth.idsg.bikeman.app.dto.ViewStationDTO;
 import de.rwth.idsg.bikeman.app.dto.ViewStationSlotsDTO;
 import de.rwth.idsg.bikeman.app.exception.AppException;
-import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
-import de.rwth.idsg.bikeman.app.dto.ViewStationDTO;
 
 import java.util.List;
 

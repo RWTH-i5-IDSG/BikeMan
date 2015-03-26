@@ -24,8 +24,10 @@ import java.util.List;
 public class AvailabilityRequestProcessor implements
         UserRequestProcessor<AvailabilityRequestType, AvailabilityResponseType> {
 
-    @Autowired private QueryIXSIRepository queryIXSIRepository;
-    @Autowired private TokenValidator tokenValidator;
+    @Autowired
+    private QueryIXSIRepository queryIXSIRepository;
+    @Autowired
+    private TokenValidator tokenValidator;
 
     @Override
     public AvailabilityResponseType processAnonymously(AvailabilityRequestType request, Optional<Language> lan) {

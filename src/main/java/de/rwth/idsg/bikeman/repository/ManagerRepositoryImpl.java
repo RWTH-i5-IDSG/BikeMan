@@ -1,7 +1,7 @@
 package de.rwth.idsg.bikeman.repository;
 
 import de.rwth.idsg.bikeman.domain.Manager;
-import de.rwth.idsg.bikeman.domain.login.Authority;
+import de.rwth.idsg.bikeman.domain.Authority;
 import de.rwth.idsg.bikeman.security.AuthoritiesConstants;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditManagerDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.view.ViewManagerDTO;

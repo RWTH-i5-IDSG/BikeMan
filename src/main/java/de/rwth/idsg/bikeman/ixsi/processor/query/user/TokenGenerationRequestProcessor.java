@@ -4,11 +4,7 @@ import com.google.common.base.Optional;
 import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
 import de.rwth.idsg.bikeman.ixsi.processor.api.UserRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.repository.IxsiUserRepository;
-import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
-import de.rwth.idsg.bikeman.ixsi.schema.Language;
-import de.rwth.idsg.bikeman.ixsi.schema.TokenGenerationRequestType;
-import de.rwth.idsg.bikeman.ixsi.schema.TokenGenerationResponseType;
-import de.rwth.idsg.bikeman.ixsi.schema.UserInfoType;
+import de.rwth.idsg.bikeman.ixsi.schema.*;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +21,8 @@ import java.util.List;
 public class TokenGenerationRequestProcessor implements
         UserRequestProcessor<TokenGenerationRequestType, TokenGenerationResponseType> {
 
-    @Autowired private IxsiUserRepository ixsiUserRepository;
+    @Autowired
+    private IxsiUserRepository ixsiUserRepository;
 
     @Override
     public TokenGenerationResponseType processAnonymously(TokenGenerationRequestType request, Optional<Language> lan) {

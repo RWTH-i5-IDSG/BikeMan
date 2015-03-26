@@ -1,27 +1,25 @@
 {
   "name": "angular-bootstrap-show-errors",
-  "version": "1.0.2",
+  "version": "2.3.0",
   "description": "An Angular Directive to intelligently show form validation errors",
-  "author": "https://github.com/paulyoder/angular-bootstrap-show-errors/graphs/contributors",
+  "author": "Paul Yoder <paulyoder@gmail.com>",
   "license": "MIT",
-  "homepage": "https://github.com/angular-bootstrap-show-errors",
+  "homepage": "https://github.com/paulyoder/angular-bootstrap-show-errors",
   "main": "src/showErrors.js",
   "dependencies": {},
   "devDependencies": {
+    "bower": "^1.3.9",
     "grunt": "0.4.1",
-    "grunt-karma": "0.6.2",
-    "matchdep": "0.3.0",
-    "grunt-contrib-uglify": "~0.2.5",
     "grunt-contrib-coffee": "~0.7.0",
-    "grunt-ngmin": "0.0.3",
+    "grunt-contrib-uglify": "~0.2.5",
     "grunt-contrib-watch": "~0.5.3",
-    "karma-ng-scenario": "~0.1.0"
+    "grunt-karma": "0.9.0",
+    "matchdep": "0.3.0",
+    "phantomjs": "~1.9.10",
+    "karma-phantomjs-launcher": "~0.1.4",
+    "karma-jasmine": "~0.1.5"
   },
   "scripts": {
     "test": "grunt --verbose"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/dalelotts/angular-bootstrap-datetimepicker.git"
   }
 }

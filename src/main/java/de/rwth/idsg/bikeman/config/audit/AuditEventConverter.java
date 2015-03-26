@@ -1,6 +1,6 @@
 package de.rwth.idsg.bikeman.config.audit;
 
-import de.rwth.idsg.bikeman.domain.login.PersistentAuditEvent;
+import de.rwth.idsg.bikeman.domain.PersistentAuditEvent;
 import org.springframework.boot.actuate.audit.AuditEvent;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;

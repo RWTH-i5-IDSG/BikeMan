@@ -1,6 +1,6 @@
 package de.rwth.idsg.bikeman.psinterface.dto.response;
 
-import lombok.*;
+import lombok.Data;
 
 import java.io.Serializable;
 

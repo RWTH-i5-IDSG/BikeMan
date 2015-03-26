@@ -1,14 +1,6 @@
 package de.rwth.idsg.bikeman.repository;
 
 import de.rwth.idsg.bikeman.domain.*;
-import de.rwth.idsg.bikeman.domain.CardAccount_;
-import de.rwth.idsg.bikeman.domain.Customer_;
-import de.rwth.idsg.bikeman.domain.MajorCustomer_;
-import de.rwth.idsg.bikeman.domain.Pedelec_;
-import de.rwth.idsg.bikeman.domain.StationSlot_;
-import de.rwth.idsg.bikeman.domain.Station_;
-import de.rwth.idsg.bikeman.domain.Transaction_;
-import de.rwth.idsg.bikeman.domain.login.User;
 import de.rwth.idsg.bikeman.psinterface.Utils;
 import de.rwth.idsg.bikeman.psinterface.dto.request.StartTransactionDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.StopTransactionDTO;
@@ -25,12 +17,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.Root;
-import java.util.Date;
+import javax.persistence.criteria.*;
 import java.util.List;
 
 /**

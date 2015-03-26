@@ -1,6 +1,7 @@
 package de.rwth.idsg.bikeman.security;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
@@ -14,8 +15,9 @@ import java.io.IOException;
  * Returns a 401 error code (Unauthorized) to the client.
  */
 @Component
-@Slf4j
 public class Http401UnauthorizedEntryPoint implements AuthenticationEntryPoint {
+
+    private final Logger log = LoggerFactory.getLogger(Http401UnauthorizedEntryPoint.class);
 
     /**
      * Always returns a 401 error code to the client.

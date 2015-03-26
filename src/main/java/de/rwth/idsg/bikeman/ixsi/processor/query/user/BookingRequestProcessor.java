@@ -5,12 +5,7 @@ import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
 import de.rwth.idsg.bikeman.ixsi.IxsiProcessingException;
 import de.rwth.idsg.bikeman.ixsi.processor.TokenValidator;
 import de.rwth.idsg.bikeman.ixsi.processor.api.UserRequestProcessor;
-import de.rwth.idsg.bikeman.ixsi.schema.BookingRequestType;
-import de.rwth.idsg.bikeman.ixsi.schema.BookingResponseType;
-import de.rwth.idsg.bikeman.ixsi.schema.BookingType;
-import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
-import de.rwth.idsg.bikeman.ixsi.schema.Language;
-import de.rwth.idsg.bikeman.ixsi.schema.UserInfoType;
+import de.rwth.idsg.bikeman.ixsi.schema.*;
 import de.rwth.idsg.bikeman.ixsi.service.BookingService;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +21,10 @@ import java.util.List;
 public class BookingRequestProcessor implements
         UserRequestProcessor<BookingRequestType, BookingResponseType> {
 
-    @Autowired BookingService bookingService;
-    @Autowired TokenValidator tokenValidator;
+    @Autowired
+    BookingService bookingService;
+    @Autowired
+    TokenValidator tokenValidator;
 
     @Override
     public BookingResponseType processAnonymously(BookingRequestType request, Optional<Language> lan) {

@@ -4,11 +4,7 @@ import de.rwth.idsg.bikeman.domain.Transaction;
 import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
 import de.rwth.idsg.bikeman.ixsi.api.Producer;
 import de.rwth.idsg.bikeman.ixsi.impl.ConsumptionStore;
-import de.rwth.idsg.bikeman.ixsi.schema.ConsumptionPushMessageType;
-import de.rwth.idsg.bikeman.ixsi.schema.ConsumptionType;
-import de.rwth.idsg.bikeman.ixsi.schema.IxsiMessageType;
-import de.rwth.idsg.bikeman.ixsi.schema.SubscriptionMessageType;
-import de.rwth.idsg.bikeman.ixsi.schema.TimePeriodType;
+import de.rwth.idsg.bikeman.ixsi.schema.*;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +20,10 @@ import java.util.Set;
 @Service
 public class ConsumptionPushService {
 
-    @Autowired private Producer producer;
-    @Autowired private ConsumptionStore consumptionStore;
+    @Autowired
+    private Producer producer;
+    @Autowired
+    private ConsumptionStore consumptionStore;
 
     public static final String NAME_FORMAT = "The booking with id %s rented a bike from %s to %s.";
 

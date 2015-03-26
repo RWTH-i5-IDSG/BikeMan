@@ -1,6 +1,5 @@
 package de.rwth.idsg.bikeman.domain;
 
-import de.rwth.idsg.bikeman.domain.login.User;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;

@@ -3,12 +3,7 @@ package de.rwth.idsg.bikeman.ixsi.service;
 import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
 import de.rwth.idsg.bikeman.ixsi.api.Producer;
 import de.rwth.idsg.bikeman.ixsi.impl.AvailabilityStore;
-import de.rwth.idsg.bikeman.ixsi.schema.AvailabilityPushMessageType;
-import de.rwth.idsg.bikeman.ixsi.schema.BookingTargetChangeAvailabilityType;
-import de.rwth.idsg.bikeman.ixsi.schema.BookingTargetIDType;
-import de.rwth.idsg.bikeman.ixsi.schema.IxsiMessageType;
-import de.rwth.idsg.bikeman.ixsi.schema.SubscriptionMessageType;
-import de.rwth.idsg.bikeman.ixsi.schema.TimePeriodType;
+import de.rwth.idsg.bikeman.ixsi.schema.*;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +19,10 @@ import java.util.Set;
 @Service
 public class AvailabilityPushService {
 
-    @Autowired private Producer producer;
-    @Autowired private AvailabilityStore availabilityStore;
+    @Autowired
+    private Producer producer;
+    @Autowired
+    private AvailabilityStore availabilityStore;
 
     /**
      * @param bookeeID      Manufacturer ID of the pedelec.

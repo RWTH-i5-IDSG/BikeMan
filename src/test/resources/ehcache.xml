@@ -12,25 +12,28 @@
             overflowToDisk="false"
             />
 
-    <cache name="de.rwth.idsg.bikeman.domain.login.User"
+    <cache name="de.rwth.idsg.bikeman.domain.User"
            timeToLiveSeconds="3600">
     </cache>
 
-    <cache name="de.rwth.idsg.bikeman.domain.login.Authority"
+    <cache name="de.rwth.idsg.bikeman.domain.Authority"
            timeToLiveSeconds="3600">
     </cache>
 
-    <cache name="de.rwth.idsg.bikeman.domain.login.User.authorities"
-           timeToLiveSeconds="3600">
-    </cache>
-   
-    <cache name="de.rwth.idsg.bikeman.domain.login.PersistentToken"
+    <cache name="de.rwth.idsg.bikeman.domain.User.authorities"
            timeToLiveSeconds="3600">
     </cache>
 
-    <cache name="de.rwth.idsg.bikeman.domain.login.User.persistentTokens"
+    <cache name="de.rwth.idsg.bikeman.domain.PersistentToken"
            timeToLiveSeconds="3600">
     </cache>
 
+    <cache name="de.rwth.idsg.bikeman.domain.User.persistentTokens"
+           timeToLiveSeconds="3600">
+    </cache>
+
+    <cache name="de.rwth.idsg.bikeman.domain.PersistentAuditEvent"
+           timeToLiveSeconds="3600">
+    </cache>
 </ehcache>
 

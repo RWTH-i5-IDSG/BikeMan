@@ -2,24 +2,8 @@ package de.rwth.idsg.bikeman.ixsi.dispatcher;
 
 import de.rwth.idsg.bikeman.ixsi.IxsiProcessingException;
 import de.rwth.idsg.bikeman.ixsi.processor.api.UserRequestProcessor;
-import de.rwth.idsg.bikeman.ixsi.processor.query.user.AvailabilityRequestProcessor;
-import de.rwth.idsg.bikeman.ixsi.processor.query.user.BookingRequestProcessor;
-import de.rwth.idsg.bikeman.ixsi.processor.query.user.BookingUnlockRequestProcessor;
-import de.rwth.idsg.bikeman.ixsi.processor.query.user.ChangeBookingRequestProcessor;
-import de.rwth.idsg.bikeman.ixsi.processor.query.user.CloseSessionRequestProcessor;
-import de.rwth.idsg.bikeman.ixsi.processor.query.user.OpenSessionRequestProcessor;
-import de.rwth.idsg.bikeman.ixsi.processor.query.user.PlaceAvailabilityRequestProcessor;
-import de.rwth.idsg.bikeman.ixsi.processor.query.user.PriceInformationRequestProcessor;
-import de.rwth.idsg.bikeman.ixsi.processor.query.user.TokenGenerationRequestProcessor;
-import de.rwth.idsg.bikeman.ixsi.schema.AvailabilityRequestType;
-import de.rwth.idsg.bikeman.ixsi.schema.BookingRequestType;
-import de.rwth.idsg.bikeman.ixsi.schema.BookingUnlockRequestType;
-import de.rwth.idsg.bikeman.ixsi.schema.ChangeBookingRequestType;
-import de.rwth.idsg.bikeman.ixsi.schema.CloseSessionRequestType;
-import de.rwth.idsg.bikeman.ixsi.schema.OpenSessionRequestType;
-import de.rwth.idsg.bikeman.ixsi.schema.PlaceAvailabilityRequestType;
-import de.rwth.idsg.bikeman.ixsi.schema.PriceInformationRequestType;
-import de.rwth.idsg.bikeman.ixsi.schema.TokenGenerationRequestType;
+import de.rwth.idsg.bikeman.ixsi.processor.query.user.*;
+import de.rwth.idsg.bikeman.ixsi.schema.*;
 import de.rwth.idsg.ixsi.jaxb.UserTriggeredRequestChoice;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,15 +21,24 @@ import java.util.HashMap;
 public class QueryUserRequestMap extends HashMap<Class<?>, UserRequestProcessor> {
     private static final long serialVersionUID = -2498351236190286177L;
 
-    @Autowired private OpenSessionRequestProcessor openSessionRequestProcessor;
-    @Autowired private CloseSessionRequestProcessor closeSessionRequestProcessor;
-    @Autowired private TokenGenerationRequestProcessor tokenGenerationRequestProcessor;
-    @Autowired private AvailabilityRequestProcessor availabilityRequestProcessor;
-    @Autowired private PlaceAvailabilityRequestProcessor placeAvailabilityRequestProcessor;
-    @Autowired private PriceInformationRequestProcessor priceInformationRequestProcessor;
-    @Autowired private BookingRequestProcessor bookingRequestProcessor;
-    @Autowired private ChangeBookingRequestProcessor changeBookingRequestProcessor;
-    @Autowired private BookingUnlockRequestProcessor bookingUnlockRequestProcessor;
+    @Autowired
+    private OpenSessionRequestProcessor openSessionRequestProcessor;
+    @Autowired
+    private CloseSessionRequestProcessor closeSessionRequestProcessor;
+    @Autowired
+    private TokenGenerationRequestProcessor tokenGenerationRequestProcessor;
+    @Autowired
+    private AvailabilityRequestProcessor availabilityRequestProcessor;
+    @Autowired
+    private PlaceAvailabilityRequestProcessor placeAvailabilityRequestProcessor;
+    @Autowired
+    private PriceInformationRequestProcessor priceInformationRequestProcessor;
+    @Autowired
+    private BookingRequestProcessor bookingRequestProcessor;
+    @Autowired
+    private ChangeBookingRequestProcessor changeBookingRequestProcessor;
+    @Autowired
+    private BookingUnlockRequestProcessor bookingUnlockRequestProcessor;
 
     @PostConstruct
     public void init() {

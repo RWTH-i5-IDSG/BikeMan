@@ -1,6 +1,5 @@
 package de.rwth.idsg.bikeman.repository;
 
-import com.google.common.base.Optional;
 import de.rwth.idsg.bikeman.domain.Booking;
 import de.rwth.idsg.bikeman.domain.Transaction;
 

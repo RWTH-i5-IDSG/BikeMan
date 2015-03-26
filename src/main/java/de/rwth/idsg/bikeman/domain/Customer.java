@@ -1,6 +1,5 @@
 package de.rwth.idsg.bikeman.domain;
 
-import de.rwth.idsg.bikeman.domain.login.User;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,7 +8,6 @@ import org.hibernate.annotations.Type;
 import org.joda.time.LocalDate;
 
 import javax.persistence.*;
-import java.util.Set;
 
 @Entity
 @DiscriminatorValue("customer")

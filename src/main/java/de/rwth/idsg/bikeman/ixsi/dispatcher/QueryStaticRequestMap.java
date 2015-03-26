@@ -23,8 +23,10 @@ import java.util.HashMap;
 public class QueryStaticRequestMap extends HashMap<Class<?>, StaticRequestProcessor> {
     private static final long serialVersionUID = 1645602979722968298L;
 
-    @Autowired private BookingTargetsInfoRequestProcessor bookingTargetsInfoRequestProcessor;
-    @Autowired private ChangedProvidersRequestProcessor changedProvidersRequestProcessor;
+    @Autowired
+    private BookingTargetsInfoRequestProcessor bookingTargetsInfoRequestProcessor;
+    @Autowired
+    private ChangedProvidersRequestProcessor changedProvidersRequestProcessor;
 
     @PostConstruct
     public void init() {
