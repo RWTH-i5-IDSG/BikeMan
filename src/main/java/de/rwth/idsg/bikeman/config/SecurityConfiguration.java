@@ -1,11 +1,9 @@
 package de.rwth.idsg.bikeman.config;
 
 import de.rwth.idsg.bikeman.security.*;
-import de.rwth.idsg.bikeman.web.filter.CsrfCookieGeneratorFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
-
 import org.springframework.data.repository.query.spi.EvaluationContextExtension;
 import org.springframework.data.repository.query.spi.EvaluationContextExtensionSupport;
 import org.springframework.security.access.expression.SecurityExpressionRoot;
@@ -18,10 +16,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.RememberMeServices;
-import org.springframework.security.web.csrf.CsrfFilter;
 
 import javax.inject.Inject;
 
@@ -58,52 +55,55 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Inject
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth
-            .userDetailsService(userDetailsService)
+                .userDetailsService(userDetailsService)
                 .passwordEncoder(passwordEncoder());
     }
 
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring()
-            .antMatchers("/scripts/**/*.{js,html}")
-            .antMatchers("/bower_components/**")
-            .antMatchers("/i18n/**")
-            .antMatchers("/assets/**")
-            .antMatchers("/swagger-ui/**")
-            .antMatchers("/test/**");
+                .antMatchers("/scripts/**/*.{js,html}")
+                .antMatchers("/bower_components/**")
+                .antMatchers("/i18n/**")
+                .antMatchers("/fonts/**")
+                .antMatchers("/images/**")
+                .antMatchers("/views/**")
+                .antMatchers("/styles/**")
+                .antMatchers("/swagger-ui/**")
+                .antMatchers("/test/**");
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-            //.addFilterAfter(new CsrfCookieGeneratorFilter(), CsrfFilter.class)
-            .exceptionHandling()
-            .authenticationEntryPoint(authenticationEntryPoint)
-        .and()
-            .rememberMe()
-            .rememberMeServices(rememberMeServices)
-            .key(env.getProperty("jhipster.security.rememberme.key"))
-        .and()
-            .formLogin()
-            .loginProcessingUrl("/api/authentication")
-            .successHandler(ajaxAuthenticationSuccessHandler)
-            .failureHandler(ajaxAuthenticationFailureHandler)
-            .usernameParameter("j_username")
-            .passwordParameter("j_password")
-            .permitAll()
-        .and()
-            .logout()
-            .logoutUrl("/api/logout")
-            .logoutSuccessHandler(ajaxLogoutSuccessHandler)
-            .deleteCookies("JSESSIONID")
-            .permitAll()
-        .and()
-            .csrf()
+                //.addFilterAfter(new CsrfCookieGeneratorFilter(), CsrfFilter.class)
+                .exceptionHandling()
+                .authenticationEntryPoint(authenticationEntryPoint)
+                .and()
+                .rememberMe()
+                .rememberMeServices(rememberMeServices)
+                .key(env.getProperty("jhipster.security.rememberme.key"))
+                .and()
+                .formLogin()
+                .loginProcessingUrl("/api/authentication")
+                .successHandler(ajaxAuthenticationSuccessHandler)
+                .failureHandler(ajaxAuthenticationFailureHandler)
+                .usernameParameter("j_username")
+                .passwordParameter("j_password")
+                .permitAll()
+                .and()
+                .logout()
+                .logoutUrl("/api/logout")
+                .logoutSuccessHandler(ajaxLogoutSuccessHandler)
+                .deleteCookies("JSESSIONID")
+                .permitAll()
+                .and()
+                .csrf()
                 .disable()
-            .headers()
-            .frameOptions()
-            .disable()
-            .authorizeRequests()
+                .headers()
+                .frameOptions()
+                .disable()
+                .authorizeRequests()
                 .antMatchers("/api/register").permitAll()
                 .antMatchers("/api/activate").permitAll()
                 .antMatchers("/api/authenticate").permitAll()
@@ -150,7 +150,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     /**
      * This allows SpEL support in Spring Data JPA @Query definitions.
-     *
+     * <p>
      * See https://spring.io/blog/2014/07/15/spel-support-in-spring-data-jpa-query-definitions
      */
     @Bean
@@ -163,7 +163,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
             @Override
             public SecurityExpressionRoot getRootObject() {
-                return new SecurityExpressionRoot(SecurityContextHolder.getContext().getAuthentication()) {};
+                return new SecurityExpressionRoot(SecurityContextHolder.getContext().getAuthentication()) {
+                };
             }
         };
     }

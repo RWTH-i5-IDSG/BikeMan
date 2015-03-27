@@ -174,11 +174,12 @@ bikeManApp
             $rootScope.$on('event:auth-loginRequired', function (rejection) {
                 Session.invalidate();
                 $rootScope.authenticated = false;
-                if ($location.path() !== "/" && $location.path() !== "" && $location.path() !== "/register" &&
-                    $location.path() !== "/activate" && $location.path() !== "/login") {
-                    var redirect = $location.path();
-                    $location.path('/login').search('redirect', redirect).replace();
-                }
+                //if ($location.path() !== "/" && $location.path() !== "" && $location.path() !== "/register" &&
+                //    $location.path() !== "/activate" && $location.path() !== "/login") {
+                //    var redirect = $location.path();
+                //    $location.path('/login').search('redirect', redirect).replace();
+                //}
+                $state.go("login");
             });
 
             // Call when the the client is confirmed
