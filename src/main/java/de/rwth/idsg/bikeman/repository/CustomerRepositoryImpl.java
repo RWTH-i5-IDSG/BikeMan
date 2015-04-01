@@ -243,7 +243,9 @@ public class CustomerRepositoryImpl implements CustomerRepository {
 
                 BookedTariff newBookedTariff = new BookedTariff();
                 newBookedTariff.setBookedFrom(new LocalDateTime());
-                newBookedTariff.setBookedUntil(new LocalDateTime().plusYears(1));
+                newBookedTariff.setBookedUntil(new LocalDateTime().plusDays(
+                        tariffRepository.findByName(dto.getTariff()).getTerm()
+                ));
                 newBookedTariff.setTariff(tariffRepository.findByName(dto.getTariff()));
                 newBookedTariff.setUsedCardAccount(newCardAccount);
                 newCardAccount.setCurrentTariff(newBookedTariff);
@@ -269,7 +271,9 @@ public class CustomerRepositoryImpl implements CustomerRepository {
 
                 BookedTariff updateBookedTariff = new BookedTariff();
                 updateBookedTariff.setBookedFrom(new LocalDateTime());
-                updateBookedTariff.setBookedUntil(new LocalDateTime().plusYears(1));
+                updateBookedTariff.setBookedUntil(new LocalDateTime().plusDays(
+                        tariffRepository.findByName(dto.getTariff()).getTerm()
+                ));
                 updateBookedTariff.setTariff(tariffRepository.findByName(dto.getTariff()));
                 cardAccount.setCurrentTariff(updateBookedTariff);
 

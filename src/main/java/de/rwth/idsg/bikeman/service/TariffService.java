@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.math.BigDecimal;
 
 /**
  * Created by swam on 20/01/15.
@@ -26,10 +27,10 @@ public class TariffService {
 
     }
 
-    public double calculatePrice(Transaction transaction) {
+    public BigDecimal calculatePrice(Transaction transaction) {
 
         if (transaction == null || transaction.getStartDateTime() == null || transaction.getEndDateTime() == null)
-            return 0;
+            return BigDecimal.ZERO;
 
         switch (transaction.getBookedTariff().getName()) {
             case Ticket2000:
@@ -42,7 +43,7 @@ public class TariffService {
                 break;
         }
 
-        return 0;
+        return BigDecimal.ZERO;
 
     }
 }

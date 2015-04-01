@@ -5,6 +5,8 @@ import de.rwth.idsg.bikeman.service.TariffPriceCalculation;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
 
+import java.math.BigDecimal;
+
 /**
  * Created by Wolfgang Kluth on 20/01/15.
  */
@@ -13,21 +15,23 @@ import org.joda.time.Duration;
 public class Ticket3000Impl implements TariffPriceCalculation {
 
     @Override
-    public double calculate(Transaction transaction) {
+    public BigDecimal calculate(Transaction transaction) {
+        final BigDecimal pricePerMin = new BigDecimal("0.50");
+        final BigDecimal freeTimeInMin = new BigDecimal(30);
 
         Duration duration = new Duration(
                 transaction.getStartDateTime().toDateTime(DateTimeZone.UTC),
                 transaction.getEndDateTime().toDateTime(DateTimeZone.UTC)
         );
 
-        long durationInMin = duration.getStandardMinutes();
+        BigDecimal durationInMin = new BigDecimal(duration.getStandardMinutes());
 
-        if (durationInMin <= 30) {
-            return 0;
+        if (durationInMin.compareTo(freeTimeInMin) != 1) {
+            return BigDecimal.ZERO;
         }
         
         // 50cent per minute after free 30min
-        double price = (durationInMin-30) * 0.50;
+        BigDecimal price = (durationInMin.subtract(freeTimeInMin)).multiply(pricePerMin);
 
         return price;
     }

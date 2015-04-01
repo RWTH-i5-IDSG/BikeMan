@@ -8,6 +8,7 @@ import org.hibernate.annotations.Type;
 import org.joda.time.LocalDateTime;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.Set;
 
 /**
@@ -62,7 +63,7 @@ public class BookedTariff extends AbstractTimestampClass {
     }
 
     @Transient
-    public Float getMounthlyRate() {
-        return getTariff().getMounthlyRate();
+    public BigDecimal getPeriodicRate() {
+        return getTariff().getPeriodicRate();
     }
 }

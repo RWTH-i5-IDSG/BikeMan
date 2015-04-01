@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+
+    <changeSet id="1409564974607-42" author="michael712">
+        <renameColumn tableName="T_TARIFF" oldColumnName="mounthly_rate" newColumnName="periodic_rate"/>
+        <addColumn tableName="T_TARIFF">
+            <column name="tariff_category" type="VARCHAR(255)"/>
+            <column name="description" type="CLOB"/>
+            <column name="term" type="INT4"/>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>

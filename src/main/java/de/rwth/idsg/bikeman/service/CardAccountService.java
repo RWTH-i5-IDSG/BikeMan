@@ -82,7 +82,10 @@ public class CardAccountService {
         BookedTariff bookedTariff = new BookedTariff();
         bookedTariff.setTariff(tariffRepository.findByName(createEditCardAccountDTO.getTariff()));
         bookedTariff.setBookedFrom(LocalDateTime.now());
-        bookedTariff.setBookedUntil(LocalDateTime.now().plusYears(1));
+        bookedTariff.setBookedUntil(
+                LocalDateTime.now().plusDays(
+                        tariffRepository.findByName(createEditCardAccountDTO.getTariff()).getTerm()
+                ));
 
         CardAccount cardAccount = CardAccount.builder()
             .cardId(createEditCardAccountDTO.getCardId())

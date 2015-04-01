@@ -127,6 +127,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/transactions/**").hasAuthority(AuthoritiesConstants.MANAGER)
                 .antMatchers("/api/cardaccount*").hasAnyAuthority(AuthoritiesConstants.MAJOR_CUSTOMER, AuthoritiesConstants.MANAGER)
                 .antMatchers("/api/cardaccount/**").hasAnyAuthority(AuthoritiesConstants.MAJOR_CUSTOMER, AuthoritiesConstants.MANAGER)
+                .antMatchers("/app/stations*").permitAll()
+                .antMatchers("/app/stations/**").permitAll()
                 .antMatchers("/app/**").authenticated()
                 .antMatchers("/metrics/**").hasAuthority(AuthoritiesConstants.ADMIN)
                 .antMatchers("/health/**").hasAuthority(AuthoritiesConstants.ADMIN)

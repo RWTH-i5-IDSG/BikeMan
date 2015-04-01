@@ -25,7 +25,7 @@ public class StationRepositoryImpl implements StationRepository {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ViewStationDTO> findAll() throws DatabaseException {
+    public List<ViewStationDTO> findAll() throws AppException {
         CriteriaBuilder builder = em.getCriteriaBuilder();
         CriteriaQuery<ViewStationDTO> criteria = this.getStationQuery(builder, null);
 
@@ -40,7 +40,7 @@ public class StationRepositoryImpl implements StationRepository {
 
     @Override
     @Transactional(readOnly = true)
-    public ViewStationDTO findOne(long stationId) throws DatabaseException {
+    public ViewStationDTO findOne(long stationId) throws AppException {
         CriteriaBuilder builder = em.getCriteriaBuilder();
         CriteriaQuery<ViewStationDTO> criteria = this.getStationQuery(builder, stationId);
 
@@ -56,7 +56,7 @@ public class StationRepositoryImpl implements StationRepository {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ViewStationSlotsDTO> findOneWithSlots(long stationId) throws DatabaseException {
+    public List<ViewStationSlotsDTO> findOneWithSlots(long stationId) throws AppException {
         CriteriaBuilder builder = em.getCriteriaBuilder();
 
         CriteriaQuery<ViewStationSlotsDTO> criteria = builder.createQuery(ViewStationSlotsDTO.class);

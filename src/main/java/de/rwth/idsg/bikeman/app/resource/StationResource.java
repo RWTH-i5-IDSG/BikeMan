@@ -17,8 +17,7 @@ import java.util.List;
 
 
 @RestController("StationResourceApp")
-// TODO: change mapping path
-@RequestMapping(value = "/apptest", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/app", produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
 public class StationResource {
 
