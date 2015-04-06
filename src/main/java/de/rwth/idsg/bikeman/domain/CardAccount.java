@@ -3,6 +3,7 @@ package de.rwth.idsg.bikeman.domain;
 import lombok.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.joda.time.LocalDateTime;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -68,6 +69,9 @@ public class CardAccount extends AbstractTimestampClass implements Serializable 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "usedCardAccount")
     private BookedTariff currentTariff;
 
+    @Column(name = "auto_renew_tariff")
+    private Boolean autoRenewTariff;
+
     @PrePersist
     public void prePersist() {
         super.prePersist();
@@ -79,6 +83,9 @@ public class CardAccount extends AbstractTimestampClass implements Serializable 
     
     public void setCurrentTariff(BookedTariff bookedTariff) {
         if (this.currentTariff != null) {
+            if (this.currentTariff.getBookedUntil() == null) {
+                this.currentTariff.setBookedUntil(LocalDateTime.now());
+            }
             this.bookedTariffs.add(this.currentTariff);
             this.currentTariff.setCardAccount(this);
             this.currentTariff.setUsedCardAccount(null);

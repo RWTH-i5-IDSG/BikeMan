@@ -62,4 +62,8 @@ public class User extends AbstractTimestampClass implements Serializable {
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<PersistentToken> persistentTokens;
 
+    // TODO: Create ENUM for UserType?
+    @JsonIgnore
+    @Column(name = "user_type")
+    private String userType;
 }

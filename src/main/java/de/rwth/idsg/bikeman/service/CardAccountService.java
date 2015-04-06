@@ -82,10 +82,14 @@ public class CardAccountService {
         BookedTariff bookedTariff = new BookedTariff();
         bookedTariff.setTariff(tariffRepository.findByName(createEditCardAccountDTO.getTariff()));
         bookedTariff.setBookedFrom(LocalDateTime.now());
-        bookedTariff.setBookedUntil(
-                LocalDateTime.now().plusDays(
-                        tariffRepository.findByName(createEditCardAccountDTO.getTariff()).getTerm()
-                ));
+        // set the bookedUntil date to null, if no subscription term is declared
+        if (tariffRepository.findByName(createEditCardAccountDTO.getTariff()).getTerm() == null) {
+            bookedTariff.setBookedUntil(null);
+        } else {
+            bookedTariff.setBookedUntil(new LocalDateTime().plusDays(
+                    tariffRepository.findByName(createEditCardAccountDTO.getTariff()).getTerm()
+            ));
+        }
 
         CardAccount cardAccount = CardAccount.builder()
             .cardId(createEditCardAccountDTO.getCardId())

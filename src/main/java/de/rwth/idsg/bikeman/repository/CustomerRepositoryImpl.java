@@ -218,6 +218,9 @@ public class CustomerRepositoryImpl implements CustomerRepository {
         customer.setBirthday(dto.getBirthday());
         customer.setIsActivated(dto.getIsActivated());
 
+        // TODO: Create ENUM for UserType?
+        customer.setUserType("customer");
+
         if (dto.getPassword() != null) {
             customer.setPassword(passwordEncoder.encode(dto.getPassword()));
         }
@@ -243,9 +246,14 @@ public class CustomerRepositoryImpl implements CustomerRepository {
 
                 BookedTariff newBookedTariff = new BookedTariff();
                 newBookedTariff.setBookedFrom(new LocalDateTime());
-                newBookedTariff.setBookedUntil(new LocalDateTime().plusDays(
-                        tariffRepository.findByName(dto.getTariff()).getTerm()
-                ));
+
+                if (tariffRepository.findByName(dto.getTariff()).getTerm() == null) {
+                    newBookedTariff.setBookedUntil(null);
+                } else {
+                    newBookedTariff.setBookedUntil(new LocalDateTime().plusDays(
+                            tariffRepository.findByName(dto.getTariff()).getTerm()
+                    ));
+                }
                 newBookedTariff.setTariff(tariffRepository.findByName(dto.getTariff()));
                 newBookedTariff.setUsedCardAccount(newCardAccount);
                 newCardAccount.setCurrentTariff(newBookedTariff);
@@ -269,14 +277,21 @@ public class CustomerRepositoryImpl implements CustomerRepository {
                 cardAccount.setCardId(dto.getCardId());
                 cardAccount.setCardPin(dto.getCardPin());
 
-                BookedTariff updateBookedTariff = new BookedTariff();
-                updateBookedTariff.setBookedFrom(new LocalDateTime());
-                updateBookedTariff.setBookedUntil(new LocalDateTime().plusDays(
-                        tariffRepository.findByName(dto.getTariff()).getTerm()
-                ));
-                updateBookedTariff.setTariff(tariffRepository.findByName(dto.getTariff()));
-                cardAccount.setCurrentTariff(updateBookedTariff);
+                // don't update the tariff if it has not been changed
+                if (!dto.getTariff().equals( cardAccount.getCurrentTariff().getName() )) {
+                    BookedTariff updateBookedTariff = new BookedTariff();
+                    updateBookedTariff.setBookedFrom(new LocalDateTime());
 
+                    if (tariffRepository.findByName(dto.getTariff()).getTerm() == null) {
+                        updateBookedTariff.setBookedUntil(null);
+                    } else {
+                        updateBookedTariff.setBookedUntil(new LocalDateTime().plusDays(
+                                tariffRepository.findByName(dto.getTariff()).getTerm()
+                        ));
+                    }
+                    updateBookedTariff.setTariff(tariffRepository.findByName(dto.getTariff()));
+                    cardAccount.setCurrentTariff(updateBookedTariff);
+                }
 
                 break;
         }
