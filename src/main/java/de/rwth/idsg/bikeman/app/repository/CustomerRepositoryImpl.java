@@ -25,9 +25,6 @@ public class CustomerRepositoryImpl implements CustomerRepository {
 
         Root<Customer> customer = criteria.from(Customer.class);
         Join<Customer, Address> address = customer.join(Customer_.address, JoinType.LEFT);
-        //Join<Customer, CardAccount> cardAccount = customer.join(Customer_.cardAccount, JoinType.LEFT);
-        //Join<CardAccount, BookedTariff> bookedTariff = cardAccount.join(CardAccount_.currentTariff, JoinType.LEFT);
-        //Join<BookedTariff, Tariff> tariff = bookedTariff.join(BookedTariff_.tariff, JoinType.LEFT);
 
         criteria.select(
                 builder.construct(
@@ -38,10 +35,6 @@ public class CustomerRepositoryImpl implements CustomerRepository {
                         customer.get(Customer_.lastname),
                         customer.get(Customer_.isActivated),
                         customer.get(Customer_.birthday),
-
-                        //tariff.get(Tariff_.tariffId),
-                        //tariff.get(Tariff_.name),
-                        //bookedTariff.get(BookedTariff_.bookedUntil),
 
                         address.get(Address_.streetAndHousenumber),
                         address.get(Address_.zip),

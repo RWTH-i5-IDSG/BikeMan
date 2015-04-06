@@ -16,6 +16,6 @@ import java.util.List;
 public interface TariffRepository {
 
     public List<ViewTariffDTO> findAll() throws AppException;
-    public ViewTariffDTO findOne(@Param("tariffId") long stationId) throws AppException;
+    public ViewTariffDTO findOne(Long stationId) throws AppException;
 
 }

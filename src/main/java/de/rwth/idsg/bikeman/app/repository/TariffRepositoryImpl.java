@@ -52,7 +52,7 @@ public class TariffRepositoryImpl implements TariffRepository {
 
     @Override
     @Transactional(readOnly = true)
-    public ViewTariffDTO findOne(long tariffId) throws AppException {
+    public ViewTariffDTO findOne(Long tariffId) throws AppException {
         final String q = "SELECT new de.rwth.idsg.bikeman.app.dto." +
                 "ViewTariffDTO(t.tariffId, t.name, t.description, t.term, t.periodicRate) " +
                 "FROM Tariff t " +
@@ -72,27 +72,4 @@ public class TariffRepositoryImpl implements TariffRepository {
         }
     }
 
-    /*@Override
-    @Transactional(readOnly = true)
-    public Tariff findById(Long tariffId) throws DatabaseException {
-        final String q = "SELECT t " +
-                "FROM Tariff t " +
-                "WHERE t.tariffId = :tariffId ";
-
-
-
-        // TODO: use jsonView to add more details to this function
-
-        try {
-            return em.createQuery(q, Tariff.class)
-                    .setParameter("tariffId", tariffId)
-                    .getSingleResult();
-
-        } catch (NoResultException e) {
-            throw new DatabaseException("Tariff " + tariffId + " not found.", e);
-        } catch (Exception e) {
-            throw new DatabaseException("Failed during database operation.", e);
-        }
-
-    }*/
 }
