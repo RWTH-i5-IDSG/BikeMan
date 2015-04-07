@@ -1,6 +1,7 @@
 package de.rwth.idsg.bikeman.app.resource;
 
 import com.codahale.metrics.annotation.Timed;
+import com.fasterxml.jackson.annotation.JsonView;
 import de.rwth.idsg.bikeman.app.dto.ViewTariffDTO;
 import de.rwth.idsg.bikeman.app.exception.AppException;
 import de.rwth.idsg.bikeman.app.service.TariffService;
@@ -27,6 +28,7 @@ public class TariffResource {
     private static final String ID_PATH = "/tariffs/{id}";
 
     @Timed
+    @JsonView(ViewTariffDTO.ListView.class)
     @RequestMapping(value = BASE_PATH, method = RequestMethod.GET)
     public List<ViewTariffDTO> getAll() throws AppException {
         log.debug("REST request to get all Tariffs");

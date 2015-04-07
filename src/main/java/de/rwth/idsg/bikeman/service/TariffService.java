@@ -1,5 +1,7 @@
 package de.rwth.idsg.bikeman.service;
 
+import de.rwth.idsg.bikeman.app.dto.ViewTariffPriceDTO;
+import de.rwth.idsg.bikeman.domain.TariffType;
 import de.rwth.idsg.bikeman.domain.Transaction;
 import de.rwth.idsg.bikeman.service.tariffPriceCalculations.Ticket2000Impl;
 import de.rwth.idsg.bikeman.service.tariffPriceCalculations.Ticket3000Impl;
@@ -8,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * Created by swam on 20/01/15.
@@ -45,5 +48,20 @@ public class TariffService {
 
         return BigDecimal.ZERO;
 
+    }
+
+    public List<ViewTariffPriceDTO> listPrice(TariffType name) {
+        switch (name) {
+            case Ticket2000:
+                return ticket2000.listPrice();
+
+            case Ticket3000:
+                return ticket3000.listPrice();
+
+            default:
+                break;
+        }
+
+        return null;
     }
 }
