@@ -1,0 +1,25 @@
+address_id,city,country,street_and_housenumber,zip
+1,Aachen,Germany,Mies-van-der-Rohe-Str. 39,52074
+2,Aachen,Germany,Wüllnerstr.,52072
+3,Aachen,Germany,Steinbachstr.,52074
+4,Aachen,Germany,Pauwelsstraße,52074
+8,Teststadt,Testland,Teststraße 33,33345
+9,Aachen,Germany,Ahornstr. 55,52056
+10,Aachen,Germany,Kaufhofstr. 44,52064
+11,Aachen,Germany,Steffener Weg,52072
+12,jhkh,hjklh,jhj,hjklh
+13,Aachen,Germany,Templergraben 64,52062
+14,Aachen,Germany,Forckenbeckstrasse,52074
+15,Aachen,Germany,Mies-van-der-Rohe Strasse 1,52074
+16,Aachen,Germany,Zollamtstrasse 3,52064
+17,Aachen,Germany,Friedrich-Wilhelm-Platz 13,52062
+18,Aachen,Germany,Worringerweg 1,52074
+19,Aachen,Germany,Bayernallee 9,52066
+20,Aachen,Germany,Mörgensstrasse 1,52064
+21,Aachen,Germany,Geschwister-Scholl-Straße 20,52072
+22,Aachen,Germany,Pontstraße 49,52062
+23,Aachen,Germany,Kapitelstraße 1,52066
+24,Aachen,Germany,Mathieustraße 10,52074
+25,Aachen,Germany,Campus-Boulevard 57,52074
+26,Aachen,Germany,Forckenbeckstrasse 4,52074
+27,Aachen,Germany,B1,52068

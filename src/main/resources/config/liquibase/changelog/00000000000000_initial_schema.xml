@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <databaseChangeLog
-    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
     <property name="now" value="now()" dbms="mysql,h2"/>
     <property name="now" value="current_timestamp" dbms="postgresql"/>
@@ -56,10 +56,10 @@
             <column name="user_agent" type="varchar(255)"/>
         </createTable>
 
-        <!--<createTable tableName="hibernate_sequences">-->
-            <!--<column name="sequence_name" type="varchar(255)"/>-->
-            <!--<column name="sequence_next_hi_value" type="integer"/>-->
-        <!--</createTable>-->
+        <createTable tableName="hibernate_sequences">
+        <column name="sequence_name" type="varchar(255)"/>
+        <column name="sequence_next_hi_value" type="integer"/>
+        </createTable>
 
         <createIndex indexName="idx_user_authority"
                      tableName="T_USER_AUTHORITY"
@@ -773,10 +773,28 @@
     </changeSet>
 
     <changeSet id="1409564974607-42" author="wollo">
-    <loadData encoding="UTF-8"
-              file="config/liquibase/stations.csv"
-              separator=","
-              tableName="T_STATION"/>
+
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/address.csv"
+                  separator=","
+                  tableName="T_ADDRESS"/>
+
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/stations.csv"
+                  separator=","
+                  tableName="T_STATION"/>
+
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/pedelecs.csv"
+                  separator=","
+                  tableName="T_PEDELEC"/>
+
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/station_slots.csv"
+                  separator=","
+                  tableName="T_STATION_SLOT"/>
+
     </changeSet>
+
 
 </databaseChangeLog>
