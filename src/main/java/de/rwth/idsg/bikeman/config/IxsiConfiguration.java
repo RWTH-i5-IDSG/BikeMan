@@ -35,7 +35,7 @@ public class IxsiConfiguration implements WebSocketConfigurer {
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(webSocketEndpoint, ApplicationConfig.IXSI.WS_ENDPOINT)
+        registry.addHandler(webSocketEndpoint, ApplicationConfig.IXSI.WS_ENDPOINT).setAllowedOrigins("*")
                 .addInterceptors(new HandshakeInterceptor(systemValidator));
     }
 
