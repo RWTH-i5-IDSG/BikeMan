@@ -219,7 +219,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
         customer.setIsActivated(dto.getIsActivated());
 
         // TODO: Create ENUM for UserType?
-        customer.setUserType("customer");
+//        customer.setUserType("customer");
 
         if (dto.getPassword() != null) {
             customer.setPassword(passwordEncoder.encode(dto.getPassword()));

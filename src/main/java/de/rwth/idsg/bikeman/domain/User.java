@@ -20,6 +20,7 @@ import java.util.Set;
  */
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorColumn(name = "user_type")
 @Table(name = "T_USER",
         indexes = {
                 @Index(columnList = "login", unique = true)})
@@ -62,8 +63,8 @@ public class User extends AbstractTimestampClass implements Serializable {
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<PersistentToken> persistentTokens;
 
-    // TODO: Create ENUM for UserType?
-    @JsonIgnore
-    @Column(name = "user_type")
-    private String userType;
+//    // TODO: Create ENUM for UserType?
+//    @JsonIgnore
+//    @Column(name = "user_type")
+//    private String userType;
 }
