@@ -18,7 +18,6 @@ public class StationService {
     @Autowired
     private StationRepository stationRepository;
 
-
     public List<ViewStationDTO> getAll() throws DatabaseException {
         return stationRepository.findAll();
     }
