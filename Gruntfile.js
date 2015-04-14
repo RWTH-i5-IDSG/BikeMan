@@ -224,29 +224,7 @@ module.exports = function (grunt) {
             //     }
             // }
             options: {
-                root: 'src/main/webapp' // Replace relative paths for static resources with absolute path
-            }
-        },
-        ngtemplates:    {
-            dist: {
-                cwd: 'src/main/webapp',
-                src: ['scripts/app/**/*.html', 'scripts/components/**/*.html',],
-                dest: '.tmp/templates/templates.js',
-                options: {
-                    module: 'bikemanApp',
-                    usemin: 'scripts/app.js',
-                    htmlmin:  {
-                        removeCommentsFromCDATA: true,
-                        // https://github.com/yeoman/grunt-usemin/issues/44
-                        collapseWhitespace: true,
-                        collapseBooleanAttributes: true,
-                        conservativeCollapse: true,
-                        removeAttributeQuotes: true,
-                        removeRedundantAttributes: true,
-                        useShortDoctype: true,
-                        removeEmptyAttributes: true
-                    }
-                }
+                //root: 'src/main/webapp' // Replace relative paths for static resources with absolute path
             }
         },
         htmlmin: {
@@ -266,7 +244,7 @@ module.exports = function (grunt) {
                 files: [{
                     expand: true,
                     cwd: '<%= yeoman.dist %>',
-                    src: ['*.html'],
+                    src: ['*.html', 'views/*.html'],
                     dest: '<%= yeoman.dist %>'
                 }]
             }
@@ -281,7 +259,7 @@ module.exports = function (grunt) {
                     dest: '<%= yeoman.dist %>',
                     src: [
                         '*.html',
-                        'scripts/**/*.html',
+                        'views/*.html',
                         'images/**/*.{png,gif,webp,jpg,jpeg,svg}',
                         'fonts/*'
                     ]
@@ -418,7 +396,7 @@ module.exports = function (grunt) {
         'wiredep:app',
         'ngconstant:prod',
         'useminPrepare',
-        'ngtemplates',
+        //'ngtemplates',
         'concurrent:dist',
         'concat',
         'copy:dist',
