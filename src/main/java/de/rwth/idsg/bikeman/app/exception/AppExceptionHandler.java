@@ -22,7 +22,7 @@ public class AppExceptionHandler {
 
     @ExceptionHandler(AppException.class)
     public ResponseEntity<AppExceptionMessage> processAppException(AppException e) {
-        log.error("Exception happened", e);
+        log.debug("Exception happened", e);
 
         HttpStatus status;
         AppErrorCode errorCode = e.getErrorCode();

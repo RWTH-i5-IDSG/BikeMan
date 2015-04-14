@@ -3,9 +3,11 @@ package de.rwth.idsg.bikeman.app.service;
 import de.rwth.idsg.bikeman.app.dto.ChangeTariffDTO;
 import de.rwth.idsg.bikeman.app.dto.ViewBookedTariffDTO;
 import de.rwth.idsg.bikeman.app.dto.ViewCustomerDTO;
-import de.rwth.idsg.bikeman.app.repository.CardAccountRepository;
+import de.rwth.idsg.bikeman.app.exception.AppErrorCode;
+import de.rwth.idsg.bikeman.app.exception.AppException;
 import de.rwth.idsg.bikeman.app.repository.CustomerRepository;
 import de.rwth.idsg.bikeman.domain.*;
+import de.rwth.idsg.bikeman.repository.TariffRepository;
 import de.rwth.idsg.bikeman.service.UserService;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +15,7 @@ import org.joda.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 
 @Service
@@ -23,11 +25,11 @@ public class CurrentCustomerService {
     @Autowired
     private CustomerRepository customerRepository;
 
-    @Inject
+    @Autowired
     private UserService userService;
 
-    @Inject
-    CardAccountRepository cardAccountRepository;
+    @Autowired
+    private TariffRepository tariffRepository;
 
     public ViewCustomerDTO get() throws DatabaseException {
         return customerRepository.findOne(
@@ -38,51 +40,64 @@ public class CurrentCustomerService {
         Customer customer = this.getCurrentCustomer();
         BookedTariff currentTariff = customer.getCardAccount().getCurrentTariff();
 
-        ViewBookedTariffDTO dto = new ViewBookedTariffDTO(
-            currentTariff.getTariff().getTariffId(),
-            currentTariff.getName(),
-            customer.getCardAccount().getAutoRenewTariff(),
-            currentTariff.getBookedUntil()
-        );
+        ViewBookedTariffDTO dto = ViewBookedTariffDTO.builder()
+            .tariffId(currentTariff.getTariff().getTariffId())
+            .name(currentTariff.getName())
+            .automaticRenewal(customer.getCardAccount().getAutoRenewTariff())
+            .expiryDateTime(currentTariff.getBookedUntil())
+            .build();
 
         return dto;
     }
 
-    public void setTariff(ChangeTariffDTO dto) {
+    @Transactional
+    public ChangeTariffDTO setTariff(ChangeTariffDTO dto) throws AppException {
         Customer customer = this.getCurrentCustomer();
         BookedTariff currentTariff = customer.getCardAccount().getCurrentTariff();
 
-
         if (currentTariff.getTariff().getTariffId().equals( dto.getTariffId() )) {
-            // TODO: HTTP status code
-            return;
+            throw new AppException("Old and new tariff are equal!", AppErrorCode.CONSTRAINT_FAILED);
         }
-
         if ( (currentTariff.getBookedUntil() != null)
-                        && (currentTariff.getBookedUntil().compareTo( LocalDateTime.now() ) == 1) ) {
-            // TODO: HTTP status code
-            return;
+            && (currentTariff.getBookedUntil().compareTo( LocalDateTime.now() ) == 1) ) {
+
+            throw new AppException("Tariff change not possible due to active subscription!", AppErrorCode.CONSTRAINT_FAILED);
         }
 
-        cardAccountRepository.setCurrentTariff(customer.getCardAccount().getCardAccountId(), dto.getTariffId());
 
-        // enable automatic renewal after a tariff change
-        this.enableAutomaticRenewal();
+        BookedTariff updateBookedTariff = new BookedTariff();
+        updateBookedTariff.setBookedFrom(new LocalDateTime());
+
+        if (tariffRepository.findByTariffId(dto.getTariffId()).getTerm() == null) {
+            updateBookedTariff.setBookedUntil(null);
+        } else {
+            updateBookedTariff.setBookedUntil(new LocalDateTime().plusDays(
+                tariffRepository.findByTariffId(dto.getTariffId()).getTerm()
+            ));
+        }
+
+        updateBookedTariff.setTariff(tariffRepository.findByTariffId(dto.getTariffId()));
+        customer.getCardAccount().setCurrentTariff(updateBookedTariff);
+
+	    return dto;
     }
 
-    public void enableAutomaticRenewal() {
-        cardAccountRepository.setAutomaticRenewal(this.getCurrentCustomer().getCardAccount().getCardAccountId(), true);
+    @Transactional
+    public Boolean enableAutomaticRenewal() throws AppException {
+        this.getCurrentCustomer().getCardAccount().setAutoRenewTariff(true);
+        return true;
     }
 
-    public void disableAutomaticRenewal() {
+    @Transactional
+    public Boolean disableAutomaticRenewal() throws AppException {
         CardAccount cardAccount = this.getCurrentCustomer().getCardAccount();
 
         if (cardAccount.getCurrentTariff().getTariff().getCategory().equals( TariffCategory.Default )) {
-            return;
-            //TODO: HTTP response: not possible, if default tariff is selected
+            return false;
         }
 
-        cardAccountRepository.setAutomaticRenewal(cardAccount.getCardAccountId(), false);
+        cardAccount.setAutoRenewTariff(false);
+        return true;
     }
 
 

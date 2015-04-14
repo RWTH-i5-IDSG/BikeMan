@@ -68,19 +68,27 @@ public class CustomerResource {
 
     @Timed
     @RequestMapping(value = TARIFF_PATH, method = RequestMethod.PUT)
-    public void setTariff(HttpServletResponse response, @Valid @RequestBody ChangeTariffDTO dto) throws AppException {
-        currentCustomerService.setTariff(dto);
+    public ChangeTariffDTO setTariff(@Valid @RequestBody ChangeTariffDTO dto) throws AppException {
+        return currentCustomerService.setTariff(dto);
     }
 
     @Timed
     @RequestMapping(value = TARIFF_AUTO_RENEWAL_PATH, method = RequestMethod.POST)
-    public void enableAutomaticRenewal() {
-        currentCustomerService.enableAutomaticRenewal();
+    public void enableAutomaticRenewal(HttpServletResponse response) {
+        Boolean success = currentCustomerService.enableAutomaticRenewal();
+
+        if (!success) {
+            response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
+        }
     }
 
     @Timed
     @RequestMapping(value = TARIFF_AUTO_RENEWAL_PATH, method = RequestMethod.DELETE)
-    public void disableAutomaticRenewal() {
-        currentCustomerService.disableAutomaticRenewal();
+    public void disableAutomaticRenewal(HttpServletResponse response) {
+        Boolean success = currentCustomerService.disableAutomaticRenewal();
+
+        if (!success) {
+            response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
+        }
     }
 }

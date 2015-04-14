@@ -12,7 +12,6 @@ public interface StationRepository {
     ViewStationDTO findOne(long stationId) throws AppException;
     List<ViewStationSlotsDTO> findOneWithSlots(long stationId) throws AppException;
 
-
 //    @Query("SELECT bs FROM Station bs ORDER BY ((6371 * 2 * ASIN(SQRT(POWER(SIN((bs.locationLatitude - abs(:latitude)) * pi()/180 / 2),2) +" +
 //            "COS(bs.locationLatitude * pi()/180 ) * COS(abs(:latitude) * pi()/180) *" +
 //            "POWER(SIN((bs.locationLongitude - :longitude) * pi()/180 / 2), 2))))*1000) ASC")
