@@ -9,6 +9,7 @@ import de.rwth.idsg.bikeman.domain.StationSlot_;
 import de.rwth.idsg.bikeman.domain.Station_;
 import de.rwth.idsg.bikeman.domain.Transaction_;
 import de.rwth.idsg.bikeman.psinterface.Utils;
+import de.rwth.idsg.bikeman.psinterface.dto.request.ChargingStatusDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.PedelecStatusDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.response.AvailablePedelecDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditPedelecDTO;
@@ -44,6 +45,8 @@ public class PedelecRepositoryImpl implements PedelecRepository {
         list.addAll(findStationaryPedelecs(builder));
         return list;
     }
+
+    // nachfolgende funktion nur mit einem rückgabewert (keine liste) und als parameter stationId statt endpointAddress
 
     @Override
     @Transactional(readOnly = true)
@@ -272,6 +275,27 @@ public class PedelecRepositoryImpl implements PedelecRepository {
               .executeUpdate();
         } catch (Exception e) {
             throw new DatabaseException("Failed to update the pedelec status with manufacturerId " + dto.getPedelecManufacturerId(), e);
+        }
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void updatePedelecChargingStatus(List<ChargingStatusDTO> dtoList) {
+        final String s = "UPDATE Pedelec p SET " +
+                "p.stateOfCharge = :stateOfCharge " +
+                "WHERE p.manufacturerId = :pedelecManufacturerId";
+
+        //TODO: currently only SOC gets updated
+
+        try {
+            for (ChargingStatusDTO dto : dtoList) {
+                em.createQuery(s)
+                        .setParameter("stateOfCharge", dto.getBattery().getSoc())
+                        .setParameter("pedelecManufacturerId", dto.getPedelecManufacturerId())
+                        .executeUpdate();
+            }
+        } catch (Exception e) {
+            throw new DatabaseException("Failed to update the charging status.", e);
         }
     }
 

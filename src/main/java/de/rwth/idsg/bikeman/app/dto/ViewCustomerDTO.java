@@ -17,7 +17,6 @@ public class ViewCustomerDTO {
     private String firstname;
     private String lastname;
     private Boolean isActivated;
-    private ViewBookedTariffDTO tariff;
     private ViewAddressDTO address;
 
     @JsonSerialize(using = CustomLocalDateSerializer.class)
@@ -25,7 +24,6 @@ public class ViewCustomerDTO {
 
     public ViewCustomerDTO(String customerId, String login, String firstname, String lastname,
                            Boolean isActivated, LocalDate birthday,
-                          // Long tariffId, TariffType tariffName, LocalDateTime expiryDateTime,
                            String streetAndHousenumber, String zip, String city, String country) {
 
         this.customerId = customerId;
@@ -34,10 +32,6 @@ public class ViewCustomerDTO {
         this.lastname = lastname;
         this.isActivated = isActivated;
         this.birthday = birthday;
-
-        //if (tariffId != null) {
-        //    this.tariff = new ViewBookedTariffDTO(tariffId, tariffName, expiryDateTime);
-        //}
 
         if (streetAndHousenumber != null) {
             this.address = new ViewAddressDTO(streetAndHousenumber, zip, city, country);

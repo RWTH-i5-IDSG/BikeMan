@@ -147,7 +147,7 @@ public class PsiController {
     public void chargingStatusNotification(@RequestBody List<ChargingStatusDTO> chargingStatusDTOs,
                                            HttpServletRequest request) {
         log.debug("[From: {}] Received chargingStatusNotification: {}", Utils.getFrom(request), chargingStatusDTOs);
-        // TODO
+        psiService.handleChargingStatusNotification(chargingStatusDTOs);
     }
 
     @RequestMapping(value = FIRMWARE_STATUS_PATH, method = RequestMethod.POST)

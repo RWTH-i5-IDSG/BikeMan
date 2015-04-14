@@ -3,13 +3,11 @@ package de.rwth.idsg.bikeman.app.dto;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import de.rwth.idsg.bikeman.domain.TariffType;
 import de.rwth.idsg.bikeman.web.rest.dto.util.CustomLocalDateTimeSerializer;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.joda.time.LocalDateTime;
 
 @Getter
+@Builder
 @ToString(includeFieldNames = true)
 public class ViewBookedTariffDTO {
 

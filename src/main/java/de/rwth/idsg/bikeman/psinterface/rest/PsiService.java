@@ -115,4 +115,8 @@ public class PsiService {
     public void handlePedelecStatusNotification(PedelecStatusDTO pedelecStatusDTO) {
         pedelecRepository.updatePedelecStatus(pedelecStatusDTO);
     }
+
+    public void handleChargingStatusNotification(List<ChargingStatusDTO> chargingStatusDTO) {
+        pedelecRepository.updatePedelecChargingStatus(chargingStatusDTO);
+    }
 }

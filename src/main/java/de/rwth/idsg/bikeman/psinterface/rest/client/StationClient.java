@@ -1,5 +1,6 @@
 package de.rwth.idsg.bikeman.psinterface.rest.client;
 
+import de.rwth.idsg.bikeman.app.dto.RemoteAuthorizeDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.ChangeStationOperationStateDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.StationConfigurationDTO;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
@@ -25,6 +26,7 @@ public class StationClient {
     private static final String STATE_PATH = "/state";
     private static final String CONFIG_PATH = "/config";
     private static final String REBOOT_PATH = "/reboot";
+    private static final String AUTHORIZE_PATH = "/authorize/remote";
 
     public boolean changeOperationState(String endpointAddress, ChangeStationOperationStateDTO dto)
             throws DatabaseException, RestClientException {
@@ -64,6 +66,13 @@ public class StationClient {
     public void reboot(String endpointAddress) throws RestClientException, DatabaseException {
         String uri = endpointAddress + REBOOT_PATH;
         ResponseEntity<String> response = restTemplate.postForEntity(uri, null, String.class);
+        HttpStatus status = response.getStatusCode();
+        // TODO: Handle status codes
+    }
+
+    public void authorizeRemote(String endpointAddress, RemoteAuthorizeDTO dto) throws RestClientException, DatabaseException {
+        String uri = endpointAddress + AUTHORIZE_PATH;
+        ResponseEntity<String> response = restTemplate.postForEntity(uri, dto, String.class);
         HttpStatus status = response.getStatusCode();
         // TODO: Handle status codes
     }

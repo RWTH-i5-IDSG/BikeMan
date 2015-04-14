@@ -1,6 +1,7 @@
 package de.rwth.idsg.bikeman.repository;
 
 import de.rwth.idsg.bikeman.domain.Pedelec;
+import de.rwth.idsg.bikeman.psinterface.dto.request.ChargingStatusDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.PedelecStatusDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.response.AvailablePedelecDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditPedelecDTO;
@@ -23,4 +24,5 @@ public interface PedelecRepository {
     void update(CreateEditPedelecDTO dto) throws DatabaseException;
     void delete(long pedelecId) throws DatabaseException;
     void updatePedelecStatus(PedelecStatusDTO dto);
+    void updatePedelecChargingStatus(List<ChargingStatusDTO> dtoList);
 }
