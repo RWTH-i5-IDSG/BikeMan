@@ -10,6 +10,8 @@ import de.rwth.idsg.bikeman.ixsi.schema.EngineType;
 public final class IXSIConstants {
     private IXSIConstants() {}
 
+    public static final int MAX_TEXT_MSG_SIZE = 8388608;
+
     public static final String XML_SCHEMA_FILE = "ixsi/IXSI-with-enums.xsd";
 
     public static final ClassType bookeeClassType = ClassType.BIKE;

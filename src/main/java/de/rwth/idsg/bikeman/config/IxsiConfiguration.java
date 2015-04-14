@@ -2,6 +2,7 @@ package de.rwth.idsg.bikeman.config;
 
 import de.rwth.idsg.bikeman.ApplicationConfig;
 import de.rwth.idsg.bikeman.ixsi.HandshakeInterceptor;
+import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
 import de.rwth.idsg.bikeman.ixsi.WebSocketEndpoint;
 import de.rwth.idsg.bikeman.ixsi.repository.SystemValidator;
 import de.rwth.idsg.bikeman.ixsi.schema.IxsiMessageType;
@@ -13,6 +14,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
+import org.springframework.web.socket.server.standard.ServletServerContainerFactoryBean;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -37,6 +39,13 @@ public class IxsiConfiguration implements WebSocketConfigurer {
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(webSocketEndpoint, ApplicationConfig.IXSI.WS_ENDPOINT).setAllowedOrigins("*")
                 .addInterceptors(new HandshakeInterceptor(systemValidator));
+    }
+
+    @Bean
+    public ServletServerContainerFactoryBean createWebSocketContainer() {
+        ServletServerContainerFactoryBean container = new ServletServerContainerFactoryBean();
+        container.setMaxTextMessageBufferSize(IXSIConstants.MAX_TEXT_MSG_SIZE);
+        return container;
     }
 
     @Bean
