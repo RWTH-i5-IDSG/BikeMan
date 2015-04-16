@@ -1,4 +1,4 @@
-package de.rwth.idsg.bikeman.web.rest.dto.util;
+package de.rwth.idsg.bikeman.domain.util;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
