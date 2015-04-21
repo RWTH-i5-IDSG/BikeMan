@@ -21,22 +21,16 @@ import java.util.HashMap;
 public class SubscriptionRequestMap extends HashMap<Class<?>, SubscriptionRequestProcessor> {
     private static final long serialVersionUID = -8483982822596525355L;
 
-    @Autowired
-    private AvailabilitySubscriptionRequestProcessor availabilitySubscriptionRequestProcessor;
-    @Autowired
-    private AvailabilitySubscriptionStatusRequestProcessor availabilitySubscriptionStatusRequestProcessor;
-    @Autowired
-    private PlaceAvailabilitySubscriptionRequestProcessor placeAvailabilitySubscriptionRequestProcessor;
-    @Autowired
-    private PlaceAvailabilitySubscriptionStatusRequestProcessor placeAvailabilitySubscriptionStatusRequestProcessor;
-    @Autowired
-    private BookingAlertSubscriptionRequestProcessor bookingAlertSubscriptionRequestProcessor;
-    @Autowired
-    private BookingAlertSubscriptionStatusRequestProcessor bookingAlertSubscriptionStatusRequestProcessor;
-    @Autowired
-    private ConsumptionSubscriptionRequestProcessor consumptionSubscriptionRequestProcessor;
-    @Autowired
-    private ConsumptionSubscriptionStatusRequestProcessor consumptionSubscriptionStatusRequestProcessor;
+    @Autowired private AvailabilitySubscriptionRequestProcessor availabilitySubscriptionRequestProcessor;
+    @Autowired private AvailabilitySubscriptionStatusRequestProcessor availabilitySubscriptionStatusRequestProcessor;
+    @Autowired private PlaceAvailabilitySubscriptionRequestProcessor placeAvailabilitySubscriptionRequestProcessor;
+    @Autowired private PlaceAvailabilitySubscriptionStatusRequestProcessor placeAvailabilitySubscriptionStatusRequestProcessor;
+    @Autowired private BookingAlertSubscriptionRequestProcessor bookingAlertSubscriptionRequestProcessor;
+    @Autowired private BookingAlertSubscriptionStatusRequestProcessor bookingAlertSubscriptionStatusRequestProcessor;
+    @Autowired private ConsumptionSubscriptionRequestProcessor consumptionSubscriptionRequestProcessor;
+    @Autowired private ConsumptionSubscriptionStatusRequestProcessor consumptionSubscriptionStatusRequestProcessor;
+    @Autowired private ExternalBookingSubscriptionRequestProcessor externalBookingSubscriptionRequestProcessor;
+    @Autowired private ExternalBookingSubscriptionStatusRequestProcessor externalBookingSubscriptionStatusRequestProcessor;
 
     @PostConstruct
     public void init() {
@@ -48,6 +42,8 @@ public class SubscriptionRequestMap extends HashMap<Class<?>, SubscriptionReques
         super.put(BookingAlertSubscriptionStatusRequestType.class, bookingAlertSubscriptionStatusRequestProcessor);
         super.put(ConsumptionSubscriptionRequestType.class, consumptionSubscriptionRequestProcessor);
         super.put(ConsumptionSubscriptionStatusRequestType.class, consumptionSubscriptionStatusRequestProcessor);
+        super.put(ExternalBookingSubscriptionRequestType.class, externalBookingSubscriptionRequestProcessor);
+        super.put(ExternalBookingSubscriptionStatusRequestType.class, externalBookingSubscriptionStatusRequestProcessor);
         log.trace("Ready");
     }
 
