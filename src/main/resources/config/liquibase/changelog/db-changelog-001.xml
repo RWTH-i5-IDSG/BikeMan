@@ -29,4 +29,17 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="1409564974607-46" author="wkluth">
+        <addColumn tableName="T_BOOKING">
+            <column name="ixsi_booking_id" type="VARCHAR(255)"/>
+        </addColumn>
+
+        <createIndex indexName="idx_ixsi_booking"
+                     tableName="T_BOOKING"
+                     unique="true">
+            <column name="ixsi_booking_id" type="varchar(255)"/>
+        </createIndex>
+
+    </changeSet>
+
 </databaseChangeLog>

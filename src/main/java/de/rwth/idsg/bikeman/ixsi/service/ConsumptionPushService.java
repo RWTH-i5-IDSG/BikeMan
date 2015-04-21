@@ -1,10 +1,12 @@
 package de.rwth.idsg.bikeman.ixsi.service;
 
+import de.rwth.idsg.bikeman.domain.Booking;
 import de.rwth.idsg.bikeman.domain.Transaction;
 import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
 import de.rwth.idsg.bikeman.ixsi.api.Producer;
 import de.rwth.idsg.bikeman.ixsi.impl.ConsumptionStore;
 import de.rwth.idsg.bikeman.ixsi.schema.*;
+import de.rwth.idsg.bikeman.repository.BookingRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,15 +29,15 @@ public class ConsumptionPushService {
 
     public static final String NAME_FORMAT = "The booking with id %s rented a bike from %s to %s.";
 
-    public void report(Long bookingId, Transaction transaction) {
-        String bookingIdSTR = String.valueOf(bookingId);
+    public void report(Booking booking, Transaction transaction) {
+        String bookingIdSTR = String.valueOf(booking.getBookingId());
         Set<String> systemIdSet = consumptionStore.getSubscribedSystems(bookingIdSTR);
         if (systemIdSet.isEmpty()) {
-            log.debug("Will not push. There is no subscribed system for bookingId '{}'", bookingId);
+            log.debug("Will not push. There is no subscribed system for bookingId '{}'", booking.getBookingId());
             return;
         }
 
-        ConsumptionType consumption = createConsumption(bookingIdSTR, transaction);
+        ConsumptionType consumption = createConsumption(booking, transaction);
 
         ConsumptionPushMessageType c = new ConsumptionPushMessageType().withConsumption(consumption);
         SubscriptionMessageType sub = new SubscriptionMessageType().withPushMessageGroup(c);
@@ -44,7 +46,7 @@ public class ConsumptionPushService {
         producer.send(ixsi, systemIdSet);
     }
 
-    public ConsumptionType createConsumption(String bookingId, Transaction t) {
+    public ConsumptionType createConsumption(Booking booking, Transaction t) {
         LocalDateTime start = t.getStartDateTime();
         LocalDateTime end = t.getEndDateTime();
 
@@ -53,9 +55,9 @@ public class ConsumptionPushService {
                 .withEnd(end.toDateTime());
 
         return new ConsumptionType()
-                .withBookingID(bookingId)
+                .withBookingID(booking.getIxsiBookingId())
                 .withType(IXSIConstants.consumptionClass)
-                .withName(String.format(NAME_FORMAT, bookingId, start, end))
+                .withName(String.format(NAME_FORMAT, booking.getIxsiBookingId(), start, end))
                 .withTimePeriod(timePeriod);
     }
 }

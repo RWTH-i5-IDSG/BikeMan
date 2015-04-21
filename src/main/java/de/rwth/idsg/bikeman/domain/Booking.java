@@ -25,6 +25,9 @@ public class Booking {
     @Column(name = "booking_id")
     private long bookingId;
 
+    @Column(name = "ixsi_booking_id")
+    private String ixsiBookingId;
+
     @OneToOne
     @JoinColumn(name = "reservation_id")
     private Reservation reservation;

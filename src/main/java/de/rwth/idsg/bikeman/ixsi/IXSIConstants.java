@@ -18,6 +18,8 @@ public final class IXSIConstants {
     public static final EngineType engineType = EngineType.ELECTRIC;
     public static final ConsumptionClassType consumptionClass = ConsumptionClassType.DURATION;
 
+    public static final String BOOKING_ID_DELIMITER = "%#";
+
     public final class Provider {
         public static final String id = "Velocity";
         public static final String name = "Velocity";

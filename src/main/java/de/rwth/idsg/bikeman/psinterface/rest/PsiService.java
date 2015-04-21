@@ -1,5 +1,6 @@
 package de.rwth.idsg.bikeman.psinterface.rest;
 
+import de.rwth.idsg.bikeman.domain.Booking;
 import de.rwth.idsg.bikeman.domain.CardAccount;
 import de.rwth.idsg.bikeman.domain.OperationState;
 import de.rwth.idsg.bikeman.domain.Transaction;
@@ -82,8 +83,8 @@ public class PsiService {
     public void handleStartTransaction(StartTransactionDTO startTransactionDTO) throws DatabaseException {
         Transaction t = transactionRepository.start(startTransactionDTO);
 
-        Long bookingId = bookingRepository.findIdByTransaction(t);
-        externalBookingPushService.report(bookingId, t);
+        Booking booking = bookingRepository.findByTransaction(t);
+        externalBookingPushService.report(booking, t);
 
         availabilityPushService.takenFromPlace(
             startTransactionDTO.getPedelecManufacturerId(),
@@ -94,8 +95,8 @@ public class PsiService {
     public void handleStopTransaction(StopTransactionDTO stopTransactionDTO) throws DatabaseException {
         Transaction t = transactionRepository.stop(stopTransactionDTO);
 
-        Long bookingId = bookingRepository.findIdByTransaction(t);
-        consumptionPushService.report(bookingId, t);
+        Booking booking = bookingRepository.findByTransaction(t);
+        consumptionPushService.report(booking, t);
 
         DateTime startDateTime = t.getStartDateTime().toDateTime();
         availabilityPushService.arrivedAtPlace(

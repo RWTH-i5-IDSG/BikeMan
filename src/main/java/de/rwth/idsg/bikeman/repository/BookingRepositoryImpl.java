@@ -32,6 +32,19 @@ public class BookingRepositoryImpl implements BookingRepository {
 
     @Override
     @Transactional(readOnly = true)
+    public Booking findByTransaction(Transaction transaction) {
+        final String query = "SELECT b FROM Booking b WHERE b.transaction =: transaction";
+        try {
+            return em.createQuery(query, Booking.class)
+                .setParameter("transaction", transaction)
+                .getSingleResult();
+        } catch (NoResultException e) {
+            throw new DatabaseException("Could not find booking for specified transaction.", e);
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public Long findIdByTransaction(Transaction transaction) {
         final String query = "SELECT b.bookingId FROM Booking b WHERE b.transaction = :transaction";
         try {
@@ -54,6 +67,16 @@ public class BookingRepositoryImpl implements BookingRepository {
         return em.createQuery(query, Booking.class)
                  .setParameter("bookingIdList", bookingIdList)
                  .getResultList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Booking findOne(Long id) {
+        final String query = "SELECT b FROM Booking b WHERE b.bookingId = :bookingId";
+
+        return em.createQuery(query, Booking.class)
+            .setParameter("bookingId", id)
+            .getSingleResult();
     }
 
 }
