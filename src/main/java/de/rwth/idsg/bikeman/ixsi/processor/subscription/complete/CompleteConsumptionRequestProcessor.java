@@ -42,8 +42,7 @@ public class CompleteConsumptionRequestProcessor implements
 
         List<ConsumptionType> consumptionList = new ArrayList<>();
         for (Booking b : bookingList) {
-            String bookingId = String.valueOf(b.getBookingId());
-            consumptionList.add(consumptionPushService.createConsumption(bookingId, b.getTransaction()));
+            consumptionList.add(consumptionPushService.createConsumption(b, b.getTransaction()));
         }
 
         // for now, assume that client system is always able to process the full message
