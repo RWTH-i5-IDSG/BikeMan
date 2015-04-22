@@ -27,7 +27,7 @@ public class ConsumptionPushService {
     @Autowired
     private ConsumptionStore consumptionStore;
 
-    public static final String NAME_FORMAT = "The booking with id %s rented a bike from %s to %s.";
+    public static final String NAME_FORMAT = "E-bike rental from %s";
 
     public void report(Booking booking, Transaction transaction) {
         String bookingIdSTR = String.valueOf(booking.getBookingId());
@@ -57,7 +57,7 @@ public class ConsumptionPushService {
         return new ConsumptionType()
                 .withBookingID(booking.getIxsiBookingId())
                 .withType(IXSIConstants.consumptionClass)
-                .withName(String.format(NAME_FORMAT, booking.getIxsiBookingId(), start, end))
+                .withName(String.format(NAME_FORMAT, IXSIConstants.Provider.name))
                 .withTimePeriod(timePeriod);
     }
 }
