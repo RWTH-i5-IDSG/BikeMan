@@ -33,7 +33,7 @@ public class BookingRepositoryImpl implements BookingRepository {
     @Override
     @Transactional(readOnly = true)
     public Booking findByTransaction(Transaction transaction) {
-        final String query = "SELECT b FROM Booking b WHERE b.transaction =: transaction";
+        final String query = "SELECT b FROM Booking b WHERE b.transaction = :transaction";
         try {
             return em.createQuery(query, Booking.class)
                 .setParameter("transaction", transaction)
