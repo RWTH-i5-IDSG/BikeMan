@@ -8,6 +8,7 @@ import de.rwth.idsg.bikeman.ixsi.impl.ExternalBookingStore;
 import de.rwth.idsg.bikeman.ixsi.service.AvailabilityPushService;
 import de.rwth.idsg.bikeman.ixsi.service.ConsumptionPushService;
 import de.rwth.idsg.bikeman.ixsi.service.ExternalBookingPushService;
+import de.rwth.idsg.bikeman.ixsi.service.PlaceAvailabilityPushService;
 import de.rwth.idsg.bikeman.psinterface.Utils;
 import de.rwth.idsg.bikeman.psinterface.dto.request.*;
 import de.rwth.idsg.bikeman.psinterface.dto.response.AuthorizeConfirmationDTO;
@@ -32,30 +33,16 @@ import java.util.List;
 @Slf4j
 public class PsiService {
 
-    @Inject
-    private CustomerRepository customerRepository;
-    @Inject
-    private TransactionRepository transactionRepository;
-    @Inject
-    private StationRepository stationRepository;
-    @Inject
-    private BookingRepository bookingRepository;
-    @Inject
-    private PedelecRepository pedelecRepository;
-    @Inject
-    private CardAccountRepository cardAccountRepository;
-    @Inject
-    private MajorCustomerRepository majorCustomerRepository;
+    @Inject private CustomerRepository customerRepository;
+    @Inject private TransactionRepository transactionRepository;
+    @Inject private StationRepository stationRepository;
+    @Inject private BookingRepository bookingRepository;
+    @Inject private PedelecRepository pedelecRepository;
 
-    @Inject
-    private ConsumptionPushService consumptionPushService;
-    @Inject
-    private AvailabilityPushService availabilityPushService;
-    @Inject
-    private ExternalBookingPushService externalBookingPushService;
-
-    @Inject
-    private ExternalBookingStore externalBookingStore;
+    @Inject private ConsumptionPushService consumptionPushService;
+    @Inject private AvailabilityPushService availabilityPushService;
+    @Inject private PlaceAvailabilityPushService placeAvailabilityPushService;
+    @Inject private ExternalBookingPushService externalBookingPushService;
 
     private static final Integer HEARTBEAT_INTERVAL_IN_SECONDS = 60;
 
@@ -90,6 +77,8 @@ public class PsiService {
             startTransactionDTO.getPedelecManufacturerId(),
             startTransactionDTO.getStationManufacturerId(),
             new DateTime(startTransactionDTO.getTimestamp()));
+
+        placeAvailabilityPushService.reportChange(startTransactionDTO.getStationManufacturerId());
     }
 
     public void handleStopTransaction(StopTransactionDTO stopTransactionDTO) throws DatabaseException {
@@ -103,6 +92,8 @@ public class PsiService {
             stopTransactionDTO.getPedelecManufacturerId(),
             stopTransactionDTO.getStationManufacturerId(),
             startDateTime);
+
+        placeAvailabilityPushService.reportChange(stopTransactionDTO.getStationManufacturerId());
     }
 
     public List<AvailablePedelecDTO> getAvailablePedelecs(String endpointAddress) throws DatabaseException {
