@@ -38,12 +38,7 @@ public class MajorCustomerRepositoryImpl implements MajorCustomerRepository {
     private PasswordEncoder passwordEncoder;
 
     private enum Operation {CREATE, UPDATE}
-
-    ;
-
     private enum FindType {ALL, BY_ID, BY_LOGIN}
-
-    ;
 
     @PersistenceContext
     private EntityManager em;
@@ -100,13 +95,11 @@ public class MajorCustomerRepositoryImpl implements MajorCustomerRepository {
             throw new DatabaseException("Failed to get cards for major customer", e);
         }
 
-        if (list == null) {
-            majorCustomerDTO.setCardAccountDTOs(new HashSet<ViewCardAccountDTO>());
-            return majorCustomerDTO;
+        if (list == null || list.isEmpty()) {
+            majorCustomerDTO.setCardAccountDTOs(new HashSet<>());
+        } else {
+            majorCustomerDTO.setCardAccountDTOs(new HashSet<>(list));
         }
-
-        Set<ViewCardAccountDTO> set = new HashSet<>(list);
-        majorCustomerDTO.setCardAccountDTOs(set);
 
         return majorCustomerDTO;
     }
@@ -149,13 +142,11 @@ public class MajorCustomerRepositoryImpl implements MajorCustomerRepository {
             throw new DatabaseException("Failed to get cards for major customer", e);
         }
 
-        if (list == null) {
-            majorCustomerDTO.setCardAccountDTOs(new HashSet<ViewCardAccountDTO>());
-            return majorCustomerDTO;
+        if (list == null || list.isEmpty()) {
+            majorCustomerDTO.setCardAccountDTOs(new HashSet<>());
+        } else {
+            majorCustomerDTO.setCardAccountDTOs(new HashSet<>(list));
         }
-
-        Set<ViewCardAccountDTO> set = new HashSet<>(list);
-        majorCustomerDTO.setCardAccountDTOs(set);
 
         return majorCustomerDTO;
     }
