@@ -185,11 +185,11 @@ public class TransactionRepositoryImpl implements TransactionRepository {
 
         final String cardAccQuery = "SELECT ca FROM CardAccount ca WHERE ca.cardId = :cardId";
 
-        final String bookingQuery = "SELECT b FROM Booking b INNER JOIN b.reservation r " +
-                    "WHERE r.cardAccount.cardAccountId = :cardAccountId " +
-                    "AND r.pedelec.pedelecId = :pedelecId " +
-                    "AND r.startDateTime <= :transTime " +
-                    "AND :transTime <= r.endDateTime";
+//        final String bookingQuery = "SELECT b FROM Booking b INNER JOIN b.reservation r " +
+//                    "WHERE r.cardAccount.cardAccountId = :cardAccountId " +
+//                    "AND r.pedelec.pedelecId = :pedelecId " +
+//                    "AND r.startDateTime <= :transTime " +
+//                    "AND :transTime <= r.endDateTime";
 
         Pedelec pedelec = em.createQuery(pedelecQuery, Pedelec.class)
                             .setParameter("pedelecManufacturerId", dto.getPedelecManufacturerId())
@@ -200,17 +200,17 @@ public class TransactionRepositoryImpl implements TransactionRepository {
                                     .getSingleResult();
 
         // check for existing reservation -> get corresponding booking
-        LocalDateTime dt = new LocalDateTime(Utils.toMillis(dto.getTimestamp()));
-        Booking booking = null;
-        try {
-            booking = em.createQuery(bookingQuery, Booking.class)
-                    .setParameter("cardAccountId", cardAccount.getCardAccountId())
-                    .setParameter("pedelecId", pedelec.getPedelecId())
-                    .setParameter("transTime", dt)
-                    .getSingleResult();
-        } catch (NoResultException e) {
-            log.debug("No booking found for pedelec {}", dto.getPedelecManufacturerId());
-        }
+//        LocalDateTime dt = new LocalDateTime(Utils.toMillis(dto.getTimestamp()));
+//        Booking booking = null;
+//        try {
+//            booking = em.createQuery(bookingQuery, Booking.class)
+//                    .setParameter("cardAccountId", cardAccount.getCardAccountId())
+//                    .setParameter("pedelecId", pedelec.getPedelecId())
+//                    .setParameter("transTime", dt)
+//                    .getSingleResult();
+//        } catch (NoResultException e) {
+//            log.debug("No booking found for pedelec {}", dto.getPedelecManufacturerId());
+//        }
 
         User user = cardAccount.getUser();
         StationSlot slot = pedelec.getStationSlot();

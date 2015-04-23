@@ -3,6 +3,7 @@ package de.rwth.idsg.bikeman.psinterface.rest;
 import de.rwth.idsg.bikeman.domain.Booking;
 import de.rwth.idsg.bikeman.domain.CardAccount;
 import de.rwth.idsg.bikeman.domain.OperationState;
+import de.rwth.idsg.bikeman.domain.Reservation;
 import de.rwth.idsg.bikeman.domain.Transaction;
 import de.rwth.idsg.bikeman.ixsi.impl.ExternalBookingStore;
 import de.rwth.idsg.bikeman.ixsi.service.AvailabilityPushService;
@@ -38,6 +39,7 @@ public class PsiService {
     @Inject private StationRepository stationRepository;
     @Inject private BookingRepository bookingRepository;
     @Inject private PedelecRepository pedelecRepository;
+    @Inject private ReservationRepository reservationRepository;
 
     @Inject private ConsumptionPushService consumptionPushService;
     @Inject private AvailabilityPushService availabilityPushService;
@@ -70,10 +72,24 @@ public class PsiService {
     public void handleStartTransaction(StartTransactionDTO startTransactionDTO) throws DatabaseException {
         Transaction t = transactionRepository.start(startTransactionDTO);
 
-        Booking booking = new Booking();
-        booking.setTransaction(t);
+        List<Reservation> reservationList = reservationRepository.find(t.getCardAccount().getCardAccountId(),
+                                                                       t.getPedelec().getPedelecId(),
+                                                                       t.getStartDateTime());
 
-        booking = bookingRepository.save(booking);
+        Booking booking;
+
+        if (reservationList == null || reservationList.isEmpty()) {
+            booking = new Booking();
+
+        } else if (reservationList.size() == 1) {
+            booking = bookingRepository.findByReservation(reservationList.get(0));
+
+        } else {
+            throw new PsException("More than one reservation found", PsErrorCode.CONSTRAINT_FAILED);
+        }
+
+        booking.setTransaction(t);
+        bookingRepository.save(booking);
 
         externalBookingPushService.report(booking, t);
 

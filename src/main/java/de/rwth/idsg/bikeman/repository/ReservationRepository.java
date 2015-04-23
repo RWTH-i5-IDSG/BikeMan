@@ -13,9 +13,21 @@ import java.util.List;
  */
 public interface ReservationRepository extends JpaRepository<Reservation, String> {
 
-    @Query("SELECT r FROM Reservation r WHERE r.pedelec.pedelecId = :pedelecId AND (r.startDateTime <= :endTime AND :startTime <= r.endDateTime)")
-    public List<Reservation> findByTimeFrameForPedelec(@Param("pedelecId") long pedelecId,
-                                                       @Param("startTime") LocalDateTime start,
-                                                       @Param("endTime") LocalDateTime end);
+    @Query("SELECT r FROM Reservation r " +
+           "WHERE r.pedelec.pedelecId = :pedelecId " +
+           "AND (r.startDateTime <= :endTime " +
+           "AND :startTime <= r.endDateTime)")
+    List<Reservation> findByTimeFrameForPedelec(@Param("pedelecId") long pedelecId,
+                                                @Param("startTime") LocalDateTime start,
+                                                @Param("endTime") LocalDateTime end);
+
+    @Query("SELECT r FROM Reservation r " +
+           "WHERE r.cardAccount.cardAccountId = :cardAccountId " +
+           "AND r.pedelec.pedelecId = :pedelecId " +
+           "AND r.startDateTime <= :startTime " +
+           "AND :startTime <= r.endDateTime")
+    List<Reservation> find(@Param("cardAccountId") long cardAccountId,
+                           @Param("pedelecId") long pedelecId,
+                           @Param("startTime") LocalDateTime startTime);
 
 }

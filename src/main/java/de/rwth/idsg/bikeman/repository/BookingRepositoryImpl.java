@@ -1,6 +1,7 @@
 package de.rwth.idsg.bikeman.repository;
 
 import de.rwth.idsg.bikeman.domain.Booking;
+import de.rwth.idsg.bikeman.domain.Reservation;
 import de.rwth.idsg.bikeman.domain.Transaction;
 import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
@@ -37,21 +38,6 @@ public class BookingRepositoryImpl implements BookingRepository {
         return b;
     }
 
-//    @Override
-//    @Transactional
-//    public void createIxsiBookingId(Long bookingId) {
-//
-//        final String ixsiBookingId = IXSIConstants.Provider.id + IXSIConstants.BOOKING_ID_DELIMITER + bookingId;
-//
-//        final String query = "UPDATE Booking b SET b.ixsiBookingId = :ixsiBookingId WHERE b.bookingId = :bookingId";
-//
-//        em.createQuery(query)
-//            .setParameter("ixsiBookingId", ixsiBookingId)
-//            .setParameter("bookingId", bookingId)
-//            .executeUpdate();
-//
-//    }
-
     @Override
     @Transactional(readOnly = true)
     public Booking findByTransaction(Transaction transaction) {
@@ -65,19 +51,17 @@ public class BookingRepositoryImpl implements BookingRepository {
         }
     }
 
-//    @Override
-//    @Transactional(readOnly = true)
-//    public Long findIdByTransaction(Transaction transaction) {
-//        final String query = "SELECT b.bookingId FROM Booking b WHERE b.transaction = :transaction";
-//        try {
-//            return em.createQuery(query, Long.class)
-//                .setParameter("transaction", transaction)
-//                .getSingleResult();
-//
-//        } catch (NoResultException e) {
-//            throw new DatabaseException("Could not find booking for specified transaction.", e);
-//        }
-//    }
+    @Override
+    public Booking findByReservation(Reservation reservation) {
+        final String query = "SELECT b FROM Booking b WHERE b.reservation = :reservation";
+        try {
+            return em.createQuery(query, Booking.class)
+                    .setParameter("reservation", reservation)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            throw new DatabaseException("Could not find booking for specified reservation.", e);
+        }
+    }
 
     @Override
     @Transactional(readOnly = true)
