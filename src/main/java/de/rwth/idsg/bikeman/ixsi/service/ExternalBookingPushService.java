@@ -8,7 +8,6 @@ import de.rwth.idsg.bikeman.ixsi.api.Producer;
 import de.rwth.idsg.bikeman.ixsi.impl.ExternalBookingStore;
 import de.rwth.idsg.bikeman.ixsi.repository.IxsiUserRepository;
 import de.rwth.idsg.bikeman.ixsi.schema.*;
-import de.rwth.idsg.bikeman.repository.BookingRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +29,6 @@ public class ExternalBookingPushService {
     private ExternalBookingStore externalBookingStore;
     @Autowired
     private IxsiUserRepository ixsiUserRepository;
-    @Autowired
-    private BookingRepository bookingRepository;
 
     public void report(Booking booking, Transaction transaction) {
         String cardId = transaction.getCardAccount().getCardId();
@@ -53,8 +50,6 @@ public class ExternalBookingPushService {
             TimePeriodType time = new TimePeriodType()
                 .withBegin(dt)
                 .withEnd(dt.plusHours(6));
-
-            booking = bookingRepository.updateIxsiBookingId(IXSIConstants.Provider.id + IXSIConstants.BOOKING_ID_DELIMITER + booking.getBookingId(), booking);
 
             BookingTargetIDType bookingTarget = new BookingTargetIDType()
                 .withBookeeID(String.valueOf(transaction.getPedelec().getManufacturerId()))

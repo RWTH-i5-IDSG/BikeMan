@@ -34,11 +34,7 @@ public class CompleteConsumptionRequestProcessor implements
     public CompleteConsumptionResponseType process(CompleteConsumptionRequestType request, String systemId) {
         List<String> bookingIdListString = consumptionStore.getSubscriptions(systemId);
 
-        List<Long> bookingIdListLong = new ArrayList<>();
-        for (String str : bookingIdListString) {
-            bookingIdListLong.add(Long.valueOf(str));
-        }
-        List<Booking> bookingList = bookingRepository.findClosedBookings(bookingIdListLong);
+        List<Booking> bookingList = bookingRepository.findClosedBookings(bookingIdListString);
 
         List<ConsumptionType> consumptionList = new ArrayList<>();
         for (Booking b : bookingList) {

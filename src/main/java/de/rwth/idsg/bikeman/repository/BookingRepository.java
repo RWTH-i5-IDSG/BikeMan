@@ -9,10 +9,8 @@ import java.util.List;
  * Created by max on 24/11/14.
  */
 public interface BookingRepository {
-    long saveAndGetId(Booking booking);
-    Booking updateIxsiBookingId(String ixsiBookingId, Booking booking);
+    Booking save(Booking booking);
     Booking findByTransaction(Transaction transaction);
-    Long findIdByTransaction(Transaction transaction);
-    List<Booking> findClosedBookings(List<Long> bookingIdList);
+    List<Booking> findClosedBookings(List<String> ixsiBookingIdList);
     Booking findOne(Long id);
 }

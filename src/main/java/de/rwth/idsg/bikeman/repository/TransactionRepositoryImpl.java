@@ -8,6 +8,7 @@ import de.rwth.idsg.bikeman.domain.Pedelec_;
 import de.rwth.idsg.bikeman.domain.StationSlot_;
 import de.rwth.idsg.bikeman.domain.Station_;
 import de.rwth.idsg.bikeman.domain.Transaction_;
+import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
 import de.rwth.idsg.bikeman.psinterface.Utils;
 import de.rwth.idsg.bikeman.psinterface.dto.request.StartTransactionDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.StopTransactionDTO;
@@ -258,14 +259,6 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         em.merge(cardAccount);
         em.merge(pedelec);
         em.merge(slot);
-
-        // update booking
-        if (booking == null) {
-            // no reservation present: create new booking for transaction
-            booking = new Booking();
-        }
-        booking.setTransaction(transaction);
-        em.merge(booking);
 
         return transaction;
     }

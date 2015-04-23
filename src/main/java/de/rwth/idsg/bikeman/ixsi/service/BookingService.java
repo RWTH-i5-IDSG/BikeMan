@@ -33,7 +33,7 @@ public class BookingService {
     private PedelecRepository pedelecRepository;
 
     public long createBookingForUser(String bookeeId, String cardId, TimePeriodProposalType timePeriodProposal)
-            throws DatabaseException {
+        throws DatabaseException {
 
         Pedelec pedelec = pedelecRepository.findByManufacturerId(bookeeId);
         if (!isAvailable(pedelec)) {
@@ -58,18 +58,18 @@ public class BookingService {
         }
 
         Reservation reservation = Reservation.builder()
-                .cardAccount(cardAccount)
-                .startDateTime(begin)
-                .endDateTime(end)
-                .pedelec(pedelec)
-                .build();
+            .cardAccount(cardAccount)
+            .startDateTime(begin)
+            .endDateTime(end)
+            .pedelec(pedelec)
+            .build();
 
         Reservation savedReservation = reservationRepository.save(reservation);
 
         Booking booking = new Booking();
         booking.setReservation(savedReservation);
         try {
-            return bookingRepository.saveAndGetId(booking);
+            return bookingRepository.save(booking).getBookingId();
         } catch (Throwable e) {
             throw new DatabaseException("Failed during database operation.", e);
         }
@@ -82,8 +82,8 @@ public class BookingService {
         final float lowerLimit = 0.0f;
 
         return OperationState.OPERATIVE.equals(pedelec.getState())
-                && !pedelec.getInTransaction()
-                && pedelec.getStateOfCharge() > lowerLimit;
+            && !pedelec.getInTransaction()
+            && pedelec.getStateOfCharge() > lowerLimit;
     }
 
 }

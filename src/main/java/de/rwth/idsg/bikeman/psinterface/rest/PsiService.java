@@ -70,7 +70,11 @@ public class PsiService {
     public void handleStartTransaction(StartTransactionDTO startTransactionDTO) throws DatabaseException {
         Transaction t = transactionRepository.start(startTransactionDTO);
 
-        Booking booking = bookingRepository.findByTransaction(t);
+        Booking booking = new Booking();
+        booking.setTransaction(t);
+
+        booking = bookingRepository.save(booking);
+
         externalBookingPushService.report(booking, t);
 
         availabilityPushService.takenFromPlace(
