@@ -20,7 +20,8 @@ import java.util.List;
 @Slf4j
 public class BookingRepositoryImpl implements BookingRepository {
 
-    @PersistenceContext private EntityManager em;
+    @PersistenceContext
+    private EntityManager em;
 
     @Override
     @Transactional(readOnly = false)
@@ -28,6 +29,25 @@ public class BookingRepositoryImpl implements BookingRepository {
         em.persist(b);
         em.flush();
         return b.getBookingId();
+    }
+
+    @Override
+    @Transactional
+    public Booking updateIxsiBookingId(String ixsiBookingId, Booking booking) {
+        booking.setIxsiBookingId(ixsiBookingId);
+
+        em.merge(booking);
+        em.flush();
+
+        return booking;
+
+//        final String query = "UPDATE Booking b SET b.ixsiBookingId = :ixsiBookingId WHERE b = :booking";
+//
+//        em.createQuery(query)
+//            .setParameter("ixsiBookingId", ixsiBookingId)
+//            .setParameter("booking", booking)
+//            .executeUpdate();
+
     }
 
     @Override
@@ -49,8 +69,8 @@ public class BookingRepositoryImpl implements BookingRepository {
         final String query = "SELECT b.bookingId FROM Booking b WHERE b.transaction = :transaction";
         try {
             return em.createQuery(query, Long.class)
-                          .setParameter("transaction", transaction)
-                          .getSingleResult();
+                .setParameter("transaction", transaction)
+                .getSingleResult();
 
         } catch (NoResultException e) {
             throw new DatabaseException("Could not find booking for specified transaction.", e);
@@ -61,12 +81,12 @@ public class BookingRepositoryImpl implements BookingRepository {
     @Transactional(readOnly = true)
     public List<Booking> findClosedBookings(List<Long> bookingIdList) {
         final String query = "SELECT b FROM Booking b WHERE b.bookingId IN (:bookingIdList) " +
-                             "AND b.transaction.endDateTime IS NOT NULL " +
-                             "AND b.transaction.toSlot IS NOT NULL";
+            "AND b.transaction.endDateTime IS NOT NULL " +
+            "AND b.transaction.toSlot IS NOT NULL";
 
         return em.createQuery(query, Booking.class)
-                 .setParameter("bookingIdList", bookingIdList)
-                 .getResultList();
+            .setParameter("bookingIdList", bookingIdList)
+            .getResultList();
     }
 
     @Override

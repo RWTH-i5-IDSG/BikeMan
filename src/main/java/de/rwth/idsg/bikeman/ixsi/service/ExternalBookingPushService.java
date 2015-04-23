@@ -39,8 +39,8 @@ public class ExternalBookingPushService {
 
         if (optionalMJ.isPresent()) {
             UserInfoType userInfo = new UserInfoType()
-                    .withUserID(cardId)
-                    .withProviderID(optionalMJ.get());
+                .withUserID(cardId)
+                .withProviderID(optionalMJ.get());
 
             Set<String> subscribed = externalBookingStore.getSubscribedSystems(userInfo);
             if (subscribed.isEmpty()) {
@@ -51,22 +51,20 @@ public class ExternalBookingPushService {
             // TODO improve timeperiodtype creation: default end time
             DateTime dt = transaction.getStartDateTime().toDateTime();
             TimePeriodType time = new TimePeriodType()
-                    .withBegin(dt)
-                    .withEnd(dt.plusHours(6));
+                .withBegin(dt)
+                .withEnd(dt.plusHours(6));
 
-            // create and add ixsi-booking-id to booking
-            booking.setIxsiBookingId(IXSIConstants.Provider.id + IXSIConstants.BOOKING_ID_DELIMITER + booking.getBookingId());
-            bookingRepository.saveAndGetId(booking);
+            booking = bookingRepository.updateIxsiBookingId(IXSIConstants.Provider.id + IXSIConstants.BOOKING_ID_DELIMITER + booking.getBookingId(), booking);
 
             BookingTargetIDType bookingTarget = new BookingTargetIDType()
-                    .withBookeeID(String.valueOf(transaction.getPedelec().getManufacturerId()))
-                    .withProviderID(IXSIConstants.Provider.id);
+                .withBookeeID(String.valueOf(transaction.getPedelec().getManufacturerId()))
+                .withProviderID(IXSIConstants.Provider.id);
 
             ExternalBookingType extBooking = new ExternalBookingType()
-                    .withBookingID(booking.getIxsiBookingId())
-                    .withBookingTargetID(bookingTarget)
-                    .withUserInfo(userInfo)
-                    .withTimePeriod(time);
+                .withBookingID(booking.getIxsiBookingId())
+                .withBookingTargetID(bookingTarget)
+                .withUserInfo(userInfo)
+                .withTimePeriod(time);
 
             ExternalBookingPushMessageType bookingPush = new ExternalBookingPushMessageType().withExternalBooking(extBooking);
             SubscriptionMessageType subscriptionMessageType = new SubscriptionMessageType().withPushMessageGroup(bookingPush);

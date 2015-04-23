@@ -10,6 +10,7 @@ import java.util.List;
  */
 public interface BookingRepository {
     long saveAndGetId(Booking booking);
+    Booking updateIxsiBookingId(String ixsiBookingId, Booking booking);
     Booking findByTransaction(Transaction transaction);
     Long findIdByTransaction(Transaction transaction);
     List<Booking> findClosedBookings(List<Long> bookingIdList);

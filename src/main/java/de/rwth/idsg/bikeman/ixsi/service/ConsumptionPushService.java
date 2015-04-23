@@ -30,7 +30,7 @@ public class ConsumptionPushService {
     public static final String NAME_FORMAT = "E-bike rental from %s";
 
     public void report(Booking booking, Transaction transaction) {
-        String bookingIdSTR = String.valueOf(booking.getBookingId());
+        String bookingIdSTR = booking.getIxsiBookingId();
         Set<String> systemIdSet = consumptionStore.getSubscribedSystems(bookingIdSTR);
         if (systemIdSet.isEmpty()) {
             log.debug("Will not push. There is no subscribed system for bookingId '{}'", booking.getBookingId());
