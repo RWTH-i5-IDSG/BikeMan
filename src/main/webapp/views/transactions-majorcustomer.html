@@ -10,6 +10,7 @@
             <thead>
             <tr>
                 <th translate="transactions.table.header.customer">Customer</th>
+                <th translate="transactions.table.header.cardId">Customer</th>
                 <th translate="transactions.table.header.pedelec">Pedelec</th>
                 <th translate="transactions.table.header.startTime">Start Time</th>
                 <th translate="transactions.table.header.endTime">End Time</th>
@@ -20,6 +21,7 @@
             <tbody>
             <tr ng-repeat="transaction in transactions">
                 <td>{{transaction.majorCustomerName}}</td>
+                <td>{{transaction.cardId}}</td>
                 <td>{{transaction.pedelec.manufacturerId}}</td>
                 <td>{{transaction.startDateTime | date:'medium'}}</td>
                 <td>{{transaction.endDateTime | date:'medium'}}</td>

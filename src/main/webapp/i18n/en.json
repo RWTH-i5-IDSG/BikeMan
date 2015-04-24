@@ -479,6 +479,7 @@
             "table": {
                 "header": {
                     "customer": "Customer",
+                    "cardId": "CardID",
                     "pedelec": "Pedelec",
                     "startTime": "Start Time",
                     "endTime": "End Time",
@@ -517,6 +518,7 @@
         "table": {
             "header": {
                 "customer": "Customer",
+                "cardId": "CardID",
                 "pedelec": "Pedelec",
                 "startTime": "Start Time",
                 "endTime": "End Time",

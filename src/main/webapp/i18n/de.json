@@ -468,6 +468,7 @@
             "table": {
                 "header": {
                     "customer": "Kunde",
+                    "cardId": "KartenID",
                     "pedelec": "Pedelec",
                     "startTime": "Startzeit",
                     "endTime": "Endzeit",
@@ -506,6 +507,7 @@
         "table": {
             "header": {
                 "customer": "Hersteller",
+                "cardId" : "KartenID",
                 "pedelec": "Pedelec",
                 "startTime": "Startzeit",
                 "endTime": "Endzeit",
