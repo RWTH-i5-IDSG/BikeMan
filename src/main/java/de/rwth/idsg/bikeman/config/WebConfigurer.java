@@ -6,6 +6,7 @@ import com.codahale.metrics.servlets.MetricsServlet;
 import de.rwth.idsg.bikeman.web.filter.CachingHttpHeadersFilter;
 import de.rwth.idsg.bikeman.web.filter.StaticResourcesProductionFilter;
 import de.rwth.idsg.bikeman.web.filter.gzip.GZipServletFilter;
+import org.joda.time.DateTimeZone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +20,7 @@ import org.springframework.core.env.Environment;
 
 import javax.inject.Inject;
 import javax.servlet.*;
-import java.util.Arrays;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Configuration of web application with Servlet 3.0 APIs.
@@ -51,6 +49,10 @@ public class WebConfigurer implements ServletContextInitializer, EmbeddedServlet
             initStaticResourcesProductionFilter(servletContext, disps);
             initGzipFilter(servletContext, disps);
         }
+
+        DateTimeZone.setDefault(DateTimeZone.UTC);
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+
         log.info("Web application fully configured");
     }
 
