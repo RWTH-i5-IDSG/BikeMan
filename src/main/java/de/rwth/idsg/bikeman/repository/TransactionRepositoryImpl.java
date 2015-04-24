@@ -8,6 +8,7 @@ import de.rwth.idsg.bikeman.domain.Pedelec_;
 import de.rwth.idsg.bikeman.domain.StationSlot_;
 import de.rwth.idsg.bikeman.domain.Station_;
 import de.rwth.idsg.bikeman.domain.Transaction_;
+import de.rwth.idsg.bikeman.psinterface.Utils;
 import de.rwth.idsg.bikeman.psinterface.dto.request.StartTransactionDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.StopTransactionDTO;
 import de.rwth.idsg.bikeman.psinterface.exception.PsErrorCode;
@@ -216,7 +217,8 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         }
 
         Transaction transaction = new Transaction();
-        transaction.setStartDateTime(new LocalDateTime(dto.getTimestamp()));
+        Long timestampInMillis = Utils.toMillis(dto.getTimestamp());
+        transaction.setStartDateTime(new LocalDateTime(timestampInMillis));
         transaction.setCardAccount(cardAccount);
         transaction.setPedelec(pedelec);
         transaction.setFromSlot(slot);
@@ -271,7 +273,8 @@ public class TransactionRepositoryImpl implements TransactionRepository {
                              .setParameter("stationManufacturerId", dto.getStationManufacturerId())
                              .getSingleResult();
 
-        transaction.setEndDateTime(new LocalDateTime(dto.getTimestamp()));
+        Long timestampInMillis = Utils.toMillis(dto.getTimestamp());
+        transaction.setEndDateTime(new LocalDateTime(timestampInMillis));
         transaction.setToSlot(slot);
         Transaction mergedTransaction = em.merge(transaction);
 
