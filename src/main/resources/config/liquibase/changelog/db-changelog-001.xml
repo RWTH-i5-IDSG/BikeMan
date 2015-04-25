@@ -39,7 +39,12 @@
                      unique="true">
             <column name="ixsi_booking_id" type="varchar(255)"/>
         </createIndex>
+    </changeSet>
 
+    <changeSet id="1409564974607-47" author="michael712">
+        <addColumn tableName="T_TRANSACTION">
+            <column name="fees" type="NUMERIC" />
+        </addColumn>
     </changeSet>
 
 </databaseChangeLog>
