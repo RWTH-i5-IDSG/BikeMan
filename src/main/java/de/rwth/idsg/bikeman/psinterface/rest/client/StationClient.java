@@ -1,6 +1,6 @@
 package de.rwth.idsg.bikeman.psinterface.rest.client;
 
-import de.rwth.idsg.bikeman.app.dto.RemoteAuthorizeDTO;
+import de.rwth.idsg.bikeman.psinterface.dto.request.RemoteAuthorizeDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.ChangeStationOperationStateDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.StationConfigurationDTO;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
