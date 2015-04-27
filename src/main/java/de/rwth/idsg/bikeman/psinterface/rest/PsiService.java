@@ -11,6 +11,7 @@ import de.rwth.idsg.bikeman.ixsi.service.ConsumptionPushService;
 import de.rwth.idsg.bikeman.ixsi.service.ExternalBookingPushService;
 import de.rwth.idsg.bikeman.ixsi.service.PlaceAvailabilityPushService;
 import de.rwth.idsg.bikeman.psinterface.Utils;
+import de.rwth.idsg.bikeman.psinterface.dto.AccountState;
 import de.rwth.idsg.bikeman.psinterface.dto.request.*;
 import de.rwth.idsg.bikeman.psinterface.dto.response.AuthorizeConfirmationDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.response.AvailablePedelecDTO;
@@ -66,7 +67,18 @@ public class PsiService {
             throw new PsException("Card is not operational!", PsErrorCode.CONSTRAINT_FAILED);
         }
 
-        return new AuthorizeConfirmationDTO(cardAccount.getCardId());
+        // check if still one transaction is open
+        List<Transaction> openTransactions = transactionRepository.findOpenByCardId(customerAuthorizeDTO.getCardId());
+
+        // default
+        AccountState accountState = AccountState.HAS_NO_PEDELEC;
+
+        if (openTransactions != null && !openTransactions.isEmpty()) {
+            // card still in open transaction
+            accountState = AccountState.HAS_PEDELEC;
+        }
+
+        return new AuthorizeConfirmationDTO(cardAccount.getCardId(), accountState);
     }
 
     public void handleStartTransaction(StartTransactionDTO startTransactionDTO) throws DatabaseException {

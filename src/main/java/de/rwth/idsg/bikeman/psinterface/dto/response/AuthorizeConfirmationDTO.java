@@ -1,5 +1,6 @@
 package de.rwth.idsg.bikeman.psinterface.dto.response;
 
+import de.rwth.idsg.bikeman.psinterface.dto.AccountState;
 import lombok.Data;
 
 /**
@@ -9,4 +10,5 @@ import lombok.Data;
 @Data
 public class AuthorizeConfirmationDTO {
     private final String cardId;
+    private final AccountState accountState;
 }

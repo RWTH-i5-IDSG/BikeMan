@@ -12,9 +12,6 @@ import java.util.List;
  * Spring Data JPA repository for the Transaction entity.
  */
 public interface TransactionRepository {
-//
-//    @Query("select t from Transaction t where t.pedelec = :pedelec and t.toSlot = null")
-//    Transaction findLastTransactionByPedelecId(@Param("pedelec") Pedelec pedelec);
 
     /*
     * Find ALL transactions.
@@ -74,9 +71,14 @@ public interface TransactionRepository {
     */
     Transaction findOpenByPedelecId(Long pedelecId);
 
-//    Transaction findOpenCustomerTransactionsByPedelecId(Long pedelecId);
-//
-//    Transaction findOpenMajorCustomerTransactionsByPedelecId(Long pedelecId);
+    /*
+    * Find the OPEN (ONGOING) transactions for ONE card account.
+    *
+    * Important: This is for internal use to authorize a customer, and NOT for the Web UI
+    */
+    List<Transaction> findOpenByCardId(String cardId);
+
+
 
     /*
     *

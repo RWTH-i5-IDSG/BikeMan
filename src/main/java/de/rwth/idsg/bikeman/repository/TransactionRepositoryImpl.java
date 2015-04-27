@@ -107,9 +107,9 @@ public class TransactionRepositoryImpl implements TransactionRepository {
     public List<ViewTransactionDTO> findByPedelecId(Long pedelecId, Integer resultSize) throws DatabaseException {
         CriteriaBuilder builder = em.getCriteriaBuilder();
         return setResultSizeAndGet(
-                em.createQuery(getCustomerTransactionQuery(builder, FindType.BY_PEDELEC_ID, pedelecId, null)),
-                em.createQuery(getMajorCustomerTransactionQuery(builder, FindType.BY_PEDELEC_ID, pedelecId, null)),
-                resultSize
+            em.createQuery(getCustomerTransactionQuery(builder, FindType.BY_PEDELEC_ID, pedelecId, null)),
+            em.createQuery(getMajorCustomerTransactionQuery(builder, FindType.BY_PEDELEC_ID, pedelecId, null)),
+            resultSize
         );
     }
 
@@ -173,6 +173,20 @@ public class TransactionRepositoryImpl implements TransactionRepository {
     public Transaction findOpenByPedelecId(Long pedelecId) {
         // TODO
         return null;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Transaction> findOpenByCardId(String cardId) {
+
+        final String query = "SELECT t FROM Transaction t " +
+            "WHERE t.cardAccount.cardId = :cardId AND t.endDateTime IS NULL AND t.toSlot IS NULL";
+
+        List<Transaction> transactions = em.createQuery(query, Transaction.class)
+            .setParameter("cardId", cardId)
+            .getResultList();
+
+        return transactions;
     }
 
     @Override

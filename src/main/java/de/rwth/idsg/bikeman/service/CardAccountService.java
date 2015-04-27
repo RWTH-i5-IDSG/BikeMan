@@ -2,6 +2,7 @@ package de.rwth.idsg.bikeman.service;
 
 import com.google.common.base.Optional;
 import de.rwth.idsg.bikeman.domain.*;
+import de.rwth.idsg.bikeman.psinterface.dto.AccountState;
 import de.rwth.idsg.bikeman.psinterface.dto.request.CardActivationDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.response.AuthorizeConfirmationDTO;
 import de.rwth.idsg.bikeman.repository.CardAccountRepository;
@@ -47,7 +48,7 @@ public class CardAccountService {
         cardAccount.setCardPin(cardActivationDTO.getCardPin());
         cardAccountRepository.save(cardAccount);
 
-        AuthorizeConfirmationDTO dto = new AuthorizeConfirmationDTO(cardAccount.getCardId());
+        AuthorizeConfirmationDTO dto = new AuthorizeConfirmationDTO(cardAccount.getCardId(), AccountState.HAS_NO_PEDELEC);
         return Optional.of(dto);
     }
 
