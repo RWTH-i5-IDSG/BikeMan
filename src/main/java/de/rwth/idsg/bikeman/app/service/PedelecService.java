@@ -1,12 +1,17 @@
 package de.rwth.idsg.bikeman.app.service;
 
 import de.rwth.idsg.bikeman.app.dto.ViewPedelecSlotDTO;
+import de.rwth.idsg.bikeman.app.exception.AppErrorCode;
+import de.rwth.idsg.bikeman.app.exception.AppException;
 import de.rwth.idsg.bikeman.domain.Pedelec;
 import de.rwth.idsg.bikeman.app.repository.PedelecRepository;
+import de.rwth.idsg.bikeman.domain.Station;
+import de.rwth.idsg.bikeman.repository.StationRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.NoResultException;
 import java.util.List;
 
 @Service("PedelecServiceApp")
@@ -16,7 +21,16 @@ public class PedelecService {
     @Autowired
     private PedelecRepository pedelecRepository;
 
+    @Autowired
+    private StationRepository stationRepository;
+
     public ViewPedelecSlotDTO getRecommendedPedelec(Long stationId) {
+        try {
+            stationRepository.findOne(stationId);
+        } catch (NoResultException e) {
+            throw new AppException("Station not found!", AppErrorCode.CONSTRAINT_FAILED);
+        }
+
         List<Pedelec> pedelecs =  pedelecRepository.findAvailablePedelecs(stationId);
 
         if (pedelecs.isEmpty()) {
@@ -31,6 +45,24 @@ public class PedelecService {
                 .stationSlotPosition(pedelec.getStationSlot().getStationSlotPosition())
                 .build();
 
+    }
+
+    public Pedelec getRecommendedPedelecForBooking(Long stationId) {
+        try {
+            stationRepository.findOne(stationId);
+        } catch (NoResultException e) {
+            throw new AppException("Station not found!", AppErrorCode.CONSTRAINT_FAILED);
+        }
+
+        List<Pedelec> pedelecs = pedelecRepository.findAvailablePedelecs(stationId);
+
+        if (pedelecs.isEmpty()) {
+            return null;
+        }
+
+        // TODO: currently the pedelec with max. SOC is selected --> switch to e.g. the third fullest, cause there is
+        // still some time (15min) left to charge it
+        return pedelecs.get(0);
     }
 
 }

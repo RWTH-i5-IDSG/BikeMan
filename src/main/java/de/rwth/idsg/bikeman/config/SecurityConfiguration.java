@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.data.repository.query.spi.EvaluationContextExtension;
 import org.springframework.data.repository.query.spi.EvaluationContextExtensionSupport;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.access.expression.SecurityExpressionRoot;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -19,6 +20,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.RememberMeServices;
+import org.springframework.security.web.header.writers.XXssProtectionHeaderWriter;
 
 import javax.inject.Inject;
 
@@ -76,14 +78,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                //.addFilterAfter(new CsrfCookieGeneratorFilter(), CsrfFilter.class)
-                .exceptionHandling()
+            //.addFilterAfter(new CsrfCookieGeneratorFilter(), CsrfFilter.class)
+            .exceptionHandling()
                 .authenticationEntryPoint(authenticationEntryPoint)
-                .and()
+            .and()
                 .rememberMe()
                 .rememberMeServices(rememberMeServices)
                 .key(env.getProperty("jhipster.security.rememberme.key"))
-                .and()
+            .and()
                 .formLogin()
                 .loginProcessingUrl("/api/authentication")
                 .successHandler(ajaxAuthenticationSuccessHandler)
@@ -91,19 +93,19 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .usernameParameter("j_username")
                 .passwordParameter("j_password")
                 .permitAll()
-                .and()
+            .and()
                 .logout()
                 .logoutUrl("/api/logout")
                 .logoutSuccessHandler(ajaxLogoutSuccessHandler)
                 .deleteCookies("JSESSIONID")
                 .permitAll()
-                .and()
+            .and()
                 .csrf()
                 .disable()
-                .headers()
+            .headers()
                 .frameOptions()
                 .disable()
-                .authorizeRequests()
+            .authorizeRequests()
                 .antMatchers("/api/register").permitAll()
                 .antMatchers("/api/activate").permitAll()
                 .antMatchers("/api/authenticate").permitAll()
@@ -129,7 +131,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/cardaccount/**").hasAnyAuthority(AuthoritiesConstants.MAJOR_CUSTOMER, AuthoritiesConstants.MANAGER)
                 .antMatchers("/app/stations*").permitAll()
                 .antMatchers("/app/stations/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/customer").permitAll()
                 .antMatchers("/app/**").authenticated()
+                .antMatchers("/app*").authenticated()
                 .antMatchers("/metrics/**").hasAuthority(AuthoritiesConstants.ADMIN)
                 .antMatchers("/health/**").hasAuthority(AuthoritiesConstants.ADMIN)
                 .antMatchers("/trace/**").hasAuthority(AuthoritiesConstants.ADMIN)

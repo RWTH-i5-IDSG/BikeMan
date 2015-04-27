@@ -60,6 +60,9 @@ public class PsiController {
         log.debug("[From: {}] Received bootNotification", Utils.getFrom(request));
 
         return psiService.handleBootNotification(bootNotificationDTO, Utils.getFrom(request));
+        //return psiService.handleBootNotification(bootNotificationDTO,
+        //    "http://" + request.getRemoteAddr() + ":8081/" + bootNotificationDTO.getStationManufacturerId()
+        //);
     }
 
     @RequestMapping(value = HEARTBEAT_PATH, method = RequestMethod.GET)

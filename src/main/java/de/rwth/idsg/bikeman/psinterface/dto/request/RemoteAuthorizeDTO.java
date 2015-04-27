@@ -1,4 +1,4 @@
-package de.rwth.idsg.bikeman.app.dto;
+package de.rwth.idsg.bikeman.psinterface.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

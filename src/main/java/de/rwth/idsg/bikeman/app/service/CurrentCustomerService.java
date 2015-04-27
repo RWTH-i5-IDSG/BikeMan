@@ -3,9 +3,11 @@ package de.rwth.idsg.bikeman.app.service;
 import de.rwth.idsg.bikeman.app.dto.ChangeTariffDTO;
 import de.rwth.idsg.bikeman.app.dto.ViewBookedTariffDTO;
 import de.rwth.idsg.bikeman.app.dto.ViewCustomerDTO;
+import de.rwth.idsg.bikeman.app.dto.ViewTransactionDTO;
 import de.rwth.idsg.bikeman.app.exception.AppErrorCode;
 import de.rwth.idsg.bikeman.app.exception.AppException;
 import de.rwth.idsg.bikeman.app.repository.CustomerRepository;
+import de.rwth.idsg.bikeman.app.repository.TransactionRepository;
 import de.rwth.idsg.bikeman.domain.*;
 import de.rwth.idsg.bikeman.repository.TariffRepository;
 import de.rwth.idsg.bikeman.service.UserService;
@@ -14,8 +16,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.joda.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
+import java.util.List;
 
 
 @Service
@@ -31,9 +34,22 @@ public class CurrentCustomerService {
     @Autowired
     private TariffRepository tariffRepository;
 
+    @Autowired
+    private TransactionRepository transactionRepository;
+
     public ViewCustomerDTO get() throws DatabaseException {
         return customerRepository.findOne(
                 userService.getUserWithAuthorities().getUserId());
+    }
+
+    @Transactional(readOnly = true)
+    public List<ViewTransactionDTO> getClosedTransactions() throws DatabaseException {
+        return transactionRepository.findAllByCustomer(this.getCurrentCustomer());
+    }
+
+    @Transactional(readOnly = true)
+    public ViewTransactionDTO getOpenTransaction() throws DatabaseException {
+        return transactionRepository.findOpenByCustomer(this.getCurrentCustomer());
     }
 
     public ViewBookedTariffDTO getTariff() {
@@ -78,6 +94,7 @@ public class CurrentCustomerService {
 
         updateBookedTariff.setTariff(tariffRepository.findByTariffId(dto.getTariffId()));
         customer.getCardAccount().setCurrentTariff(updateBookedTariff);
+        this.enableAutomaticRenewal();
 
 	    return dto;
     }

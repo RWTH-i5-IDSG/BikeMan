@@ -1,11 +1,11 @@
 package de.rwth.idsg.bikeman.app.resource;
 
 import com.codahale.metrics.annotation.Timed;
-import de.rwth.idsg.bikeman.app.dto.PedelecRentalDTO;
 import de.rwth.idsg.bikeman.app.dto.ViewPedelecSlotDTO;
 import de.rwth.idsg.bikeman.app.dto.ViewStationDTO;
 import de.rwth.idsg.bikeman.app.dto.ViewStationSlotsDTO;
 import de.rwth.idsg.bikeman.app.exception.AppException;
+import de.rwth.idsg.bikeman.app.service.BookingService;
 import de.rwth.idsg.bikeman.app.service.CurrentCustomerService;
 import de.rwth.idsg.bikeman.app.service.PedelecService;
 import de.rwth.idsg.bikeman.app.service.StationService;
@@ -31,13 +31,16 @@ public class StationResource {
     private PedelecService pedelecService;
 
     @Autowired
+    private BookingService bookingService;
+
+    @Autowired
     private CurrentCustomerService currentCustomerService;
 
     private static final String BASE_PATH = "/stations";
     private static final String ID_PATH = "/stations/{id}";
     private static final String SLOT_PATH = "/stations/{id}/slots";
     private static final String RECOMMEND_PATH = "/stations/{id}/recommended-pedelec";
-    private static final String RENTAL_PATH = "/stations/{id}/rental";
+    private static final String RENTAL_PATH = "/stations/{stationId}/rent/{stationSlotId}";
 
     @Timed
     @RequestMapping(value = BASE_PATH, method = RequestMethod.GET)
@@ -64,6 +67,12 @@ public class StationResource {
     @RequestMapping(value = RECOMMEND_PATH, method = RequestMethod.GET)
     public ViewPedelecSlotDTO getRecommendedPedelec(@PathVariable Long id, HttpServletResponse response) throws AppException {
         log.debug("REST request to get a suggestion for renting a pedelec");
+
+        ViewPedelecSlotDTO reservation = bookingService.getSlot(currentCustomerService.getCurrentCustomer());
+        if (reservation != null) {
+            return reservation;
+        }
+
         ViewPedelecSlotDTO result = pedelecService.getRecommendedPedelec(id);
 
         if (result == null) {
@@ -74,16 +83,21 @@ public class StationResource {
     }
 
     @Timed
-    @RequestMapping(value = RENTAL_PATH, method = RequestMethod.POST)
-    public ViewPedelecSlotDTO rentPedelec(@PathVariable Long id, @Valid @RequestBody PedelecRentalDTO dto) {
+    @RequestMapping(value = RENTAL_PATH, method = RequestMethod.GET)
+    public ViewPedelecSlotDTO rentPedelec(@PathVariable Long stationId,
+                                          @PathVariable Long stationSlotId,
+                                          HttpServletResponse response) {
         log.debug("REST request to remotely rent a pedelec.");
 
-
         ViewPedelecSlotDTO result = stationService.authorizeRemote(
-                id,
-                dto.getStationSlotId(),
+                stationId,
+                stationSlotId,
                 currentCustomerService.getCurrentCustomer()
         );
+
+        if (result == null) {
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+        }
 
         return result;
     }

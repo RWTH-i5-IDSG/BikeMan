@@ -3,6 +3,7 @@ package de.rwth.idsg.bikeman.repository;
 import de.rwth.idsg.bikeman.domain.Reservation;
 import org.joda.time.LocalDateTime;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -30,4 +31,12 @@ public interface ReservationRepository extends JpaRepository<Reservation, String
                            @Param("pedelecId") long pedelecId,
                            @Param("startTime") LocalDateTime startTime);
 
+    @Query("SELECT r FROM Reservation r WHERE r.cardAccount.cardAccountId = :cardAccountID AND (r.startDateTime <= :dateTime AND r.endDateTime >= :dateTime)")
+    public Reservation findByCustomerIdAndTime (@Param("cardAccountID") long cardAccountId,
+                                                @Param("dateTime") LocalDateTime dateTime);
+
+    @Modifying
+    @Query("UPDATE Reservation r SET r.endDateTime = :dateTime WHERE r.reservationId = :reservationId")
+    public void updateEndDateTime(@Param("reservationId") long reservationId,
+                                  @Param("dateTime") LocalDateTime dateTime);
 }

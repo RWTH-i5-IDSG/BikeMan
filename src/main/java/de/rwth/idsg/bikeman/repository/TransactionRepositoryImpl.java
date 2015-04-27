@@ -13,6 +13,7 @@ import de.rwth.idsg.bikeman.psinterface.dto.request.StartTransactionDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.StopTransactionDTO;
 import de.rwth.idsg.bikeman.psinterface.exception.PsErrorCode;
 import de.rwth.idsg.bikeman.psinterface.exception.PsException;
+import de.rwth.idsg.bikeman.service.TariffService;
 import de.rwth.idsg.bikeman.web.rest.dto.view.ViewTransactionDTO;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +21,7 @@ import org.joda.time.LocalDateTime;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
@@ -41,6 +43,8 @@ public class TransactionRepositoryImpl implements TransactionRepository {
     private enum FindType { ALL, CLOSED, BY_PEDELEC_ID, BY_LOGIN }
 
     @PersistenceContext private EntityManager em;
+
+    @Inject private TariffService tariffService;
 
     @Override
     @Transactional(readOnly = true)
@@ -290,6 +294,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         Long timestampInMillis = Utils.toMillis(dto.getTimestamp());
         transaction.setEndDateTime(new LocalDateTime(timestampInMillis));
         transaction.setToSlot(slot);
+        transaction.setFees(tariffService.calculatePrice(transaction));
         Transaction mergedTransaction = em.merge(transaction);
 
         // -------------------------------------------------------------------------

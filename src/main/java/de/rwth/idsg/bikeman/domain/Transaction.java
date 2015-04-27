@@ -11,6 +11,7 @@ import org.joda.time.LocalDateTime;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 
 @Entity
@@ -60,5 +61,8 @@ public class Transaction implements Serializable {
     @ManyToOne
     @JoinColumn(name = "booked_tariff_id")
     private BookedTariff bookedTariff;
+
+    @Column(name = "fees")
+    private BigDecimal fees;
 
 }

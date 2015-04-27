@@ -1,14 +1,14 @@
 package de.rwth.idsg.bikeman.app.resource;
 
 import com.codahale.metrics.annotation.Timed;
+import com.fasterxml.jackson.annotation.JsonView;
 import de.rwth.idsg.bikeman.app.dto.ChangeTariffDTO;
+import de.rwth.idsg.bikeman.app.dto.CreateCustomerDTO;
 import de.rwth.idsg.bikeman.app.dto.ViewBookedTariffDTO;
 import de.rwth.idsg.bikeman.app.dto.ViewCustomerDTO;
 import de.rwth.idsg.bikeman.app.exception.AppException;
+import de.rwth.idsg.bikeman.app.repository.CustomerRepository;
 import de.rwth.idsg.bikeman.app.service.CurrentCustomerService;
-import de.rwth.idsg.bikeman.domain.BookedTariff;
-import de.rwth.idsg.bikeman.domain.Customer;
-import de.rwth.idsg.bikeman.domain.User;
 import de.rwth.idsg.bikeman.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +31,8 @@ public class CustomerResource {
     @Autowired
     private CurrentCustomerService currentCustomerService;
 
-    @Inject
-    private UserService userService;
+    @Autowired
+    private CustomerRepository customerRepository;
 
     private static final String BASE_PATH = "/customer";
     private static final String TARIFF_PATH = "/customer/tariff";
@@ -53,10 +53,11 @@ public class CustomerResource {
     }
 
     @Timed
+    @JsonView(CreateCustomerDTO.View.class)
     @RequestMapping(value = BASE_PATH, method = RequestMethod.POST)
-    public String create() throws AppException {
+    public CreateCustomerDTO create(@Valid @RequestBody CreateCustomerDTO dto) throws AppException {
         log.debug("REST request to create customer");
-        return "TODO";
+        return customerRepository.create(dto);
     }
 
     @Timed
