@@ -97,7 +97,13 @@
             <xs:enumeration value="operative"/>
             <xs:enumeration value="deleted"/>
         </xsl:copy>
+    </xsl:template>
 
+    <xsl:template match="/xs:schema/xs:simpleType[@name='UserFeatureClassType']/xs:restriction">
+        <xsl:copy>
+            <xsl:apply-templates select="@*|node()"/>
+            <xs:enumeration value="rfid_card_pin"/>
+        </xsl:copy>
     </xsl:template>
 
 </xsl:stylesheet>
