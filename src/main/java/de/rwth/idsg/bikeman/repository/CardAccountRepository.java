@@ -9,12 +9,16 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 
 /**
  * Created by swam on 16/10/14.
  */
 public interface CardAccountRepository extends JpaRepository<CardAccount, Long> {
+
+    @Query("select c from CardAccount c, MajorCustomer mc where c.cardId = :cardId and c.user = mc and mc.name = :majorName")
+    Optional<CardAccount> findByCardIdAndMajorCustomerName(String cardId, String majorName);
 
     CardAccount findByCardIdAndCardPin(String cardId, String cardPin);
 

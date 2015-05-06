@@ -1,5 +1,6 @@
 package de.rwth.idsg.bikeman.repository;
 
+import de.rwth.idsg.bikeman.domain.MajorCustomer;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditMajorCustomerDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.view.ViewMajorCustomerDTO;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
@@ -23,6 +24,8 @@ public interface MajorCustomerRepository {
      * Login (aka email) field of each majorcustomer is unique
      */
     ViewMajorCustomerDTO findByLogin(String login) throws DatabaseException;
+
+    MajorCustomer findByName(String name) throws DatabaseException;
 
     void create(CreateEditMajorCustomerDTO dto) throws DatabaseException;
 

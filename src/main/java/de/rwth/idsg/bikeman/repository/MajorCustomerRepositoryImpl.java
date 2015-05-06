@@ -1,9 +1,11 @@
 package de.rwth.idsg.bikeman.repository;
 
-import de.rwth.idsg.bikeman.domain.*;
 import de.rwth.idsg.bikeman.domain.Authority;
+import de.rwth.idsg.bikeman.domain.BookedTariff;
 import de.rwth.idsg.bikeman.domain.BookedTariff_;
+import de.rwth.idsg.bikeman.domain.CardAccount;
 import de.rwth.idsg.bikeman.domain.CardAccount_;
+import de.rwth.idsg.bikeman.domain.MajorCustomer;
 import de.rwth.idsg.bikeman.domain.MajorCustomer_;
 import de.rwth.idsg.bikeman.domain.Tariff_;
 import de.rwth.idsg.bikeman.domain.User_;
@@ -20,11 +22,17 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.inject.Inject;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Root;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by swam on 16/10/14.
@@ -149,6 +157,19 @@ public class MajorCustomerRepositoryImpl implements MajorCustomerRepository {
         }
 
         return majorCustomerDTO;
+    }
+
+
+    @Override
+    public MajorCustomer findByName(String name) throws DatabaseException {
+        final String query = "select mc from MajorCustomer mc where mc.name = :name";
+        try {
+            return em.createQuery(query, MajorCustomer.class)
+                .setParameter("name", name)
+                .getSingleResult();
+        } catch (NoResultException e) {
+            throw new DatabaseException("Could not find majorCustomer for specified name.", e);
+        }
     }
 
     @Override
