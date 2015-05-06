@@ -501,7 +501,7 @@
                 <xs:annotation>
                         <xs:documentation>Enumeration for user attribute classes.</xs:documentation>
                 </xs:annotation>
-                <xs:restriction base="xs:token"><xs:enumeration value="rfid_card_pin"/></xs:restriction>
+                <xs:restriction base="xs:token"><xs:enumeration value="rfid_card_pin"/><xs:enumeration value="major_customer_name"/></xs:restriction>
         </xs:simpleType>
         <xs:complexType name="UserFeatureType">
                 <xs:annotation>

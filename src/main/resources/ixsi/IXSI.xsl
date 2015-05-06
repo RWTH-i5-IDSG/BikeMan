@@ -103,6 +103,7 @@
         <xsl:copy>
             <xsl:apply-templates select="@*|node()"/>
             <xs:enumeration value="rfid_card_pin"/>
+            <xs:enumeration value="major_customer_name"/>
         </xsl:copy>
     </xsl:template>
 
