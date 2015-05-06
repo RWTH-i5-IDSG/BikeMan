@@ -24,12 +24,10 @@
 
         <!-- annotate classes to generate utility functions -->
 
-        <jaxb:bindings node="xs:complexType[@name='UserInfoType']">
-            <annox:annotateClass>@lombok.EqualsAndHashCode</annox:annotateClass>
-            <annox:annotateClass>@lombok.ToString</annox:annotateClass>
-        </jaxb:bindings>
-
-        <jaxb:bindings node="xs:complexType[@name='BookingTargetIDType']">
+        <jaxb:bindings multiple="true" node="xs:complexType[
+        @name='BookingTargetIDType' or
+        @name='ProviderPlaceIDType' or
+        @name='UserInfoType']">
             <annox:annotateClass>@lombok.EqualsAndHashCode</annox:annotateClass>
             <annox:annotateClass>@lombok.ToString</annox:annotateClass>
         </jaxb:bindings>
@@ -186,7 +184,9 @@
         @name='PriceInformationRequestType' or
         @name='BookingRequestType' or
         @name='ChangeBookingRequestType' or
-        @name='BookingUnlockRequestType']">
+        @name='BookingUnlockRequestType' or
+        @name='CreateUserRequestType' or
+        @name='ChangeUserRequestType']">
             <inheritance:implements>de.rwth.idsg.ixsi.jaxb.UserTriggeredRequestChoice</inheritance:implements>
         </jaxb:bindings>
 
@@ -199,7 +199,9 @@
         @name='PriceInformationResponseType' or
         @name='BookingResponseType' or
         @name='ChangeBookingResponseType' or
-        @name='BookingUnlockResponseType']">
+        @name='BookingUnlockResponseType' or
+        @name='CreateUserResponseType' or
+        @name='ChangeUserResponseType']">
             <inheritance:implements>de.rwth.idsg.ixsi.jaxb.UserTriggeredResponseChoice</inheritance:implements>
         </jaxb:bindings>
 

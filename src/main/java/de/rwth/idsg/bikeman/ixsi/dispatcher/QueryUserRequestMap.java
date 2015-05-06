@@ -21,24 +21,17 @@ import java.util.HashMap;
 public class QueryUserRequestMap extends HashMap<Class<?>, UserRequestProcessor> {
     private static final long serialVersionUID = -2498351236190286177L;
 
-    @Autowired
-    private OpenSessionRequestProcessor openSessionRequestProcessor;
-    @Autowired
-    private CloseSessionRequestProcessor closeSessionRequestProcessor;
-    @Autowired
-    private TokenGenerationRequestProcessor tokenGenerationRequestProcessor;
-    @Autowired
-    private AvailabilityRequestProcessor availabilityRequestProcessor;
-    @Autowired
-    private PlaceAvailabilityRequestProcessor placeAvailabilityRequestProcessor;
-    @Autowired
-    private PriceInformationRequestProcessor priceInformationRequestProcessor;
-    @Autowired
-    private BookingRequestProcessor bookingRequestProcessor;
-    @Autowired
-    private ChangeBookingRequestProcessor changeBookingRequestProcessor;
-    @Autowired
-    private BookingUnlockRequestProcessor bookingUnlockRequestProcessor;
+    @Autowired private OpenSessionRequestProcessor openSessionRequestProcessor;
+    @Autowired private CloseSessionRequestProcessor closeSessionRequestProcessor;
+    @Autowired private TokenGenerationRequestProcessor tokenGenerationRequestProcessor;
+    @Autowired private AvailabilityRequestProcessor availabilityRequestProcessor;
+    @Autowired private PlaceAvailabilityRequestProcessor placeAvailabilityRequestProcessor;
+    @Autowired private PriceInformationRequestProcessor priceInformationRequestProcessor;
+    @Autowired private BookingRequestProcessor bookingRequestProcessor;
+    @Autowired private ChangeBookingRequestProcessor changeBookingRequestProcessor;
+    @Autowired private BookingUnlockRequestProcessor bookingUnlockRequestProcessor;
+    @Autowired private CreateUserRequestProcessor createUserRequestProcessor;
+    @Autowired private ChangeUserRequestProcessor changeUserRequestProcessor;
 
     @PostConstruct
     public void init() {
@@ -51,6 +44,8 @@ public class QueryUserRequestMap extends HashMap<Class<?>, UserRequestProcessor>
         super.put(BookingRequestType.class, bookingRequestProcessor);
         super.put(ChangeBookingRequestType.class, changeBookingRequestProcessor);
         super.put(BookingUnlockRequestType.class, bookingUnlockRequestProcessor);
+        super.put(CreateUserRequestType.class, createUserRequestProcessor);
+        super.put(ChangeUserRequestType.class, changeUserRequestProcessor);
         log.trace("Ready");
     }
 

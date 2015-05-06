@@ -90,5 +90,14 @@
         </xsl:copy>
     </xsl:template>
 
+    <xsl:template match="/xs:schema/xs:simpleType[@name='UserStateType']/xs:restriction">
+        <xsl:copy>
+            <xsl:apply-templates select="@*|node()"/>
+            <xs:enumeration value="inoperative"/>
+            <xs:enumeration value="operative"/>
+            <xs:enumeration value="deleted"/>
+        </xsl:copy>
+
+    </xsl:template>
 
 </xsl:stylesheet>

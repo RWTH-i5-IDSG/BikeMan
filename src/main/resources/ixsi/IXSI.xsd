@@ -441,6 +441,12 @@
 		</xs:annotation>
 		<xs:restriction base="xs:token"/>
 	</xs:simpleType>
+	<xs:simpleType name="UserStateType">
+		<xs:annotation>
+			<xs:documentation>Enumeration for user states.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:token"/>
+	</xs:simpleType>
 	<xs:simpleType name="AttributeIDType">
 		<xs:annotation>
 			<xs:documentation>Enumeration for attribute codes.</xs:documentation>
@@ -1105,6 +1111,11 @@
 			<xs:element name="ID" type="UserInfoType">
 				<xs:annotation>
 					<xs:documentation>UserID and ProviderID for identification, can also contain credentials.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="State" type="UserStateType">
+				<xs:annotation>
+					<xs:documentation>State of the (e.g., default, banned etc).</xs:documentation>
 				</xs:annotation>
 			</xs:element>
 			<xs:element name="Info" type="InfoType" minOccurs="0" maxOccurs="unbounded">
@@ -1937,23 +1948,23 @@
 			<xs:documentation>Request for creating a user (deleting is intentionally not supported, only locking).</xs:documentation>
 		</xs:annotation>
 		<xs:sequence>
-			<xs:element name="User" type="UserType">
+			<xs:element name="User" type="UserType" maxOccurs="unbounded">
 				<xs:annotation>
-					<xs:documentation>Proposed User info (duplicated UserIDs will be changed).</xs:documentation>
+					<xs:documentation>Proposed User info.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="CreateUserResponseType">
 		<xs:annotation>
-			<xs:documentation>Response for creating a user.</xs:documentation>
+			<xs:documentation>Response for creating users.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="AbstractBaseResponseType">
 				<xs:sequence>
-					<xs:element name="User" type="UserType">
+					<xs:element name="User" type="UserType" minOccurs="0" maxOccurs="unbounded">
 						<xs:annotation>
-							<xs:documentation>Information about a successful created user (might differ).</xs:documentation>
+							<xs:documentation>Information about a successful created user (might differ, unsuccessful creation attempts are not returned).</xs:documentation>
 						</xs:annotation>
 					</xs:element>
 				</xs:sequence>
@@ -1962,26 +1973,14 @@
 	</xs:complexType>
 	<xs:complexType name="ChangeUserRequestType">
 		<xs:annotation>
-			<xs:documentation>Request for changing a user.</xs:documentation>
+			<xs:documentation>Request for changing users.</xs:documentation>
 		</xs:annotation>
 		<xs:sequence>
-			<xs:element name="UserInfoType" type="UserInfoType">
+			<xs:element name="User" type="UserType" maxOccurs="unbounded">
 				<xs:annotation>
-					<xs:documentation>User to change.</xs:documentation>
+					<xs:documentation>changed user info.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:choice>
-				<xs:element name="NewInfo" type="InfoType" minOccurs="0" maxOccurs="unbounded">
-					<xs:annotation>
-						<xs:documentation>Additional information on this user. All previous Infos are overwritten.</xs:documentation>
-					</xs:annotation>
-				</xs:element>
-				<xs:element name="Ban" type="xs:boolean">
-					<xs:annotation>
-						<xs:documentation>The User shall be suspended/unsuspended.</xs:documentation>
-					</xs:annotation>
-				</xs:element>
-			</xs:choice>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="ChangeUserResponseType">
@@ -1991,9 +1990,9 @@
 		<xs:complexContent>
 			<xs:extension base="AbstractBaseResponseType">
 				<xs:sequence>
-					<xs:element name="User" type="UserType" minOccurs="0">
+					<xs:element name="User" type="UserType" minOccurs="0" maxOccurs="unbounded">
 						<xs:annotation>
-							<xs:documentation>Information on changed user.</xs:documentation>
+							<xs:documentation>Information on changed user (unsuccessful changes are not returned).</xs:documentation>
 						</xs:annotation>
 					</xs:element>
 				</xs:sequence>
