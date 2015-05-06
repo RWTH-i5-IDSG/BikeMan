@@ -15,4 +15,5 @@ public interface BookingRepository {
     Booking findByReservation(Reservation reservation);
     List<Booking> findClosedBookings(List<String> ixsiBookingIdList);
     Booking findOne(Long id);
+    Booking findByIxsiBookingId(String ixsiBookingId);
 }

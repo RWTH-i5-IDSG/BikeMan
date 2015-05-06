@@ -1,9 +1,15 @@
 package de.rwth.idsg.bikeman.ixsi.processor.query.user;
 
 import com.google.common.base.Optional;
+import de.rwth.idsg.bikeman.domain.Booking;
+import de.rwth.idsg.bikeman.domain.Pedelec;
 import de.rwth.idsg.bikeman.ixsi.processor.api.UserRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.schema.*;
+import de.rwth.idsg.bikeman.psinterface.rest.client.StationClient;
+import de.rwth.idsg.bikeman.repository.BookingRepository;
+import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -15,7 +21,13 @@ import java.util.List;
 @Slf4j
 @Component
 public class BookingUnlockRequestProcessor implements
-        UserRequestProcessor<BookingUnlockRequestType, BookingUnlockResponseType> {
+    UserRequestProcessor<BookingUnlockRequestType, BookingUnlockResponseType> {
+
+    @Autowired
+    private BookingRepository bookingRepository;
+
+    @Autowired
+    private StationClient stationClient;
 
     @Override
     public BookingUnlockResponseType processAnonymously(BookingUnlockRequestType request, Optional<Language> lan) {
@@ -28,7 +40,21 @@ public class BookingUnlockRequestProcessor implements
     @Override
     public BookingUnlockResponseType processForUser(BookingUnlockRequestType request, Optional<Language> lan,
                                                     List<UserInfoType> userInfoList) {
-        return null;
+
+        try {
+            Booking booking = bookingRepository.findByIxsiBookingId(request.getBookingID());
+
+            Pedelec pedelec = booking.getReservation().getPedelec();
+            Integer stationSlotPosition = pedelec.getStationSlot().getStationSlotPosition();
+            String endpointAddress = pedelec.getStationSlot().getStation().getEndpointAddress();
+
+            stationClient.unlockSlot(stationSlotPosition, endpointAddress);
+        } catch (DatabaseException ex) {
+
+        }
+
+
+        return new BookingUnlockResponseType();
     }
 
     // -------------------------------------------------------------------------

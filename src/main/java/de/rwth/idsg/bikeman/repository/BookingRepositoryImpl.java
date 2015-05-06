@@ -85,4 +85,14 @@ public class BookingRepositoryImpl implements BookingRepository {
             .getSingleResult();
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public Booking findByIxsiBookingId(String ixsiBookingId) {
+        final String query = "SELECT b FROM Booking b WHERE b.ixsiBookingId = :ixsiBookingId";
+
+        return em.createQuery(query, Booking.class)
+            .setParameter("ixsiBookingId", ixsiBookingId)
+            .getSingleResult();
+    }
+
 }

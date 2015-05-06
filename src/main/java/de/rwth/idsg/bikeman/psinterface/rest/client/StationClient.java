@@ -97,7 +97,7 @@ public class StationClient {
         // TODO: Handle status codes
     }
 
-    public void unlockSlot(Long slotPosition, String endpointAddress) {
+    public void unlockSlot(Integer slotPosition, String endpointAddress) {
         String uri = endpointAddress + UNLOCK_SLOT_PATH;
 
 //        HttpHeaders headers = new HttpHeaders();
