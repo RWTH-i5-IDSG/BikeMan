@@ -10,8 +10,7 @@ import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
 import de.rwth.idsg.bikeman.ixsi.schema.Language;
 import de.rwth.idsg.bikeman.ixsi.schema.UserInfoType;
 import de.rwth.idsg.bikeman.ixsi.schema.UserType;
-import de.rwth.idsg.bikeman.ixsi.service.UserService;
-import de.rwth.idsg.bikeman.service.CardAccountService;
+import de.rwth.idsg.bikeman.ixsi.service.IxsiUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -28,7 +27,7 @@ public class ChangeUserRequestProcessor implements
         UserRequestProcessor<ChangeUserRequestType, ChangeUserResponseType> {
 
     @Autowired
-    UserService userService;
+    IxsiUserService ixsiUserService;
     @Autowired
     TokenValidator tokenValidator;
 
@@ -57,7 +56,7 @@ public class ChangeUserRequestProcessor implements
             return buildError(ErrorFactory.invalidRequest("User list may not be empty.", null));
         }
 
-        List<UserType> acceptedUsers = userService.changeUsers(request.getUser());
+        List<UserType> acceptedUsers = ixsiUserService.changeUsers(request.getUser());
         response.getUser().addAll(acceptedUsers);
 
         return response;

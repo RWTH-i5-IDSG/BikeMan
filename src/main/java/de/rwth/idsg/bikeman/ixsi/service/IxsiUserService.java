@@ -21,7 +21,7 @@ import java.util.List;
  */
 @Service
 @Slf4j
-public class UserService {
+public class IxsiUserService {
 
     @Autowired
     CardAccountRepository cardAccountRepository;
