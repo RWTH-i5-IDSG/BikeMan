@@ -22,6 +22,7 @@ import de.rwth.idsg.bikeman.repository.*;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDateTime;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -105,10 +106,12 @@ public class PsiService {
 
         externalBookingPushService.report(booking, t);
 
+        Long timestampInMillis = Utils.toMillis(startTransactionDTO.getTimestamp());
+
         availabilityPushService.takenFromPlace(
             startTransactionDTO.getPedelecManufacturerId(),
             startTransactionDTO.getStationManufacturerId(),
-            new DateTime(startTransactionDTO.getTimestamp()));
+            new DateTime(timestampInMillis));
 
         placeAvailabilityPushService.reportChange(startTransactionDTO.getStationManufacturerId());
     }
