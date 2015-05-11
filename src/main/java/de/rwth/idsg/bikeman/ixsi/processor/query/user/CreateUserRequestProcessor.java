@@ -33,7 +33,16 @@ public class CreateUserRequestProcessor implements
 
     @Override
     public CreateUserResponseType processAnonymously(CreateUserRequestType request, Optional<Language> lan) {
-        return buildError(ErrorFactory.invalidRequest("Anonymous requests not possible.", null));
+        CreateUserResponseType response = new CreateUserResponseType();
+
+        if (!request.isSetUser() || request.getUser().isEmpty()) {
+            return buildError(ErrorFactory.invalidRequest("User list may not be empty.", null));
+        }
+
+        List<UserType> acceptedUsers = ixsiUserService.createUsers(request.getUser());
+        response.getUser().addAll(acceptedUsers);
+
+        return response;
     }
 
     /**

@@ -1,6 +1,7 @@
 package de.rwth.idsg.bikeman.ixsi.service;
 
 import de.rwth.idsg.bikeman.domain.CardAccount;
+import de.rwth.idsg.bikeman.domain.CustomerType;
 import de.rwth.idsg.bikeman.domain.MajorCustomer;
 import de.rwth.idsg.bikeman.domain.OperationState;
 import de.rwth.idsg.bikeman.ixsi.schema.UserFeatureType;
@@ -121,6 +122,7 @@ public class IxsiUserService {
 
         account.setUser(maj);
         account.setCardPin(cardPinValue);
+        account.setOwnerType(CustomerType.MAJOR_CUSTOMER);
 
         String userState = user.getState().value();
         account.setOperationState(OperationState.fromValue(userState));
