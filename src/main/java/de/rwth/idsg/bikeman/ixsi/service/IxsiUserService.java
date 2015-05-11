@@ -65,7 +65,7 @@ public class IxsiUserService {
         CardAccount account = new CardAccount();
         account.setCardId(info.getUserID());
         String userState = user.getState().value();
-        account.setOperationState(OperationState.valueOf(userState));
+        account.setOperationState(OperationState.fromValue(userState));
         account.setCardPin(cardPinValue);
 
         // find corresponding major customer
@@ -123,7 +123,7 @@ public class IxsiUserService {
         account.setCardPin(cardPinValue);
 
         String userState = user.getState().value();
-        account.setOperationState(OperationState.valueOf(userState));
+        account.setOperationState(OperationState.fromValue(userState));
 
         cardAccountRepository.save(account);
         return user;
