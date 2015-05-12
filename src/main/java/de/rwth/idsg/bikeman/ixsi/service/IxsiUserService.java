@@ -4,6 +4,7 @@ import de.rwth.idsg.bikeman.domain.CardAccount;
 import de.rwth.idsg.bikeman.domain.CustomerType;
 import de.rwth.idsg.bikeman.domain.MajorCustomer;
 import de.rwth.idsg.bikeman.domain.OperationState;
+import de.rwth.idsg.bikeman.ixsi.schema.UserFeatureClassType;
 import de.rwth.idsg.bikeman.ixsi.schema.UserFeatureType;
 import de.rwth.idsg.bikeman.ixsi.schema.UserInfoType;
 import de.rwth.idsg.bikeman.ixsi.schema.UserType;
@@ -48,26 +49,15 @@ public class IxsiUserService {
         List<UserFeatureType> features = user.getFeatures();
 
         // extract values from k/v store
-        String cardPinValue = "";
-        String majorCustomerName = "";
-        for (UserFeatureType feat : features) {
-            switch (feat.getClazz()) {
-                case RFID_CARD_PIN: {
-                    cardPinValue = feat.getValue();
-                    break;
-                }
-                case MAJOR_CUSTOMER_NAME: {
-                    majorCustomerName = feat.getValue();
-                    break;
-                }
-            }
-        }
+        String cardPinValue = this.getPin(features);
+        String majorCustomerName = this.getMajorCustomer(features);
 
         CardAccount account = new CardAccount();
         account.setCardId(info.getUserID());
         String userState = user.getState().value();
         account.setOperationState(OperationState.fromValue(userState));
         account.setCardPin(cardPinValue);
+        account.setOwnerType(CustomerType.MAJOR_CUSTOMER);
 
         // find corresponding major customer
         MajorCustomer maj = majorCustomerRepository.findByName(majorCustomerName);
@@ -94,27 +84,15 @@ public class IxsiUserService {
         List<UserFeatureType> features = user.getFeatures();
 
         // extract values from k/v store
-        String cardPinValue = "";
-        String majorCustomerName = "";
-        for (UserFeatureType feat : features) {
-            switch (feat.getClazz()) {
-                case RFID_CARD_PIN: {
-                    cardPinValue = feat.getValue();
-                    break;
-                }
-                case MAJOR_CUSTOMER_NAME: {
-                    majorCustomerName = feat.getValue();
-                    break;
-                }
-            }
-        }
+        String cardPinValue = this.getPin(features);
+        String majorCustomerName = this.getMajorCustomer(features);
 
         // obtain majorCustomer from db
         MajorCustomer maj = majorCustomerRepository.findByName(majorCustomerName);
 
         // obtain cardAccount using mc-name
         CardAccount account = cardAccountRepository.findByCardIdAndMajorCustomerName(info.getUserID(),
-            info.getProviderID()).orElseThrow(() -> new DatabaseException("No Entity"));
+            majorCustomerName).orElseThrow(() -> new DatabaseException("No Entity"));
 
         // TODO is OperationState going to be changed?
 //                if (account.getOperationState() == OperationState.DELETED)
@@ -122,12 +100,29 @@ public class IxsiUserService {
 
         account.setUser(maj);
         account.setCardPin(cardPinValue);
-        account.setOwnerType(CustomerType.MAJOR_CUSTOMER);
 
         String userState = user.getState().value();
         account.setOperationState(OperationState.fromValue(userState));
 
         cardAccountRepository.save(account);
         return user;
+    }
+
+    private String getPin(List<UserFeatureType> features) {
+        for (UserFeatureType feat : features) {
+            if (feat.getClazz() == UserFeatureClassType.RFID_CARD_PIN) {
+                return feat.getValue();
+            }
+        }
+        return null;
+    }
+
+    private String getMajorCustomer(List<UserFeatureType> features) {
+        for (UserFeatureType feat : features) {
+            if (feat.getClazz() == UserFeatureClassType.MAJOR_CUSTOMER_NAME) {
+                return feat.getValue();
+            }
+        }
+        return null;
     }
 }

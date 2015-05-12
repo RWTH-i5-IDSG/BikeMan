@@ -17,7 +17,7 @@ import java.util.Optional;
  */
 public interface CardAccountRepository extends JpaRepository<CardAccount, Long> {
 
-    @Query("select c from CardAccount c, MajorCustomer mc where c.cardId = :cardId and c.user = mc and mc.name = :majorName")
+    @Query("select c from CardAccount c, MajorCustomer mc where c.cardId = ?1 and c.user = mc and mc.name = ?2")
     Optional<CardAccount> findByCardIdAndMajorCustomerName(String cardId, String majorName);
 
     CardAccount findByCardIdAndCardPin(String cardId, String cardPin);
