@@ -2,7 +2,7 @@ package de.rwth.idsg.bikeman.ixsi.processor.query.user;
 
 import com.google.common.base.Optional;
 import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
-import de.rwth.idsg.bikeman.ixsi.processor.TokenValidator;
+import de.rwth.idsg.bikeman.ixsi.processor.UserValidator;
 import de.rwth.idsg.bikeman.ixsi.processor.api.UserRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.schema.CreateUserRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.CreateUserResponseType;
@@ -29,7 +29,7 @@ public class CreateUserRequestProcessor implements
     @Autowired
     IxsiUserService ixsiUserService;
     @Autowired
-    TokenValidator tokenValidator;
+    UserValidator userValidator;
 
     @Override
     public CreateUserResponseType processAnonymously(CreateUserRequestType request, Optional<Language> lan) {
@@ -54,7 +54,7 @@ public class CreateUserRequestProcessor implements
         CreateUserResponseType response = new CreateUserResponseType();
 
         //TODO is this really necessary in the given context?
-        TokenValidator.Results results = tokenValidator.validate(userInfoList);
+        UserValidator.Results results = userValidator.validate(userInfoList);
         List<ErrorType> errors = results.getErrors();
         if (!errors.isEmpty()) {
             response.getError().addAll(errors);

@@ -20,7 +20,7 @@ import java.util.List;
  */
 @Slf4j
 @Component
-public class TokenValidator {
+public class UserValidator {
 
     @Autowired
     private IxsiUserRepository ixsiUserRepository;
@@ -53,8 +53,16 @@ public class TokenValidator {
             return;
         }
 
+        if (userInfo.isSetToken()) {
+            ErrorType e = ErrorFactory.invalidRequest("Using tokens is not supported", null);
+            errorList.add(e);
+            return;
+        }
+
+
         String userId = userInfo.getUserID();
-        boolean isValid = ixsiUserRepository.validateUserToken(userId, userInfo.getToken());
+        //boolean isValid = ixsiUserRepository.validateUserToken(userId, userInfo.getToken());
+        boolean isValid = ixsiUserRepository.validateUserByMajorCustomer(userId, "ASEAG"); // TODO: get mc-name from anywhere
 
         if (isValid) {
             validList.add(userInfo);

@@ -2,7 +2,7 @@ package de.rwth.idsg.bikeman.ixsi.processor.query.user;
 
 import com.google.common.base.Optional;
 import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
-import de.rwth.idsg.bikeman.ixsi.processor.TokenValidator;
+import de.rwth.idsg.bikeman.ixsi.processor.UserValidator;
 import de.rwth.idsg.bikeman.ixsi.processor.api.UserRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.schema.ChangeUserRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.ChangeUserResponseType;
@@ -29,7 +29,7 @@ public class ChangeUserRequestProcessor implements
     @Autowired
     IxsiUserService ixsiUserService;
     @Autowired
-    TokenValidator tokenValidator;
+    UserValidator userValidator;
 
 
     @Override
@@ -55,7 +55,7 @@ public class ChangeUserRequestProcessor implements
         ChangeUserResponseType response = new ChangeUserResponseType();
 
         //TODO is this really necessary in the given context?
-        TokenValidator.Results results = tokenValidator.validate(userInfoList);
+        UserValidator.Results results = userValidator.validate(userInfoList);
         List<ErrorType> errors = results.getErrors();
         if (!errors.isEmpty()) {
             response.getError().addAll(errors);

@@ -4,7 +4,7 @@ import com.google.common.base.Optional;
 import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
 import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
 import de.rwth.idsg.bikeman.ixsi.dto.query.AvailabilityResponseDTO;
-import de.rwth.idsg.bikeman.ixsi.processor.TokenValidator;
+import de.rwth.idsg.bikeman.ixsi.processor.UserValidator;
 import de.rwth.idsg.bikeman.ixsi.processor.api.UserRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.repository.QueryIXSIRepository;
 import de.rwth.idsg.bikeman.ixsi.schema.*;
@@ -27,7 +27,7 @@ public class AvailabilityRequestProcessor implements
     @Autowired
     private QueryIXSIRepository queryIXSIRepository;
     @Autowired
-    private TokenValidator tokenValidator;
+    private UserValidator userValidator;
 
     @Override
     public AvailabilityResponseType processAnonymously(AvailabilityRequestType request, Optional<Language> lan) {
@@ -59,7 +59,7 @@ public class AvailabilityRequestProcessor implements
                                                    List<UserInfoType> userInfoList) {
 
         AvailabilityResponseType availabilityResponse = new AvailabilityResponseType();
-        TokenValidator.Results results = tokenValidator.validate(userInfoList);
+        UserValidator.Results results = userValidator.validate(userInfoList);
 
         List<ErrorType> errors = results.getErrors();
         if (!errors.isEmpty()) {
