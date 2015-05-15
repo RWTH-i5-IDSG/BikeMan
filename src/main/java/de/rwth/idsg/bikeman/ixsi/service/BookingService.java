@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.joda.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.xml.datatype.Duration;
 import java.util.List;
@@ -32,7 +33,8 @@ public class BookingService {
     @Autowired
     private PedelecRepository pedelecRepository;
 
-    public long createBookingForUser(String bookeeId, String cardId, TimePeriodProposalType timePeriodProposal)
+    @Transactional
+    public Booking createBookingForUser(String bookeeId, String cardId, TimePeriodProposalType timePeriodProposal)
         throws DatabaseException {
 
         Pedelec pedelec = pedelecRepository.findByManufacturerId(bookeeId);
@@ -69,7 +71,7 @@ public class BookingService {
         Booking booking = new Booking();
         booking.setReservation(savedReservation);
         try {
-            return bookingRepository.save(booking).getBookingId();
+            return bookingRepository.save(booking);
         } catch (Throwable e) {
             throw new DatabaseException("Failed during database operation.", e);
         }
