@@ -1,6 +1,7 @@
 package de.rwth.idsg.bikeman.ixsi.processor.query.user;
 
 import com.google.common.base.Optional;
+import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
 import de.rwth.idsg.bikeman.ixsi.processor.api.UserRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.schema.*;
 import org.springframework.stereotype.Component;
@@ -17,7 +18,7 @@ public class ChangeBookingRequestProcessor implements
 
     @Override
     public ChangeBookingResponseType processAnonymously(ChangeBookingRequestType request, Optional<Language> lan) {
-        return null;
+        return buildError(ErrorFactory.invalidRequest("Anonymous change booking request not allowed", null));
     }
 
     /**

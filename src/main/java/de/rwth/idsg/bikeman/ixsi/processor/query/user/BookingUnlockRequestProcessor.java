@@ -3,6 +3,7 @@ package de.rwth.idsg.bikeman.ixsi.processor.query.user;
 import com.google.common.base.Optional;
 import de.rwth.idsg.bikeman.domain.Booking;
 import de.rwth.idsg.bikeman.domain.Pedelec;
+import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
 import de.rwth.idsg.bikeman.ixsi.processor.api.UserRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.schema.*;
 import de.rwth.idsg.bikeman.psinterface.rest.client.StationClient;
@@ -23,15 +24,12 @@ import java.util.List;
 public class BookingUnlockRequestProcessor implements
     UserRequestProcessor<BookingUnlockRequestType, BookingUnlockResponseType> {
 
-    @Autowired
-    private BookingRepository bookingRepository;
-
-    @Autowired
-    private StationClient stationClient;
+    @Autowired private BookingRepository bookingRepository;
+    @Autowired private StationClient stationClient;
 
     @Override
     public BookingUnlockResponseType processAnonymously(BookingUnlockRequestType request, Optional<Language> lan) {
-        return null;
+        return buildError(ErrorFactory.invalidRequest("Anonymous booking unlock request not allowed", null));
     }
 
     /**

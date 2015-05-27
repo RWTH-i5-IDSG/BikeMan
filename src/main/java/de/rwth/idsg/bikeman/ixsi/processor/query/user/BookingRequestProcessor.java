@@ -22,10 +22,8 @@ import java.util.List;
 public class BookingRequestProcessor implements
         UserRequestProcessor<BookingRequestType, BookingResponseType> {
 
-    @Autowired
-    BookingService bookingService;
-    @Autowired
-    UserValidator userValidator;
+    @Autowired private BookingService bookingService;
+    @Autowired private UserValidator userValidator;
 
     @Override
     public BookingResponseType processAnonymously(BookingRequestType request, Optional<Language> lan) {
