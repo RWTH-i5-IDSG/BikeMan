@@ -31,9 +31,9 @@ public class TariffService {
     }
 
     public BigDecimal calculatePrice(Transaction transaction) {
-
-        if (transaction == null || transaction.getStartDateTime() == null || transaction.getEndDateTime() == null)
+        if (transaction.getStartDateTime() == null || transaction.getEndDateTime() == null) {
             return BigDecimal.ZERO;
+        }
 
         switch (transaction.getBookedTariff().getName()) {
             case Ticket2000:
@@ -43,11 +43,8 @@ public class TariffService {
                 return ticket3000.calculate(transaction);
 
             default:
-                break;
+                return BigDecimal.ZERO;
         }
-
-        return BigDecimal.ZERO;
-
     }
 
     public List<ViewTariffPriceDTO> listPrice(TariffType name) {
@@ -59,9 +56,8 @@ public class TariffService {
                 return ticket3000.listPrice();
 
             default:
-                break;
+                // TODO: Actually, returning Collections.emptyList() is a better solution here.
+                return null;
         }
-
-        return null;
     }
 }

@@ -17,21 +17,19 @@ import java.util.List;
 
 public class Ticket2000Impl implements TariffPriceCalculation {
 
+    final BigDecimal pricePerTimeUnit = new BigDecimal("12.34");
+    final BigDecimal timeUnitInMin = new BigDecimal("30");
+
     @Override
     public BigDecimal calculate(Transaction transaction) {
-        final BigDecimal pricePerTimeUnit = new BigDecimal("12.34");
-        final BigDecimal timeUnitInMin = new BigDecimal("30");
-
         Duration duration = new Duration(
                 transaction.getStartDateTime().toDateTime(DateTimeZone.UTC),
                 transaction.getEndDateTime().toDateTime(DateTimeZone.UTC)
         );
         
         BigDecimal durationInMin = new BigDecimal(duration.getStandardMinutes());
-        BigDecimal price = durationInMin.divide(timeUnitInMin, 0, RoundingMode.CEILING)
-                                .multiply(pricePerTimeUnit);
-        
-        return price;
+        return durationInMin.divide(timeUnitInMin, 0, RoundingMode.CEILING)
+                            .multiply(pricePerTimeUnit);
     }
 
 
@@ -42,5 +40,4 @@ public class Ticket2000Impl implements TariffPriceCalculation {
                 new ViewTariffPriceDTO(0, 30, new BigDecimal("12.34"))
         );
     }
-
 }
