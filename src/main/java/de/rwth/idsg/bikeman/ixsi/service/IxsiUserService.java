@@ -1,17 +1,21 @@
 package de.rwth.idsg.bikeman.ixsi.service;
 
+import de.rwth.idsg.bikeman.domain.BookedTariff;
 import de.rwth.idsg.bikeman.domain.CardAccount;
 import de.rwth.idsg.bikeman.domain.CustomerType;
 import de.rwth.idsg.bikeman.domain.MajorCustomer;
 import de.rwth.idsg.bikeman.domain.OperationState;
+import de.rwth.idsg.bikeman.domain.TariffType;
 import de.rwth.idsg.bikeman.ixsi.schema.UserFeatureClassType;
 import de.rwth.idsg.bikeman.ixsi.schema.UserFeatureType;
 import de.rwth.idsg.bikeman.ixsi.schema.UserInfoType;
 import de.rwth.idsg.bikeman.ixsi.schema.UserType;
 import de.rwth.idsg.bikeman.repository.CardAccountRepository;
 import de.rwth.idsg.bikeman.repository.MajorCustomerRepository;
+import de.rwth.idsg.bikeman.repository.TariffRepository;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
+import org.joda.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,10 +29,9 @@ import java.util.List;
 @Slf4j
 public class IxsiUserService {
 
-    @Autowired
-    CardAccountRepository cardAccountRepository;
-    @Autowired
-    MajorCustomerRepository majorCustomerRepository;
+    @Autowired CardAccountRepository cardAccountRepository;
+    @Autowired MajorCustomerRepository majorCustomerRepository;
+    @Autowired TariffRepository tariffRepository;
 
     public List<UserType> createUsers(List<UserType> users) {
         List<UserType> acceptedUsers = new ArrayList<>();
@@ -54,10 +57,19 @@ public class IxsiUserService {
 
         CardAccount account = new CardAccount();
         account.setCardId(info.getUserID());
-        String userState = user.getState().value();
-        account.setOperationState(OperationState.fromValue(userState));
+        account.setOperationState(OperationState.fromValue(user.getState().value()));
         account.setCardPin(cardPinValue);
         account.setOwnerType(CustomerType.MAJOR_CUSTOMER);
+
+        // TODO:
+        // Create a different tariff type for IXSI users, since the transaction/usage/consumption logic varies
+        // from regular users, and assign to this tariff
+        BookedTariff tariff = new BookedTariff();
+        tariff.setBookedFrom(new LocalDateTime());
+        tariff.setBookedUntil(null);
+        tariff.setTariff(tariffRepository.findByName(TariffType.Ticket2000));
+        tariff.setUsedCardAccount(account);
+        account.setCurrentTariff(tariff);
 
         // find corresponding major customer
         MajorCustomer maj = majorCustomerRepository.findByName(majorCustomerName);
