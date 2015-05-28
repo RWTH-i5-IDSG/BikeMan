@@ -71,11 +71,11 @@ public class BookingRequestProcessor implements
             bookingResponse.setBooking(booking);
             return bookingResponse;
 
-        } catch (DatabaseException e) {
-            return buildError(ErrorFactory.backendFailed(e.getMessage(), "Booking not possible due to backend error"));
-
         } catch (IxsiProcessingException e) {
             return buildError(ErrorFactory.bookingTargetNotAvail(e.getMessage(), e.getMessage()));
+
+        } catch (Exception e) {
+            return buildError(ErrorFactory.backendFailed(e.getMessage(), "Booking not possible due to backend error"));
         }
     }
 

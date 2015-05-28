@@ -1,6 +1,7 @@
 package de.rwth.idsg.bikeman.ixsi.processor.subscription.complete;
 
 import de.rwth.idsg.bikeman.domain.Booking;
+import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
 import de.rwth.idsg.bikeman.ixsi.impl.ConsumptionStore;
 import de.rwth.idsg.bikeman.ixsi.processor.api.SubscriptionRequestMessageProcessor;
 import de.rwth.idsg.bikeman.ixsi.schema.CompleteConsumptionRequestType;
@@ -23,30 +24,30 @@ import java.util.List;
 public class CompleteConsumptionRequestProcessor implements
         SubscriptionRequestMessageProcessor<CompleteConsumptionRequestType, CompleteConsumptionResponseType> {
 
-    @Autowired
-    private ConsumptionStore consumptionStore;
-    @Autowired
-    private BookingRepository bookingRepository;
-    @Autowired
-    private ConsumptionPushService consumptionPushService;
+    @Autowired private ConsumptionStore consumptionStore;
+    @Autowired private BookingRepository bookingRepository;
+    @Autowired private ConsumptionPushService consumptionPushService;
 
     @Override
     public CompleteConsumptionResponseType process(CompleteConsumptionRequestType request, String systemId) {
-        List<String> bookingIdListString = consumptionStore.getSubscriptions(systemId);
+        try {
+            List<String> bookingIdListString = consumptionStore.getSubscriptions(systemId);
+            List<Booking> bookingList = bookingRepository.findClosedBookings(bookingIdListString);
+            List<ConsumptionType> consumptionList = new ArrayList<>();
+            for (Booking b : bookingList) {
+                consumptionList.add(consumptionPushService.createConsumption(b, b.getTransaction()));
+            }
 
-        List<Booking> bookingList = bookingRepository.findClosedBookings(bookingIdListString);
+            // for now, assume that client system is always able to process the full message
+            // therefore do not split messages!
+            return new CompleteConsumptionResponseType()
+                    .withLast(true)
+                    .withMessageBlockID(String.valueOf(request.hashCode()))
+                    .withConsumption(consumptionList);
 
-        List<ConsumptionType> consumptionList = new ArrayList<>();
-        for (Booking b : bookingList) {
-            consumptionList.add(consumptionPushService.createConsumption(b, b.getTransaction()));
+        } catch (Exception e) {
+            return buildError(ErrorFactory.backendFailed(e.getMessage(), null));
         }
-
-        // for now, assume that client system is always able to process the full message
-        // therefore do not split messages!
-        return new CompleteConsumptionResponseType()
-                .withLast(true)
-                .withMessageBlockID(String.valueOf(request.hashCode()))
-                .withConsumption(consumptionList);
     }
 
     @Override

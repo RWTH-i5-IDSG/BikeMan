@@ -1,5 +1,6 @@
 package de.rwth.idsg.bikeman.ixsi.processor.subscription.complete;
 
+import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
 import de.rwth.idsg.bikeman.ixsi.dto.query.PlaceAvailabilityResponseDTO;
 import de.rwth.idsg.bikeman.ixsi.impl.PlaceAvailabilityStore;
 import de.rwth.idsg.bikeman.ixsi.processor.api.SubscriptionRequestMessageProcessor;
@@ -22,26 +23,27 @@ import java.util.List;
 public class CompletePlaceAvailabilityRequestProcessor implements
         SubscriptionRequestMessageProcessor<CompletePlaceAvailabilityRequestType, CompletePlaceAvailabilityResponseType> {
 
-    @Autowired
-    private PlaceAvailabilityStore placeAvailabilityStore;
-    @Autowired
-    private QueryIXSIRepository queryIXSIRepository;
-    @Autowired
-    private PlaceAvailabilityRequestProcessor placeAvailabilityRequestProcessor;
+    @Autowired private PlaceAvailabilityStore placeAvailabilityStore;
+    @Autowired private QueryIXSIRepository queryIXSIRepository;
+    @Autowired private PlaceAvailabilityRequestProcessor placeAvailabilityRequestProcessor;
 
     @Override
     public CompletePlaceAvailabilityResponseType process(CompletePlaceAvailabilityRequestType request, String systemId) {
+        try {
+            List<String> ids = placeAvailabilityStore.getSubscriptions(systemId);
+            List<PlaceAvailabilityResponseDTO> dtos = queryIXSIRepository.placeAvailability(ids);
+            List<PlaceAvailabilityType> availabilities = placeAvailabilityRequestProcessor.getPlaceAvailabilities(dtos);
 
-        List<String> ids = placeAvailabilityStore.getSubscriptions(systemId);
-        List<PlaceAvailabilityResponseDTO> dtos = queryIXSIRepository.placeAvailability(ids);
-        List<PlaceAvailabilityType> availabilities = placeAvailabilityRequestProcessor.getPlaceAvailabilities(dtos);
+            // for now, assume that client system is always able to process the full message
+            // therefore do not split messages!
+            return new CompletePlaceAvailabilityResponseType()
+                    .withLast(true)
+                    .withMessageBlockID(String.valueOf(request.hashCode()))
+                    .withPlaceAvailability(availabilities);
 
-        // for now, assume that client system is always able to process the full message
-        // therefore do not split messages!
-        return new CompletePlaceAvailabilityResponseType()
-                .withLast(true)
-                .withMessageBlockID(String.valueOf(request.hashCode()))
-                .withPlaceAvailability(availabilities);
+        } catch (Exception e) {
+            return buildError(ErrorFactory.backendFailed(e.getMessage(), null));
+        }
     }
 
     // -------------------------------------------------------------------------

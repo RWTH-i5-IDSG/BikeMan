@@ -1,5 +1,6 @@
 package de.rwth.idsg.bikeman.ixsi.processor.subscription.complete;
 
+import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
 import de.rwth.idsg.bikeman.ixsi.processor.api.SubscriptionRequestMessageProcessor;
 import de.rwth.idsg.bikeman.ixsi.schema.CompleteExternalBookingRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.CompleteExternalBookingResponseType;
@@ -16,7 +17,7 @@ public class CompleteExternalBookingRequestProcessor implements
 
     @Override
     public CompleteExternalBookingResponseType process(CompleteExternalBookingRequestType request, String systemId) {
-        return null;
+        return buildError(ErrorFactory.notImplemented(null, null));
     }
 
     // -------------------------------------------------------------------------

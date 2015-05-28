@@ -1,5 +1,6 @@
 package de.rwth.idsg.bikeman.ixsi.processor.subscription.request;
 
+import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
 import de.rwth.idsg.bikeman.ixsi.processor.api.SubscriptionRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.schema.BookingAlertSubscriptionStatusRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.BookingAlertSubscriptionStatusResponseType;
@@ -17,7 +18,7 @@ public class BookingAlertSubscriptionStatusRequestProcessor implements
     @Override
     public BookingAlertSubscriptionStatusResponseType process(BookingAlertSubscriptionStatusRequestType request, String systemId) {
         // TODO FUTURE
-        return null;
+        return buildError(ErrorFactory.notImplemented(null, null));
     }
 
     // -------------------------------------------------------------------------

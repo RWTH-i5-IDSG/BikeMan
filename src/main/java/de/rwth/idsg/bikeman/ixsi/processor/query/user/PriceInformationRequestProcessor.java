@@ -1,6 +1,7 @@
 package de.rwth.idsg.bikeman.ixsi.processor.query.user;
 
 import com.google.common.base.Optional;
+import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
 import de.rwth.idsg.bikeman.ixsi.processor.api.UserRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.schema.*;
 import org.springframework.stereotype.Component;
@@ -18,7 +19,7 @@ public class PriceInformationRequestProcessor implements
     @Override
     public PriceInformationResponseType processAnonymously(PriceInformationRequestType request, Optional<Language> lan) {
         // TODO FUTURE
-        return null;
+        return buildError(ErrorFactory.notImplemented(null, null));
     }
 
     /**
@@ -28,7 +29,7 @@ public class PriceInformationRequestProcessor implements
     public PriceInformationResponseType processForUser(PriceInformationRequestType request, Optional<Language> lan,
                                                        List<UserInfoType> userInfoList) {
         // TODO FUTURE
-        return null;
+        return buildError(ErrorFactory.notImplemented(null, null));
     }
 
     // -------------------------------------------------------------------------

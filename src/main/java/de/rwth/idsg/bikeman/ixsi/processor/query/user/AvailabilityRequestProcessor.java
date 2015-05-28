@@ -69,7 +69,7 @@ public class AvailabilityRequestProcessor implements
         List<UserInfoType> validUsers = results.getValidUsers();
         // TODO process with validUsers
 
-        return null;
+        return buildError(ErrorFactory.notImplemented(null, null));
     }
 
     public List<BookingTargetAvailabilityType> getBookingTargetAvailabilities(List<AvailabilityResponseDTO> dtoList) {

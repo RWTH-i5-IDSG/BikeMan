@@ -26,24 +26,21 @@ import java.util.List;
 public class ChangeUserRequestProcessor implements
         UserRequestProcessor<ChangeUserRequestType, ChangeUserResponseType> {
 
-    @Autowired
-    IxsiUserService ixsiUserService;
-    @Autowired
-    UserValidator userValidator;
-
+    @Autowired private IxsiUserService ixsiUserService;
 
     @Override
     public ChangeUserResponseType processAnonymously(ChangeUserRequestType request, Optional<Language> lan) {
-        ChangeUserResponseType response = new ChangeUserResponseType();
-
-        if (!request.isSetUser() || request.getUser().isEmpty()) {
+        if (!request.isSetUser()) {
             return buildError(ErrorFactory.invalidRequest("User list may not be empty.", null));
         }
 
-        List<UserType> acceptedUsers = ixsiUserService.changeUsers(request.getUser());
-        response.getUser().addAll(acceptedUsers);
+        try {
+            List<UserType> acceptedUsers = ixsiUserService.changeUsers(request.getUser());
+            return new ChangeUserResponseType().withUser(acceptedUsers);
 
-        return response;
+        } catch (Exception e) {
+            return buildError(ErrorFactory.backendFailed(e.getMessage(), null));
+        }
     }
 
     /**
@@ -52,23 +49,8 @@ public class ChangeUserRequestProcessor implements
     @Override
     public ChangeUserResponseType processForUser(ChangeUserRequestType request, Optional<Language> lan,
                                                  List<UserInfoType> userInfoList) {
-        ChangeUserResponseType response = new ChangeUserResponseType();
-
-        //TODO is this really necessary in the given context?
-        UserValidator.Results results = userValidator.validate(userInfoList);
-        List<ErrorType> errors = results.getErrors();
-        if (!errors.isEmpty()) {
-            response.getError().addAll(errors);
-        }
-
-        if (!request.isSetUser() || request.getUser().isEmpty()) {
-            return buildError(ErrorFactory.invalidRequest("User list may not be empty.", null));
-        }
-
-        List<UserType> acceptedUsers = ixsiUserService.changeUsers(request.getUser());
-        response.getUser().addAll(acceptedUsers);
-
-        return response;
+        // TODO
+        return buildError(ErrorFactory.notImplemented(null, null));
     }
 
     @Override

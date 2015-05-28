@@ -38,21 +38,21 @@ public class BookingUnlockRequestProcessor implements
     @Override
     public BookingUnlockResponseType processForUser(BookingUnlockRequestType request, Optional<Language> lan,
                                                     List<UserInfoType> userInfoList) {
-
         try {
             Booking booking = bookingRepository.findByIxsiBookingId(request.getBookingID());
-
             Pedelec pedelec = booking.getReservation().getPedelec();
             Integer stationSlotPosition = pedelec.getStationSlot().getStationSlotPosition();
             String endpointAddress = pedelec.getStationSlot().getStation().getEndpointAddress();
 
             stationClient.unlockSlot(stationSlotPosition, endpointAddress);
-        } catch (DatabaseException ex) {
+            return new BookingUnlockResponseType();
 
+        } catch (DatabaseException e) {
+            return buildError(ErrorFactory.invalidRequest(e.getMessage(), null));
+
+        } catch (Exception e) {
+            return buildError(ErrorFactory.backendFailed(e.getMessage(), null));
         }
-
-
-        return new BookingUnlockResponseType();
     }
 
     // -------------------------------------------------------------------------

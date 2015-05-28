@@ -1,5 +1,6 @@
 package de.rwth.idsg.bikeman.ixsi.processor.subscription.complete;
 
+import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
 import de.rwth.idsg.bikeman.ixsi.processor.api.SubscriptionRequestMessageProcessor;
 import de.rwth.idsg.bikeman.ixsi.schema.CompleteBookingAlertRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.CompleteBookingAlertResponseType;
@@ -17,7 +18,7 @@ public class CompleteBookingAlertRequestProcessor implements
     @Override
     public CompleteBookingAlertResponseType process(CompleteBookingAlertRequestType request, String systemId) {
         // TODO FUTURE
-        return null;
+        return buildError(ErrorFactory.notImplemented(null, null));
     }
 
     // -------------------------------------------------------------------------

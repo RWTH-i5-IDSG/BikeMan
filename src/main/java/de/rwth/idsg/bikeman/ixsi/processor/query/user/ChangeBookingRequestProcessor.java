@@ -27,7 +27,8 @@ public class ChangeBookingRequestProcessor implements
     @Override
     public ChangeBookingResponseType processForUser(ChangeBookingRequestType request, Optional<Language> lan,
                                                     List<UserInfoType> userInfoList) {
-        return null;
+        // TODO
+        return buildError(ErrorFactory.notImplemented(null, null));
     }
 
     // -------------------------------------------------------------------------

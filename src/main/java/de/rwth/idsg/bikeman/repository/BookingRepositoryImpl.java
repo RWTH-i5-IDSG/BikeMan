@@ -90,9 +90,13 @@ public class BookingRepositoryImpl implements BookingRepository {
     public Booking findByIxsiBookingId(String ixsiBookingId) {
         final String query = "SELECT b FROM Booking b WHERE b.ixsiBookingId = :ixsiBookingId";
 
-        return em.createQuery(query, Booking.class)
-            .setParameter("ixsiBookingId", ixsiBookingId)
-            .getSingleResult();
+        try {
+            return em.createQuery(query, Booking.class)
+                .setParameter("ixsiBookingId", ixsiBookingId)
+                .getSingleResult();
+        } catch (NoResultException e) {
+            throw new DatabaseException("Could not find booking for the given id '" + ixsiBookingId + "'", e);
+        }
     }
 
 }

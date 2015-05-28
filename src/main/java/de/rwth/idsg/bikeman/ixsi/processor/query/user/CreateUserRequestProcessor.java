@@ -2,7 +2,6 @@ package de.rwth.idsg.bikeman.ixsi.processor.query.user;
 
 import com.google.common.base.Optional;
 import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
-import de.rwth.idsg.bikeman.ixsi.processor.UserValidator;
 import de.rwth.idsg.bikeman.ixsi.processor.api.UserRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.schema.CreateUserRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.CreateUserResponseType;
@@ -26,23 +25,21 @@ import java.util.List;
 public class CreateUserRequestProcessor implements
         UserRequestProcessor<CreateUserRequestType, CreateUserResponseType> {
 
-    @Autowired
-    IxsiUserService ixsiUserService;
-    @Autowired
-    UserValidator userValidator;
+    @Autowired private IxsiUserService ixsiUserService;
 
     @Override
     public CreateUserResponseType processAnonymously(CreateUserRequestType request, Optional<Language> lan) {
-        CreateUserResponseType response = new CreateUserResponseType();
-
-        if (!request.isSetUser() || request.getUser().isEmpty()) {
+        if (!request.isSetUser()) {
             return buildError(ErrorFactory.invalidRequest("User list may not be empty.", null));
         }
 
-        List<UserType> acceptedUsers = ixsiUserService.createUsers(request.getUser());
-        response.getUser().addAll(acceptedUsers);
+        try {
+            List<UserType> acceptedUsers = ixsiUserService.createUsers(request.getUser());
+            return new CreateUserResponseType().withUser(acceptedUsers);
 
-        return response;
+        } catch (Exception e) {
+            return buildError(ErrorFactory.backendFailed(e.getMessage(), null));
+        }
     }
 
     /**
@@ -51,23 +48,8 @@ public class CreateUserRequestProcessor implements
     @Override
     public CreateUserResponseType processForUser(CreateUserRequestType request, Optional<Language> lan,
                                                  List<UserInfoType> userInfoList) {
-        CreateUserResponseType response = new CreateUserResponseType();
-
-        //TODO is this really necessary in the given context?
-        UserValidator.Results results = userValidator.validate(userInfoList);
-        List<ErrorType> errors = results.getErrors();
-        if (!errors.isEmpty()) {
-            response.getError().addAll(errors);
-        }
-
-        if (!request.isSetUser() || request.getUser().isEmpty()) {
-            return buildError(ErrorFactory.invalidRequest("User list may not be empty.", null));
-        }
-
-        List<UserType> acceptedUsers = ixsiUserService.createUsers(request.getUser());
-        response.getUser().addAll(acceptedUsers);
-
-        return response;
+        // TODO
+        return buildError(ErrorFactory.notImplemented(null, null));
     }
 
     @Override

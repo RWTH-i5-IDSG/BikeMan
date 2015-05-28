@@ -1,6 +1,7 @@
 package de.rwth.idsg.bikeman.ixsi.processor.query.user;
 
 import com.google.common.base.Optional;
+import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
 import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
 import de.rwth.idsg.bikeman.ixsi.dto.query.PlaceAvailabilityResponseDTO;
 import de.rwth.idsg.bikeman.ixsi.processor.api.UserRequestProcessor;
@@ -51,7 +52,8 @@ public class PlaceAvailabilityRequestProcessor implements
     @Override
     public PlaceAvailabilityResponseType processForUser(PlaceAvailabilityRequestType request, Optional<Language> lan,
                                                         List<UserInfoType> userInfoList) {
-        return null;
+        // TODO
+        return buildError(ErrorFactory.notImplemented(null, null));
     }
 
     public List<PlaceAvailabilityType> getPlaceAvailabilities(List<PlaceAvailabilityResponseDTO> dtoList) {
