@@ -274,6 +274,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         // -------------------------------------------------------------------------
 
         final String endQuery = "SELECT t FROM Transaction t " +
+                                "INNER JOIN t.bookedTariff " +
                                 "WHERE t.pedelec = (SELECT p FROM Pedelec p WHERE p.manufacturerId = :pedelecManufacturerId) " +
                                 "AND t.toSlot IS NULL " +
                                 "AND t.endDateTime IS NULL";
