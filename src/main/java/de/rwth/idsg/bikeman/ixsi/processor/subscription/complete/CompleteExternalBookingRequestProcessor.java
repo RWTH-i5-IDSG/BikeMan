@@ -17,7 +17,7 @@ public class CompleteExternalBookingRequestProcessor implements
 
     @Override
     public CompleteExternalBookingResponseType process(CompleteExternalBookingRequestType request, String systemId) {
-        return buildError(ErrorFactory.notImplemented(null, null));
+        return buildError(ErrorFactory.Sys.notImplemented(null, null));
     }
 
     // -------------------------------------------------------------------------

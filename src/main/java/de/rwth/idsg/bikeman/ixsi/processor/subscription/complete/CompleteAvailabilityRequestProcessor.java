@@ -39,7 +39,7 @@ public class CompleteAvailabilityRequestProcessor implements
                     .withBookingTarget(availabilities);
 
         } catch (Exception e) {
-            return buildError(ErrorFactory.backendFailed(e.getMessage(), null));
+            return buildError(ErrorFactory.Sys.backendFailed(e.getMessage(), null));
         }
     }
 

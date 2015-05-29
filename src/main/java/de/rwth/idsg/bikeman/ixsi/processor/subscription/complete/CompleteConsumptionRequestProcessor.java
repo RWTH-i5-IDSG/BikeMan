@@ -46,7 +46,7 @@ public class CompleteConsumptionRequestProcessor implements
                     .withConsumption(consumptionList);
 
         } catch (Exception e) {
-            return buildError(ErrorFactory.backendFailed(e.getMessage(), null));
+            return buildError(ErrorFactory.Sys.backendFailed(e.getMessage(), null));
         }
     }
 

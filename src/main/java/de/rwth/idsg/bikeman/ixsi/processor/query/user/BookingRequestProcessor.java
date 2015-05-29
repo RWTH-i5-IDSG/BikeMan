@@ -28,7 +28,7 @@ public class BookingRequestProcessor implements
 
     @Override
     public BookingResponseType processAnonymously(BookingRequestType request, Optional<Language> lan) {
-        return buildError(ErrorFactory.notAllowedAnonym("Anonymous booking makes no sense", null));
+        return buildError(ErrorFactory.Auth.notAnonym("Anonymous booking makes no sense", null));
     }
 
     @Override
@@ -51,10 +51,10 @@ public class BookingRequestProcessor implements
             return new BookingResponseType().withBooking(booking);
 
         } catch (IxsiProcessingException e) {
-            return buildError(ErrorFactory.bookingTargetNotAvail(e.getMessage(), e.getMessage()));
+            return buildError(ErrorFactory.Booking.targetNotAvail(e.getMessage(), e.getMessage()));
 
         } catch (Exception e) {
-            return buildError(ErrorFactory.backendFailed(e.getMessage(), "Booking not possible due to backend error"));
+            return buildError(ErrorFactory.Sys.backendFailed(e.getMessage(), "Booking not possible due to backend error"));
         }
     }
 

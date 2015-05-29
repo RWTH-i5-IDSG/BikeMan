@@ -30,7 +30,7 @@ public class AvailabilityRequestProcessor implements
 
         if (request.isSetBookingTarget()) {
             // we don't want to use booking targets in this request
-            return buildError(ErrorFactory.invalidRequest("Cannot use booking targets", null));
+            return buildError(ErrorFactory.Sys.invalidRequest("Cannot use booking targets", null));
         }
 
         List<AvailabilityResponseDTO> dtos = new ArrayList<>();
@@ -51,7 +51,7 @@ public class AvailabilityRequestProcessor implements
     public AvailabilityResponseType processForUser(AvailabilityRequestType request, Optional<Language> lan,
                                                    UserInfoType userInfo) {
         // TODO
-        return buildError(ErrorFactory.notImplemented(null, null));
+        return buildError(ErrorFactory.Sys.notImplemented(null, null));
     }
 
     public List<BookingTargetAvailabilityType> getBookingTargetAvailabilities(List<AvailabilityResponseDTO> dtoList) {

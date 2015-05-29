@@ -28,7 +28,7 @@ public class Booking {
     @Column(name = "ixsi_booking_id")
     private String ixsiBookingId;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "reservation_id")
     private Reservation reservation;
 

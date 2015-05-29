@@ -24,18 +24,25 @@ import java.util.List;
 @Slf4j
 public class BookingService {
 
-    @Autowired
-    private BookingRepository bookingRepository;
-    @Autowired
-    private ReservationRepository reservationRepository;
-    @Autowired
-    private CardAccountRepository cardAccountRepository;
-    @Autowired
-    private PedelecRepository pedelecRepository;
+    @Autowired private BookingRepository bookingRepository;
+    @Autowired private ReservationRepository reservationRepository;
+    @Autowired private CardAccountRepository cardAccountRepository;
+    @Autowired private PedelecRepository pedelecRepository;
 
     @Transactional
     public Booking createBookingForUser(String bookeeId, String cardId, TimePeriodProposalType timePeriodProposal)
         throws DatabaseException {
+
+        LocalDateTime begin = timePeriodProposal.getBegin().toLocalDateTime();
+        LocalDateTime end = timePeriodProposal.getEnd().toLocalDateTime();
+
+        checkTimeFrameForSanity(begin, end);
+
+        if (timePeriodProposal.isSetMaxWait()) {
+            // TODO Incorporate maxWait into processing.
+            // Not sure about the approach: range search between begin and begin + maxWait for existing reservations?
+            Duration maxWait = timePeriodProposal.getMaxWait();
+        }
 
         Pedelec pedelec = pedelecRepository.findByManufacturerId(bookeeId);
         if (!isAvailable(pedelec)) {
@@ -43,15 +50,6 @@ public class BookingService {
         }
 
         CardAccount cardAccount = cardAccountRepository.findByCardId(cardId);
-
-        LocalDateTime begin = timePeriodProposal.getBegin().toLocalDateTime();
-        LocalDateTime end = timePeriodProposal.getEnd().toLocalDateTime();
-
-        if (timePeriodProposal.isSetMaxWait()) {
-            // TODO Incorporate maxWait into processing.
-            // Not sure about the approach: range search between begin and begin + maxWait for existing reservations?
-            Duration maxWait = timePeriodProposal.getMaxWait();
-        }
 
         // check for existing reservation in time frame
         List<Reservation> existingReservations = reservationRepository.findByTimeFrameForPedelec(pedelec.getPedelecId(), begin, end);
@@ -77,6 +75,25 @@ public class BookingService {
         }
     }
 
+    public void cancel(String bookingId) {
+        Booking booking = bookingRepository.findByIxsiBookingId(bookingId);
+
+        Transaction transaction = booking.getTransaction();
+        if (transaction != null) {
+            throw new IxsiProcessingException("The pedelec is already taken, too late cannot cancel");
+        }
+
+        Reservation reservation = booking.getReservation();
+
+        LocalDateTime end = reservation.getEndDateTime();
+        LocalDateTime now = new LocalDateTime();
+        if (now.isAfter(end)) {
+            throw new IxsiProcessingException("The booking is already over, cannot cancel");
+        }
+
+        bookingRepository.cancel(booking);
+    }
+
     /**
      * TODO: What is a reasonable value for lowerLimit?
      */
@@ -88,4 +105,18 @@ public class BookingService {
             && pedelec.getStateOfCharge() > lowerLimit;
     }
 
+    /**
+     * TODO: More rules/boundaries are needed for acceptable reservations
+     *
+     * 1) Min/max allowed duration? (reserve for 1 min / 5 years?)
+     * 2) How soon is the begin? (start now / next year?)
+     */
+    private void checkTimeFrameForSanity(LocalDateTime begin, LocalDateTime end) {
+        LocalDateTime now = new LocalDateTime();
+
+        // Continue only if: now < start < end
+        if (!(now.isBefore(begin) && begin.isBefore(end))) {
+            throw new IxsiProcessingException("Unacceptable date/time values");
+        }
+    }
 }

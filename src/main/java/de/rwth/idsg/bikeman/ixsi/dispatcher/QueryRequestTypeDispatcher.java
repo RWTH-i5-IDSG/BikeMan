@@ -97,7 +97,7 @@ public class QueryRequestTypeDispatcher implements Dispatcher {
         if (systemValidator.validate(request.getSystemID())) {
             res = p.process(req);
         } else {
-            res = p.buildError(ErrorFactory.invalidSystem());
+            res = p.buildError(ErrorFactory.Sys.idUknown());
         }
 
         return new QueryResponseType()
@@ -117,7 +117,7 @@ public class QueryRequestTypeDispatcher implements Dispatcher {
         if (systemValidator.validate(request.getSystemID())) {
             responseChoice = delegateUserRequest(c, p, Optional.fromNullable(request.getLanguage()), request.getAuth());
         } else {
-            responseChoice = p.buildError(ErrorFactory.invalidSystem());
+            responseChoice = p.buildError(ErrorFactory.Sys.idUknown());
         }
 
         return new QueryResponseType()
@@ -136,10 +136,10 @@ public class QueryRequestTypeDispatcher implements Dispatcher {
             return validateUserAndProceed(c, p, lan, auth.getUserInfo());
 
         } else if (auth.isSetSessionID()) {
-            return p.buildError(ErrorFactory.notImplemented("Session-based authentication is not supported", null));
+            return p.buildError(ErrorFactory.Sys.notImplemented("Session-based authentication is not supported", null));
 
         } else {
-            return p.buildError(ErrorFactory.invalidRequest("Authentication requirements are not met", null));
+            return p.buildError(ErrorFactory.Sys.notImplemented("Authentication requirements are not met", null));
         }
     }
 
@@ -151,7 +151,7 @@ public class QueryRequestTypeDispatcher implements Dispatcher {
                                                                Optional<Language> lan, List<UserInfoType> userInfoList) {
         if (userInfoList.size() != 1) {
             String msg = "More than one user per request is not allowed";
-            return p.buildError(ErrorFactory.invalidRequest(msg, msg));
+            return p.buildError(ErrorFactory.Sys.invalidRequest(msg, msg));
         }
 
         UserInfoType userInfo = userInfoList.get(0);

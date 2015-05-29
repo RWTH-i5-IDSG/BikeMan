@@ -31,7 +31,7 @@ public class BookingUnlockRequestProcessor implements
 
     @Override
     public BookingUnlockResponseType processAnonymously(BookingUnlockRequestType request, Optional<Language> lan) {
-        return buildError(ErrorFactory.notAllowedAnonym("Anonymous booking unlock request not allowed", null));
+        return buildError(ErrorFactory.Auth.notAnonym("Anonymous booking unlock request not allowed", null));
     }
 
     @Override
@@ -47,10 +47,10 @@ public class BookingUnlockRequestProcessor implements
             return new BookingUnlockResponseType();
 
         } catch (DatabaseException e) {
-            return buildError(ErrorFactory.invalidRequest(e.getMessage(), null));
+            return buildError(ErrorFactory.Sys.invalidRequest(e.getMessage(), null));
 
         } catch (Exception e) {
-            return buildError(ErrorFactory.backendFailed(e.getMessage(), null));
+            return buildError(ErrorFactory.Sys.backendFailed(e.getMessage(), null));
         }
     }
 

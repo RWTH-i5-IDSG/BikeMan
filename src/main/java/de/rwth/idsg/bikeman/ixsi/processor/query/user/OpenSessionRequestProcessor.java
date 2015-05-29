@@ -20,13 +20,13 @@ public class OpenSessionRequestProcessor implements
 
     @Override
     public OpenSessionResponseType processAnonymously(OpenSessionRequestType request, Optional<Language> lan) {
-        return buildError(ErrorFactory.notImplemented("We don't support sessions", null));
+        return buildError(ErrorFactory.Sys.notImplemented("We don't support sessions", null));
     }
 
     @Override
     public OpenSessionResponseType processForUser(OpenSessionRequestType request, Optional<Language> lan,
                                                   UserInfoType userInfo) {
-        return buildError(ErrorFactory.notImplemented("We don't support sessions", null));
+        return buildError(ErrorFactory.Sys.notImplemented("We don't support sessions", null));
     }
 
     // -------------------------------------------------------------------------

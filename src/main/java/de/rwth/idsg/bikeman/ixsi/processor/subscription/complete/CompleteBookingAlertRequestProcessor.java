@@ -18,7 +18,7 @@ public class CompleteBookingAlertRequestProcessor implements
     @Override
     public CompleteBookingAlertResponseType process(CompleteBookingAlertRequestType request, String systemId) {
         // TODO FUTURE
-        return buildError(ErrorFactory.notImplemented(null, null));
+        return buildError(ErrorFactory.Sys.notImplemented(null, null));
     }
 
     // -------------------------------------------------------------------------

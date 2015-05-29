@@ -18,7 +18,7 @@ public class BookingAlertSubscriptionStatusRequestProcessor implements
     @Override
     public BookingAlertSubscriptionStatusResponseType process(BookingAlertSubscriptionStatusRequestType request, String systemId) {
         // TODO FUTURE
-        return buildError(ErrorFactory.notImplemented(null, null));
+        return buildError(ErrorFactory.Sys.notImplemented(null, null));
     }
 
     // -------------------------------------------------------------------------

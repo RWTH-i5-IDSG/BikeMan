@@ -27,7 +27,7 @@ public class TokenGenerationRequestProcessor implements
 
     @Override
     public TokenGenerationResponseType processAnonymously(TokenGenerationRequestType request, Optional<Language> lan) {
-        return buildError(ErrorFactory.notAllowedAnonym("Anonymous token generation makes no sense", null));
+        return buildError(ErrorFactory.Auth.notAnonym("Anonymous token generation makes no sense", null));
     }
 
     @Override
@@ -39,7 +39,7 @@ public class TokenGenerationRequestProcessor implements
 
         } catch (DatabaseException e) {
             log.error("Error occurred", e);
-            return buildError(ErrorFactory.backendFailed(e.getLocalizedMessage(), null));
+            return buildError(ErrorFactory.Sys.backendFailed(e.getLocalizedMessage(), null));
         }
     }
 

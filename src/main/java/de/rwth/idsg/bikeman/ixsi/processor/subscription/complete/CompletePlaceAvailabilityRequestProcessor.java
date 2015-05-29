@@ -42,7 +42,7 @@ public class CompletePlaceAvailabilityRequestProcessor implements
                     .withPlaceAvailability(availabilities);
 
         } catch (Exception e) {
-            return buildError(ErrorFactory.backendFailed(e.getMessage(), null));
+            return buildError(ErrorFactory.Sys.backendFailed(e.getMessage(), null));
         }
     }
 

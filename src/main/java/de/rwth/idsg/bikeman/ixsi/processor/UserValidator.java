@@ -32,11 +32,11 @@ public class UserValidator {
 
         if (!IXSIConstants.Provider.id.equals(userInfo.getProviderID())) {
             final String msg = "Not a " + IXSIConstants.Provider.id + " user";
-            return Optional.of(ErrorFactory.invalidProvider(msg, msg));
+            return Optional.of(ErrorFactory.Auth.unknownProvider(msg, msg));
         }
 
         if (userInfo.isSetPassword() || userInfo.isSetToken()) {
-            return Optional.of(ErrorFactory.invalidRequest("Using passwords or tokens is not supported", null));
+            return Optional.of(ErrorFactory.Sys.notImplemented("Using passwords or tokens is not supported", null));
         }
 
         String userId = userInfo.getUserID();
@@ -48,7 +48,7 @@ public class UserValidator {
 
         } else {
             final String msg = "User id '" + userId + "' is invalid";
-            return Optional.of(ErrorFactory.invalidAuth(msg, msg));
+            return Optional.of(ErrorFactory.Auth.notAuthorized(msg, msg));
         }
     }
 }

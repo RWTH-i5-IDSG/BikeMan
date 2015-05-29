@@ -20,13 +20,13 @@ public class CloseSessionRequestProcessor implements
 
     @Override
     public CloseSessionResponseType processAnonymously(CloseSessionRequestType request, Optional<Language> lan) {
-        return buildError(ErrorFactory.notImplemented("We don't support sessions", null));
+        return buildError(ErrorFactory.Sys.notImplemented("We don't support sessions", null));
     }
 
     @Override
     public CloseSessionResponseType processForUser(CloseSessionRequestType request, Optional<Language> lan,
                                                    UserInfoType userInfo) {
-        return buildError(ErrorFactory.notImplemented("We don't support sessions", null));
+        return buildError(ErrorFactory.Sys.notImplemented("We don't support sessions", null));
     }
 
     // -------------------------------------------------------------------------

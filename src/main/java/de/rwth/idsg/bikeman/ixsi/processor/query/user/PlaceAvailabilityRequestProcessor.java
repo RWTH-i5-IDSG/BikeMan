@@ -55,7 +55,7 @@ public class PlaceAvailabilityRequestProcessor implements
     public PlaceAvailabilityResponseType processForUser(PlaceAvailabilityRequestType request, Optional<Language> lan,
                                                         UserInfoType userInfo) {
         // TODO
-        return buildError(ErrorFactory.notImplemented(null, null));
+        return buildError(ErrorFactory.Sys.notImplemented(null, null));
     }
 
     public List<PlaceAvailabilityType> getPlaceAvailabilities(List<PlaceAvailabilityResponseDTO> dtoList) {

@@ -21,14 +21,14 @@ public class PriceInformationRequestProcessor implements
     @Override
     public PriceInformationResponseType processAnonymously(PriceInformationRequestType request, Optional<Language> lan) {
         // TODO FUTURE
-        return buildError(ErrorFactory.notImplemented(null, null));
+        return buildError(ErrorFactory.Sys.notImplemented(null, null));
     }
 
     @Override
     public PriceInformationResponseType processForUser(PriceInformationRequestType request, Optional<Language> lan,
                                                        UserInfoType userInfo) {
         // TODO FUTURE
-        return buildError(ErrorFactory.notImplemented(null, null));
+        return buildError(ErrorFactory.Sys.notImplemented(null, null));
     }
 
     // -------------------------------------------------------------------------

@@ -39,6 +39,13 @@ public class BookingRepositoryImpl implements BookingRepository {
     }
 
     @Override
+    @Transactional(readOnly = false)
+    public void cancel(Booking booking) {
+        // TODO: Really delete from DB or some other logic (setting a flag)?
+        em.remove(booking);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public Booking findByTransaction(Transaction transaction) {
         final String query = "SELECT b FROM Booking b WHERE b.transaction = :transaction";

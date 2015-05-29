@@ -30,7 +30,7 @@ public class CreateUserRequestProcessor implements
     @Override
     public CreateUserResponseType processAnonymously(CreateUserRequestType request, Optional<Language> lan) {
         if (!request.isSetUser()) {
-            return buildError(ErrorFactory.invalidRequest("User list may not be empty.", null));
+            return buildError(ErrorFactory.Sys.invalidRequest("User list may not be empty.", null));
         }
 
         try {
@@ -38,7 +38,7 @@ public class CreateUserRequestProcessor implements
             return new CreateUserResponseType().withUser(acceptedUsers);
 
         } catch (Exception e) {
-            return buildError(ErrorFactory.backendFailed(e.getMessage(), null));
+            return buildError(ErrorFactory.Sys.backendFailed(e.getMessage(), null));
         }
     }
 
@@ -46,7 +46,7 @@ public class CreateUserRequestProcessor implements
     public CreateUserResponseType processForUser(CreateUserRequestType request, Optional<Language> lan,
                                                  UserInfoType userInfo) {
         // TODO
-        return buildError(ErrorFactory.notImplemented(null, null));
+        return buildError(ErrorFactory.Sys.notImplemented(null, null));
     }
 
     @Override

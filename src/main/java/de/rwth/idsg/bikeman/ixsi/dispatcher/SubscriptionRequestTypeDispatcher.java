@@ -97,7 +97,7 @@ public class SubscriptionRequestTypeDispatcher implements Dispatcher {
         if (systemValidator.validate(systemID)) {
             res = p.process(req, systemID);
         } else {
-            res = p.buildError(ErrorFactory.invalidSystem());
+            res = p.buildError(ErrorFactory.Sys.idUknown());
         }
 
         return new SubscriptionResponseType()
@@ -118,7 +118,7 @@ public class SubscriptionRequestTypeDispatcher implements Dispatcher {
         if (systemValidator.validate(systemID)) {
             res = p.process(req, systemID);
         } else {
-            res = p.buildError(ErrorFactory.invalidSystem());
+            res = p.buildError(ErrorFactory.Sys.idUknown());
         }
 
         return new SubscriptionResponseType()
