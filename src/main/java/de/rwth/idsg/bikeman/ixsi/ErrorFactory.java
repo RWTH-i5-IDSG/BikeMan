@@ -27,12 +27,16 @@ public final class ErrorFactory {
         return setFields(ErrorCodeType.SYS_NOT_IMPLEMENTED, systemMsg, userMsg);
     }
 
-    public static ErrorType invalidRequest(String systemMsg, String userMsg) {
-        return setFields(ErrorCodeType.SYS_REQUEST_NOT_PLAUSIBLE, systemMsg, userMsg);
+    public static ErrorType notAllowedAnonym(String systemMsg, String userMsg) {
+        return setFields(ErrorCodeType.AUTH_ANON_NOT_ALLOWED, systemMsg, userMsg);
     }
 
-    public static ErrorType invalidUserToken(String systemMsg, String userMsg) {
-        return setFields(ErrorCodeType.AUTH_INVALID_TOKEN, systemMsg, userMsg);
+    public static ErrorType invalidAuth(String systemMsg, String userMsg) {
+        return setFields(ErrorCodeType.AUTH_NOT_AUTHORIZED, systemMsg, userMsg);
+    }
+
+    public static ErrorType invalidRequest(String systemMsg, String userMsg) {
+        return setFields(ErrorCodeType.SYS_REQUEST_NOT_PLAUSIBLE, systemMsg, userMsg);
     }
 
     public static ErrorType invalidProvider(String systemMsg, String userMsg) {

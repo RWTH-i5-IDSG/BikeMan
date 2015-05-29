@@ -9,11 +9,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import java.util.Date;
 
 /**
  * @author Sevket Goekay <goekay@dbis.rwth-aachen.de>
@@ -84,12 +84,6 @@ public class IxsiUserRepositoryImpl implements IxsiUserRepository {
             log.error("Error occurred", e);
             return false;
         }
-    }
-
-    @Override
-    public boolean validateUserByMajorCustomer(String cardId, String majorCustomer) {
-        Optional<String> opt = this.getMajorCustomerName(cardId);
-        return opt.isPresent() && opt.get().equalsIgnoreCase(majorCustomer);
     }
 
     @Override

@@ -3,10 +3,12 @@ package de.rwth.idsg.bikeman.ixsi.processor.query.user;
 import com.google.common.base.Optional;
 import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
 import de.rwth.idsg.bikeman.ixsi.processor.api.UserRequestProcessor;
-import de.rwth.idsg.bikeman.ixsi.schema.*;
+import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
+import de.rwth.idsg.bikeman.ixsi.schema.Language;
+import de.rwth.idsg.bikeman.ixsi.schema.PriceInformationRequestType;
+import de.rwth.idsg.bikeman.ixsi.schema.PriceInformationResponseType;
+import de.rwth.idsg.bikeman.ixsi.schema.UserInfoType;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 /**
  * @author Sevket Goekay <goekay@dbis.rwth-aachen.de>
@@ -22,12 +24,9 @@ public class PriceInformationRequestProcessor implements
         return buildError(ErrorFactory.notImplemented(null, null));
     }
 
-    /**
-     * This method has to validate the user infos !!!!
-     */
     @Override
     public PriceInformationResponseType processForUser(PriceInformationRequestType request, Optional<Language> lan,
-                                                       List<UserInfoType> userInfoList) {
+                                                       UserInfoType userInfo) {
         // TODO FUTURE
         return buildError(ErrorFactory.notImplemented(null, null));
     }

@@ -28,14 +28,10 @@ import javax.xml.datatype.Duration;
 @Component
 public class SubscriptionRequestTypeDispatcher implements Dispatcher {
 
-    @Autowired
-    private SubscriptionRequestMap requestMap;
-    @Autowired
-    private SubscriptionRequestMessageMap requestMessageMap;
-    @Autowired
-    private DatatypeFactory factory;
-    @Autowired
-    private SystemValidator systemValidator;
+    @Autowired private SubscriptionRequestMap requestMap;
+    @Autowired private SubscriptionRequestMessageMap requestMessageMap;
+    @Autowired private DatatypeFactory factory;
+    @Autowired private SystemValidator systemValidator;
 
     @Override
     public void handle(CommunicationContext context) {

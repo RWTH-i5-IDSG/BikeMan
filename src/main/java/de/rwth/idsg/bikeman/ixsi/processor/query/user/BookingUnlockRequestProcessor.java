@@ -5,15 +5,17 @@ import de.rwth.idsg.bikeman.domain.Booking;
 import de.rwth.idsg.bikeman.domain.Pedelec;
 import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
 import de.rwth.idsg.bikeman.ixsi.processor.api.UserRequestProcessor;
-import de.rwth.idsg.bikeman.ixsi.schema.*;
+import de.rwth.idsg.bikeman.ixsi.schema.BookingUnlockRequestType;
+import de.rwth.idsg.bikeman.ixsi.schema.BookingUnlockResponseType;
+import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
+import de.rwth.idsg.bikeman.ixsi.schema.Language;
+import de.rwth.idsg.bikeman.ixsi.schema.UserInfoType;
 import de.rwth.idsg.bikeman.psinterface.rest.client.StationClient;
 import de.rwth.idsg.bikeman.repository.BookingRepository;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 /**
  * @author Sevket Goekay <goekay@dbis.rwth-aachen.de>
@@ -29,15 +31,12 @@ public class BookingUnlockRequestProcessor implements
 
     @Override
     public BookingUnlockResponseType processAnonymously(BookingUnlockRequestType request, Optional<Language> lan) {
-        return buildError(ErrorFactory.invalidRequest("Anonymous booking unlock request not allowed", null));
+        return buildError(ErrorFactory.notAllowedAnonym("Anonymous booking unlock request not allowed", null));
     }
 
-    /**
-     * This method has to validate the user infos !!!!
-     */
     @Override
     public BookingUnlockResponseType processForUser(BookingUnlockRequestType request, Optional<Language> lan,
-                                                    List<UserInfoType> userInfoList) {
+                                                    UserInfoType userInfo) {
         try {
             Booking booking = bookingRepository.findByIxsiBookingId(request.getBookingID());
             Pedelec pedelec = booking.getReservation().getPedelec();

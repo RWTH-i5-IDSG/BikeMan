@@ -3,10 +3,12 @@ package de.rwth.idsg.bikeman.ixsi.processor.query.user;
 import com.google.common.base.Optional;
 import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
 import de.rwth.idsg.bikeman.ixsi.processor.api.UserRequestProcessor;
-import de.rwth.idsg.bikeman.ixsi.schema.*;
+import de.rwth.idsg.bikeman.ixsi.schema.ChangeBookingRequestType;
+import de.rwth.idsg.bikeman.ixsi.schema.ChangeBookingResponseType;
+import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
+import de.rwth.idsg.bikeman.ixsi.schema.Language;
+import de.rwth.idsg.bikeman.ixsi.schema.UserInfoType;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 /**
  * @author Sevket Goekay <goekay@dbis.rwth-aachen.de>
@@ -18,15 +20,12 @@ public class ChangeBookingRequestProcessor implements
 
     @Override
     public ChangeBookingResponseType processAnonymously(ChangeBookingRequestType request, Optional<Language> lan) {
-        return buildError(ErrorFactory.invalidRequest("Anonymous change booking request not allowed", null));
+        return buildError(ErrorFactory.notAllowedAnonym("Anonymous change booking request not allowed", null));
     }
 
-    /**
-     * This method has to validate the user infos !!!!
-     */
     @Override
     public ChangeBookingResponseType processForUser(ChangeBookingRequestType request, Optional<Language> lan,
-                                                    List<UserInfoType> userInfoList) {
+                                                    UserInfoType userInfo) {
         // TODO
         return buildError(ErrorFactory.notImplemented(null, null));
     }

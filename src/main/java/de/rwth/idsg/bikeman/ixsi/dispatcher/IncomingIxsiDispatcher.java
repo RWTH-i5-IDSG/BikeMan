@@ -16,13 +16,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class IncomingIxsiDispatcher implements Dispatcher {
 
-    @Autowired
-    private Producer producer;
-
-    @Autowired
-    private QueryRequestTypeDispatcher queryRequestTypeDispatcher;
-    @Autowired
-    private SubscriptionRequestTypeDispatcher subscriptionRequestTypeDispatcher;
+    @Autowired private Producer producer;
+    @Autowired private QueryRequestTypeDispatcher queryRequestTypeDispatcher;
+    @Autowired private SubscriptionRequestTypeDispatcher subscriptionRequestTypeDispatcher;
 
     @Override
     public void handle(CommunicationContext context) {

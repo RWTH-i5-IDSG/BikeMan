@@ -2,7 +2,6 @@ package de.rwth.idsg.bikeman.ixsi.processor.query.user;
 
 import com.google.common.base.Optional;
 import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
-import de.rwth.idsg.bikeman.ixsi.processor.UserValidator;
 import de.rwth.idsg.bikeman.ixsi.processor.api.UserRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.schema.ChangeUserRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.ChangeUserResponseType;
@@ -43,12 +42,9 @@ public class ChangeUserRequestProcessor implements
         }
     }
 
-    /**
-     * This method has to validate the user infos !!!!
-     */
     @Override
     public ChangeUserResponseType processForUser(ChangeUserRequestType request, Optional<Language> lan,
-                                                 List<UserInfoType> userInfoList) {
+                                                 UserInfoType userInfo) {
         // TODO
         return buildError(ErrorFactory.notImplemented(null, null));
     }

@@ -42,12 +42,9 @@ public class CreateUserRequestProcessor implements
         }
     }
 
-    /**
-     * This method has to validate the user infos !!!!
-     */
     @Override
     public CreateUserResponseType processForUser(CreateUserRequestType request, Optional<Language> lan,
-                                                 List<UserInfoType> userInfoList) {
+                                                 UserInfoType userInfo) {
         // TODO
         return buildError(ErrorFactory.notImplemented(null, null));
     }

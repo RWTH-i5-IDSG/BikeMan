@@ -1,18 +1,14 @@
 package de.rwth.idsg.bikeman.ixsi.processor;
 
+import com.google.common.base.Optional;
 import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
 import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
 import de.rwth.idsg.bikeman.ixsi.repository.IxsiUserRepository;
 import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
 import de.rwth.idsg.bikeman.ixsi.schema.UserInfoType;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Sevket Goekay <goekay@dbis.rwth-aachen.de>
@@ -22,63 +18,37 @@ import java.util.List;
 @Component
 public class UserValidator {
 
-    @Autowired
-    private IxsiUserRepository ixsiUserRepository;
+    @Autowired private IxsiUserRepository ixsiUserRepository;
 
-    public Results validate(List<UserInfoType> userInfoList) {
-        Results r = new Results();
-        for (UserInfoType userInfo : userInfoList) {
-            validate(userInfo, r.getValidUsers(), r.getErrors());
-        }
-        return r;
-    }
+    private static final String MAJOR_CUSTOMER_NAME = "ASEAG"; // TODO: get mc-name from anywhere
 
     /**
      * If a check fails, we don't really want to continue and check other fields but exit early.
      * Hence the "return"s.
      *
+     * Returns Optional.absent(), when the user is successfully validated, otherwise the according error type.
      */
-    private void validate(UserInfoType userInfo, List<UserInfoType> validList, List<ErrorType> errorList) {
+    public Optional<ErrorType> validate(UserInfoType userInfo) {
 
         if (!IXSIConstants.Provider.id.equals(userInfo.getProviderID())) {
             final String msg = "Not a " + IXSIConstants.Provider.id + " user";
-            ErrorType e = ErrorFactory.invalidProvider(msg, msg);
-            errorList.add(e);
-            return;
+            return Optional.of(ErrorFactory.invalidProvider(msg, msg));
         }
 
-        if (userInfo.isSetPassword()) {
-            ErrorType e = ErrorFactory.invalidRequest("Using plain passwords is not supported", null);
-            errorList.add(e);
-            return;
+        if (userInfo.isSetPassword() || userInfo.isSetToken()) {
+            return Optional.of(ErrorFactory.invalidRequest("Using passwords or tokens is not supported", null));
         }
-
-        if (userInfo.isSetToken()) {
-            ErrorType e = ErrorFactory.invalidRequest("Using tokens is not supported", null);
-            errorList.add(e);
-            return;
-        }
-
 
         String userId = userInfo.getUserID();
-        //boolean isValid = ixsiUserRepository.validateUserToken(userId, userInfo.getToken());
-        boolean isValid = ixsiUserRepository.validateUserByMajorCustomer(userId, "ASEAG"); // TODO: get mc-name from anywhere
+        Optional<String> opt = ixsiUserRepository.getMajorCustomerName(userId);
 
-        if (isValid) {
-            validList.add(userInfo);
+        if (opt.isPresent() && opt.get().equalsIgnoreCase(MAJOR_CUSTOMER_NAME)) {
+            // Everything OK
+            return Optional.absent();
 
         } else {
-            final String msg = "Token for user '" + userId + "' is invalid";
-            ErrorType e = ErrorFactory.invalidUserToken(msg, msg);
-            errorList.add(e);
+            final String msg = "User id '" + userId + "' is invalid";
+            return Optional.of(ErrorFactory.invalidAuth(msg, msg));
         }
     }
-
-    @Getter
-    @Setter
-    public class Results {
-        private final List<UserInfoType> validUsers = new ArrayList<>();
-        private final List<ErrorType> errors = new ArrayList<>();
-    }
-
 }

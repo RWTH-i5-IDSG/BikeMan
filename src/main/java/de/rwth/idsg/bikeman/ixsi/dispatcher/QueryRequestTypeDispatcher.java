@@ -4,13 +4,16 @@ import com.google.common.base.Optional;
 import de.rwth.idsg.bikeman.ixsi.CommunicationContext;
 import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
 import de.rwth.idsg.bikeman.ixsi.IxsiProcessingException;
+import de.rwth.idsg.bikeman.ixsi.processor.UserValidator;
 import de.rwth.idsg.bikeman.ixsi.processor.api.StaticRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.processor.api.UserRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.repository.SystemValidator;
 import de.rwth.idsg.bikeman.ixsi.schema.AuthType;
+import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
 import de.rwth.idsg.bikeman.ixsi.schema.Language;
 import de.rwth.idsg.bikeman.ixsi.schema.QueryRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.QueryResponseType;
+import de.rwth.idsg.bikeman.ixsi.schema.UserInfoType;
 import de.rwth.idsg.ixsi.jaxb.StaticDataRequestGroup;
 import de.rwth.idsg.ixsi.jaxb.StaticDataResponseGroup;
 import de.rwth.idsg.ixsi.jaxb.UserTriggeredRequestChoice;
@@ -31,14 +34,11 @@ import java.util.List;
 @Component
 public class QueryRequestTypeDispatcher implements Dispatcher {
 
-    @Autowired
-    private QueryUserRequestMap userRequestMap;
-    @Autowired
-    private QueryStaticRequestMap staticRequestMap;
-    @Autowired
-    private DatatypeFactory factory;
-    @Autowired
-    private SystemValidator systemValidator;
+    @Autowired private QueryUserRequestMap userRequestMap;
+    @Autowired private QueryStaticRequestMap staticRequestMap;
+    @Autowired private DatatypeFactory factory;
+    @Autowired private SystemValidator systemValidator;
+    @Autowired private UserValidator userValidator;
 
     @Override
     public void handle(CommunicationContext context) {
@@ -115,7 +115,7 @@ public class QueryRequestTypeDispatcher implements Dispatcher {
         //
         UserTriggeredResponseChoice responseChoice;
         if (systemValidator.validate(request.getSystemID())) {
-            responseChoice = delegateUserRequest(c, p, request.getAuth(), Optional.fromNullable(request.getLanguage()));
+            responseChoice = delegateUserRequest(c, p, Optional.fromNullable(request.getLanguage()), request.getAuth());
         } else {
             responseChoice = p.buildError(ErrorFactory.invalidSystem());
         }
@@ -126,20 +126,40 @@ public class QueryRequestTypeDispatcher implements Dispatcher {
 
     @SuppressWarnings("unchecked")
     private UserTriggeredResponseChoice delegateUserRequest(UserTriggeredRequestChoice c, UserRequestProcessor p,
-                                                            AuthType auth, Optional<Language> lan) {
+                                                            Optional<Language> lan, AuthType auth) {
         log.trace("Processing the authentication information...");
 
         if (auth.isSetAnonymous() && auth.isAnonymous()) {
             return p.processAnonymously(c, lan);
 
         } else if (auth.isSetUserInfo()) {
-            return p.processForUser(c, lan, auth.getUserInfo());
+            return validateUserAndProceed(c, p, lan, auth.getUserInfo());
 
         } else if (auth.isSetSessionID()) {
             return p.buildError(ErrorFactory.notImplemented("Session-based authentication is not supported", null));
 
         } else {
             return p.buildError(ErrorFactory.invalidRequest("Authentication requirements are not met", null));
+        }
+    }
+
+    /**
+     * User validation !!
+     */
+    @SuppressWarnings("unchecked")
+    private UserTriggeredResponseChoice validateUserAndProceed(UserTriggeredRequestChoice c, UserRequestProcessor p,
+                                                               Optional<Language> lan, List<UserInfoType> userInfoList) {
+        if (userInfoList.size() != 1) {
+            String msg = "More than one user per request is not allowed";
+            return p.buildError(ErrorFactory.invalidRequest(msg, msg));
+        }
+
+        UserInfoType userInfo = userInfoList.get(0);
+        Optional<ErrorType> error = userValidator.validate(userInfo);
+        if (error.isPresent()) {
+            return p.buildError(error.get());
+        } else {
+            return p.processForUser(c, lan, userInfo);
         }
     }
 }

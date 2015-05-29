@@ -4,7 +4,6 @@ import com.google.common.base.Optional;
 import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
 import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
 import de.rwth.idsg.bikeman.ixsi.dto.query.AvailabilityResponseDTO;
-import de.rwth.idsg.bikeman.ixsi.processor.UserValidator;
 import de.rwth.idsg.bikeman.ixsi.processor.api.UserRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.repository.QueryIXSIRepository;
 import de.rwth.idsg.bikeman.ixsi.schema.*;
@@ -24,10 +23,7 @@ import java.util.List;
 public class AvailabilityRequestProcessor implements
         UserRequestProcessor<AvailabilityRequestType, AvailabilityResponseType> {
 
-    @Autowired
-    private QueryIXSIRepository queryIXSIRepository;
-    @Autowired
-    private UserValidator userValidator;
+    @Autowired private QueryIXSIRepository queryIXSIRepository;
 
     @Override
     public AvailabilityResponseType processAnonymously(AvailabilityRequestType request, Optional<Language> lan) {
@@ -51,24 +47,10 @@ public class AvailabilityRequestProcessor implements
         return new AvailabilityResponseType().withBookingTarget(availabilityList);
     }
 
-    /**
-     * This method has to validate the user infos !!!!
-     */
     @Override
     public AvailabilityResponseType processForUser(AvailabilityRequestType request, Optional<Language> lan,
-                                                   List<UserInfoType> userInfoList) {
-
-        AvailabilityResponseType availabilityResponse = new AvailabilityResponseType();
-        UserValidator.Results results = userValidator.validate(userInfoList);
-
-        List<ErrorType> errors = results.getErrors();
-        if (!errors.isEmpty()) {
-            availabilityResponse.getError().addAll(errors);
-        }
-
-        List<UserInfoType> validUsers = results.getValidUsers();
-        // TODO process with validUsers
-
+                                                   UserInfoType userInfo) {
+        // TODO
         return buildError(ErrorFactory.notImplemented(null, null));
     }
 
