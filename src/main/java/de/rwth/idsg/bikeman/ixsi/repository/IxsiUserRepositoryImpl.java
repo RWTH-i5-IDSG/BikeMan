@@ -88,21 +88,8 @@ public class IxsiUserRepositoryImpl implements IxsiUserRepository {
 
     @Override
     public boolean validateUserByMajorCustomer(String cardId, String majorCustomer) {
-
-        final String q = "SELECT c FROM CardAccount c WHERE c.cardId = :cardId AND c.ownerType = 'MAJOR_CUSTOMER'";
-
-        try {
-            CardAccount cardAccount = em.createQuery(q, CardAccount.class)
-                .setParameter("cardId", cardId)
-                    //.setParameter("majorCustomerName", majorCustomerName) //TODO: CHECK majorcustomer
-                .getSingleResult();
-
-            return true;
-
-        } catch (Exception e) {
-            log.error("Error occurred", e);
-            return false;
-        }
+        Optional<String> opt = this.getMajorCustomerName(cardId);
+        return opt.isPresent() && opt.get().equalsIgnoreCase(majorCustomer);
     }
 
     @Override
@@ -117,7 +104,8 @@ public class IxsiUserRepositoryImpl implements IxsiUserRepository {
                             .getSingleResult();
             return Optional.of(name);
 
-        } catch (NoResultException e) {
+        } catch (Exception e) {
+            log.error("Error occurred", e);
             return Optional.absent();
         }
     }
