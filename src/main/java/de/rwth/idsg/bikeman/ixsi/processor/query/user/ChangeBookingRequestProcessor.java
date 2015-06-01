@@ -1,13 +1,16 @@
 package de.rwth.idsg.bikeman.ixsi.processor.query.user;
 
 import com.google.common.base.Optional;
+import de.rwth.idsg.bikeman.domain.Booking;
 import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
 import de.rwth.idsg.bikeman.ixsi.IxsiProcessingException;
 import de.rwth.idsg.bikeman.ixsi.processor.api.UserRequestProcessor;
+import de.rwth.idsg.bikeman.ixsi.schema.BookingType;
 import de.rwth.idsg.bikeman.ixsi.schema.ChangeBookingRequestType;
 import de.rwth.idsg.bikeman.ixsi.schema.ChangeBookingResponseType;
 import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
 import de.rwth.idsg.bikeman.ixsi.schema.Language;
+import de.rwth.idsg.bikeman.ixsi.schema.TimePeriodType;
 import de.rwth.idsg.bikeman.ixsi.schema.UserInfoType;
 import de.rwth.idsg.bikeman.ixsi.service.BookingService;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
@@ -38,8 +41,15 @@ public class ChangeBookingRequestProcessor implements
                 return new ChangeBookingResponseType();
 
             } else {
-                // TODO
-                return buildError(ErrorFactory.Sys.notImplemented(null, null));
+                Booking newBooking = bookingService.update(request.getBookingID(), request.getNewTimePeriodProposal());
+                TimePeriodType timePeriod = new TimePeriodType()
+                    .withBegin(newBooking.getReservation().getStartDateTime().toDateTime())
+                    .withEnd(newBooking.getReservation().getEndDateTime().toDateTime());
+                BookingType responseBooking = new BookingType()
+                    .withID(newBooking.getIxsiBookingId())
+                    .withTimePeriod(timePeriod);
+
+                return new ChangeBookingResponseType().withBooking(responseBooking);
             }
         } catch (DatabaseException e) {
             return buildError(ErrorFactory.Booking.idUnknown(e.getMessage(), null));
