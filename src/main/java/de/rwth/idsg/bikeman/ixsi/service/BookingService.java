@@ -96,6 +96,7 @@ public class BookingService {
         bookingRepository.cancel(booking);
     }
 
+    @Transactional
     public Booking update(String bookingId, TimePeriodProposalType newTimePeriodProposal) {
         Booking booking = bookingRepository.findByIxsiBookingId(bookingId);
         Reservation reservation = booking.getReservation();
@@ -106,7 +107,8 @@ public class BookingService {
         // check for new time period validity
         // TODO introduce max/min
         checkTimeFrameForSanity(begin, end);
-        List<Reservation> existingReservations = reservationRepository.findByTimeFrameForPedelec(reservation.getPedelec().getPedelecId(), begin, end);
+        List<Reservation> existingReservations = reservationRepository.findOverlappingReservations(
+            reservation.getPedelec().getPedelecId(), reservation.getReservationId(), begin, end);
         if (!existingReservations.isEmpty()) {
             throw new IxsiProcessingException("Proposed time period overlaps existing booking.");
         }
