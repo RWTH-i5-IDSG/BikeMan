@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -56,8 +57,7 @@ public class TariffService {
                 return ticket3000.listPrice();
 
             default:
-                // TODO: Actually, returning Collections.emptyList() is a better solution here.
-                return null;
+                return Collections.emptyList();
         }
     }
 }

@@ -131,7 +131,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/cardaccount/**").hasAnyAuthority(AuthoritiesConstants.MAJOR_CUSTOMER, AuthoritiesConstants.MANAGER)
                 .antMatchers("/app/stations*").permitAll()
                 .antMatchers("/app/stations/**").permitAll()
-                .antMatchers(HttpMethod.POST, "/customer").permitAll()
+                .antMatchers(HttpMethod.POST, "/app/customer").permitAll()
                 .antMatchers("/app/**").authenticated()
                 .antMatchers("/app*").authenticated()
                 .antMatchers("/metrics/**").hasAuthority(AuthoritiesConstants.ADMIN)
