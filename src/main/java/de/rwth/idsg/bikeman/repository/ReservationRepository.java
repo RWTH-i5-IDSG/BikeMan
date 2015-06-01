@@ -31,6 +31,12 @@ public interface ReservationRepository extends JpaRepository<Reservation, String
                            @Param("pedelecId") long pedelecId,
                            @Param("startTime") LocalDateTime startTime);
 
+    @Modifying
+    @Query("UPDATE Reservation r SET r.startDateTime = :begin, r.endDateTime = :end WHERE r.id = :reservationId")
+    public void updateTimeWindow(@Param("reservationId") long reservationId,
+                                 @Param("begin") LocalDateTime begin,
+                                 @Param("end") LocalDateTime end);
+
     @Query("SELECT r FROM Reservation r WHERE r.cardAccount.cardAccountId = :cardAccountID AND (r.startDateTime <= :dateTime AND r.endDateTime >= :dateTime)")
     public Reservation findByCustomerIdAndTime (@Param("cardAccountID") long cardAccountId,
                                                 @Param("dateTime") LocalDateTime dateTime);

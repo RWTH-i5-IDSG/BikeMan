@@ -9,6 +9,7 @@ import de.rwth.idsg.bikeman.repository.PedelecRepository;
 import de.rwth.idsg.bikeman.repository.ReservationRepository;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.jni.Local;
 import org.joda.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -93,6 +94,28 @@ public class BookingService {
         }
 
         bookingRepository.cancel(booking);
+    }
+
+    public Booking update(String bookingId, TimePeriodProposalType newTimePeriodProposal) {
+        Booking booking = bookingRepository.findByIxsiBookingId(bookingId);
+        Reservation reservation = booking.getReservation();
+
+        LocalDateTime begin = newTimePeriodProposal.getBegin().toLocalDateTime();
+        LocalDateTime end = newTimePeriodProposal.getEnd().toLocalDateTime();
+
+        // check for new time period validity
+        // TODO introduce max/min
+        checkTimeFrameForSanity(begin, end);
+        List<Reservation> existingReservations = reservationRepository.findByTimeFrameForPedelec(reservation.getPedelec().getPedelecId(), begin, end);
+        if (!existingReservations.isEmpty()) {
+            throw new IxsiProcessingException("Proposed time period overlaps existing booking.");
+        }
+
+        // perform update in db
+        reservationRepository.updateTimeWindow(reservation.getReservationId(), begin, end);
+
+        // get the updated booking
+        return bookingRepository.findByIxsiBookingId(bookingId);
     }
 
     /**
