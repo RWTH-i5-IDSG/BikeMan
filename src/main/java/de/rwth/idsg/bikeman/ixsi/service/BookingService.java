@@ -75,6 +75,7 @@ public class BookingService {
         }
     }
 
+    @Transactional
     public void cancel(String bookingId) {
         Booking booking = bookingRepository.findByIxsiBookingId(bookingId);
 
