@@ -24,7 +24,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, String
 
     @Query("SELECT r FROM Reservation r " +
         "WHERE r.pedelec.pedelecId = :pedelecId " +
-        "AND NOT (r.id = :reservationId)" +
+        "AND NOT (r.reservationId = :reservationId)" +
         "AND (r.startDateTime <= :endTime " +
         "AND :startTime <= r.endDateTime)")
     List<Reservation> findOverlappingReservations(@Param("pedelecId") long pedelecId,
@@ -42,7 +42,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, String
                            @Param("startTime") LocalDateTime startTime);
 
     @Modifying
-    @Query("UPDATE Reservation r SET r.startDateTime = :begin, r.endDateTime = :end WHERE r.id = :reservationId")
+    @Query("UPDATE Reservation r SET r.startDateTime = :begin, r.endDateTime = :end WHERE r.reservationId = :reservationId")
     public void updateTimeWindow(@Param("reservationId") long reservationId,
                                  @Param("begin") LocalDateTime begin,
                                  @Param("end") LocalDateTime end);
