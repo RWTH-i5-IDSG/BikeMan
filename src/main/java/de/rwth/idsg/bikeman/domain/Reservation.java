@@ -31,11 +31,11 @@ public class Reservation {
     @JoinColumn(name = "card_account_id")
     private CardAccount cardAccount;
 
-    @Column(name = "start_datetime", nullable = false, updatable = false)
+    @Column(name = "start_datetime", nullable = false)
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
     private LocalDateTime startDateTime;
 
-    @Column(name = "end_datetime", nullable = false, updatable = false)
+    @Column(name = "end_datetime", nullable = false)
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
     private LocalDateTime endDateTime;
 

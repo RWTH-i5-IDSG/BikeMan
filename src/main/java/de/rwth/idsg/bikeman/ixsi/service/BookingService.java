@@ -113,11 +113,11 @@ public class BookingService {
             throw new IxsiProcessingException("Proposed time period overlaps existing booking.");
         }
 
-        // perform update in db
-        reservationRepository.updateTimeWindow(reservation.getReservationId(), begin, end);
+        reservation.setStartDateTime(begin);
+        reservation.setEndDateTime(end);
+        reservationRepository.save(reservation);
 
-        // get the updated booking
-        return bookingRepository.findByIxsiBookingId(bookingId);
+        return booking;
     }
 
     /**
