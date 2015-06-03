@@ -3,6 +3,7 @@ package de.rwth.idsg.bikeman.ixsi;
 import de.rwth.idsg.bikeman.ixsi.schema.ClassType;
 import de.rwth.idsg.bikeman.ixsi.schema.ConsumptionClassType;
 import de.rwth.idsg.bikeman.ixsi.schema.EngineType;
+import de.rwth.idsg.bikeman.ixsi.schema.Language;
 
 /**
  * Created by max on 07/10/14.
@@ -17,6 +18,7 @@ public final class IXSIConstants {
     public static final ClassType bookeeClassType = ClassType.BIKE;
     public static final EngineType engineType = EngineType.ELECTRIC;
     public static final ConsumptionClassType consumptionClass = ConsumptionClassType.DURATION;
+    public static final Language DEFAULT_LANGUAGE = new Language().withValue("DE");
 
     public static final String BOOKING_ID_DELIMITER = "%#";
 

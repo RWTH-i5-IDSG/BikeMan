@@ -12,9 +12,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Component;
 
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import javax.inject.Inject;
 
 /**
  * @author Sevket Goekay <goekay@dbis.rwth-aachen.de>
@@ -121,7 +121,8 @@ public class BookingTargetsInfoRequestProcessor implements
                     .withCoord(coords);
 
             TextType name = new TextType()
-                    .withText(stat.getName());
+                    .withText(stat.getName())
+                    .withLanguage(IXSIConstants.DEFAULT_LANGUAGE);
 
             places.add(new PlaceType()
                     .withAttributeID(BIKE_SHARING_ATTR_ID)
