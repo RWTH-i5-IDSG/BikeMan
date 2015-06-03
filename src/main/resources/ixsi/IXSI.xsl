@@ -12,6 +12,8 @@
     <xsl:template match="/xs:schema/xs:simpleType[@name='AttributeClassType']/xs:restriction">
         <xsl:copy>
             <xsl:apply-templates select="@*|node()"/>
+
+            <!-- Attributes for booking targets  -->
             <xs:enumeration value="trailer_hitch"/>
             <xs:enumeration value="automatic"/>
             <xs:enumeration value="convertible"/>
@@ -28,6 +30,18 @@
             <xs:enumeration value="seats_7"/>
             <xs:enumeration value="seats_5"/>
             <xs:enumeration value="seats_4"/>
+
+            <!--  Attributes for places -->
+            <xs:enumeration value="car_sharing">
+                <xs:annotation>
+                    <xs:documentation>Attribute denoting a car sharing place</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="bike_sharing">
+                <xs:annotation>
+                    <xs:documentation>Attribute denoting a bike sharing place</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
         </xsl:copy>
     </xsl:template>
 

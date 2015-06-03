@@ -430,7 +430,7 @@
 		<xs:annotation>
 			<xs:documentation>Enumeration for attribute classes.</xs:documentation>
 		</xs:annotation>
-		<xs:restriction base="xs:token"><xs:enumeration value="trailer_hitch"/><xs:enumeration value="automatic"/><xs:enumeration value="convertible"/><xs:enumeration value="air_condition"/><xs:enumeration value="navigation"/><xs:enumeration value="cruise_control"/><xs:enumeration value="winter_tyres"/><xs:enumeration value="child_seat_0"/><xs:enumeration value="child_seat_1"/><xs:enumeration value="child_seat_4"/><xs:enumeration value="utility"/><xs:enumeration value="doors_4"/><xs:enumeration value="seats_9"/><xs:enumeration value="seats_7"/><xs:enumeration value="seats_5"/><xs:enumeration value="seats_4"/></xs:restriction>
+		<xs:restriction base="xs:token"><xs:enumeration value="trailer_hitch"/><xs:enumeration value="automatic"/><xs:enumeration value="convertible"/><xs:enumeration value="air_condition"/><xs:enumeration value="navigation"/><xs:enumeration value="cruise_control"/><xs:enumeration value="winter_tyres"/><xs:enumeration value="child_seat_0"/><xs:enumeration value="child_seat_1"/><xs:enumeration value="child_seat_4"/><xs:enumeration value="utility"/><xs:enumeration value="doors_4"/><xs:enumeration value="seats_9"/><xs:enumeration value="seats_7"/><xs:enumeration value="seats_5"/><xs:enumeration value="seats_4"/><xs:enumeration value="car_sharing"><xs:annotation><xs:documentation>Attribute denoting a car sharing place</xs:documentation></xs:annotation></xs:enumeration><xs:enumeration value="bike_sharing"><xs:annotation><xs:documentation>Attribute denoting a bike sharing place</xs:documentation></xs:annotation></xs:enumeration></xs:restriction>
 	</xs:simpleType>
 	<xs:simpleType name="ConsumptionClassType">
 		<xs:annotation>
