@@ -27,9 +27,17 @@ public class BookingTargetsInfoRequestProcessor implements
 
     @Inject private QueryIXSIRepository queryIXSIRepository;
 
+    // "VelocityBikeSharing" encoded to Base64
+    private static final String BIKE_SHARING_ATTR_ID = "VmVsb2NpdHlCaWtlU2hhcmluZw==";
+
     @Override
     public BookingTargetsInfoResponseType process(BookingTargetsInfoRequestType request) {
         BookingTargetsInfoResponseDTO dto = queryIXSIRepository.bookingTargetInfos();
+
+        AttributeType placeTypeAttr = new AttributeType()
+                .withID(BIKE_SHARING_ATTR_ID)
+                .withClazz(AttributeClassType.BIKE_SHARING)
+                .withWithText(false);
 
         // response timestamp
         long timestamp = dto.getTimestamp();
@@ -53,6 +61,7 @@ public class BookingTargetsInfoRequestProcessor implements
                 .withProbability(new PercentType().withValue(100)); // TODO: set probability (Why do we even need this?)
 
         return new BookingTargetsInfoResponseType()
+                .withAttributes(placeTypeAttr)
                 .withTimestamp(new DateTime(timestamp))
                 .withBookee(bookingTargets)
                 .withPlace(places)
@@ -115,6 +124,7 @@ public class BookingTargetsInfoRequestProcessor implements
                     .withText(stat.getName());
 
             places.add(new PlaceType()
+                    .withAttributeID(BIKE_SHARING_ATTR_ID)
                     .withGeoPosition(geoPosition)
                     .withID(stat.getManufacturerId())
                     .withCapacity(stat.getSlotCount())
