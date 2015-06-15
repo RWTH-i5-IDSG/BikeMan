@@ -4,6 +4,8 @@ import de.rwth.idsg.bikeman.app.dto.ViewTransactionDTO;
 import de.rwth.idsg.bikeman.app.exception.AppErrorCode;
 import de.rwth.idsg.bikeman.app.exception.AppException;
 import de.rwth.idsg.bikeman.domain.*;
+import de.rwth.idsg.bikeman.domain.CardAccount_;
+import de.rwth.idsg.bikeman.domain.Customer_;
 import de.rwth.idsg.bikeman.domain.StationSlot_;
 import de.rwth.idsg.bikeman.domain.Station_;
 import de.rwth.idsg.bikeman.domain.Transaction_;
@@ -29,6 +31,8 @@ public class TransactionRepositoryImpl implements TransactionRepository {
 
         Root<Transaction> transaction = criteria.from(Transaction.class);
 
+        Join<Transaction, CardAccount> cardAccount = transaction.join(Transaction_.cardAccount, JoinType.LEFT);
+
         Join<Transaction, StationSlot> fromStationSlot = transaction.join(Transaction_.fromSlot, JoinType.LEFT);
         Join<StationSlot, Station> fromStation = fromStationSlot.join(StationSlot_.station, JoinType.LEFT);
 
@@ -50,7 +54,9 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         ).where(
             builder.and(
                 builder.isNotNull(transaction.get(Transaction_.toSlot)),
-                builder.isNotNull(transaction.get(Transaction_.endDateTime))
+                builder.isNotNull(transaction.get(Transaction_.endDateTime)),
+                builder.equal(cardAccount.get(CardAccount_.ownerType), CustomerType.CUSTOMER),
+                builder.equal(cardAccount.get(CardAccount_.cardAccountId), customer.getCardAccount().getCardAccountId())
             )
         ).orderBy(
             builder.desc(transaction.get(Transaction_.endDateTime))
@@ -72,6 +78,8 @@ public class TransactionRepositoryImpl implements TransactionRepository {
 
         Root<Transaction> transaction = criteria.from(Transaction.class);
 
+        Join<Transaction, CardAccount> cardAccount = transaction.join(Transaction_.cardAccount, JoinType.LEFT);
+
         Join<Transaction, StationSlot> fromStationSlot = transaction.join(Transaction_.fromSlot, JoinType.LEFT);
         Join<StationSlot, Station> fromStation = fromStationSlot.join(StationSlot_.station, JoinType.LEFT);
 
@@ -86,7 +94,9 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         ).where(
             builder.and(
                 builder.isNull(transaction.get(Transaction_.toSlot)),
-                builder.isNull(transaction.get(Transaction_.endDateTime))
+                builder.isNull(transaction.get(Transaction_.endDateTime)),
+                builder.equal(cardAccount.get(CardAccount_.ownerType), CustomerType.CUSTOMER),
+                builder.equal(cardAccount.get(CardAccount_.cardAccountId), customer.getCardAccount().getCardAccountId())
             )
         ).orderBy(
             builder.desc(transaction.get(Transaction_.endDateTime))
