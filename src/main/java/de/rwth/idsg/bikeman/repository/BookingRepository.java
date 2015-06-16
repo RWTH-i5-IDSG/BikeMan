@@ -12,9 +12,6 @@ import java.util.List;
 public interface BookingRepository {
     Booking save(Booking booking);
     void cancel(Booking booking);
-    Booking findByTransaction(Transaction transaction);
-    Booking findByReservation(Reservation reservation);
     List<Booking> findClosedBookings(List<String> ixsiBookingIdList);
-    Booking findOne(Long id);
     Booking findByIxsiBookingId(String ixsiBookingId);
 }

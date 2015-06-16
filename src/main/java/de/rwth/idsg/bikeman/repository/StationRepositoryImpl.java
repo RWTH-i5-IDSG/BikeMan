@@ -1,35 +1,25 @@
 package de.rwth.idsg.bikeman.repository;
 
-import de.rwth.idsg.bikeman.ItemIdComparator;
 import de.rwth.idsg.bikeman.domain.*;
 import de.rwth.idsg.bikeman.domain.Address_;
 import de.rwth.idsg.bikeman.domain.Pedelec_;
 import de.rwth.idsg.bikeman.domain.StationSlot_;
 import de.rwth.idsg.bikeman.domain.Station_;
-import de.rwth.idsg.bikeman.psinterface.Utils;
-import de.rwth.idsg.bikeman.psinterface.dto.request.BootNotificationDTO;
-import de.rwth.idsg.bikeman.psinterface.dto.request.SlotDTO;
-import de.rwth.idsg.bikeman.psinterface.dto.request.StationStatusDTO;
-import de.rwth.idsg.bikeman.psinterface.exception.PsErrorCode;
-import de.rwth.idsg.bikeman.psinterface.exception.PsException;
+
 import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditAddressDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditStationDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.view.ViewStationDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.view.ViewStationSlotDTO;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.*;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
+
 import java.util.List;
 
 /**
@@ -44,9 +34,6 @@ public class StationRepositoryImpl implements StationRepository {
     @PersistenceContext
     private EntityManager em;
 
-    @Autowired
-    private PedelecRepository pedelecRepository;
-
     @Override
     @Transactional(readOnly = true)
     public List<ViewStationDTO> findAll() throws DatabaseException {
@@ -58,13 +45,6 @@ public class StationRepositoryImpl implements StationRepository {
         } catch (Exception e) {
             throw new DatabaseException("Failed during database operation.", e);
         }
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<ViewStationDTO> findByLocation(BigDecimal latitude, BigDecimal longitude) throws DatabaseException {
-        // TODO
-        return null;
     }
 
     @Override
@@ -111,14 +91,6 @@ public class StationRepositoryImpl implements StationRepository {
 
     @Override
     @Transactional(readOnly = true)
-    public Station findOneByManufacturerId(String manufacturerId) {
-        return em.createQuery("SELECT s FROM Station s where s.manufacturerId = :stationManufacturerId", Station.class)
-                .setParameter("stationManufacturerId", manufacturerId)
-                .getSingleResult();
-    }
-
-    @Override
-    @Transactional(readOnly = true)
     public String getEndpointAddress(long stationId) throws DatabaseException {
         final String q = "SELECT s.endpointAddress FROM Station s WHERE s.stationId = :stationId";
         try {
@@ -127,19 +99,6 @@ public class StationRepositoryImpl implements StationRepository {
                     .getSingleResult();
         } catch (Exception e) {
             throw new DatabaseException("Failed to find station with stationId " + stationId, e);
-        }
-    }
-
-    @Override
-    public void updateEndpointAddress(long stationId, String endpointAddress) throws DatabaseException {
-        final String q = "UPDATE Station s SET s.endpointAddress = :endpointAddress WHERE s.stationId = :stationId";
-        try {
-            em.createQuery(q)
-                    .setParameter("stationId", stationId)
-                    .setParameter("endpointAddress", endpointAddress)
-                    .getSingleResult();
-        } catch (Exception e) {
-            throw new DatabaseException("Failed to update endpointAddress of station with stationId " + stationId, e);
         }
     }
 
@@ -178,171 +137,6 @@ public class StationRepositoryImpl implements StationRepository {
 
         } catch (Exception e) {
             throw new DatabaseException("Failed to update station with stationId " + stationId, e);
-        }
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void delete(long stationId) throws DatabaseException {
-        Station station = getStationEntity(stationId);
-        try {
-            em.remove(station);
-            log.debug("Deleted station {}", station);
-        } catch (Exception e) {
-            throw new DatabaseException("Failed to delete station with stationId " + stationId, e);
-        }
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void updateAfterBoot(BootNotificationDTO dto, String endpointAddress) throws DatabaseException {
-
-        // -------------------------------------------------------------------------
-        // Find the station and update
-        // -------------------------------------------------------------------------
-
-        Station station;
-        String stationManufacturerId = dto.getStationManufacturerId();
-        try {
-            station = findOneByManufacturerId(stationManufacturerId);
-            station.setFirmwareVersion(dto.getFirmwareVersion());
-            station.setEndpointAddress(endpointAddress);
-            em.merge(station);
-
-        } catch (NoResultException e) {
-            throw new PsException("Station with manufacturerId '" + stationManufacturerId + "' is not registered", e,
-                    PsErrorCode.NOT_REGISTERED);
-        }
-
-        // -------------------------------------------------------------------------
-        // Find the slots, and decide whether to Update/Insert/Delete
-        // -------------------------------------------------------------------------
-
-        List<String> newList = new ArrayList<>();
-        List<SlotDTO> stationSlotList = dto.getSlots();
-
-        for (SlotDTO slot : stationSlotList) {
-            newList.add(slot.getSlotManufacturerId());
-        }
-
-        final String q = "SELECT ss.manufacturerId FROM StationSlot ss WHERE ss.station = :station";
-
-        List<String> dbList = em.createQuery(q, String.class)
-                                .setParameter("station", station)
-                                .getResultList();
-
-        ItemIdComparator<String> idComparator = new ItemIdComparator<>();
-        idComparator.setDatabaseList(dbList);
-        idComparator.setNewList(newList);
-
-        List<String> updateList = idComparator.getForUpdate();
-        List<String> insertList = idComparator.getForInsert();
-        List<String> deleteList = idComparator.getForDelete();
-
-        // -------------------------------------------------------------------------
-        // Update/Insert
-        // -------------------------------------------------------------------------
-
-        final String updateQuery = "UPDATE StationSlot ss " +
-                                   "SET ss.isOccupied = :isOccupied, " +
-                                   "ss.stationSlotPosition = :slotPosition, " +
-                                   "ss.pedelec = (SELECT p FROM Pedelec p WHERE p.manufacturerId = :pedelecManufacturerId) " +
-                                   "WHERE ss.station = :station " +
-                                   "AND ss.manufacturerId = :slotManufacturerId";
-
-        for (SlotDTO slot : stationSlotList) {
-            String manuId = slot.getSlotManufacturerId();
-            boolean hasPedelec = slot.getPedelecManufacturerId() != null;
-
-            if (updateList.contains(manuId)) {
-                em.createQuery(updateQuery)
-                  .setParameter("isOccupied", hasPedelec)
-                  .setParameter("slotPosition", slot.getSlotPosition())
-                  .setParameter("pedelecManufacturerId", slot.getPedelecManufacturerId())
-                  .setParameter("station", station)
-                  .setParameter("slotManufacturerId", manuId)
-                  .executeUpdate();
-
-            } else if (insertList.contains(manuId)) {
-                StationSlot newSlot = new StationSlot();
-                newSlot.setManufacturerId(manuId);
-                newSlot.setStationSlotPosition(slot.getSlotPosition());
-                newSlot.setStation(station);
-                newSlot.setIsOccupied(hasPedelec);
-
-                if (hasPedelec) {
-                    try {
-                        Pedelec pedelec = pedelecRepository.findByManufacturerId(slot.getPedelecManufacturerId());
-                        newSlot.setPedelec(pedelec);
-                    } catch (DatabaseException e) {
-                        throw new PsException(e.getMessage(), e, PsErrorCode.NOT_REGISTERED);
-                    }
-                }
-
-                em.persist(newSlot);
-            }
-        }
-
-        // -------------------------------------------------------------------------
-        // Delete
-        // -------------------------------------------------------------------------
-
-        if (!deleteList.isEmpty()) {
-            em.createQuery("UPDATE StationSlot ss SET ss.state = :state WHERE ss.manufacturerId IN :slotManufacturerIdList")
-              .setParameter("state", OperationState.DELETED)
-              .setParameter("slotManufacturerIdList", deleteList)
-              .executeUpdate();
-        }
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void updateStationStatus(StationStatusDTO dto) throws DatabaseException {
-
-        // -------------------------------------------------------------------------
-        // Update Station
-        // -------------------------------------------------------------------------
-
-        final String s = "UPDATE Station s SET " +
-                         "s.errorCode = :stationErrorCode, " +
-                         "s.errorInfo = :stationErrorInfo, " +
-                         "s.state = :stationState, " +
-                         "s.updated = :updated " +
-                         "WHERE s.manufacturerId = :stationManufacturerId";
-
-        try {
-            em.createQuery(s)
-              .setParameter("stationErrorCode", dto.getStationErrorCode())
-              .setParameter("stationErrorInfo", dto.getStationErrorInfo())
-              .setParameter("stationState", OperationState.valueOf(dto.getStationState().name()))
-              .setParameter("updated", new Date(Utils.toMillis(dto.getTimestamp())))
-              .setParameter("stationManufacturerId", dto.getStationManufacturerId())
-              .executeUpdate();
-        } catch (Exception e) {
-            throw new DatabaseException("Failed to update the station status with manufacturerId " + dto.getStationManufacturerId(), e);
-        }
-
-        // -------------------------------------------------------------------------
-        // Update Slots
-        // -------------------------------------------------------------------------
-
-        final String ss = "UPDATE StationSlot ss SET " +
-                          "ss.errorCode = :slotErrorCode, " +
-                          "ss.errorInfo = :slotErrorInfo, " +
-                          "ss.state = :slotState " +
-                          "WHERE ss.manufacturerId = :slotManufacturerId";
-
-        for (SlotDTO slot : dto.getSlots()) {
-            try {
-                em.createQuery(ss)
-                  .setParameter("slotErrorCode", slot.getSlotErrorCode())
-                  .setParameter("slotErrorInfo", slot.getSlotErrorInfo())
-                  .setParameter("slotState", OperationState.valueOf(slot.getSlotState().name()))
-                  .setParameter("slotManufacturerId", slot.getSlotManufacturerId())
-                  .executeUpdate();
-            } catch (Exception e) {
-                throw new DatabaseException("Failed to update the slot status with manufacturerId " + slot.getSlotManufacturerId(), e);
-            }
         }
     }
 

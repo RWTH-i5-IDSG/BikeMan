@@ -1,11 +1,6 @@
 package de.rwth.idsg.bikeman.psinterface.rest;
 
-import de.rwth.idsg.bikeman.domain.Booking;
-import de.rwth.idsg.bikeman.domain.CardAccount;
-import de.rwth.idsg.bikeman.domain.OperationState;
-import de.rwth.idsg.bikeman.domain.Reservation;
-import de.rwth.idsg.bikeman.domain.Transaction;
-import de.rwth.idsg.bikeman.ixsi.impl.ExternalBookingStore;
+import de.rwth.idsg.bikeman.domain.*;
 import de.rwth.idsg.bikeman.ixsi.service.AvailabilityPushService;
 import de.rwth.idsg.bikeman.ixsi.service.ConsumptionPushService;
 import de.rwth.idsg.bikeman.ixsi.service.ExternalBookingPushService;
@@ -18,11 +13,10 @@ import de.rwth.idsg.bikeman.psinterface.dto.response.AvailablePedelecDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.response.BootConfirmationDTO;
 import de.rwth.idsg.bikeman.psinterface.exception.PsErrorCode;
 import de.rwth.idsg.bikeman.psinterface.exception.PsException;
-import de.rwth.idsg.bikeman.repository.*;
+import de.rwth.idsg.bikeman.psinterface.repository.*;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
-import org.joda.time.LocalDateTime;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -36,12 +30,12 @@ import java.util.List;
 @Slf4j
 public class PsiService {
 
-    @Inject private CustomerRepository customerRepository;
-    @Inject private TransactionRepository transactionRepository;
-    @Inject private StationRepository stationRepository;
-    @Inject private BookingRepository bookingRepository;
-    @Inject private PedelecRepository pedelecRepository;
-    @Inject private ReservationRepository reservationRepository;
+    @Inject private PsiCustomerRepository customerRepository;
+    @Inject private PsiTransactionRepository transactionRepository;
+    @Inject private PsiStationRepository stationRepository;
+    @Inject private PsiBookingRepository bookingRepository;
+    @Inject private PsiPedelecRepository pedelecRepository;
+    @Inject private PsiReservationRepository reservationRepository;
 
     @Inject private ConsumptionPushService consumptionPushService;
     @Inject private AvailabilityPushService availabilityPushService;

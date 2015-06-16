@@ -18,8 +18,6 @@ public interface MajorCustomerRepository {
      */
     List<ViewMajorCustomerDTO> findAll() throws DatabaseException;
 
-    ViewMajorCustomerDTO findOne(long majorCustomerId) throws DatabaseException;
-
     /**
      * Login (aka email) field of each majorcustomer is unique
      */

@@ -32,27 +32,22 @@ public interface ReservationRepository extends JpaRepository<Reservation, String
                                                   @Param("startTime") LocalDateTime start,
                                                   @Param("endTime") LocalDateTime end);
 
-    @Query("SELECT r FROM Reservation r " +
-           "WHERE r.cardAccount.cardAccountId = :cardAccountId " +
-           "AND r.pedelec.pedelecId = :pedelecId " +
-           "AND r.startDateTime <= :startTime " +
-           "AND :startTime <= r.endDateTime")
-    List<Reservation> find(@Param("cardAccountId") long cardAccountId,
-                           @Param("pedelecId") long pedelecId,
-                           @Param("startTime") LocalDateTime startTime);
-
     @Modifying
-    @Query("UPDATE Reservation r SET r.startDateTime = :begin, r.endDateTime = :end WHERE r.reservationId = :reservationId")
-    public void updateTimeWindow(@Param("reservationId") long reservationId,
+    @Query("UPDATE Reservation r " +
+           "SET r.startDateTime = :begin, r.endDateTime = :end " +
+           "WHERE r.reservationId = :reservationId")
+    void updateTimeWindow(@Param("reservationId") long reservationId,
                                  @Param("begin") LocalDateTime begin,
                                  @Param("end") LocalDateTime end);
 
-    @Query("SELECT r FROM Reservation r WHERE r.cardAccount.cardAccountId = :cardAccountID AND (r.startDateTime <= :dateTime AND r.endDateTime >= :dateTime)")
-    public Reservation findByCustomerIdAndTime (@Param("cardAccountID") long cardAccountId,
-                                                @Param("dateTime") LocalDateTime dateTime);
+    @Query("SELECT r FROM Reservation r " +
+           "WHERE r.cardAccount.cardAccountId = :cardAccountID " +
+           "AND (r.startDateTime <= :dateTime AND r.endDateTime >= :dateTime)")
+    Reservation findByCustomerIdAndTime (@Param("cardAccountID") long cardAccountId,
+                                         @Param("dateTime") LocalDateTime dateTime);
 
     @Modifying
     @Query("UPDATE Reservation r SET r.endDateTime = :dateTime WHERE r.reservationId = :reservationId")
-    public void updateEndDateTime(@Param("reservationId") long reservationId,
-                                  @Param("dateTime") LocalDateTime dateTime);
+    void updateEndDateTime(@Param("reservationId") long reservationId,
+                           @Param("dateTime") LocalDateTime dateTime);
 }

@@ -6,8 +6,6 @@ import de.rwth.idsg.bikeman.domain.BookedTariff_;
 import de.rwth.idsg.bikeman.domain.CardAccount_;
 import de.rwth.idsg.bikeman.domain.Customer_;
 import de.rwth.idsg.bikeman.domain.Tariff_;
-import de.rwth.idsg.bikeman.psinterface.exception.PsErrorCode;
-import de.rwth.idsg.bikeman.psinterface.exception.PsException;
 import de.rwth.idsg.bikeman.security.AuthoritiesConstants;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditAddressDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditCustomerDTO;
@@ -93,23 +91,6 @@ public class CustomerRepositoryImpl implements CustomerRepository {
 
         } catch (Exception e) {
             throw new DatabaseException("Failed during database operation.", e);
-        }
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public CardAccount findByCardIdAndCardPin(String cardId, String cardPin) throws DatabaseException {
-        final String query = "SELECT c FROM CardAccount c WHERE c.cardId = :cardId AND c.cardPin = :cardPin";
-        try {
-            return em.createQuery(query, CardAccount.class)
-                    .setParameter("cardId", cardId)
-                    .setParameter("cardPin", cardPin)
-                    .getSingleResult();
-        } catch (NoResultException e) {
-            throw new PsException("No customer found with cardId " + cardId + " and cardPin " + cardPin, e, PsErrorCode.CONSTRAINT_FAILED);
-
-        } catch (Exception e) {
-            throw new PsException("Failed during database operation.", e, PsErrorCode.DATABASE_OPERATION_FAILED);
         }
     }
 

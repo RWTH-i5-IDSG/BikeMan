@@ -112,52 +112,52 @@ public class MajorCustomerRepositoryImpl implements MajorCustomerRepository {
         return majorCustomerDTO;
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public ViewMajorCustomerDTO findOne(long majorCustomerId) throws DatabaseException {
-
-        CriteriaBuilder builder = em.getCriteriaBuilder();
-
-        CriteriaQuery<ViewMajorCustomerDTO> criteria = this.getMajorCustomerQuery(builder, FindType.BY_ID, null, majorCustomerId);
-        ViewMajorCustomerDTO majorCustomerDTO;
-
-        try {
-            majorCustomerDTO = em.createQuery(criteria).getSingleResult();
-        } catch (Exception e) {
-            throw new DatabaseException("Failed to find majorcustomer with majorCustomerId: " + majorCustomerId, e);
-        }
-
-        CriteriaQuery<ViewCardAccountDTO> cardAccountCriteria = builder.createQuery(ViewCardAccountDTO.class);
-        Root<CardAccount> cardAccount = cardAccountCriteria.from(CardAccount.class);
-        Join<CardAccount, BookedTariff> bookedTariff = cardAccount.join(CardAccount_.currentTariff, JoinType.LEFT);
-
-        cardAccountCriteria.select(
-                builder.construct(
-                        ViewCardAccountDTO.class,
-                        cardAccount.get(CardAccount_.cardId),
-                        cardAccount.get(CardAccount_.cardPin),
-                        cardAccount.get(CardAccount_.inTransaction),
-                        cardAccount.get(CardAccount_.operationState),
-                        bookedTariff.get(BookedTariff_.tariff).get(Tariff_.name)
-                )
-        ).where(builder.equal(cardAccount.get(CardAccount_.user).get(User_.userId), majorCustomerId));
-
-        List<ViewCardAccountDTO> list;
-
-        try {
-            list = em.createQuery(cardAccountCriteria).getResultList();
-        } catch (Exception e) {
-            throw new DatabaseException("Failed to get cards for major customer", e);
-        }
-
-        if (list == null || list.isEmpty()) {
-            majorCustomerDTO.setCardAccountDTOs(new HashSet<>());
-        } else {
-            majorCustomerDTO.setCardAccountDTOs(new HashSet<>(list));
-        }
-
-        return majorCustomerDTO;
-    }
+//    @Override
+//    @Transactional(readOnly = true)
+//    public ViewMajorCustomerDTO findOne(long majorCustomerId) throws DatabaseException {
+//
+//        CriteriaBuilder builder = em.getCriteriaBuilder();
+//
+//        CriteriaQuery<ViewMajorCustomerDTO> criteria = this.getMajorCustomerQuery(builder, FindType.BY_ID, null, majorCustomerId);
+//        ViewMajorCustomerDTO majorCustomerDTO;
+//
+//        try {
+//            majorCustomerDTO = em.createQuery(criteria).getSingleResult();
+//        } catch (Exception e) {
+//            throw new DatabaseException("Failed to find majorcustomer with majorCustomerId: " + majorCustomerId, e);
+//        }
+//
+//        CriteriaQuery<ViewCardAccountDTO> cardAccountCriteria = builder.createQuery(ViewCardAccountDTO.class);
+//        Root<CardAccount> cardAccount = cardAccountCriteria.from(CardAccount.class);
+//        Join<CardAccount, BookedTariff> bookedTariff = cardAccount.join(CardAccount_.currentTariff, JoinType.LEFT);
+//
+//        cardAccountCriteria.select(
+//                builder.construct(
+//                        ViewCardAccountDTO.class,
+//                        cardAccount.get(CardAccount_.cardId),
+//                        cardAccount.get(CardAccount_.cardPin),
+//                        cardAccount.get(CardAccount_.inTransaction),
+//                        cardAccount.get(CardAccount_.operationState),
+//                        bookedTariff.get(BookedTariff_.tariff).get(Tariff_.name)
+//                )
+//        ).where(builder.equal(cardAccount.get(CardAccount_.user).get(User_.userId), majorCustomerId));
+//
+//        List<ViewCardAccountDTO> list;
+//
+//        try {
+//            list = em.createQuery(cardAccountCriteria).getResultList();
+//        } catch (Exception e) {
+//            throw new DatabaseException("Failed to get cards for major customer", e);
+//        }
+//
+//        if (list == null || list.isEmpty()) {
+//            majorCustomerDTO.setCardAccountDTOs(new HashSet<>());
+//        } else {
+//            majorCustomerDTO.setCardAccountDTOs(new HashSet<>(list));
+//        }
+//
+//        return majorCustomerDTO;
+//    }
 
 
     @Override
