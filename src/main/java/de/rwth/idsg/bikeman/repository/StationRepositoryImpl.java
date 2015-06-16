@@ -288,7 +288,8 @@ public class StationRepositoryImpl implements StationRepository {
         // -------------------------------------------------------------------------
 
         if (!deleteList.isEmpty()) {
-            em.createQuery("DELETE FROM StationSlot ss WHERE ss.manufacturerId IN :slotManufacturerIdList")
+            em.createQuery("UPDATE StationSlot ss SET ss.state = :state WHERE ss.manufacturerId IN :slotManufacturerIdList")
+              .setParameter("state", OperationState.DELETED)
               .setParameter("slotManufacturerIdList", deleteList)
               .executeUpdate();
         }
