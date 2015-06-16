@@ -16,7 +16,7 @@ public interface PsiTransactionRepository {
      * Find the OPEN (ONGOING) transactions for ONE card account.
      *
      */
-    List<Transaction> findOpenByCardId(String cardId);
+    boolean hasOpenTransactions(String cardId);
 
     Transaction start(StartTransactionDTO dto);
     Transaction stop(StopTransactionDTO dto);

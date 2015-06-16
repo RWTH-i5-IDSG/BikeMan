@@ -1,19 +1,34 @@
 package de.rwth.idsg.bikeman.psinterface.rest;
 
-import de.rwth.idsg.bikeman.domain.*;
+import de.rwth.idsg.bikeman.domain.Booking;
+import de.rwth.idsg.bikeman.domain.CardAccount;
+import de.rwth.idsg.bikeman.domain.OperationState;
+import de.rwth.idsg.bikeman.domain.Reservation;
+import de.rwth.idsg.bikeman.domain.Transaction;
 import de.rwth.idsg.bikeman.ixsi.service.AvailabilityPushService;
 import de.rwth.idsg.bikeman.ixsi.service.ConsumptionPushService;
 import de.rwth.idsg.bikeman.ixsi.service.ExternalBookingPushService;
 import de.rwth.idsg.bikeman.ixsi.service.PlaceAvailabilityPushService;
 import de.rwth.idsg.bikeman.psinterface.Utils;
 import de.rwth.idsg.bikeman.psinterface.dto.AccountState;
-import de.rwth.idsg.bikeman.psinterface.dto.request.*;
+import de.rwth.idsg.bikeman.psinterface.dto.request.BootNotificationDTO;
+import de.rwth.idsg.bikeman.psinterface.dto.request.ChargingStatusDTO;
+import de.rwth.idsg.bikeman.psinterface.dto.request.CustomerAuthorizeDTO;
+import de.rwth.idsg.bikeman.psinterface.dto.request.PedelecStatusDTO;
+import de.rwth.idsg.bikeman.psinterface.dto.request.StartTransactionDTO;
+import de.rwth.idsg.bikeman.psinterface.dto.request.StationStatusDTO;
+import de.rwth.idsg.bikeman.psinterface.dto.request.StopTransactionDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.response.AuthorizeConfirmationDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.response.AvailablePedelecDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.response.BootConfirmationDTO;
 import de.rwth.idsg.bikeman.psinterface.exception.PsErrorCode;
 import de.rwth.idsg.bikeman.psinterface.exception.PsException;
-import de.rwth.idsg.bikeman.psinterface.repository.*;
+import de.rwth.idsg.bikeman.psinterface.repository.PsiBookingRepository;
+import de.rwth.idsg.bikeman.psinterface.repository.PsiCustomerRepository;
+import de.rwth.idsg.bikeman.psinterface.repository.PsiPedelecRepository;
+import de.rwth.idsg.bikeman.psinterface.repository.PsiReservationRepository;
+import de.rwth.idsg.bikeman.psinterface.repository.PsiStationRepository;
+import de.rwth.idsg.bikeman.psinterface.repository.PsiTransactionRepository;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
@@ -62,14 +77,9 @@ public class PsiService {
             throw new PsException("Card is not operational!", PsErrorCode.CONSTRAINT_FAILED);
         }
 
-        // check if still one transaction is open
-        List<Transaction> openTransactions = transactionRepository.findOpenByCardId(customerAuthorizeDTO.getCardId());
-
-        // default
+        // Is the user allowed to rent?
         AccountState accountState = AccountState.HAS_NO_PEDELEC;
-
-        if (openTransactions != null && !openTransactions.isEmpty()) {
-            // card still in open transaction
+        if (transactionRepository.hasOpenTransactions(customerAuthorizeDTO.getCardId())) {
             accountState = AccountState.HAS_PEDELEC;
         }
 
