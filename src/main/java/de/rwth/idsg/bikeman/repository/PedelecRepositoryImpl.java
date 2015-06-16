@@ -290,7 +290,7 @@ public class PedelecRepositoryImpl implements PedelecRepository {
         try {
             for (ChargingStatusDTO dto : dtoList) {
                 em.createQuery(s)
-                        .setParameter("stateOfCharge", dto.getBattery().getSoc())
+                        .setParameter("stateOfCharge", new Float(dto.getBattery().getSoc()))
                         .setParameter("pedelecManufacturerId", dto.getPedelecManufacturerId())
                         .executeUpdate();
             }
