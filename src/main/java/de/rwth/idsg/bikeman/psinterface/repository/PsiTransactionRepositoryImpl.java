@@ -39,9 +39,9 @@ public class PsiTransactionRepositoryImpl implements PsiTransactionRepository {
         final String query = "SELECT COUNT(t) FROM Transaction t " +
                              "WHERE t.cardAccount.cardId = :cardId AND t.endDateTime IS NULL AND t.toSlot IS NULL";
 
-        Integer count = em.createQuery(query, Integer.class)
-                          .setParameter("cardId", cardId)
-                          .getSingleResult();
+        Long count = em.createQuery(query, Long.class)
+                       .setParameter("cardId", cardId)
+                       .getSingleResult();
 
         return count >= 1;
     }
