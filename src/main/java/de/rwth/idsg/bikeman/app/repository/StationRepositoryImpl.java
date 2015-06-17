@@ -5,6 +5,9 @@ import de.rwth.idsg.bikeman.app.dto.ViewStationSlotsDTO;
 import de.rwth.idsg.bikeman.app.exception.AppErrorCode;
 import de.rwth.idsg.bikeman.app.exception.AppException;
 import de.rwth.idsg.bikeman.domain.*;
+import de.rwth.idsg.bikeman.domain.Pedelec_;
+import de.rwth.idsg.bikeman.domain.StationSlot_;
+import de.rwth.idsg.bikeman.domain.Station_;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
@@ -71,7 +74,7 @@ public class StationRepositoryImpl implements StationRepository {
                         stationSlot.get(StationSlot_.stationSlotPosition),
                         stationSlot.get(StationSlot_.state),
                         stationSlot.get(StationSlot_.isOccupied),
-                        pedelec.get(Pedelec_.stateOfCharge)
+                        pedelec.get(Pedelec_.batteryStateOfCharge)
                 )
         ).where(
                 builder.equal(stationSlot.get(StationSlot_.station).get(Station_.stationId), stationId)

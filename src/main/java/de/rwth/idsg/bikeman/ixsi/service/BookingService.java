@@ -9,7 +9,6 @@ import de.rwth.idsg.bikeman.repository.PedelecRepository;
 import de.rwth.idsg.bikeman.repository.ReservationRepository;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.jni.Local;
 import org.joda.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -128,7 +127,7 @@ public class BookingService {
 
         return OperationState.OPERATIVE.equals(pedelec.getState())
             && !pedelec.getInTransaction()
-            && pedelec.getStateOfCharge() > lowerLimit;
+            && pedelec.getBatteryStateOfCharge() > lowerLimit;
     }
 
     /**

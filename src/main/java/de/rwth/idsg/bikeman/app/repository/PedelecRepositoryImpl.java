@@ -25,7 +25,7 @@ public class PedelecRepositoryImpl implements PedelecRepository {
                 "FROM Pedelec p " +
                 "WHERE p.stationSlot.station.stationId = :stationId " +
                 "AND p.state = de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE " +
-                "ORDER BY p.stateOfCharge DESC";
+                "ORDER BY p.batteryStateOfCharge DESC";
 
         try {
             return em.createQuery(q, Pedelec.class)

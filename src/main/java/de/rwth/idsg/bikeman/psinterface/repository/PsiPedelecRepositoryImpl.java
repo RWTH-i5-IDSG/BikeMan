@@ -35,7 +35,7 @@ public class PsiPedelecRepositoryImpl implements PsiPedelecRepository {
                          "from Pedelec p " +
                          "where p.stationSlot.station.endpointAddress = :endpointAddress " +
                          "and p.state = de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE " +
-                         "order by p.stateOfCharge desc";
+                         "order by p.batteryStateOfCharge desc";
 
         try {
             return em.createQuery(q, AvailablePedelecDTO.class)
@@ -76,7 +76,7 @@ public class PsiPedelecRepositoryImpl implements PsiPedelecRepository {
     @Transactional(rollbackFor = Exception.class)
     public void updatePedelecChargingStatus(List<ChargingStatusDTO> dtoList) {
         final String s = "UPDATE Pedelec p SET " +
-                "p.stateOfCharge = :stateOfCharge " +
+                "p.batteryStateOfCharge = :stateOfCharge " +
                 "WHERE p.manufacturerId = :pedelecManufacturerId";
 
         //TODO: currently only SOC gets updated
@@ -84,7 +84,7 @@ public class PsiPedelecRepositoryImpl implements PsiPedelecRepository {
         try {
             for (ChargingStatusDTO dto : dtoList) {
                 em.createQuery(s)
-                        .setParameter("stateOfCharge", new Float(dto.getBattery().getSoc()))
+                        .setParameter("stateOfCharge", dto.getBattery().getSoc())
                         .setParameter("pedelecManufacturerId", dto.getPedelecManufacturerId())
                         .executeUpdate();
             }

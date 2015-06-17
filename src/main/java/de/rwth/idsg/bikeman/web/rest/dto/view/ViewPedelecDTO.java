@@ -17,7 +17,7 @@ public class ViewPedelecDTO {
 
     private Long pedelecId;
     private String manufacturerId;
-    private Float stateOfCharge;
+    private Double stateOfCharge;
     private OperationState state;
     private Boolean inTransaction;
     private ViewStationDTO station;
@@ -25,7 +25,7 @@ public class ViewPedelecDTO {
 
 
     // Basic
-    public ViewPedelecDTO(Long pedelecId, String manufacturerId, Float stateOfCharge,
+    public ViewPedelecDTO(Long pedelecId, String manufacturerId, Double stateOfCharge,
                           OperationState state, Boolean inTransaction) {
         this.pedelecId = pedelecId;
         this.manufacturerId = manufacturerId;
@@ -35,7 +35,7 @@ public class ViewPedelecDTO {
     }
 
     // Constructor for stationary pedelecs
-    public ViewPedelecDTO(Long pedelecId, String manufacturerId, Float stateOfCharge,
+    public ViewPedelecDTO(Long pedelecId, String manufacturerId, Double stateOfCharge,
                           OperationState state, Boolean inTransaction,
                           Long stationId, String stationManufacturerId, Integer stationSlotPosition) {
         this.pedelecId = pedelecId;
@@ -48,7 +48,7 @@ public class ViewPedelecDTO {
     }
 
     // Constructor for pedelecs in transaction with customer
-    public ViewPedelecDTO(Long pedelecId, String manufacturerId, Float stateOfCharge,
+    public ViewPedelecDTO(Long pedelecId, String manufacturerId, Double stateOfCharge,
                           OperationState state, Boolean inTransaction, String cardId,
                           String customerId, String customerFirstname, String customerLastname,
                           Long stationId, Integer stationSlotPosition, LocalDateTime startDateTime) {
@@ -64,7 +64,7 @@ public class ViewPedelecDTO {
     }
 
     // Constructor for pedelecs in transaction with major customer
-    public ViewPedelecDTO(Long pedelecId, String manufacturerId, Float stateOfCharge,
+    public ViewPedelecDTO(Long pedelecId, String manufacturerId, Double stateOfCharge,
                           OperationState state, Boolean inTransaction, String cardId,
                           String name,
                           Long stationId, Integer stationSlotPosition, LocalDateTime startDateTime) {

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1409564974608-01" author="goekay">
+        <modifyDataType tableName="T_PEDELEC" columnName="state_of_charge" newDataType="REAL"/>
+        <addDefaultValue tableName="T_PEDELEC" columnName="state_of_charge" defaultValueNumeric="0.0"/>
+        <renameColumn tableName="T_PEDELEC" oldColumnName="state_of_charge" newColumnName="battery_state_of_charge"/>
+
+        <addColumn tableName="T_PEDELEC">
+            <column name="meter_value" type="REAL" defaultValueNumeric="0.0"/>
+            <column name="battery_cycle_count" type="INT8" defaultValueNumeric="0"/>
+            <column name="battery_temperature" type="REAL" defaultValueNumeric="0.0"/>
+            <column name="battery_voltage" type="REAL" defaultValueNumeric="0.0"/>
+            <column name="battery_current" type="REAL" defaultValueNumeric="0.0"/>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>

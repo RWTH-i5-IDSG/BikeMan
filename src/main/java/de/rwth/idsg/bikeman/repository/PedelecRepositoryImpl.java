@@ -59,7 +59,7 @@ public class PedelecRepositoryImpl implements PedelecRepository {
                         ViewPedelecDTO.class,
                         pedelec.get(Pedelec_.pedelecId),
                         pedelec.get(Pedelec_.manufacturerId),
-                        pedelec.get(Pedelec_.stateOfCharge),
+                        pedelec.get(Pedelec_.batteryStateOfCharge),
                         pedelec.get(Pedelec_.state),
                         pedelec.get(Pedelec_.inTransaction),
                         cardAccount.get(CardAccount_.cardId),
@@ -97,7 +97,7 @@ public class PedelecRepositoryImpl implements PedelecRepository {
                         ViewPedelecDTO.class,
                         pedelec.get(Pedelec_.pedelecId),
                         pedelec.get(Pedelec_.manufacturerId),
-                        pedelec.get(Pedelec_.stateOfCharge),
+                        pedelec.get(Pedelec_.batteryStateOfCharge),
                         pedelec.get(Pedelec_.state),
                         pedelec.get(Pedelec_.inTransaction),
                         cardAccount.get(CardAccount_.cardId),
@@ -128,7 +128,7 @@ public class PedelecRepositoryImpl implements PedelecRepository {
                         ViewPedelecDTO.class,
                         pedelec.get(Pedelec_.pedelecId),
                         pedelec.get(Pedelec_.manufacturerId),
-                        pedelec.get(Pedelec_.stateOfCharge),
+                        pedelec.get(Pedelec_.batteryStateOfCharge),
                         pedelec.get(Pedelec_.state),
                         pedelec.get(Pedelec_.inTransaction),
                         station.get(Station_.stationId),
@@ -145,7 +145,7 @@ public class PedelecRepositoryImpl implements PedelecRepository {
     public ViewPedelecDTO findOneDTO(Long pedelecId) throws DatabaseException {
 
         final String q = "SELECT new de.rwth.idsg.bikeman.web.rest.dto.view." +
-                         "ViewPedelecDTO(p.pedelecId, p.manufacturerId, p.stateOfCharge, p.state, p.inTransaction) " +
+                         "ViewPedelecDTO(p.pedelecId, p.manufacturerId, p.batteryStateOfCharge, p.state, p.inTransaction) " +
                          "FROM Pedelec p " +
                          "WHERE p.pedelecId = :pedelecId";
 
