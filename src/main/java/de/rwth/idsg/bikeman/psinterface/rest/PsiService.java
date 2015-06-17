@@ -73,7 +73,7 @@ public class PsiService {
     public AuthorizeConfirmationDTO handleAuthorize(CustomerAuthorizeDTO customerAuthorizeDTO) throws DatabaseException {
         CardAccount cardAccount = customerRepository.findByCardIdAndCardPin(customerAuthorizeDTO.getCardId(), customerAuthorizeDTO.getCardPin());
 
-        if (OperationState.INOPERATIVE.equals(cardAccount.getOperationState())) {
+        if (!OperationState.OPERATIVE.equals(cardAccount.getOperationState())) {
             throw new PsException("Card is not operational!", PsErrorCode.CONSTRAINT_FAILED);
         }
 
