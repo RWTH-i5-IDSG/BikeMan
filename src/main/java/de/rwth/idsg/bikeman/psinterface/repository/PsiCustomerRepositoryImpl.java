@@ -34,7 +34,7 @@ public class PsiCustomerRepositoryImpl implements PsiCustomerRepository {
 
         } catch (NoResultException e) {
             throw new PsException("No customer found with cardId " + cardId
-                + " and cardPin " + cardPin, e, PsErrorCode.CONSTRAINT_FAILED);
+                + " and cardPin " + cardPin, e, PsErrorCode.NOT_REGISTERED);
 
         } catch (Exception e) {
             throw new PsException("Failed during database operation.", e, PsErrorCode.DATABASE_OPERATION_FAILED);

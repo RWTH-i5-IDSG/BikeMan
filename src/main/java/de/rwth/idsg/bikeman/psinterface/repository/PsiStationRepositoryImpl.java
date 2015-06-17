@@ -131,8 +131,11 @@ public class PsiStationRepositoryImpl implements PsiStationRepository {
         // -------------------------------------------------------------------------
 
         if (!deleteList.isEmpty()) {
-            em.createQuery("UPDATE StationSlot ss SET ss.state = :state WHERE ss.manufacturerId IN :slotManufacturerIdList")
-              .setParameter("state", OperationState.DELETED)
+            final String deleteQuery = "UPDATE StationSlot ss " +
+                                       "SET ss.state = de.rwth.idsg.bikeman.domain.OperationState.DELETED " +
+                                       "WHERE ss.manufacturerId IN :slotManufacturerIdList";
+
+            em.createQuery(deleteQuery)
               .setParameter("slotManufacturerIdList", deleteList)
               .executeUpdate();
         }
