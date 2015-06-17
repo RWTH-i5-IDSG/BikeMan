@@ -24,7 +24,7 @@ import javax.sql.DataSource;
 import java.util.Arrays;
 
 @Configuration
-@EnableJpaRepositories("de.rwth.idsg.bikeman.repository")
+@EnableJpaRepositories("de.rwth.idsg.bikeman")
 @EnableJpaAuditing(auditorAwareRef = "springSecurityAuditorAware")
 @EnableTransactionManagement
 public class DatabaseConfiguration implements EnvironmentAware {
