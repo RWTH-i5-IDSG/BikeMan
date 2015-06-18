@@ -2,11 +2,13 @@ package de.rwth.idsg.bikeman.psinterface.repository;
 
 import de.rwth.idsg.bikeman.domain.OperationState;
 import de.rwth.idsg.bikeman.psinterface.Utils;
+import de.rwth.idsg.bikeman.psinterface.dto.request.BatteryStatusDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.ChargingStatusDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.PedelecStatusDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.response.AvailablePedelecDTO;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
+import org.joda.time.LocalDateTime;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -76,18 +78,30 @@ public class PsiPedelecRepositoryImpl implements PsiPedelecRepository {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updatePedelecChargingStatus(List<ChargingStatusDTO> dtoList) {
-        final String s = "UPDATE Pedelec p SET " +
-                "p.batteryStateOfCharge = :stateOfCharge " +
-                "WHERE p.manufacturerId = :pedelecManufacturerId";
-
-        //TODO: currently only SOC gets updated
+        final String s = "UPDATE PedelecChargingStatus s SET " +
+                         "s.state = :state, " +
+                         "s.meterValue = :meterValue, " +
+                         "s.batteryCycleCount = :cycleCount, " +
+                         "s.batteryStateOfCharge = :stateOfCharge, " +
+                         "s.batteryTemperature = :temperature, " +
+                         "s.batteryVoltage = :voltage, " +
+                         "s.batteryCurrent = :current, " +
+                         "s.timestamp = :timestamp " +
+                         "WHERE s.pedelec = (SELECT p FROM Pedelec p WHERE p.manufacturerId = :pedelecManufacturerId)";
 
         try {
             for (ChargingStatusDTO dto : dtoList) {
                 em.createQuery(s)
-                        .setParameter("stateOfCharge", dto.getBattery().getSoc())
-                        .setParameter("pedelecManufacturerId", dto.getPedelecManufacturerId())
-                        .executeUpdate();
+                  .setParameter("state", dto.getChargingState())
+                  .setParameter("meterValue", dto.getMeterValue())
+                  .setParameter("cycleCount", dto.getBattery().getCycleCount())
+                  .setParameter("stateOfCharge", dto.getBattery().getSoc())
+                  .setParameter("temperature", dto.getBattery().getTemperature())
+                  .setParameter("voltage", dto.getBattery().getVoltage())
+                  .setParameter("current", dto.getBattery().getCurrent())
+                  .setParameter("timestamp", new LocalDateTime(Utils.toMillis(dto.getTimestamp())))
+                  .setParameter("pedelecManufacturerId", dto.getPedelecManufacturerId())
+                  .executeUpdate();
             }
         } catch (Exception e) {
             throw new DatabaseException("Failed to update the charging status.", e);
