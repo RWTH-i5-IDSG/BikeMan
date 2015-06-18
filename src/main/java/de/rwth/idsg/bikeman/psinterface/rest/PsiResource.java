@@ -28,12 +28,10 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/psi", produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
-public class PsiController {
+public class PsiResource {
 
-    @Inject
-    private PsiService psiService;
-    @Inject
-    private CardAccountService cardAccountService;
+    @Inject private PsiService psiService;
+    @Inject private CardAccountService cardAccountService;
 
     private static final String BOOT_NOTIFICATION_PATH = "/boot";
     private static final String AUTHORIZE_PATH = "/authorize";

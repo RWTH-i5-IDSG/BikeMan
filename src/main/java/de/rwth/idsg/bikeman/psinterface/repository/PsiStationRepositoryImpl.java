@@ -62,9 +62,9 @@ public class PsiStationRepositoryImpl implements PsiStationRepository {
         // -------------------------------------------------------------------------
 
         List<String> newList = new ArrayList<>();
-        List<SlotDTO> stationSlotList = dto.getSlots();
+        List<SlotDTO.Boot> stationSlotList = dto.getSlots();
 
-        for (SlotDTO slot : stationSlotList) {
+        for (SlotDTO.Boot slot : stationSlotList) {
             newList.add(slot.getSlotManufacturerId());
         }
 
@@ -93,7 +93,7 @@ public class PsiStationRepositoryImpl implements PsiStationRepository {
                                    "WHERE ss.station = :station " +
                                    "AND ss.manufacturerId = :slotManufacturerId";
 
-        for (SlotDTO slot : stationSlotList) {
+        for (SlotDTO.Boot slot : stationSlotList) {
             String manuId = slot.getSlotManufacturerId();
             boolean hasPedelec = slot.getPedelecManufacturerId() != null;
 
@@ -179,7 +179,7 @@ public class PsiStationRepositoryImpl implements PsiStationRepository {
                           "ss.state = :slotState " +
                           "WHERE ss.manufacturerId = :slotManufacturerId";
 
-        for (SlotDTO slot : dto.getSlots()) {
+        for (SlotDTO.StationStatus slot : dto.getSlots()) {
             try {
                 em.createQuery(ss)
                   .setParameter("slotErrorCode", slot.getSlotErrorCode())
