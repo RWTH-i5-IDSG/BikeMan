@@ -12,10 +12,10 @@ public class ViewStationSlotsDTO {
     private Integer stationSlotPosition;
     private OperationState state;
     private Boolean isOccupied;
-    private Float stateOfCharge;
+    private Double stateOfCharge;
 
     public ViewStationSlotsDTO(Long stationSlotId, Integer stationSlotPosition,
-                               OperationState state, Boolean isOccupied, Float stateOfCharge) {
+                               OperationState state, Boolean isOccupied, Double stateOfCharge) {
         this.stationSlotId = stationSlotId;
         this.stationSlotPosition = stationSlotPosition;
         this.state = state;

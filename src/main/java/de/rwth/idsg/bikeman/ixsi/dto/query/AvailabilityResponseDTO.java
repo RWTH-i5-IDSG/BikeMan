@@ -20,11 +20,11 @@ public class AvailabilityResponseDTO {
     private String stationManufacturerId;
     private BigDecimal locationLatitude;
     private BigDecimal locationLongitude;
-    private Float stateOfCharge;
+    private Double stateOfCharge;
 //    private Float drivingRange;
 
     // For simple queries
-    public AvailabilityResponseDTO(String manufacturerId, String stationManufacturerId, Float stateOfCharge) {
+    public AvailabilityResponseDTO(String manufacturerId, String stationManufacturerId, Double stateOfCharge) {
         this.manufacturerId = manufacturerId;
         this.stationManufacturerId = stationManufacturerId;
         this.stateOfCharge = stateOfCharge;
@@ -32,7 +32,7 @@ public class AvailabilityResponseDTO {
 
     // For geo-location queries
     public AvailabilityResponseDTO(String manufacturerId, String stationManufacturerId,
-                                   BigDecimal locationLatitude, BigDecimal locationLongitude, Float stateOfCharge) {
+                                   BigDecimal locationLatitude, BigDecimal locationLongitude, Double stateOfCharge) {
         this.manufacturerId = manufacturerId;
         this.stationManufacturerId = stationManufacturerId;
         this.locationLatitude = locationLatitude;

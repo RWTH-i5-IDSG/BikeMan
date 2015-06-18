@@ -33,9 +33,10 @@ public class PsiPedelecRepositoryImpl implements PsiPedelecRepository {
         final String q = "SELECT new de.rwth.idsg.bikeman.psinterface.dto.response." +
                          "AvailablePedelecDTO(p.manufacturerId) " +
                          "from Pedelec p " +
+                         "join p.chargingStatus cs " +
                          "where p.stationSlot.station.endpointAddress = :endpointAddress " +
                          "and p.state = de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE " +
-                         "order by p.batteryStateOfCharge desc";
+                         "order by cs.batteryStateOfCharge desc";
 
         try {
             return em.createQuery(q, AvailablePedelecDTO.class)

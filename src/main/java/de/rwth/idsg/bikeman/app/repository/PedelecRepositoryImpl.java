@@ -23,9 +23,10 @@ public class PedelecRepositoryImpl implements PedelecRepository {
     public List<Pedelec> findAvailablePedelecs(Long stationId) throws AppException {
         final String q = "SELECT p " +
                 "FROM Pedelec p " +
+                "JOIN p.chargingStatus cs " +
                 "WHERE p.stationSlot.station.stationId = :stationId " +
                 "AND p.state = de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE " +
-                "ORDER BY p.batteryStateOfCharge DESC";
+                "ORDER BY cs.batteryStateOfCharge DESC";
 
         try {
             return em.createQuery(q, Pedelec.class)

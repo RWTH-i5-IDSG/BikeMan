@@ -762,7 +762,7 @@
             <properties>
                 <!-- log configuration -->
                 <logback.loglevel>INFO</logback.loglevel>
-                <logback.appender>SYSLOG</logback.appender>
+                <logback.appender>FILE</logback.appender>
             </properties>
         </profile>
     </profiles>

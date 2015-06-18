@@ -127,7 +127,7 @@ public class BookingService {
 
         return OperationState.OPERATIVE.equals(pedelec.getState())
             && !pedelec.getInTransaction()
-            && pedelec.getBatteryStateOfCharge() > lowerLimit;
+            && pedelec.getChargingStatus().getBatteryStateOfCharge() > lowerLimit;
     }
 
     /**

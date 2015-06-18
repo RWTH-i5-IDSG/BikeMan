@@ -4,8 +4,12 @@ import de.rwth.idsg.bikeman.app.dto.ViewStationDTO;
 import de.rwth.idsg.bikeman.app.dto.ViewStationSlotsDTO;
 import de.rwth.idsg.bikeman.app.exception.AppErrorCode;
 import de.rwth.idsg.bikeman.app.exception.AppException;
-import de.rwth.idsg.bikeman.domain.*;
+import de.rwth.idsg.bikeman.domain.Pedelec;
+import de.rwth.idsg.bikeman.domain.PedelecChargingStatus;
+import de.rwth.idsg.bikeman.domain.PedelecChargingStatus_;
 import de.rwth.idsg.bikeman.domain.Pedelec_;
+import de.rwth.idsg.bikeman.domain.Station;
+import de.rwth.idsg.bikeman.domain.StationSlot;
 import de.rwth.idsg.bikeman.domain.StationSlot_;
 import de.rwth.idsg.bikeman.domain.Station_;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
@@ -16,7 +20,12 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Root;
 import java.util.List;
 
 @Repository("StationRepositoryImplApp")
@@ -67,6 +76,8 @@ public class StationRepositoryImpl implements StationRepository {
         Root<StationSlot> stationSlot = criteria.from(StationSlot.class);
         Join<StationSlot, Pedelec> pedelec = stationSlot.join(StationSlot_.pedelec, JoinType.LEFT);
 
+        Join<Pedelec, PedelecChargingStatus> chargingStatus = pedelec.join(Pedelec_.chargingStatus, JoinType.INNER);
+
         criteria.select(
                 builder.construct(
                         ViewStationSlotsDTO.class,
@@ -74,7 +85,7 @@ public class StationRepositoryImpl implements StationRepository {
                         stationSlot.get(StationSlot_.stationSlotPosition),
                         stationSlot.get(StationSlot_.state),
                         stationSlot.get(StationSlot_.isOccupied),
-                        pedelec.get(Pedelec_.batteryStateOfCharge)
+                        chargingStatus.get(PedelecChargingStatus_.batteryStateOfCharge)
                 )
         ).where(
                 builder.equal(stationSlot.get(StationSlot_.station).get(Station_.stationId), stationId)

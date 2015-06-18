@@ -103,8 +103,11 @@ public class QueryIXSIRepositoryImpl implements QueryIXSIRepository {
     public List<AvailabilityResponseDTO> availability(List<BookingTargetIDType> targets) {
         Query q = em.createQuery(
                 "SELECT new de.rwth.idsg.bikeman.ixsi.dto.query.AvailabilityResponseDTO(" +
-                "p.manufacturerId, s.manufacturerId, p.stateOfCharge) " +
-                "FROM Pedelec p JOIN p.stationSlot slot JOIN slot.station s " +
+                "p.manufacturerId, s.manufacturerId, cs.batteryStateOfCharge) " +
+                "FROM Pedelec p " +
+                "JOIN p.chargingStatus cs " +
+                "JOIN p.stationSlot slot " +
+                "JOIN slot.station s " +
                 "WHERE p.manufacturerId in :targets");
 
         List<String> idList = new ArrayList<>();
@@ -163,7 +166,7 @@ public class QueryIXSIRepositoryImpl implements QueryIXSIRepository {
                     (String) row[1],
                     (BigDecimal) row[2],
                     (BigDecimal) row[3],
-                    (Float) row[4]);
+                    (Double) row[4]);
 
             myList.add(dto);
         }

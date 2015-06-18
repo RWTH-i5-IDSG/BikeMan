@@ -30,24 +30,6 @@ public class Pedelec extends AbstractTimestampClass implements Serializable {
     @Column(name = "manufacturer_id")
     private String manufacturerId;
 
-    @Column(name = "meter_value")
-    private Double meterValue = 0.0;
-
-    @Column(name = "battery_state_of_charge")
-    private Double batteryStateOfCharge = 0.0;
-
-    @Column(name = "battery_cycle_count")
-    private Integer batteryCycleCount = 0;
-
-    @Column(name = "battery_temperature")
-    private Double batteryTemperature = 0.0;
-
-    @Column(name = "battery_voltage")
-    private Double batteryVoltage = 0.0;
-
-    @Column(name = "battery_current")
-    private Double batteryCurrent = 0.0;
-
     @Column(name = "in_transaction")
     private Boolean inTransaction;
 
@@ -57,6 +39,9 @@ public class Pedelec extends AbstractTimestampClass implements Serializable {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "pedelec")
     private Set<Transaction> transactions;
+
+    @OneToOne(fetch = FetchType.EAGER, mappedBy = "pedelec", cascade = CascadeType.ALL)
+    private PedelecChargingStatus chargingStatus;
 
     @OneToOne(mappedBy = "pedelec")
     private StationSlot stationSlot;

@@ -89,8 +89,8 @@ public class AvailabilityRequestProcessor implements
         return availabilityList;
     }
 
-    private int roundPercent(Float decimal) {
-        return Math.round(decimal * 100);
+    private int roundPercent(Double decimal) {
+        return (int) Math.round(decimal * 100);
     }
 
     // -------------------------------------------------------------------------

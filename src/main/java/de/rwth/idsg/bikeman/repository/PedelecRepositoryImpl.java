@@ -4,6 +4,7 @@ import de.rwth.idsg.bikeman.domain.*;
 import de.rwth.idsg.bikeman.domain.CardAccount_;
 import de.rwth.idsg.bikeman.domain.Customer_;
 import de.rwth.idsg.bikeman.domain.MajorCustomer_;
+import de.rwth.idsg.bikeman.domain.PedelecChargingStatus_;
 import de.rwth.idsg.bikeman.domain.Pedelec_;
 import de.rwth.idsg.bikeman.domain.StationSlot_;
 import de.rwth.idsg.bikeman.domain.Station_;
@@ -54,12 +55,14 @@ public class PedelecRepositoryImpl implements PedelecRepository {
         Join<Transaction, StationSlot> fromStationSlot = transaction.join(Transaction_.fromSlot, JoinType.LEFT);
         Join<StationSlot, Station> fromStation = fromStationSlot.join(StationSlot_.station, JoinType.LEFT);
 
+        Join<Pedelec, PedelecChargingStatus> chargingStatus = pedelec.join(Pedelec_.chargingStatus, JoinType.LEFT);
+
         criteria.select(
                 builder.construct(
                         ViewPedelecDTO.class,
                         pedelec.get(Pedelec_.pedelecId),
                         pedelec.get(Pedelec_.manufacturerId),
-                        pedelec.get(Pedelec_.batteryStateOfCharge),
+                        chargingStatus.get(PedelecChargingStatus_.batteryStateOfCharge),
                         pedelec.get(Pedelec_.state),
                         pedelec.get(Pedelec_.inTransaction),
                         cardAccount.get(CardAccount_.cardId),
@@ -92,12 +95,14 @@ public class PedelecRepositoryImpl implements PedelecRepository {
         Join<Transaction, StationSlot> fromStationSlot = transaction.join(Transaction_.fromSlot, JoinType.LEFT);
         Join<StationSlot, Station> fromStation = fromStationSlot.join(StationSlot_.station, JoinType.LEFT);
 
+        Join<Pedelec, PedelecChargingStatus> chargingStatus = pedelec.join(Pedelec_.chargingStatus, JoinType.LEFT);
+
         criteria.select(
                 builder.construct(
                         ViewPedelecDTO.class,
                         pedelec.get(Pedelec_.pedelecId),
                         pedelec.get(Pedelec_.manufacturerId),
-                        pedelec.get(Pedelec_.batteryStateOfCharge),
+                        chargingStatus.get(PedelecChargingStatus_.batteryStateOfCharge),
                         pedelec.get(Pedelec_.state),
                         pedelec.get(Pedelec_.inTransaction),
                         cardAccount.get(CardAccount_.cardId),
@@ -123,12 +128,14 @@ public class PedelecRepositoryImpl implements PedelecRepository {
         Join<Pedelec, StationSlot> stationSlot = pedelec.join(Pedelec_.stationSlot, JoinType.LEFT);
         Join<StationSlot, Station> station = stationSlot.join(StationSlot_.station, JoinType.LEFT);
 
+        Join<Pedelec, PedelecChargingStatus> chargingStatus = pedelec.join(Pedelec_.chargingStatus, JoinType.LEFT);
+
         criteria.select(
                 builder.construct(
                         ViewPedelecDTO.class,
                         pedelec.get(Pedelec_.pedelecId),
                         pedelec.get(Pedelec_.manufacturerId),
-                        pedelec.get(Pedelec_.batteryStateOfCharge),
+                        chargingStatus.get(PedelecChargingStatus_.batteryStateOfCharge),
                         pedelec.get(Pedelec_.state),
                         pedelec.get(Pedelec_.inTransaction),
                         station.get(Station_.stationId),
@@ -145,8 +152,9 @@ public class PedelecRepositoryImpl implements PedelecRepository {
     public ViewPedelecDTO findOneDTO(Long pedelecId) throws DatabaseException {
 
         final String q = "SELECT new de.rwth.idsg.bikeman.web.rest.dto.view." +
-                         "ViewPedelecDTO(p.pedelecId, p.manufacturerId, p.batteryStateOfCharge, p.state, p.inTransaction) " +
+                         "ViewPedelecDTO(p.pedelecId, p.manufacturerId, cs.batteryStateOfCharge, p.state, p.inTransaction) " +
                          "FROM Pedelec p " +
+                         "JOIN p.chargingStatus cs " +
                          "WHERE p.pedelecId = :pedelecId";
 
         try {
@@ -251,5 +259,9 @@ public class PedelecRepositoryImpl implements PedelecRepository {
     private void setFields(Pedelec pedelec, CreateEditPedelecDTO dto) {
         pedelec.setState(dto.getState());
         pedelec.setManufacturerId(dto.getManufacturerId());
+
+        PedelecChargingStatus status = new PedelecChargingStatus();
+        status.setPedelec(pedelec);
+        pedelec.setChargingStatus(status);
     }
 }
