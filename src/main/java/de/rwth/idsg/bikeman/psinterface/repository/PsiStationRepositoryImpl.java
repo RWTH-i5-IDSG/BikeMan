@@ -89,6 +89,7 @@ public class PsiStationRepositoryImpl implements PsiStationRepository {
         final String updateQuery = "UPDATE StationSlot ss " +
                                    "SET ss.isOccupied = :isOccupied, " +
                                    "ss.stationSlotPosition = :slotPosition, " +
+                                   "ss.state = de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE, " +
                                    "ss.pedelec = (SELECT p FROM Pedelec p WHERE p.manufacturerId = :pedelecManufacturerId) " +
                                    "WHERE ss.station = :station " +
                                    "AND ss.manufacturerId = :slotManufacturerId";
@@ -112,6 +113,7 @@ public class PsiStationRepositoryImpl implements PsiStationRepository {
                 newSlot.setStationSlotPosition(slot.getSlotPosition());
                 newSlot.setStation(station);
                 newSlot.setIsOccupied(hasPedelec);
+                newSlot.setState(OperationState.OPERATIVE);
 
                 if (hasPedelec) {
                     try {
