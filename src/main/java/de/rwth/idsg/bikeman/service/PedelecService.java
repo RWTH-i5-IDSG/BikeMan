@@ -47,6 +47,11 @@ public class PedelecService {
     public void changeOperationState(CreateEditPedelecDTO dto) throws DatabaseException, RestClientException {
         Pedelec pedelec = pedelecRepository.findOne(dto.getPedelecId());
 
+        // do not permit changes to pedelecs which are currently rented
+        if (pedelec.getInTransaction()) {
+            throw new DatabaseException("Cannot apply changes to pedelecs in transaction!");
+        }
+
         OperationState inputState = dto.getState();
 
         // states do match -> early exit
