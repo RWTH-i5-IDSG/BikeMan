@@ -20,7 +20,8 @@ public final class Utils {
             remoteAddress = request.getRemoteAddr();
         }
 
-        return request.getScheme() + "://" + remoteAddress + ":" + request.getRemotePort();
+        //return request.getScheme() + "://" + remoteAddress + ":" + request.getRemotePort();
+        return request.getScheme() + "://" + remoteAddress;
     }
 
     public static long toSeconds(long millis) {
