@@ -74,7 +74,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     @Override
     @Transactional(readOnly = false)
     public CreateCustomerDTO create(CreateCustomerDTO dto) {
-        final String openTransactionsQuery = "SELECT COUNT(*) FROM Customer c " +
+        final String openTransactionsQuery = "SELECT COUNT(c) FROM Customer c " +
             "WHERE c.login = :login";
 
         Long customerExists = em.createQuery(openTransactionsQuery, Long.class)

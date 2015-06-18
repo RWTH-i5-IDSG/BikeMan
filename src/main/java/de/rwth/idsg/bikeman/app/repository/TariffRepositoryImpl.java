@@ -36,6 +36,9 @@ public class TariffRepositoryImpl implements TariffRepository {
             List<ViewTariffDTO> tariffs = em.createQuery(q, ViewTariffDTO.class)
                     .getResultList();
 
+            // Note by goekay:
+            // No need for this check and throwing an exception. What's so bad with returning
+            // an empty collection (the query will already return an empty list)?
             if (tariffs.isEmpty()) {
                 throw new NoResultException();
             }

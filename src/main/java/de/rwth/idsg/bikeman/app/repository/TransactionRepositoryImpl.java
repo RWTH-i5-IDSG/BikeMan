@@ -116,7 +116,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
     }
 
     public Long numberOfOpenTransactionsByCustomer(Customer customer) {
-        final String openTransactionsQuery = "SELECT COUNT(*) FROM Transaction t " +
+        final String openTransactionsQuery = "SELECT COUNT(t) FROM Transaction t " +
             "WHERE t.cardAccount.cardAccountId = :cardAccountId " +
             "AND t.endDateTime IS NULL " +
             "AND t.toSlot IS NULL";
