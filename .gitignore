@@ -12,3 +12,4 @@ node_modules
 .DS_Store
 src/main/webapp/dist
 deploy
+src/main/resources/git.properties
