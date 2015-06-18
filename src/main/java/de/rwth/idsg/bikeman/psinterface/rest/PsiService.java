@@ -79,9 +79,13 @@ public class PsiService {
 
         // Is the user allowed to rent?
         AccountState accountState = AccountState.HAS_NO_PEDELEC;
-        if (transactionRepository.hasOpenTransactions(customerAuthorizeDTO.getCardId())) {
+        if (cardAccount.getInTransaction()) {
             accountState = AccountState.HAS_PEDELEC;
         }
+
+//        if (transactionRepository.hasOpenTransactions(customerAuthorizeDTO.getCardId())) {
+//            accountState = AccountState.HAS_PEDELEC;
+//        }
 
         return new AuthorizeConfirmationDTO(cardAccount.getCardId(), accountState);
     }
