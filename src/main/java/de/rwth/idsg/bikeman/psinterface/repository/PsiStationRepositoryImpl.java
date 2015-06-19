@@ -98,15 +98,14 @@ public class PsiStationRepositoryImpl implements PsiStationRepository {
         for (SlotDTO.Boot slot : stationSlotList) {
             String slotManufacturerId = slot.getSlotManufacturerId();
 
-            boolean hasPedelec;
             String pedelecManufacturerId;
             if (Strings.isNullOrEmpty(slot.getPedelecManufacturerId())) {
-                hasPedelec = false;
                 pedelecManufacturerId = null;
             } else {
-                hasPedelec = true;
                 pedelecManufacturerId = slot.getPedelecManufacturerId();
             }
+
+            boolean hasPedelec = (pedelecManufacturerId != null);
 
             if (updateList.contains(slotManufacturerId)) {
                 em.createQuery(updateQuery)
