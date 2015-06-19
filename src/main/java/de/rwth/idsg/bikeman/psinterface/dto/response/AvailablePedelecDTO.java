@@ -12,6 +12,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AvailablePedelecDTO {
-
     private String pedelecManufacturerId;
 }

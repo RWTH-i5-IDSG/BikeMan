@@ -67,6 +67,8 @@ public class PsiService {
         BootConfirmationDTO bootConfirmationDTO = new BootConfirmationDTO();
         bootConfirmationDTO.setTimestamp(Utils.nowInSeconds());
         bootConfirmationDTO.setHeartbeatInterval(HEARTBEAT_INTERVAL_IN_SECONDS);
+        bootConfirmationDTO.setCardReadEncrKey("tbd"); // TODO
+        bootConfirmationDTO.setCardWriteEncrKey("tbd"); // TODO
         return bootConfirmationDTO;
     }
 

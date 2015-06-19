@@ -2,14 +2,14 @@ package de.rwth.idsg.bikeman.psinterface.dto.response;
 
 import lombok.Data;
 
-import java.io.Serializable;
-
 /**
  * Created by swam on 31/07/14.
  */
 
 @Data
-public class BootConfirmationDTO implements Serializable {
+public class BootConfirmationDTO {
     private Long timestamp;
     private Integer heartbeatInterval;
+    private String cardReadEncrKey;
+    private String cardWriteEncrKey;
 }
