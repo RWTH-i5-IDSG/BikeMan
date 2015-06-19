@@ -8,5 +8,6 @@
     <include file="classpath:config/liquibase/changelog/db-changelog-001.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/db-changelog-002.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/db-changelog-003.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/db-changelog-004.xml" relativeToChangelogFile="false"/>
     <!-- JHipster will add liquibase changelogs here -->
 </databaseChangeLog>

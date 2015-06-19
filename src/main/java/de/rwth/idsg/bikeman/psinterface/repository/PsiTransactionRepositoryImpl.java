@@ -66,7 +66,6 @@ public class PsiTransactionRepositoryImpl implements PsiTransactionRepository {
                                     .setParameter("cardId", dto.getCardId())
                                     .getSingleResult();
 
-        User user = cardAccount.getUser();
         StationSlot slot = pedelec.getStationSlot();
 
         // Check integrity of station slot
@@ -102,17 +101,12 @@ public class PsiTransactionRepositoryImpl implements PsiTransactionRepository {
         // 2. Update related entities
         // -------------------------------------------------------------------------
 
-        if (user instanceof Customer) {
-            ((Customer) user).setInTransaction(true);
-        }
-
         cardAccount.setInTransaction(true);
         pedelec.setInTransaction(true);
         pedelec.setStationSlot(null);
         slot.setIsOccupied(false);
         slot.setPedelec(null);
 
-        em.merge(user);
         em.merge(cardAccount);
         em.merge(pedelec);
         em.merge(slot);
@@ -159,11 +153,6 @@ public class PsiTransactionRepositoryImpl implements PsiTransactionRepository {
 
         CardAccount cardAccount = transaction.getCardAccount();
         Pedelec pedelec = transaction.getPedelec();
-        User user = cardAccount.getUser();
-
-        if (user instanceof Customer) {
-            ((Customer) user).setInTransaction(false);
-        }
 
         cardAccount.setInTransaction(false);
         pedelec.setInTransaction(false);
@@ -172,7 +161,6 @@ public class PsiTransactionRepositoryImpl implements PsiTransactionRepository {
         slot.setPedelec(pedelec);
 
         em.merge(cardAccount);
-        em.merge(user);
         em.merge(pedelec);
         em.merge(slot);
 

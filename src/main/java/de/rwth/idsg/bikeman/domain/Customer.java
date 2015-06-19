@@ -42,21 +42,12 @@ public class Customer extends User {
     @Column(name = "is_activated")
     private Boolean isActivated;
 
-
-
-    @Column(name = "in_transaction")
-    private Boolean inTransaction;
-
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
     private CardAccount cardAccount;
 
     @PrePersist
     public void prePersist() {
         super.prePersist();
-
-        if (inTransaction == null) {
-            inTransaction = false;
-        }
 
         if (isActivated == null) {
             isActivated = false;
