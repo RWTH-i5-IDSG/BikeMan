@@ -1,5 +1,6 @@
 package de.rwth.idsg.bikeman.psinterface.repository;
 
+import com.google.common.base.Strings;
 import de.rwth.idsg.bikeman.ItemIdComparator;
 import de.rwth.idsg.bikeman.domain.OperationState;
 import de.rwth.idsg.bikeman.domain.Pedelec;
@@ -95,21 +96,30 @@ public class PsiStationRepositoryImpl implements PsiStationRepository {
                                    "AND ss.manufacturerId = :slotManufacturerId";
 
         for (SlotDTO.Boot slot : stationSlotList) {
-            String manuId = slot.getSlotManufacturerId();
-            boolean hasPedelec = slot.getPedelecManufacturerId() != null;
+            String slotManufacturerId = slot.getSlotManufacturerId();
 
-            if (updateList.contains(manuId)) {
+            boolean hasPedelec;
+            String pedelecManufacturerId;
+            if (Strings.isNullOrEmpty(slot.getPedelecManufacturerId())) {
+                hasPedelec = false;
+                pedelecManufacturerId = null;
+            } else {
+                hasPedelec = true;
+                pedelecManufacturerId = slot.getPedelecManufacturerId();
+            }
+
+            if (updateList.contains(slotManufacturerId)) {
                 em.createQuery(updateQuery)
                   .setParameter("isOccupied", hasPedelec)
                   .setParameter("slotPosition", slot.getSlotPosition())
-                  .setParameter("pedelecManufacturerId", slot.getPedelecManufacturerId())
+                  .setParameter("pedelecManufacturerId", pedelecManufacturerId)
                   .setParameter("station", station)
-                  .setParameter("slotManufacturerId", manuId)
+                  .setParameter("slotManufacturerId", slotManufacturerId)
                   .executeUpdate();
 
-            } else if (insertList.contains(manuId)) {
+            } else if (insertList.contains(slotManufacturerId)) {
                 StationSlot newSlot = new StationSlot();
-                newSlot.setManufacturerId(manuId);
+                newSlot.setManufacturerId(slotManufacturerId);
                 newSlot.setStationSlotPosition(slot.getSlotPosition());
                 newSlot.setStation(station);
                 newSlot.setIsOccupied(hasPedelec);
@@ -117,7 +127,7 @@ public class PsiStationRepositoryImpl implements PsiStationRepository {
 
                 if (hasPedelec) {
                     try {
-                        Pedelec pedelec = pedelecRepository.findByManufacturerId(slot.getPedelecManufacturerId());
+                        Pedelec pedelec = pedelecRepository.findByManufacturerId(pedelecManufacturerId);
                         newSlot.setPedelec(pedelec);
                     } catch (DatabaseException e) {
                         throw new PsException(e.getMessage(), e, PsErrorCode.NOT_REGISTERED);
