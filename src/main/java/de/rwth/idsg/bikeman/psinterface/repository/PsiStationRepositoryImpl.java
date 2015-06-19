@@ -188,7 +188,8 @@ public class PsiStationRepositoryImpl implements PsiStationRepository {
                           "ss.errorCode = :slotErrorCode, " +
                           "ss.errorInfo = :slotErrorInfo, " +
                           "ss.state = :slotState " +
-                          "WHERE ss.manufacturerId = :slotManufacturerId";
+                          "WHERE ss.manufacturerId = :slotManufacturerId " +
+                          "AND ss.station = (SELECT s FROM Station s WHERE s.manufacturerId = :stationManufacturerId)";
 
         for (SlotDTO.StationStatus slot : dto.getSlots()) {
             try {
@@ -197,6 +198,7 @@ public class PsiStationRepositoryImpl implements PsiStationRepository {
                   .setParameter("slotErrorInfo", slot.getSlotErrorInfo())
                   .setParameter("slotState", OperationState.valueOf(slot.getSlotState().name()))
                   .setParameter("slotManufacturerId", slot.getSlotManufacturerId())
+                  .setParameter("stationManufacturerId", dto.getStationManufacturerId())
                   .executeUpdate();
             } catch (Exception e) {
                 throw new DatabaseException("Failed to update the slot status with manufacturerId "

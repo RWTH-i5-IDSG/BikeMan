@@ -55,12 +55,8 @@ public class PsiResource {
     @RequestMapping(value = BOOT_NOTIFICATION_PATH, method = RequestMethod.POST)
     public BootConfirmationDTO bootNotification(@RequestBody BootNotificationDTO bootNotificationDTO,
                                                 HttpServletRequest request) throws DatabaseException {
-        log.debug("[From: {}] Received bootNotification", Utils.getFrom(request));
-
+        log.debug("[From: {}] Received bootNotification {}", Utils.getFrom(request), bootNotificationDTO);
         return psiService.handleBootNotification(bootNotificationDTO, Utils.getFrom(request));
-        //return psiService.handleBootNotification(bootNotificationDTO,
-        //    "http://" + request.getRemoteAddr() + ":8081/" + bootNotificationDTO.getStationManufacturerId()
-        //);
     }
 
     @RequestMapping(value = HEARTBEAT_PATH, method = RequestMethod.GET)
