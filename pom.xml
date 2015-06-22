@@ -369,6 +369,9 @@
                     <exclude>**/*.xml</exclude>
                 </excludes>
             </resource>
+            <resource>
+                <directory>src/main/resources/config/logback/${envName}</directory>
+            </resource>
         </resources>
         <pluginManagement>
             <plugins>
@@ -683,7 +686,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <logback.configurationFile>src/main/resources/logback-dev.xml</logback.configurationFile>
+                <envName>local</envName>
             </properties>
             <dependencies>
                 <dependency>
@@ -695,7 +698,7 @@
         <profile>
             <id>fast</id>
             <properties>
-                <logback.configurationFile>src/main/resources/logback-dev.xml</logback.configurationFile>
+                <envName>local</envName>
             </properties>
             <dependencies>
                 <dependency>
@@ -777,7 +780,7 @@
                 </plugins>
             </build>
             <properties>
-                <logback.configurationFile>src/main/resources/logback-prod.xml</logback.configurationFile>
+                <envName>remote</envName>
             </properties>
         </profile>
     </profiles>
