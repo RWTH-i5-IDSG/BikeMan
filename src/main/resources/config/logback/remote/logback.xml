@@ -20,7 +20,7 @@
         <!-- Start the application passing this system variable -->
         <syslogHost>${syslog.server}</syslogHost>
         <facility>LOCAL0</facility>
-        <suffixPattern>BikeMan %-5level %logger %msg</suffixPattern>
+        <suffixPattern>BikeMan: %-5level %logger %msg</suffixPattern>
     </appender>
 
     <logger name="javax.activation" level="WARN"/>
