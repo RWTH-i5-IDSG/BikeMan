@@ -123,7 +123,7 @@ public class BookingService {
      * TODO: What is a reasonable value for lowerLimit?
      */
     private boolean isAvailable(Pedelec pedelec) {
-        final float lowerLimit = 0.0f;
+        final double lowerLimit = 0.0;
 
         return OperationState.OPERATIVE.equals(pedelec.getState())
             && !pedelec.getInTransaction()

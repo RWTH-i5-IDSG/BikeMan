@@ -67,10 +67,8 @@ public class StationService {
         // first, communicate with the station to update status
         // then, update in DB
         String endpointAddress = stationRepository.getEndpointAddress(dto.getStationId());
-        boolean success = stationClient.changeOperationState(endpointAddress, changeDTO);
-        if (success) {
-            stationRepository.update(dto);
-        }
+        stationClient.changeOperationState(endpointAddress, changeDTO);
+        stationRepository.update(dto);
     }
 
     public void changeSlotState(Long stationId, ChangeStationOperationStateDTO dto) throws DatabaseException {
@@ -81,9 +79,7 @@ public class StationService {
         // first, communicate with the station to update status
         // then, update in DB
         String endpointAddress = stationRepository.getEndpointAddress(stationId);
-        boolean success = stationClient.changeOperationState(endpointAddress, changeDTO);
-        if (success) {
-            stationRepository.changeSlotState(stationId, dto.getSlotPosition(), dto.getState());
-        }
+        stationClient.changeOperationState(endpointAddress, changeDTO);
+        stationRepository.changeSlotState(stationId, dto.getSlotPosition(), dto.getState());
     }
 }
