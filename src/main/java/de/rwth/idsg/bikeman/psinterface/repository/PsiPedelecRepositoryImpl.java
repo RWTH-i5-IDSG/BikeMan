@@ -37,6 +37,7 @@ public class PsiPedelecRepositoryImpl implements PsiPedelecRepository {
                          "from Pedelec p " +
                          "join p.chargingStatus cs " +
                          "where p.stationSlot.station.endpointAddress = :endpointAddress " +
+                         "and p.stationSlot.state = de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE " +
                          "and p.state = de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE " +
                          "order by cs.batteryStateOfCharge desc";
 
