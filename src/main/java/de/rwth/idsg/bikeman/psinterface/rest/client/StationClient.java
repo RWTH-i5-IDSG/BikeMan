@@ -3,19 +3,15 @@ package de.rwth.idsg.bikeman.psinterface.rest.client;
 import de.rwth.idsg.bikeman.psinterface.dto.request.CancelReservationDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.RemoteAuthorizeDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.ReserveNowDTO;
+import de.rwth.idsg.bikeman.psinterface.exception.PsExceptionBuilder;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.ChangeStationOperationStateDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.StationConfigurationDTO;
-import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author Sevket Goekay <goekay@dbis.rwth-aachen.de>
@@ -25,8 +21,8 @@ import java.util.Map;
 @Component
 public class StationClient {
 
-    @Autowired
-    private RestTemplate restTemplate;
+    @Autowired private RestTemplate restTemplate;
+    @Autowired private PsExceptionBuilder psExceptionBuilder;
 
     private static final String STATE_PATH = "/state";
     private static final String CONFIG_PATH = "/config";
@@ -36,79 +32,77 @@ public class StationClient {
     private static final String CANCEL_RESERVATION_PATH = "/cancel-reservation";
     private static final String UNLOCK_SLOT_PATH = "/unlock/{slotPosition}";
 
-    public boolean changeOperationState(String endpointAddress, ChangeStationOperationStateDTO dto)
-        throws DatabaseException, RestClientException {
-
+    public void changeOperationState(String endpointAddress, ChangeStationOperationStateDTO dto) {
         String uri = endpointAddress + STATE_PATH;
-        ResponseEntity<String> response = restTemplate.postForEntity(uri, dto, String.class);
-        HttpStatus status = response.getStatusCode();
+        try {
+            restTemplate.postForEntity(uri, dto, String.class);
 
-        if (status.equals(HttpStatus.OK)) {
-            return true;
-        } else {
-            // TODO
-            return false;
+        } catch (HttpStatusCodeException e) {
+            throw psExceptionBuilder.build(e.getResponseBodyAsString());
         }
     }
 
-    public StationConfigurationDTO getConfig(String endpointAddress) throws DatabaseException, RestClientException {
+    public StationConfigurationDTO getConfig(String endpointAddress) {
         String uri = endpointAddress + CONFIG_PATH;
-        ResponseEntity<StationConfigurationDTO> response = restTemplate.getForEntity(uri, StationConfigurationDTO.class);
-        HttpStatus status = response.getStatusCode();
+        try {
+            return restTemplate.getForEntity(uri, StationConfigurationDTO.class).getBody();
 
-        if (status.equals(HttpStatus.OK)) {
-            return response.getBody();
-        } else {
-            // TODO
-            return null;
+        } catch (HttpStatusCodeException e) {
+            throw psExceptionBuilder.build(e.getResponseBodyAsString());
         }
     }
 
-    public void changeConfig(String endpointAddress, StationConfigurationDTO dto) throws RestClientException, DatabaseException {
+    public void changeConfig(String endpointAddress, StationConfigurationDTO dto) {
         String uri = endpointAddress + CONFIG_PATH;
-        ResponseEntity<String> response = restTemplate.postForEntity(uri, dto, String.class);
-        HttpStatus status = response.getStatusCode();
-        // TODO: Handle status codes
+        try {
+            ResponseEntity<String> response = restTemplate.postForEntity(uri, dto, String.class);
+        } catch (HttpStatusCodeException e) {
+            throw psExceptionBuilder.build(e.getResponseBodyAsString());
+        }
     }
 
-    public void reboot(String endpointAddress) throws RestClientException, DatabaseException {
+    public void reboot(String endpointAddress) {
         String uri = endpointAddress + REBOOT_PATH;
-        ResponseEntity<String> response = restTemplate.postForEntity(uri, null, String.class);
-        HttpStatus status = response.getStatusCode();
-        // TODO: Handle status codes
+        try {
+            ResponseEntity<String> response = restTemplate.postForEntity(uri, null, String.class);
+        } catch (HttpStatusCodeException e) {
+            throw psExceptionBuilder.build(e.getResponseBodyAsString());
+        }
     }
 
-    public void authorizeRemote(String endpointAddress, RemoteAuthorizeDTO dto) throws RestClientException, DatabaseException {
+    public void authorizeRemote(String endpointAddress, RemoteAuthorizeDTO dto) {
         String uri = endpointAddress + AUTHORIZE_PATH;
-        ResponseEntity<String> response = restTemplate.postForEntity(uri, dto, String.class);
-        HttpStatus status = response.getStatusCode();
-        // TODO: Handle status codes
+        try {
+            restTemplate.postForEntity(uri, dto, String.class);
+        } catch (HttpStatusCodeException e) {
+            throw psExceptionBuilder.build(e.getResponseBodyAsString());
+        }
     }
 
     public void reserveNow(ReserveNowDTO dto, String endpointAddress) {
         String uri = endpointAddress + RESERVE_NOW_PATH;
-        ResponseEntity<String> response = restTemplate.postForEntity(uri, dto, String.class);
-        // TODO: Handle status codes
+        try {
+            ResponseEntity<String> response = restTemplate.postForEntity(uri, dto, String.class);
+        } catch (HttpStatusCodeException e) {
+            throw psExceptionBuilder.build(e.getResponseBodyAsString());
+        }
     }
 
     public void cancelReservation(CancelReservationDTO dto, String endpointAddress) {
         String uri = endpointAddress + CANCEL_RESERVATION_PATH;
-        ResponseEntity<String> response = restTemplate.postForEntity(uri, dto, String.class);
-        // TODO: Handle status codes
+        try {
+            ResponseEntity<String> response = restTemplate.postForEntity(uri, dto, String.class);
+        } catch (HttpStatusCodeException e) {
+            throw psExceptionBuilder.build(e.getResponseBodyAsString());
+        }
     }
 
     public void unlockSlot(Integer slotPosition, String endpointAddress) {
         String uri = endpointAddress + UNLOCK_SLOT_PATH;
-
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.set("Accept", "application/json");
-//        HttpEntity entity = new HttpEntity(headers);
-//        HttpEntity<String> response = restTemplate.exchange(uri, HttpMethod.POST, entity, String.class, slotPosition);
-
-//        Map<String, String> params = new HashMap<String, String>();
-//        params.put("slotPosition", String.valueOf(slotPosition));
-
-
-        ResponseEntity<String> response = restTemplate.postForEntity(uri, null, String.class, slotPosition);
+        try {
+            ResponseEntity<String> response = restTemplate.postForEntity(uri, null, String.class, slotPosition);
+        } catch (HttpStatusCodeException e) {
+            throw psExceptionBuilder.build(e.getResponseBodyAsString());
+        }
     }
 }

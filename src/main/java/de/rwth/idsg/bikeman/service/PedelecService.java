@@ -63,10 +63,10 @@ public class PedelecService {
         changeDto.setPedelecState(inputState);
         changeDto.setSlotPosition(stationSlotPosition);
 
-        boolean success = pedelecClient.changeOperationState(station.getEndpointAddress(), pedelec.getManufacturerId(), changeDto);
-        if (success) {
-            pedelecRepository.update(dto);
-        }
+        // throws PsException
+        pedelecClient.changeOperationState(station.getEndpointAddress(), pedelec.getManufacturerId(), changeDto);
+
+        pedelecRepository.update(dto);
     }
 
     public PedelecConfigurationDTO getConfig(Long pedelecId) throws DatabaseException, RestClientException {

@@ -1,12 +1,12 @@
 package de.rwth.idsg.bikeman.psinterface.rest.client;
 
+import de.rwth.idsg.bikeman.psinterface.exception.PsExceptionBuilder;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.ChangePedelecOperationStateDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.PedelecConfigurationDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -17,42 +17,39 @@ import org.springframework.web.client.RestTemplate;
 @Component
 public class PedelecClient {
 
-    @Autowired
-    private RestTemplate restTemplate;
+    @Autowired private RestTemplate restTemplate;
+    @Autowired private PsExceptionBuilder psExceptionBuilder;
 
     private static final String STATE_PATH = "/pedelecs/{pedelecManufacturerId}/state";
     private static final String CONFIG_PATH = "/pedelecs/{pedelecManufacturerId}/config";
 
-    public boolean changeOperationState(String endpointAddress, String pedelecManufacturerId, ChangePedelecOperationStateDTO dto) {
+    public void changeOperationState(String endpointAddress, String pedelecManufacturerId, ChangePedelecOperationStateDTO dto) {
         String uri = endpointAddress + STATE_PATH;
-        ResponseEntity<String> response = restTemplate.postForEntity(uri, dto, String.class, pedelecManufacturerId);
-        HttpStatus status = response.getStatusCode();
+        try {
+            restTemplate.postForEntity(uri, dto, String.class, pedelecManufacturerId);
 
-        if (status.equals(HttpStatus.OK)) {
-            return true;
-        } else {
-            // TODO
-            return false;
+        } catch (HttpStatusCodeException e) {
+            throw psExceptionBuilder.build(e.getResponseBodyAsString());
         }
     }
 
     public PedelecConfigurationDTO getConfig(String endpointAddress, String pedelecManufacturerId) {
         String uri = endpointAddress + CONFIG_PATH;
-        ResponseEntity<PedelecConfigurationDTO> response = restTemplate.getForEntity(uri,PedelecConfigurationDTO.class, pedelecManufacturerId);
-        HttpStatus status = response.getStatusCode();
+        try {
+            return restTemplate.getForEntity(uri, PedelecConfigurationDTO.class, pedelecManufacturerId).getBody();
 
-        if (status.equals(HttpStatus.OK)) {
-            return response.getBody();
-        } else {
-            // TODO
-            return null;
+        } catch (HttpStatusCodeException e) {
+            throw psExceptionBuilder.build(e.getResponseBodyAsString());
         }
     }
 
     public void changeConfig(String endpointAddress, String pedelecManufacturerId, PedelecConfigurationDTO dto) {
         String uri = endpointAddress + CONFIG_PATH;
-        ResponseEntity<String> response = restTemplate.postForEntity(uri, dto, String.class, pedelecManufacturerId);
-        HttpStatus status = response.getStatusCode();
-        // TODO: Handle status codes
+        try {
+            restTemplate.postForEntity(uri, dto, String.class, pedelecManufacturerId);
+
+        } catch (HttpStatusCodeException e) {
+            throw psExceptionBuilder.build(e.getResponseBodyAsString());
+        }
     }
 }

@@ -10,6 +10,7 @@ import de.rwth.idsg.bikeman.ixsi.schema.BookingUnlockResponseType;
 import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
 import de.rwth.idsg.bikeman.ixsi.schema.Language;
 import de.rwth.idsg.bikeman.ixsi.schema.UserInfoType;
+import de.rwth.idsg.bikeman.psinterface.dto.request.RemoteAuthorizeDTO;
 import de.rwth.idsg.bikeman.psinterface.rest.client.StationClient;
 import de.rwth.idsg.bikeman.repository.BookingRepository;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
@@ -43,7 +44,13 @@ public class BookingUnlockRequestProcessor implements
             Integer stationSlotPosition = pedelec.getStationSlot().getStationSlotPosition();
             String endpointAddress = pedelec.getStationSlot().getStation().getEndpointAddress();
 
-            stationClient.unlockSlot(stationSlotPosition, endpointAddress);
+            RemoteAuthorizeDTO dto = RemoteAuthorizeDTO.builder()
+                .cardId(userInfo.getUserID())
+                .slotPosition(stationSlotPosition)
+                .build();
+
+            // throws PsException
+            stationClient.authorizeRemote(endpointAddress, dto);
             return new BookingUnlockResponseType();
 
         } catch (DatabaseException e) {

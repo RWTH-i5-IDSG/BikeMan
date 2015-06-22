@@ -13,6 +13,6 @@ import lombok.Setter;
 @RequiredArgsConstructor
 public class PsExceptionMessage {
     private final long timestamp;
-    private final String code;
+    private final PsErrorCode code;
     private final String message;
 }

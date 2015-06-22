@@ -40,7 +40,7 @@ public class PsExceptionHandler {
 
         PsExceptionMessage msg = new PsExceptionMessage(
                 Utils.nowInSeconds(),
-                errorCode.name(),
+                errorCode,
                 e.getMessage()
         );
         return new ResponseEntity<>(msg, status);
@@ -53,7 +53,7 @@ public class PsExceptionHandler {
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
         PsExceptionMessage msg = new PsExceptionMessage(
                 Utils.nowInSeconds(),
-                PsErrorCode.DATABASE_OPERATION_FAILED.name(),
+                PsErrorCode.DATABASE_OPERATION_FAILED,
                 e.getMessage()
         );
         return new ResponseEntity<>(msg, status);
@@ -70,7 +70,7 @@ public class PsExceptionHandler {
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
         PsExceptionMessage msg = new PsExceptionMessage(
                 Utils.nowInSeconds(),
-                PsErrorCode.UNKNOWN_SERVER_ERROR.name(),
+                PsErrorCode.UNKNOWN_SERVER_ERROR,
                 e.getMessage()
         );
         return new ResponseEntity<>(msg, status);
