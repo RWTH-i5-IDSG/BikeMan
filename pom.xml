@@ -683,9 +683,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <!-- log configuration -->
-                <logback.loglevel>DEBUG</logback.loglevel>
-                <logback.appender>CONSOLE</logback.appender>
+                <logback.configurationFile>src/main/resources/logback-dev.xml</logback.configurationFile>
             </properties>
             <dependencies>
                 <dependency>
@@ -697,8 +695,7 @@
         <profile>
             <id>fast</id>
             <properties>
-                <!-- log configuration -->
-                <logback.loglevel>DEBUG</logback.loglevel>
+                <logback.configurationFile>src/main/resources/logback-dev.xml</logback.configurationFile>
             </properties>
             <dependencies>
                 <dependency>
@@ -780,9 +777,7 @@
                 </plugins>
             </build>
             <properties>
-                <!-- log configuration -->
-                <logback.loglevel>DEBUG</logback.loglevel>
-                <logback.appender>FILE</logback.appender>
+                <logback.configurationFile>src/main/resources/logback-prod.xml</logback.configurationFile>
             </properties>
         </profile>
     </profiles>
