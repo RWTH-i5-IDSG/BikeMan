@@ -46,11 +46,7 @@ public class PedelecService {
 
     public void changeOperationState(CreateEditPedelecDTO dto) throws DatabaseException, RestClientException {
         Pedelec pedelec = pedelecRepository.findOne(dto.getPedelecId());
-
-        // do not permit changes to pedelecs which are currently rented
-        if (pedelec.getInTransaction()) {
-            throw new DatabaseException("Cannot apply changes to pedelecs in transaction!");
-        }
+        checkPedelec(pedelec, "Cannot change operation state.");
 
         OperationState inputState = dto.getState();
 
@@ -75,13 +71,29 @@ public class PedelecService {
 
     public PedelecConfigurationDTO getConfig(Long pedelecId) throws DatabaseException, RestClientException {
         Pedelec pedelec = pedelecRepository.findOne(pedelecId);
+        checkPedelec(pedelec, "Cannot get config.");
+
         Station station = pedelec.getStationSlot().getStation();
         return pedelecClient.getConfig(station.getEndpointAddress(), pedelec.getManufacturerId());
     }
 
     public void changeConfig(Long pedelecId, PedelecConfigurationDTO dto) throws RestClientException, DatabaseException {
         Pedelec pedelec = pedelecRepository.findOne(pedelecId);
+        checkPedelec(pedelec, "Cannot change config.");
+
         Station station = pedelec.getStationSlot().getStation();
         pedelecClient.changeConfig(station.getEndpointAddress(), pedelec.getManufacturerId(), dto);
+    }
+
+    /**
+     * Do not permit changes to pedelecs which are currently rented
+     */
+    private void checkPedelec(Pedelec pedelec, String specialMessage) {
+        if (pedelec.getInTransaction()) {
+            throw new DatabaseException("The pedelec is in a transaction. " + specialMessage);
+
+        } else if (pedelec.getStationSlot() == null) {
+            throw new DatabaseException("The pedelec is not at a station slot. " + specialMessage);
+        }
     }
 }
