@@ -175,7 +175,7 @@
             "title": "Station Slots",
             "header": {
                 "manufacturerId": "Manufacturer ID",
-                "available": "Available",
+                "occupied": "Occupied",
                 "state": "State",
                 "pedelec": "Pedelec (Manufacturer ID)"
             }

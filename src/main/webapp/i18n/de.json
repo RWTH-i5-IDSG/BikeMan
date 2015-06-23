@@ -165,7 +165,7 @@
             "title": "Stationsstellplätze",
             "header": {
                 "manufacturerId": "Hersteller ID",
-                "available": "Verfügbar",
+                "occupied": "Besetzt",
                 "state": "Status",
                 "pedelec": "Pedelec (Hersteller ID)"
             }
