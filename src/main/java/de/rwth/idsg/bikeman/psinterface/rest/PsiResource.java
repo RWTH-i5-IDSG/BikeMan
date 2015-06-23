@@ -55,8 +55,11 @@ public class PsiResource {
     @RequestMapping(value = BOOT_NOTIFICATION_PATH, method = RequestMethod.POST)
     public BootConfirmationDTO bootNotification(@RequestBody BootNotificationDTO bootNotificationDTO,
                                                 HttpServletRequest request) throws DatabaseException {
-        log.debug("[From: {}] Received bootNotification {}", Utils.getFrom(request), bootNotificationDTO);
-        return psiService.handleBootNotification(bootNotificationDTO, Utils.getFrom(request));
+        String endpointAddress = Utils.getFrom(request);
+        log.debug("[From: {}] Received bootNotification {}", endpointAddress, bootNotificationDTO);
+        BootConfirmationDTO dto = psiService.handleBootNotification(bootNotificationDTO, endpointAddress);
+        log.debug("bootNotification returns {}", dto);
+        return dto;
     }
 
     @RequestMapping(value = HEARTBEAT_PATH, method = RequestMethod.GET)
@@ -72,7 +75,9 @@ public class PsiResource {
     public List<AvailablePedelecDTO> getAvailablePedelecs(HttpServletRequest request) throws DatabaseException {
         String endpointAddress = Utils.getFrom(request);
         log.debug("[From: {}] Received getAvailablePedelecs", endpointAddress);
-        return psiService.getAvailablePedelecs(endpointAddress);
+        List<AvailablePedelecDTO> list = psiService.getAvailablePedelecs(endpointAddress);
+        log.debug("getAvailablePedelecs returns {}", list);
+        return list;
     }
 
     // -------------------------------------------------------------------------
@@ -82,8 +87,7 @@ public class PsiResource {
     @RequestMapping(value = ACTIVATE_CARD_PATH, method = RequestMethod.POST)
     public AuthorizeConfirmationDTO activateCard(@RequestBody CardActivationDTO cardActivationDTO,
                                                  HttpServletRequest request, HttpServletResponse response) {
-        log.info("[From: {}] Received activate card request for activation key'{}'",
-            Utils.getFrom(request), cardActivationDTO.getActivationKey());
+        log.info("[From: {}] Received activateCard {}", Utils.getFrom(request), cardActivationDTO);
 
         Optional<AuthorizeConfirmationDTO> optional = cardAccountService.activateCardAccount(cardActivationDTO);
         if (optional.isPresent()) {
@@ -97,10 +101,9 @@ public class PsiResource {
     @RequestMapping(value = AUTHORIZE_PATH, method = RequestMethod.POST)
     public AuthorizeConfirmationDTO authorize(@RequestBody CustomerAuthorizeDTO customerAuthorizeDTO,
                                               HttpServletRequest request) throws DatabaseException {
-        String cardId = customerAuthorizeDTO.getCardId();
-        log.info("[From: {}] Received authorization request for card id '{}'", Utils.getFrom(request), cardId);
+        log.info("[From: {}] Received authorize {}", Utils.getFrom(request), customerAuthorizeDTO);
         AuthorizeConfirmationDTO dto = psiService.handleAuthorize(customerAuthorizeDTO);
-        log.info("User with card id '{}' is authorized", cardId);
+        log.info("authorize returns {}", dto);
         return dto;
     }
 
