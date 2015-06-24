@@ -186,3 +186,7 @@ ul#strength {
     display: inline;
 }
 
+.progress-bar {
+    white-space:nowrap;
+    color:black;
+}
