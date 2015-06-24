@@ -4,7 +4,6 @@ import com.google.common.base.Optional;
 import de.rwth.idsg.bikeman.psinterface.Utils;
 import de.rwth.idsg.bikeman.psinterface.dto.request.*;
 import de.rwth.idsg.bikeman.psinterface.dto.response.AuthorizeConfirmationDTO;
-import de.rwth.idsg.bikeman.psinterface.dto.response.AvailablePedelecDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.response.BootConfirmationDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.response.HeartbeatDTO;
 import de.rwth.idsg.bikeman.service.CardAccountService;

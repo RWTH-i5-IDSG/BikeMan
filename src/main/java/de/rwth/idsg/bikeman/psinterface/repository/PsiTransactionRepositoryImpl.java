@@ -1,11 +1,9 @@
 package de.rwth.idsg.bikeman.psinterface.repository;
 
 import de.rwth.idsg.bikeman.domain.CardAccount;
-import de.rwth.idsg.bikeman.domain.Customer;
 import de.rwth.idsg.bikeman.domain.Pedelec;
 import de.rwth.idsg.bikeman.domain.StationSlot;
 import de.rwth.idsg.bikeman.domain.Transaction;
-import de.rwth.idsg.bikeman.domain.User;
 import de.rwth.idsg.bikeman.psinterface.Utils;
 import de.rwth.idsg.bikeman.psinterface.dto.request.StartTransactionDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.StopTransactionDTO;

@@ -2,7 +2,6 @@ package de.rwth.idsg.bikeman.psinterface.repository;
 
 import de.rwth.idsg.bikeman.psinterface.dto.request.ChargingStatusDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.PedelecStatusDTO;
-import de.rwth.idsg.bikeman.psinterface.dto.response.AvailablePedelecDTO;
 
 import java.util.List;
 

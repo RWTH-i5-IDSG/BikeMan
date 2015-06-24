@@ -2,10 +2,8 @@ package de.rwth.idsg.bikeman.psinterface.repository;
 
 import de.rwth.idsg.bikeman.domain.OperationState;
 import de.rwth.idsg.bikeman.psinterface.Utils;
-import de.rwth.idsg.bikeman.psinterface.dto.request.BatteryStatusDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.ChargingStatusDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.PedelecStatusDTO;
-import de.rwth.idsg.bikeman.psinterface.dto.response.AvailablePedelecDTO;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.LocalDateTime;
