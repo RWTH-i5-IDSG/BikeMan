@@ -141,7 +141,7 @@ public class PsiService {
         placeAvailabilityPushService.reportChange(stopTransactionDTO.getStationManufacturerId());
     }
 
-    public List<AvailablePedelecDTO> getAvailablePedelecs(String endpointAddress) throws DatabaseException {
+    public List<String> getAvailablePedelecs(String endpointAddress) throws DatabaseException {
         return pedelecRepository.findAvailablePedelecs(endpointAddress);
     }
 

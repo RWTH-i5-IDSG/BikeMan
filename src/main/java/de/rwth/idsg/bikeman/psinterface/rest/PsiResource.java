@@ -72,10 +72,10 @@ public class PsiResource {
     }
 
     @RequestMapping(value = AVAIL_PEDELECS_PATH, method = RequestMethod.GET)
-    public List<AvailablePedelecDTO> getAvailablePedelecs(HttpServletRequest request) throws DatabaseException {
+    public List<String> getAvailablePedelecs(HttpServletRequest request) throws DatabaseException {
         String endpointAddress = Utils.getFrom(request);
         log.debug("[From: {}] Received getAvailablePedelecs", endpointAddress);
-        List<AvailablePedelecDTO> list = psiService.getAvailablePedelecs(endpointAddress);
+        List<String> list = psiService.getAvailablePedelecs(endpointAddress);
         log.debug("getAvailablePedelecs returns {}", list);
         return list;
     }

@@ -31,9 +31,8 @@ public class PsiPedelecRepositoryImpl implements PsiPedelecRepository {
 
     @Override
     @Transactional(readOnly = true)
-    public List<AvailablePedelecDTO> findAvailablePedelecs(String endpointAddress) {
-        final String q = "SELECT new de.rwth.idsg.bikeman.psinterface.dto.response." +
-                         "AvailablePedelecDTO(p.manufacturerId) " +
+    public List<String> findAvailablePedelecs(String endpointAddress) {
+        final String q = "SELECT p.manufacturerId " +
                          "from Pedelec p " +
                          "join p.chargingStatus cs " +
                          "where p.stationSlot.station.endpointAddress = :endpointAddress " +
@@ -42,7 +41,7 @@ public class PsiPedelecRepositoryImpl implements PsiPedelecRepository {
                          "order by cs.batteryStateOfCharge desc";
 
         try {
-            return em.createQuery(q, AvailablePedelecDTO.class)
+            return em.createQuery(q, String.class)
                     .setParameter("endpointAddress", endpointAddress)
                     .setMaxResults(5)
                     .getResultList();

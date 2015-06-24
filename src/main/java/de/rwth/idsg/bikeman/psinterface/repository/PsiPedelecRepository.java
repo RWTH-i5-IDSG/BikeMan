@@ -11,7 +11,7 @@ import java.util.List;
  * @since 16.06.2015
  */
 public interface PsiPedelecRepository {
-    List<AvailablePedelecDTO> findAvailablePedelecs(String endpointAddress);
+    List<String> findAvailablePedelecs(String endpointAddress);
     void updatePedelecStatus(PedelecStatusDTO dto);
     void updatePedelecChargingStatus(List<ChargingStatusDTO> dtoList);
 }
