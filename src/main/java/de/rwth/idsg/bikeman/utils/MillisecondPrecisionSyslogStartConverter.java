@@ -84,12 +84,10 @@ public class MillisecondPrecisionSyslogStartConverter extends SyslogStartConvert
     }
 
     void computeTimeStampString(StringBuilder sb, final long now) {
-        synchronized (this) {
-            try {
-                isoFormatter.printTo(sb, now);
-            } catch (IOException e) {
-                addError("Failed to convert timestamp to string", e);
-            }
+        try {
+            isoFormatter.printTo(sb, now);
+        } catch (IOException e) {
+            addError("Failed to convert timestamp to string", e);
         }
     }
 }
