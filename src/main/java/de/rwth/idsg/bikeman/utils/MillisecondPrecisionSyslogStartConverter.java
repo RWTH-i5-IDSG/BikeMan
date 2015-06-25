@@ -16,18 +16,17 @@
 
 package de.rwth.idsg.bikeman.utils;
 
-import java.text.DateFormatSymbols;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-
 import ch.qos.logback.classic.pattern.SyslogStartConverter;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.util.LevelToSyslogSeverity;
 import ch.qos.logback.core.net.SyslogAppenderBase;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
 
 /**
  * Taken from: https://github.com/spotify/logging-java/tree/master/src/main/java/com/spotify/logging/logback
+ *
+ * Modified to use Joda-Time
  *
  * A {@link SyslogStartConverter} with millisecond timestamp
  * precision.
@@ -36,11 +35,9 @@ public class MillisecondPrecisionSyslogStartConverter extends SyslogStartConvert
 
     private long lastTimestamp = -1;
     private String timestampStr = null;
-    private SimpleDateFormat simpleFormat;
+    private DateTimeFormatter isoFormatter;
     private String localHostName;
     private int facility;
-
-    private static final String os = System.getProperty("os.name");
 
     public void start() {
         int errorCount = 0;
@@ -55,14 +52,9 @@ public class MillisecondPrecisionSyslogStartConverter extends SyslogStartConvert
 
         localHostName = getLocalHostname();
         try {
-            // ASL doesn't handle milliseconds.
-            if (os.equals("Mac OS X")) {
-                simpleFormat = new SimpleDateFormat("MMM dd HH:mm:ss", new DateFormatSymbols(Locale.US));
-            } else {
-                simpleFormat = new SimpleDateFormat("MMM dd HH:mm:ss.SSS", new DateFormatSymbols(Locale.US));
-            }
-        } catch (IllegalArgumentException e) {
-            addError("Could not instantiate SimpleDateFormat", e);
+            isoFormatter = ISODateTimeFormat.dateTimeParser();
+        } catch (Exception e) {
+            addError("Could not instantiate Joda DateTimeFormatter", e);
             errorCount++;
         }
 
@@ -91,7 +83,7 @@ public class MillisecondPrecisionSyslogStartConverter extends SyslogStartConvert
         synchronized (this) {
             if (now != lastTimestamp) {
                 lastTimestamp = now;
-                timestampStr = simpleFormat.format(new Date(now));
+                timestampStr = isoFormatter.print(now);
             }
             return timestampStr;
         }

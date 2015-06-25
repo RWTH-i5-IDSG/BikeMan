@@ -23,6 +23,10 @@
         <suffixPattern>BikeMan: %-5level %logger %msg</suffixPattern>
     </appender>
 
+    <appender name="ASYNC_SYSLOG" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="SYSLOG" />
+    </appender>
+
     <logger name="javax.activation" level="WARN"/>
     <logger name="javax.mail" level="WARN"/>
     <logger name="javax.xml.bind" level="WARN"/>
@@ -58,7 +62,7 @@
 
     <root level="DEBUG">
         <appender-ref ref="FILE"/>
-        <appender-ref ref="SYSLOG"/>
+        <appender-ref ref="ASYNC_SYSLOG"/>
     </root>
 
 </configuration>
