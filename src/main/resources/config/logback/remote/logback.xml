@@ -12,7 +12,7 @@
         </rollingPolicy>
         <encoder>
             <charset>utf-8</charset>
-            <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5p %c{1}:%L - %m%n</Pattern>
+            <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5p %c{1} - %m%n</Pattern>
         </encoder>
     </appender>
 
@@ -20,7 +20,7 @@
         <!-- Start the application passing this system variable -->
         <syslogHost>${syslog.server}</syslogHost>
         <facility>LOCAL0</facility>
-        <suffixPattern>BikeMan: %-5level %logger %msg</suffixPattern>
+        <suffixPattern>BikeMan: %d{yyyy-MM-dd HH:mm:ss.SSS} %-5p %c{1} - %m%n</suffixPattern>
     </appender>
 
     <logger name="javax.activation" level="WARN"/>
