@@ -23,6 +23,8 @@ import ch.qos.logback.core.net.SyslogAppenderBase;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
+import java.io.IOException;
+
 /**
  * Taken from: https://github.com/spotify/logging-java/tree/master/src/main/java/com/spotify/logging/logback
  *
@@ -34,7 +36,6 @@ import org.joda.time.format.ISODateTimeFormat;
 public class MillisecondPrecisionSyslogStartConverter extends SyslogStartConverter {
 
     private long lastTimestamp = -1;
-    private String timestampStr = null;
     private DateTimeFormatter isoFormatter;
     private String localHostName;
     private int facility;
@@ -52,7 +53,7 @@ public class MillisecondPrecisionSyslogStartConverter extends SyslogStartConvert
 
         localHostName = getLocalHostname();
         try {
-            isoFormatter = ISODateTimeFormat.dateTimeParser();
+            isoFormatter = ISODateTimeFormat.dateHourMinuteSecondMillis();
         } catch (Exception e) {
             addError("Could not instantiate Joda DateTimeFormatter", e);
             errorCount++;
@@ -71,7 +72,7 @@ public class MillisecondPrecisionSyslogStartConverter extends SyslogStartConvert
         sb.append("<");
         sb.append(pri);
         sb.append(">");
-        sb.append(computeTimeStampString(event.getTimeStamp()));
+        computeTimeStampString(sb, event.getTimeStamp());
         sb.append(' ');
         sb.append(localHostName);
         sb.append(' ');
@@ -79,13 +80,16 @@ public class MillisecondPrecisionSyslogStartConverter extends SyslogStartConvert
         return sb.toString();
     }
 
-    String computeTimeStampString(final long now) {
+    void computeTimeStampString(StringBuilder sb, final long now) {
         synchronized (this) {
             if (now != lastTimestamp) {
                 lastTimestamp = now;
-                timestampStr = isoFormatter.print(now);
+                try {
+                    isoFormatter.printTo(sb, now);
+                } catch (IOException e) {
+                    addError("Failed to convert timestamp to string", e);
+                }
             }
-            return timestampStr;
         }
     }
 }
