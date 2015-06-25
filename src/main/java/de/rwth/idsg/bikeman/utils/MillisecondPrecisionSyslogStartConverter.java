@@ -21,21 +21,20 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.util.LevelToSyslogSeverity;
 import ch.qos.logback.core.net.SyslogAppenderBase;
 import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
+import org.joda.time.format.DateTimeFormatterBuilder;
 
 import java.io.IOException;
 
 /**
  * Taken from: https://github.com/spotify/logging-java/tree/master/src/main/java/com/spotify/logging/logback
  *
- * Modified to use Joda-Time
+ * Modified to use Joda-Time and ISO-8601 in order to meet the syslog timestamp format expectations
  *
  * A {@link SyslogStartConverter} with millisecond timestamp
  * precision.
  */
 public class MillisecondPrecisionSyslogStartConverter extends SyslogStartConverter {
 
-    private long lastTimestamp = -1;
     private DateTimeFormatter isoFormatter;
     private String localHostName;
     private int facility;
@@ -53,7 +52,11 @@ public class MillisecondPrecisionSyslogStartConverter extends SyslogStartConvert
 
         localHostName = getLocalHostname();
         try {
-            isoFormatter = ISODateTimeFormat.dateHourMinuteSecondMillis();
+            isoFormatter = new DateTimeFormatterBuilder()
+                .appendPattern("yyyy-MM-dd'T'HH:mm:ss.SSS")
+                .appendTimeZoneOffset("Z", true, 2, 4)
+                .toFormatter();
+
         } catch (Exception e) {
             addError("Could not instantiate Joda DateTimeFormatter", e);
             errorCount++;
@@ -82,13 +85,10 @@ public class MillisecondPrecisionSyslogStartConverter extends SyslogStartConvert
 
     void computeTimeStampString(StringBuilder sb, final long now) {
         synchronized (this) {
-            if (now != lastTimestamp) {
-                lastTimestamp = now;
-                try {
-                    isoFormatter.printTo(sb, now);
-                } catch (IOException e) {
-                    addError("Failed to convert timestamp to string", e);
-                }
+            try {
+                isoFormatter.printTo(sb, now);
+            } catch (IOException e) {
+                addError("Failed to convert timestamp to string", e);
             }
         }
     }
