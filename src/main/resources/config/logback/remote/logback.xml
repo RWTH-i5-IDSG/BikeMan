@@ -16,11 +16,11 @@
         </encoder>
     </appender>
 
-    <appender name="SYSLOG" class="ch.qos.logback.classic.net.SyslogAppender">
+    <appender name="SYSLOG" class="de.rwth.idsg.bikeman.utils.MillisecondPrecisionSyslogAppender">
         <!-- Start the application passing this system variable -->
         <syslogHost>${syslog.server}</syslogHost>
         <facility>LOCAL0</facility>
-        <suffixPattern>BikeMan: %d{yyyy-MM-dd HH:mm:ss.SSS} %-5p %c{1} - %m%n</suffixPattern>
+        <suffixPattern>BikeMan: %-5level %logger %msg</suffixPattern>
     </appender>
 
     <logger name="javax.activation" level="WARN"/>
