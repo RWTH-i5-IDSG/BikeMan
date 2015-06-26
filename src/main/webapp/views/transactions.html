@@ -26,7 +26,7 @@
                 <td>{{transaction.endDateTime | date:'medium'}}</td>
                 <td>{{transaction.fromStation.name}} <span class="badge">{{transaction.fromStation.slotPosition}}</span></td>
                 <td><span ng-hide="transaction.toStation.name == null">{{transaction.toStation.name}} <span class="badge">{{transaction.toStation.slotPosition}}</span></span></td>
-                <td><button type="button" class="btn btn-info pull-right" ng-click="kill(transaction.transactionId)">
+                <td><button type="button" class="btn btn-danger pull-right" ng-click="kill(transaction.transactionId)">
                     <span class="glyphicon glyphicon-remove"></span>
                     <span translate="transactions.table.body.kill">Kill</span>
                 </button></td>
