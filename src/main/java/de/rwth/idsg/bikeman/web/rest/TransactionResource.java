@@ -5,7 +5,11 @@ import de.rwth.idsg.bikeman.web.rest.dto.view.ViewTransactionDTO;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -18,8 +22,7 @@ import java.util.List;
 @Slf4j
 public class TransactionResource {
 
-    @Inject
-    private TransactionRepository transactionRepository;
+    @Inject private TransactionRepository transactionRepository;
 
     private static final String BASE_PATH = "/transactions";
     private static final String BASE_PATH_OPEN = "/transactions/open";
@@ -32,6 +35,8 @@ public class TransactionResource {
     private static final String MAJOR_CUSTOMER_PATH_CLOSED = "/major-customer/transactions/closed";
     private static final String MAJOR_CUSTOMER_PEDELEC_ID_PATH = "/major-customer/transactions/pedelec/{pedelecId}";
     private static final String MAJOR_CUSTOMER_LOGIN_PATH = "/major-customer/transactions/customer/{login:.+}";
+
+    private static final String KILL_PATH = "/transactions/kill/{transactionId}";
 
     @RequestMapping(value = BASE_PATH)
     public List<ViewTransactionDTO> getAll() throws DatabaseException {
@@ -103,5 +108,10 @@ public class TransactionResource {
     public List<ViewTransactionDTO> getClosedMajorCustomerTransactions() throws DatabaseException {
         log.debug("REST request to get closed Major Customer Transactions");
         return transactionRepository.findClosedMajorCustomerTransactions();
+    }
+
+    @RequestMapping(value = KILL_PATH)
+    public void kill(@PathVariable Long transactionId) throws DatabaseException {
+        transactionRepository.kill(transactionId);
     }
 }

@@ -48,4 +48,6 @@ public interface TransactionRepository {
     List<ViewTransactionDTO> findCustomerTransactionsByLogin(String login, Integer resultSize) throws DatabaseException;
     List<ViewTransactionDTO> findMajorCustomerTransactionsByLogin(String login, Integer resultSize) throws DatabaseException;
 
+    void kill(long transactionId);
+
 }

@@ -112,6 +112,40 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         );
     }
 
+    /**
+     * Delete booking and transaction and set all related DB entries to default.
+     *
+     * As if it did not exist.
+     *
+     * ONLY FOR DEBUGGING!
+     */
+    @Override
+    @Transactional(readOnly = false)
+    public void kill(long transactionId) {
+
+        Transaction transaction = em.find(Transaction.class, transactionId);
+
+        em.createQuery("DELETE FROM Booking b WHERE b.transaction = :transaction")
+          .setParameter("transaction", transaction)
+          .executeUpdate();
+
+        em.createQuery("UPDATE CardAccount ca SET ca.inTransaction = false WHERE ca = :cardAccount")
+          .setParameter("cardAccount", transaction.getCardAccount())
+          .executeUpdate();
+
+        em.createQuery("UPDATE Pedelec p SET p.inTransaction = false WHERE p = :pedelec")
+          .setParameter("pedelec", transaction.getPedelec())
+          .executeUpdate();
+
+        // Register the pedelec back at the starting station slot
+        em.createQuery("UPDATE StationSlot ss SET ss.isOccupied = true, ss.pedelec = :pedelec WHERE ss = :stationSlot")
+          .setParameter("pedelec", transaction.getPedelec())
+          .setParameter("stationSlot", transaction.getFromSlot())
+          .executeUpdate();
+
+        em.remove(transaction);
+    }
+
     // -------------------------------------------------------------------------
     // Private helpers
     // -------------------------------------------------------------------------
