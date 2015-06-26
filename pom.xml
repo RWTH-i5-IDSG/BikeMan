@@ -23,6 +23,8 @@
 
     <properties>
         <skipTests>true</skipTests>
+        <skipYeomanBuild>false</skipYeomanBuild>
+
         <HikariCP.version>2.2.5</HikariCP.version>
         <assertj-core.version>1.0.0m1</assertj-core.version>
         <awaitility.version>1.4.0</awaitility.version>
@@ -748,6 +750,7 @@
                             </execution>
                         </executions>
                         <configuration>
+                            <skip>${skipYeomanBuild}</skip>
                             <yeomanProjectDirectory>${project.basedir}</yeomanProjectDirectory>
                         </configuration>
                     </plugin>
