@@ -11,6 +11,8 @@ bikeManApp.factory('Transaction', ['$resource',
             'queryTransactionsOfPedelecWithSize' : { method: 'GET', isArray: true, url: "api/transactions/pedelec/:pedelecId"},
             'queryTransactionsOfCustomerWithSize': { method: 'GET', isArray: true, url: "api/transactions/customer/:login"},
 
+            'kill': { method: 'GET', isArray: false, url: 'api/transactions/kill/:transactionId' },
+
             'queryMajorCustomerTransactions': {method: 'GET', isArray: true, url: 'api/major-customer/transactions'},
             'queryOpenMajorCustomerTransactions': {method: 'GET', isArray: true, url: 'api/major-customer/transactions/open'},
             'queryClosedMajorCustomerTransactions': {method: 'GET', isArray: true, url: 'api/major-customer/transactions/closed'},

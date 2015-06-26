@@ -26,6 +26,11 @@ bikeManApp.controller('TransactionController', ['$scope', 'resolvedTransaction',
                 });
         };
 
+        $scope.kill = function(id) {
+            Transaction.kill({transactionId: id});
+            $scope.transactions = Transaction.query();
+        }
+
         $scope.clear = function () {
             $scope.transaction = {id: null, sampleTextAttribute: null, sampleDateAttribute: null};
         };

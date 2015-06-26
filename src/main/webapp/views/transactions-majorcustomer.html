@@ -16,6 +16,7 @@
                 <th translate="transactions.table.header.endTime">End Time</th>
                 <th translate="transactions.table.header.fromLocation">From Location</th>
                 <th translate="transactions.table.header.toLocation">To Location</th>
+                <th></th>
             </tr>
             </thead>
             <tbody>
@@ -27,6 +28,10 @@
                 <td>{{transaction.endDateTime | date:'medium'}}</td>
                 <td>{{transaction.fromStation.name}} <span class="badge">{{transaction.fromStation.slotPosition}}</span></td>
                 <td><span ng-hide="transaction.toStation.name == null">{{transaction.toStation.name}} <span class="badge">{{transaction.toStation.slotPosition}}</span></span></td>
+                <td><button type="button" class="btn btn-info pull-right" ng-click="kill(transaction.transactionId)">
+                    <span class="glyphicon glyphicon-remove"></span>
+                    <span translate="transactions.table.body.kill">Kill</span>
+                </button></td>
             </tr>
             </tbody>
         </table>
