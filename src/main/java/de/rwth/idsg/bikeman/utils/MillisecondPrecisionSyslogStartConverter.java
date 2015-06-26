@@ -83,7 +83,7 @@ public class MillisecondPrecisionSyslogStartConverter extends SyslogStartConvert
         return sb.toString();
     }
 
-    void computeTimeStampString(StringBuilder sb, final long now) {
+    private void computeTimeStampString(StringBuilder sb, final long now) {
         try {
             isoFormatter.printTo(sb, now);
         } catch (IOException e) {

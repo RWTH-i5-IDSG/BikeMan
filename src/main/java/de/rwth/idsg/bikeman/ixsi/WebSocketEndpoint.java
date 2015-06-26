@@ -2,6 +2,10 @@ package de.rwth.idsg.bikeman.ixsi;
 
 import de.rwth.idsg.bikeman.ixsi.api.Consumer;
 import de.rwth.idsg.bikeman.ixsi.api.WebSocketSessionStore;
+import de.rwth.idsg.bikeman.ixsi.impl.AvailabilityStore;
+import de.rwth.idsg.bikeman.ixsi.impl.ConsumptionStore;
+import de.rwth.idsg.bikeman.ixsi.impl.ExternalBookingStore;
+import de.rwth.idsg.bikeman.ixsi.impl.PlaceAvailabilityStore;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -19,10 +23,13 @@ import java.io.IOException;
 @Component
 public class WebSocketEndpoint extends TextWebSocketHandler {
 
-    @Autowired
-    private WebSocketSessionStore webSocketSessionStore;
-    @Autowired
-    private Consumer consumer;
+    @Autowired private WebSocketSessionStore webSocketSessionStore;
+    @Autowired private Consumer consumer;
+
+    @Autowired private AvailabilityStore availabilityStore;
+    @Autowired private ConsumptionStore consumptionStore;
+    @Autowired private ExternalBookingStore externalBookingStore;
+    @Autowired private PlaceAvailabilityStore placeAvailabilityStore;
 
     @Override
     public void handleTextMessage(WebSocketSession session, TextMessage webSocketMessage) throws Exception {
@@ -64,6 +71,16 @@ public class WebSocketEndpoint extends TextWebSocketHandler {
         log.info("[id={}] Connection was closed, status: {}", session.getId(), closeStatus);
         String systemId = (String) session.getAttributes().get(HandshakeInterceptor.SYSTEM_ID_KEY);
         webSocketSessionStore.remove(systemId, session);
+
+        if (webSocketSessionStore.size(systemId) == 0) {
+            log.debug("There are no open connections left to system '{}'. "
+                    + "Removing it from all the subscription stores", systemId);
+
+            availabilityStore.unsubscribeAll(systemId);
+            consumptionStore.unsubscribeAll(systemId);
+            externalBookingStore.unsubscribeAll(systemId);
+            placeAvailabilityStore.unsubscribeAll(systemId);
+        }
     }
 
     @Override

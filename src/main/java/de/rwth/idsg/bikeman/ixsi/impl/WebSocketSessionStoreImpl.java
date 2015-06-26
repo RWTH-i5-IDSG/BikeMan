@@ -65,6 +65,12 @@ public class WebSocketSessionStoreImpl implements WebSocketSessionStore {
     }
 
     @Override
+    public int size(String systemID) {
+        Deque<WebSocketSession> sessionSet = lookupTable.get(systemID);
+        return sessionSet.size();
+    }
+
+    @Override
     public void clear() {
         lookupTable.clear();
         log.debug("Cleared the WebSocketSession store");

@@ -11,6 +11,7 @@ public interface SubscriptionStore<T> {
     void subscribe(String systemID, List<T> itemIDs, Integer expireIntervalinMinutes);
     void subscribe(String systemID, List<T> itemIDs);
     void unsubscribe(String systemID, List<T> itemIDs);
+    void unsubscribeAll(String systemID);
     Set<String> getSubscribedSystems(T itemID);
     List<T> getSubscriptions(String systemID);
     void clear();

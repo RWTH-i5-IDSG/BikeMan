@@ -10,5 +10,6 @@ public interface WebSocketSessionStore {
     void add(String systemID, WebSocketSession session);
     void remove(String systemID, WebSocketSession session);
     WebSocketSession getNext(String systemID);
+    int size(String systemID);
     void clear();
 }
