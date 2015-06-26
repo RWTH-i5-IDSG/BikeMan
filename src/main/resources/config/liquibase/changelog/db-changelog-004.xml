@@ -8,4 +8,37 @@
         <dropColumn tableName="T_CUSTOMER" columnName="in_transaction"/>
     </changeSet>
 
+    <changeSet id="1409564974610-02" author="mwiederhold">
+        <createTable tableName="T_TRANSACTION_EVENT" schemaName="public">
+            <column name="transaction_event_id" type="INT8"/>
+            <column name="arrived_timestamp" type="timestamp"/>
+            <column name="type" type="VARCHAR(255)"/>
+            <column name="status" type="VARCHAR(255)"/>
+            <column name="timestamp" type="timestamp"/>
+            <column name="card_account_id" type="INT8"/>
+            <column name="station_slot_id" type="INT8"/>
+            <column name="pedelec_id" type="INT8"/>
+        </createTable>
+
+        <addPrimaryKey catalogName="" columnNames="transaction_event_id" constraintName="PK_T_TRANSACTION_EVENT"
+                       schemaName="public" tableName="T_TRANSACTION_EVENT"/>
+
+        <addForeignKeyConstraint baseColumnNames="card_account_id" baseTableCatalogName="" baseTableName="T_TRANSACTION_EVENT"
+                                 baseTableSchemaName="public" constraintName="FK_T_TRANSACTION_EVENT_card_account_id"
+                                 deferrable="false" initiallyDeferred="false" referencedColumnNames="card_account_id"
+                                 referencedTableCatalogName="" referencedTableName="T_CARD_ACCOUNT"
+                                 referencedTableSchemaName="public"/>
+        <addForeignKeyConstraint baseColumnNames="station_slot_id" baseTableCatalogName="" baseTableName="T_TRANSACTION_EVENT"
+                                 baseTableSchemaName="public" constraintName="FK_T_TRANSACTION_EVENT_station_slot_id"
+                                 deferrable="false" initiallyDeferred="false" referencedColumnNames="station_slot_id"
+                                 referencedTableCatalogName="" referencedTableName="T_STATION_SLOT"
+                                 referencedTableSchemaName="public"/>
+        <addForeignKeyConstraint baseColumnNames="pedelec_id" baseTableCatalogName="" baseTableName="T_TRANSACTION_EVENT"
+                                 baseTableSchemaName="public" constraintName="FK_T_TRANSACTION_EVENT_pedelec_id"
+                                 deferrable="false" initiallyDeferred="false" referencedColumnNames="pedelec_id"
+                                 referencedTableCatalogName="" referencedTableName="T_PEDELEC"
+                                 referencedTableSchemaName="public"/>
+
+    </changeSet>
+
 </databaseChangeLog>
