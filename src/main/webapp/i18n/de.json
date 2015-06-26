@@ -274,6 +274,9 @@
                     "endTime": "Endzeit",
                     "fromLocation": "Von Ort",
                     "toLocation": "Nach Ort"
+                },
+                "body": {
+                    "kill": "Kill"
                 }
             }
         }
