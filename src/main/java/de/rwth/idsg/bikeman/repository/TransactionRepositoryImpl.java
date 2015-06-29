@@ -22,7 +22,9 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Selection;
 import java.util.List;
 
 /**
@@ -201,106 +203,89 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         // Customer type decisions
         // -------------------------------------------------------------------------
 
+        Selection<ViewTransactionDTO> selection = null;
         switch (customerType) {
             case MAJOR_CUSTOMER:
-                criteria.select(
-                    builder.construct(
-                        ViewTransactionDTO.class,
-                        transaction.get(Transaction_.transactionId),
-                        transaction.get(Transaction_.startDateTime),
-                        transaction.get(Transaction_.endDateTime),
-                        fromStation.get(Station_.stationId),
-                        fromStation.get(Station_.name),
-                        fromStationSlot.get(StationSlot_.stationSlotPosition),
-                        toStation.get(Station_.stationId),
-                        toStation.get(Station_.name),
-                        toStationSlot.get(StationSlot_.stationSlotPosition),
-                        cardAccount.get(CardAccount_.cardId),
-                        user.get(MajorCustomer_.name),
-                        pedelec.get(Pedelec_.pedelecId),
-                        pedelec.get(Pedelec_.manufacturerId)
-                    )
-                ).orderBy(
-                    builder.desc(transaction.get(Transaction_.endDateTime))
+                selection = builder.construct(
+                    ViewTransactionDTO.class,
+                    transaction.get(Transaction_.transactionId),
+                    transaction.get(Transaction_.startDateTime),
+                    transaction.get(Transaction_.endDateTime),
+                    fromStation.get(Station_.stationId),
+                    fromStation.get(Station_.name),
+                    fromStationSlot.get(StationSlot_.stationSlotPosition),
+                    toStation.get(Station_.stationId),
+                    toStation.get(Station_.name),
+                    toStationSlot.get(StationSlot_.stationSlotPosition),
+                    cardAccount.get(CardAccount_.cardId),
+                    user.get(MajorCustomer_.name),
+                    pedelec.get(Pedelec_.pedelecId),
+                    pedelec.get(Pedelec_.manufacturerId)
                 );
                 break;
 
             case CUSTOMER:
-                criteria.select(
-                    builder.construct(
-                        ViewTransactionDTO.class,
-                        transaction.get(Transaction_.transactionId),
-                        transaction.get(Transaction_.startDateTime),
-                        transaction.get(Transaction_.endDateTime),
-                        fromStation.get(Station_.stationId),
-                        fromStation.get(Station_.name),
-                        fromStationSlot.get(StationSlot_.stationSlotPosition),
-                        toStation.get(Station_.stationId),
-                        toStation.get(Station_.name),
-                        toStationSlot.get(StationSlot_.stationSlotPosition),
-                        cardAccount.get(CardAccount_.cardId),
-                        user.get(Customer_.customerId),
-                        user.get(Customer_.firstname),
-                        user.get(Customer_.lastname),
-                        pedelec.get(Pedelec_.pedelecId),
-                        pedelec.get(Pedelec_.manufacturerId)
-                    )
-                ).orderBy(
-                    builder.desc(transaction.get(Transaction_.endDateTime))
+                selection = builder.construct(
+                    ViewTransactionDTO.class,
+                    transaction.get(Transaction_.transactionId),
+                    transaction.get(Transaction_.startDateTime),
+                    transaction.get(Transaction_.endDateTime),
+                    fromStation.get(Station_.stationId),
+                    fromStation.get(Station_.name),
+                    fromStationSlot.get(StationSlot_.stationSlotPosition),
+                    toStation.get(Station_.stationId),
+                    toStation.get(Station_.name),
+                    toStationSlot.get(StationSlot_.stationSlotPosition),
+                    cardAccount.get(CardAccount_.cardId),
+                    user.get(Customer_.customerId),
+                    user.get(Customer_.firstname),
+                    user.get(Customer_.lastname),
+                    pedelec.get(Pedelec_.pedelecId),
+                    pedelec.get(Pedelec_.manufacturerId)
                 );
                 break;
         }
+
+        criteria.select(selection)
+                .orderBy(builder.desc(transaction.get(Transaction_.endDateTime)));
 
         // -------------------------------------------------------------------------
         // Find type decisions
         // -------------------------------------------------------------------------
 
+        Predicate findPredicate = null;
         switch (findType) {
             case ALL:
-                criteria.where(
-                    builder.equal(cardAccount.get(CardAccount_.ownerType), customerType)
-                );
                 break;
 
             case CLOSED:
-                criteria.where(
-                    builder.and(
-                        builder.equal(cardAccount.get(CardAccount_.ownerType), customerType),
-                        builder.isNotNull(transaction.get(Transaction_.toSlot)),
-                        builder.isNotNull(transaction.get(Transaction_.endDateTime))
-                    )
+                findPredicate = builder.and(
+                    builder.isNotNull(transaction.get(Transaction_.toSlot)),
+                    builder.isNotNull(transaction.get(Transaction_.endDateTime))
                 );
                 break;
 
             case OPEN:
-                criteria.where(
-                    builder.and(
-                        builder.equal(cardAccount.get(CardAccount_.ownerType), customerType),
-                        builder.isNull(transaction.get(Transaction_.toSlot)),
-                        builder.isNull(transaction.get(Transaction_.endDateTime))
-                    )
+                findPredicate = builder.and(
+                    builder.isNull(transaction.get(Transaction_.toSlot)),
+                    builder.isNull(transaction.get(Transaction_.endDateTime))
                 );
                 break;
 
             case BY_PEDELEC_ID:
-                criteria.where(
-                    builder.and(
-                        builder.equal(cardAccount.get(CardAccount_.ownerType), customerType),
-                        builder.equal(pedelec.get(Pedelec_.pedelecId), pedelecId)
-                    )
-                );
+                findPredicate = builder.equal(pedelec.get(Pedelec_.pedelecId), pedelecId);
                 break;
 
             case BY_LOGIN:
-                criteria.where(
-                    builder.and(
-                        builder.equal(cardAccount.get(CardAccount_.ownerType), customerType),
-                        builder.equal(user.get(User_.login), login)
-                    )
-                );
+                findPredicate = builder.equal(user.get(User_.login), login);
                 break;
         }
 
-        return criteria;
+        return criteria.where(
+            builder.and(
+                builder.equal(cardAccount.get(CardAccount_.ownerType), customerType),
+                findPredicate
+            )
+        );
     }
 }
