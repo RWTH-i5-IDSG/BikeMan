@@ -34,9 +34,7 @@ public interface TransactionRepository {
     * @param resultSize   Limits the max number or results that are returned.
     *
     */
-
-    List<ViewTransactionDTO> findCustomerTransactionsByPedelecId(Long pedelecId, Integer resultSize) throws DatabaseException;
-    List<ViewTransactionDTO> findMajorCustomerTransactionsByPedelecId(Long pedelecId, Integer resultSize) throws DatabaseException;
+    List<ViewTransactionDTO> findTransactionsByPedelecId(Long pedelecId, Integer resultSize) throws DatabaseException;
 
     /*
     * Find OPEN and CLOSED transactions for ONE user.

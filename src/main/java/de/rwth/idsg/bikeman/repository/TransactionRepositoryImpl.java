@@ -17,7 +17,11 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Root;
 import java.util.List;
 
 /**
@@ -63,31 +67,28 @@ public class TransactionRepositoryImpl implements TransactionRepository {
     }
 
     @Override
+    public List<ViewTransactionDTO> findTransactionsByPedelecId(Long pedelecId, Integer resultSize) throws DatabaseException {
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+
+        List<ViewTransactionDTO> returnList =
+            setResultSizeAndGet(
+                em.createQuery(getMajorCustomerTransactionQuery(builder, FindType.BY_PEDELEC_ID, pedelecId, null)),
+                resultSize / 2
+            );
+
+        returnList.addAll(
+            setResultSizeAndGet(
+                em.createQuery(getCustomerTransactionQuery(builder, FindType.BY_PEDELEC_ID, pedelecId, null)),
+                resultSize / 2
+            ));
+
+        return returnList;
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public List<ViewTransactionDTO> findOpenMajorCustomerTransactions() throws DatabaseException {
         return findMajorCustomerTransactions(em.getCriteriaBuilder());
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<ViewTransactionDTO> findCustomerTransactionsByPedelecId(Long pedelecId, Integer resultSize)
-            throws DatabaseException {
-        CriteriaBuilder builder = em.getCriteriaBuilder();
-        return setResultSizeAndGet(
-                em.createQuery(getCustomerTransactionQuery(builder, FindType.BY_PEDELEC_ID, pedelecId, null)),
-                resultSize
-        );
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<ViewTransactionDTO> findMajorCustomerTransactionsByPedelecId(Long pedelecId, Integer resultSize)
-            throws DatabaseException {
-        CriteriaBuilder builder = em.getCriteriaBuilder();
-        return setResultSizeAndGet(
-                em.createQuery(getMajorCustomerTransactionQuery(builder, FindType.BY_PEDELEC_ID, pedelecId, null)),
-                resultSize
-        );
     }
 
     @Override

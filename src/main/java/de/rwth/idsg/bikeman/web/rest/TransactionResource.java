@@ -24,18 +24,20 @@ public class TransactionResource {
 
     @Inject private TransactionRepository transactionRepository;
 
+    // for customers
     private static final String BASE_PATH = "/transactions";
     private static final String BASE_PATH_OPEN = "/transactions/open";
     private static final String BASE_PATH_CLOSED = "/transactions/closed";
-    private static final String PEDELEC_ID_PATH = "/transactions/pedelec/{pedelecId}";
     private static final String CUSTOMER_LOGIN_PATH = "/transactions/customer/{login:.+}";
 
+    // for major customers
     private static final String MAJOR_CUSTOMER_PATH = "/major-customer/transactions";
     private static final String MAJOR_CUSTOMER_PATH_OPEN = "/major-customer/transactions/open";
     private static final String MAJOR_CUSTOMER_PATH_CLOSED = "/major-customer/transactions/closed";
-    private static final String MAJOR_CUSTOMER_PEDELEC_ID_PATH = "/major-customer/transactions/pedelec/{pedelecId}";
     private static final String MAJOR_CUSTOMER_LOGIN_PATH = "/major-customer/transactions/customer/{login:.+}";
 
+    // for both
+    private static final String PEDELEC_ID_PATH = "/transactions/pedelec/{pedelecId}";
     private static final String KILL_PATH = "/transactions/kill/{transactionId}";
 
     @RequestMapping(value = BASE_PATH)
@@ -55,17 +57,8 @@ public class TransactionResource {
         @PathVariable Long pedelecId, @RequestParam(required = false) Integer resultSize)
         throws DatabaseException {
 
-        log.debug("REST request to get last {} customer transactions for pedelec with pedelecId {}", resultSize, pedelecId);
-        return transactionRepository.findCustomerTransactionsByPedelecId(pedelecId, resultSize);
-    }
-
-    @RequestMapping(value = MAJOR_CUSTOMER_PEDELEC_ID_PATH)
-    public List<ViewTransactionDTO> getMajorCustomerTransactionsByPedelecId(
-        @PathVariable Long pedelecId, @RequestParam(required = false) Integer resultSize)
-        throws DatabaseException {
-
-        log.debug("REST request to get last {} major customer transactions for pedelec with pedelecId {}", resultSize, pedelecId);
-        return transactionRepository.findMajorCustomerTransactionsByPedelecId(pedelecId, resultSize);
+        log.debug("REST request to get last {} transactions for pedelec with pedelecId {}", resultSize, pedelecId);
+        return transactionRepository.findTransactionsByPedelecId(pedelecId, resultSize);
     }
 
     @RequestMapping(value = CUSTOMER_LOGIN_PATH)
