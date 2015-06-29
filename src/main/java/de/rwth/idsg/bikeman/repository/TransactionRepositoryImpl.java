@@ -8,6 +8,7 @@ import de.rwth.idsg.bikeman.domain.Pedelec_;
 import de.rwth.idsg.bikeman.domain.StationSlot_;
 import de.rwth.idsg.bikeman.domain.Station_;
 import de.rwth.idsg.bikeman.domain.Transaction_;
+import de.rwth.idsg.bikeman.domain.User_;
 import de.rwth.idsg.bikeman.web.rest.dto.view.ViewTransactionDTO;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
@@ -32,38 +33,47 @@ import java.util.List;
 @Slf4j
 public class TransactionRepositoryImpl implements TransactionRepository {
 
-    private enum FindType { ALL, CLOSED, BY_PEDELEC_ID, BY_LOGIN }
+    private enum FindType {
+        ALL, CLOSED, OPEN,
+        BY_PEDELEC_ID, BY_LOGIN
+    }
 
     @PersistenceContext private EntityManager em;
 
     @Override
     @Transactional(readOnly = true)
     public List<ViewTransactionDTO> findAllCustomerTransactions() throws DatabaseException {
-        return internalFindCustomer(FindType.ALL);
+        return internalFind(FindType.ALL, CustomerType.CUSTOMER);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<ViewTransactionDTO> findClosedCustomerTransactions() throws DatabaseException {
-        return internalFindCustomer(FindType.CLOSED);
+        return internalFind(FindType.CLOSED, CustomerType.CUSTOMER);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<ViewTransactionDTO> findOpenCustomerTransactions() throws DatabaseException {
-        return findCustomerTransactions(em.getCriteriaBuilder());
+        return internalFind(FindType.OPEN, CustomerType.CUSTOMER);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<ViewTransactionDTO> findAllMajorCustomerTransactions() throws DatabaseException {
-        return internalFindMajorCustomer(FindType.ALL);
+        return internalFind(FindType.ALL, CustomerType.MAJOR_CUSTOMER);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<ViewTransactionDTO> findClosedMajorCustomerTransactions() throws DatabaseException {
-        return internalFindMajorCustomer(FindType.CLOSED);
+        return internalFind(FindType.CLOSED, CustomerType.MAJOR_CUSTOMER);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ViewTransactionDTO> findOpenMajorCustomerTransactions() throws DatabaseException {
+        return internalFind(FindType.OPEN, CustomerType.MAJOR_CUSTOMER);
     }
 
     @Override
@@ -72,14 +82,14 @@ public class TransactionRepositoryImpl implements TransactionRepository {
 
         List<ViewTransactionDTO> returnList =
             setResultSizeAndGet(
-                em.createQuery(getMajorCustomerTransactionQuery(builder, FindType.BY_PEDELEC_ID, pedelecId, null)),
-                resultSize / 2
+                em.createQuery(getTransactionQuery(builder, FindType.BY_PEDELEC_ID, CustomerType.MAJOR_CUSTOMER, pedelecId, null)),
+                resultSize
             );
 
         returnList.addAll(
             setResultSizeAndGet(
-                em.createQuery(getCustomerTransactionQuery(builder, FindType.BY_PEDELEC_ID, pedelecId, null)),
-                resultSize / 2
+                em.createQuery(getTransactionQuery(builder, FindType.BY_PEDELEC_ID, CustomerType.CUSTOMER, pedelecId, null)),
+                resultSize
             ));
 
         return returnList;
@@ -87,29 +97,25 @@ public class TransactionRepositoryImpl implements TransactionRepository {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ViewTransactionDTO> findOpenMajorCustomerTransactions() throws DatabaseException {
-        return findMajorCustomerTransactions(em.getCriteriaBuilder());
-    }
-
-    @Override
-    @Transactional(readOnly = true)
     public List<ViewTransactionDTO> findCustomerTransactionsByLogin(String login, Integer resultSize)
-            throws DatabaseException {
+        throws DatabaseException {
+
         CriteriaBuilder builder = em.getCriteriaBuilder();
         return setResultSizeAndGet(
-                em.createQuery(getCustomerTransactionQuery(builder, FindType.BY_LOGIN, null, login)),
-                resultSize
+            em.createQuery(getTransactionQuery(builder, FindType.BY_LOGIN, CustomerType.CUSTOMER, null, login)),
+            resultSize
         );
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<ViewTransactionDTO> findMajorCustomerTransactionsByLogin(String login, Integer resultSize)
-            throws DatabaseException {
+        throws DatabaseException {
+
         CriteriaBuilder builder = em.getCriteriaBuilder();
         return setResultSizeAndGet(
-                em.createQuery(getMajorCustomerTransactionQuery(builder, FindType.BY_LOGIN, null, login)),
-                resultSize
+            em.createQuery(getTransactionQuery(builder, FindType.BY_LOGIN, CustomerType.MAJOR_CUSTOMER, null, login)),
+            resultSize
         );
     }
 
@@ -151,19 +157,10 @@ public class TransactionRepositoryImpl implements TransactionRepository {
     // Private helpers
     // -------------------------------------------------------------------------
 
-    private List<ViewTransactionDTO> internalFindCustomer(FindType findType) throws DatabaseException {
+    private List<ViewTransactionDTO> internalFind(FindType findType, CustomerType customerType) throws DatabaseException {
         CriteriaBuilder builder = em.getCriteriaBuilder();
         try {
-            return em.createQuery(getCustomerTransactionQuery(builder, findType, null, null)).getResultList();
-        } catch (Exception e) {
-            throw new DatabaseException("Failed during database operation.", e);
-        }
-    }
-
-    private List<ViewTransactionDTO> internalFindMajorCustomer(FindType findType) throws DatabaseException {
-        CriteriaBuilder builder = em.getCriteriaBuilder();
-        try {
-            return em.createQuery(getMajorCustomerTransactionQuery(builder, findType, null, null)).getResultList();
+            return em.createQuery(getTransactionQuery(builder, findType, customerType, null, null)).getResultList();
         } catch (Exception e) {
             throw new DatabaseException("Failed during database operation.", e);
         }
@@ -182,7 +179,10 @@ public class TransactionRepositoryImpl implements TransactionRepository {
     }
 
     @SuppressWarnings("unchecked")
-    private List<ViewTransactionDTO> findMajorCustomerTransactions(CriteriaBuilder builder) throws DatabaseException {
+    private CriteriaQuery<ViewTransactionDTO> getTransactionQuery(CriteriaBuilder builder,
+                                                                  FindType findType, CustomerType customerType,
+                                                                  Long pedelecId, String login) {
+
         CriteriaQuery<ViewTransactionDTO> criteria = builder.createQuery(ViewTransactionDTO.class);
         Root<Transaction> transaction = criteria.from(Transaction.class);
 
@@ -192,97 +192,19 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         Join<StationSlot, Station> fromStation = fromStationSlot.join(StationSlot_.station, JoinType.LEFT);
 
         Join<Transaction, CardAccount> cardAccount = transaction.join(Transaction_.cardAccount, JoinType.LEFT);
-        Join majorCustomer = cardAccount.join(CardAccount_.user, JoinType.LEFT);
-
-        criteria.select(
-                builder.construct(
-                        ViewTransactionDTO.class,
-                        transaction.get(Transaction_.transactionId),
-                        transaction.get(Transaction_.startDateTime),
-                        fromStation.get(Station_.stationId),
-                        fromStation.get(Station_.name),
-                        fromStationSlot.get(StationSlot_.stationSlotPosition),
-                        cardAccount.get(CardAccount_.cardId),
-                        majorCustomer.get(MajorCustomer_.name),
-                        pedelec.get(Pedelec_.pedelecId),
-                        pedelec.get(Pedelec_.manufacturerId)
-                )
-        ).where(
-                builder.and(
-                        builder.equal(cardAccount.get(CardAccount_.ownerType), CustomerType.MAJOR_CUSTOMER),
-                        builder.isNull(transaction.get(Transaction_.toSlot)),
-                        builder.isNull(transaction.get(Transaction_.endDateTime))
-                )
-        );
-
-        try {
-            return em.createQuery(criteria).getResultList();
-        } catch (Exception e) {
-            throw new DatabaseException("Failed during database operation.");
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    private List<ViewTransactionDTO> findCustomerTransactions(CriteriaBuilder builder) throws DatabaseException {
-        CriteriaQuery<ViewTransactionDTO> criteria = builder.createQuery(ViewTransactionDTO.class);
-        Root<Transaction> transaction = criteria.from(Transaction.class);
-
-        Join<Transaction, Pedelec> pedelec = transaction.join(Transaction_.pedelec, JoinType.LEFT);
-
-        Join<Transaction, StationSlot> fromStationSlot = transaction.join(Transaction_.fromSlot, JoinType.LEFT);
-        Join<StationSlot, Station> fromStation = fromStationSlot.join(StationSlot_.station, JoinType.LEFT);
-
-        Join<Transaction, CardAccount> cardAccount = transaction.join(Transaction_.cardAccount, JoinType.LEFT);
-        Join customer = cardAccount.join(CardAccount_.user, JoinType.LEFT);
-
-        criteria.select(
-                builder.construct(
-                        ViewTransactionDTO.class,
-                        transaction.get(Transaction_.transactionId),
-                        transaction.get(Transaction_.startDateTime),
-                        fromStation.get(Station_.stationId),
-                        fromStation.get(Station_.name),
-                        fromStationSlot.get(StationSlot_.stationSlotPosition),
-                        cardAccount.get(CardAccount_.cardId),
-                        customer.get(Customer_.customerId),
-                        customer.get(Customer_.firstname),
-                        customer.get(Customer_.lastname),
-                        pedelec.get(Pedelec_.pedelecId),
-                        pedelec.get(Pedelec_.manufacturerId)
-                )
-        ).where(
-                builder.and(
-                        builder.equal(cardAccount.get(CardAccount_.ownerType), CustomerType.CUSTOMER),
-                        builder.isNull(transaction.get(Transaction_.toSlot)),
-                        builder.isNull(transaction.get(Transaction_.endDateTime))
-                )
-        );
-
-        try {
-            return em.createQuery(criteria).getResultList();
-        } catch (Exception e) {
-            throw new DatabaseException("Failed during database operation.");
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    private CriteriaQuery<ViewTransactionDTO> getCustomerTransactionQuery(CriteriaBuilder builder, FindType findType, Long pedelecId, String login) {
-        CriteriaQuery<ViewTransactionDTO> criteria = builder.createQuery(ViewTransactionDTO.class);
-        Root<Transaction> transaction = criteria.from(Transaction.class);
-
-        Join<Transaction, Pedelec> pedelec = transaction.join(Transaction_.pedelec, JoinType.LEFT);
-
-        Join<Transaction, StationSlot> fromStationSlot = transaction.join(Transaction_.fromSlot, JoinType.LEFT);
-        Join<StationSlot, Station> fromStation = fromStationSlot.join(StationSlot_.station, JoinType.LEFT);
-
-        Join<Transaction, CardAccount> cardAccount = transaction.join(Transaction_.cardAccount, JoinType.LEFT);
-        Join customer = cardAccount.join(CardAccount_.user, JoinType.LEFT);
+        Join user = cardAccount.join(CardAccount_.user, JoinType.LEFT);
 
         Join<Transaction, StationSlot> toStationSlot = transaction.join(Transaction_.toSlot, JoinType.LEFT);
         Join<StationSlot, Station> toStation = toStationSlot.join(StationSlot_.station, JoinType.LEFT);
 
-        criteria.select(
-                builder.construct(
+        // -------------------------------------------------------------------------
+        // Customer type decisions
+        // -------------------------------------------------------------------------
+
+        switch (customerType) {
+            case MAJOR_CUSTOMER:
+                criteria.select(
+                    builder.construct(
                         ViewTransactionDTO.class,
                         transaction.get(Transaction_.transactionId),
                         transaction.get(Transaction_.startDateTime),
@@ -294,71 +216,18 @@ public class TransactionRepositoryImpl implements TransactionRepository {
                         toStation.get(Station_.name),
                         toStationSlot.get(StationSlot_.stationSlotPosition),
                         cardAccount.get(CardAccount_.cardId),
-                        customer.get(Customer_.customerId),
-                        customer.get(Customer_.firstname),
-                        customer.get(Customer_.lastname),
+                        user.get(MajorCustomer_.name),
                         pedelec.get(Pedelec_.pedelecId),
                         pedelec.get(Pedelec_.manufacturerId)
-                )
-        ).orderBy(
-                builder.desc(transaction.get(Transaction_.endDateTime))
-        );
-
-        switch (findType) {
-            case ALL:
-                criteria.where(builder.equal(cardAccount.get(CardAccount_.ownerType), CustomerType.CUSTOMER));
-                break;
-
-            case CLOSED:
-                criteria.where(
-                        builder.and(
-                                builder.equal(cardAccount.get(CardAccount_.ownerType), CustomerType.CUSTOMER),
-                                builder.isNotNull(transaction.get(Transaction_.toSlot)),
-                                builder.isNotNull(transaction.get(Transaction_.endDateTime))
-                        )
+                    )
+                ).orderBy(
+                    builder.desc(transaction.get(Transaction_.endDateTime))
                 );
                 break;
 
-            case BY_PEDELEC_ID:
-                criteria.where(
-                        builder.and(
-                                builder.equal(cardAccount.get(CardAccount_.ownerType), CustomerType.CUSTOMER),
-                                builder.equal(pedelec.get(Pedelec_.pedelecId), pedelecId)
-                        )
-                );
-                break;
-
-            case BY_LOGIN:
-                criteria.where(
-                        builder.and(
-                                builder.equal(cardAccount.get(CardAccount_.ownerType), CustomerType.CUSTOMER),
-                                builder.equal(customer.get(Customer_.login), login)
-                        )
-                );
-                break;
-        }
-
-        return criteria;
-    }
-
-    @SuppressWarnings("unchecked")
-    private CriteriaQuery<ViewTransactionDTO> getMajorCustomerTransactionQuery(CriteriaBuilder builder, FindType findType, Long pedelecId, String login) {
-        CriteriaQuery<ViewTransactionDTO> criteria = builder.createQuery(ViewTransactionDTO.class);
-        Root<Transaction> transaction = criteria.from(Transaction.class);
-
-        Join<Transaction, Pedelec> pedelec = transaction.join(Transaction_.pedelec, JoinType.LEFT);
-
-        Join<Transaction, CardAccount> cardAccount = transaction.join(Transaction_.cardAccount, JoinType.LEFT);
-        Join majorCustomer = cardAccount.join(CardAccount_.user, JoinType.LEFT);
-
-        Join<Transaction, StationSlot> fromStationSlot = transaction.join(Transaction_.fromSlot, JoinType.LEFT);
-        Join<StationSlot, Station> fromStation = fromStationSlot.join(StationSlot_.station, JoinType.LEFT);
-
-        Join<Transaction, StationSlot> toStationSlot = transaction.join(Transaction_.toSlot, JoinType.LEFT);
-        Join<StationSlot, Station> toStation = toStationSlot.join(StationSlot_.station, JoinType.LEFT);
-
-        criteria.select(
-                builder.construct(
+            case CUSTOMER:
+                criteria.select(
+                    builder.construct(
                         ViewTransactionDTO.class,
                         transaction.get(Transaction_.transactionId),
                         transaction.get(Transaction_.startDateTime),
@@ -370,46 +239,64 @@ public class TransactionRepositoryImpl implements TransactionRepository {
                         toStation.get(Station_.name),
                         toStationSlot.get(StationSlot_.stationSlotPosition),
                         cardAccount.get(CardAccount_.cardId),
-                        majorCustomer.get(MajorCustomer_.name),
+                        user.get(Customer_.customerId),
+                        user.get(Customer_.firstname),
+                        user.get(Customer_.lastname),
                         pedelec.get(Pedelec_.pedelecId),
                         pedelec.get(Pedelec_.manufacturerId)
-                )
-        ).orderBy(
-                builder.desc(transaction.get(Transaction_.endDateTime))
-        );
+                    )
+                ).orderBy(
+                    builder.desc(transaction.get(Transaction_.endDateTime))
+                );
+                break;
+        }
+
+        // -------------------------------------------------------------------------
+        // Find type decisions
+        // -------------------------------------------------------------------------
 
         switch (findType) {
             case ALL:
                 criteria.where(
-                        builder.equal(cardAccount.get(CardAccount_.ownerType), CustomerType.MAJOR_CUSTOMER)
+                    builder.equal(cardAccount.get(CardAccount_.ownerType), customerType)
                 );
                 break;
 
             case CLOSED:
                 criteria.where(
-                        builder.and(
-                                builder.isNotNull(transaction.get(Transaction_.toSlot)),
-                                builder.isNotNull(transaction.get(Transaction_.endDateTime)),
-                                builder.equal(cardAccount.get(CardAccount_.ownerType), CustomerType.MAJOR_CUSTOMER)
-                        )
+                    builder.and(
+                        builder.equal(cardAccount.get(CardAccount_.ownerType), customerType),
+                        builder.isNotNull(transaction.get(Transaction_.toSlot)),
+                        builder.isNotNull(transaction.get(Transaction_.endDateTime))
+                    )
+                );
+                break;
+
+            case OPEN:
+                criteria.where(
+                    builder.and(
+                        builder.equal(cardAccount.get(CardAccount_.ownerType), customerType),
+                        builder.isNull(transaction.get(Transaction_.toSlot)),
+                        builder.isNull(transaction.get(Transaction_.endDateTime))
+                    )
                 );
                 break;
 
             case BY_PEDELEC_ID:
                 criteria.where(
-                        builder.and(
-                        builder.equal(pedelec.get(Pedelec_.pedelecId), pedelecId),
-                        builder.equal(cardAccount.get(CardAccount_.ownerType), CustomerType.MAJOR_CUSTOMER)
-                        )
+                    builder.and(
+                        builder.equal(cardAccount.get(CardAccount_.ownerType), customerType),
+                        builder.equal(pedelec.get(Pedelec_.pedelecId), pedelecId)
+                    )
                 );
                 break;
 
             case BY_LOGIN:
                 criteria.where(
-                        builder.and(
-                        builder.equal(majorCustomer.get(MajorCustomer_.login), login),
-                        builder.equal(cardAccount.get(CardAccount_.ownerType), CustomerType.MAJOR_CUSTOMER)
-                        )
+                    builder.and(
+                        builder.equal(cardAccount.get(CardAccount_.ownerType), customerType),
+                        builder.equal(user.get(User_.login), login)
+                    )
                 );
                 break;
         }
