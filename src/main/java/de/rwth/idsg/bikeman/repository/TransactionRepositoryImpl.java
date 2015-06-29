@@ -253,7 +253,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         // Find type decisions
         // -------------------------------------------------------------------------
 
-        Predicate findPredicate = builder.disjunction();
+        Predicate findPredicate = builder.and();
         switch (findType) {
             case ALL:
                 break;
