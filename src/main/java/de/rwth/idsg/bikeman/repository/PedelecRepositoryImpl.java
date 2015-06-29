@@ -36,29 +36,31 @@ public class PedelecRepositoryImpl implements PedelecRepository {
     public List<ViewPedelecDTO> findAll() throws DatabaseException {
         CriteriaBuilder builder = em.getCriteriaBuilder();
 
-        List<ViewPedelecDTO> list = findPedelecsInTransactionWithCustomer(builder);
-        list.addAll(findPedelecsInTransactionWithMajorCustomer(builder));
+        List<ViewPedelecDTO> list = findPedelecsInTransaction(builder, CustomerType.CUSTOMER);
+        list.addAll(findPedelecsInTransaction(builder, CustomerType.MAJOR_CUSTOMER));
         list.addAll(findStationaryPedelecs(builder));
         return list;
     }
 
     @SuppressWarnings("unchecked")
-    private List<ViewPedelecDTO> findPedelecsInTransactionWithCustomer(CriteriaBuilder builder) {
+    private List<ViewPedelecDTO> findPedelecsInTransaction(CriteriaBuilder builder, CustomerType customerType) {
         CriteriaQuery<ViewPedelecDTO> criteria = builder.createQuery(ViewPedelecDTO.class);
 
         Root<Pedelec> pedelec = criteria.from(Pedelec.class);
         Join<Pedelec, Transaction> transaction = pedelec.join(Pedelec_.transactions, JoinType.LEFT);
 
         Join<Transaction, CardAccount> cardAccount = transaction.join(Transaction_.cardAccount, JoinType.LEFT);
-        Join customer = cardAccount.join(CardAccount_.user, JoinType.LEFT);
+        Join user = cardAccount.join(CardAccount_.user, JoinType.LEFT);
 
         Join<Transaction, StationSlot> fromStationSlot = transaction.join(Transaction_.fromSlot, JoinType.LEFT);
         Join<StationSlot, Station> fromStation = fromStationSlot.join(StationSlot_.station, JoinType.LEFT);
 
         Join<Pedelec, PedelecChargingStatus> chargingStatus = pedelec.join(Pedelec_.chargingStatus, JoinType.LEFT);
 
-        criteria.select(
-                builder.construct(
+        switch (customerType) {
+            case CUSTOMER:
+                criteria.select(
+                    builder.construct(
                         ViewPedelecDTO.class,
                         pedelec.get(Pedelec_.pedelecId),
                         pedelec.get(Pedelec_.manufacturerId),
@@ -66,39 +68,19 @@ public class PedelecRepositoryImpl implements PedelecRepository {
                         pedelec.get(Pedelec_.state),
                         pedelec.get(Pedelec_.inTransaction),
                         cardAccount.get(CardAccount_.cardId),
-                        customer.get(Customer_.customerId),
-                        customer.get(Customer_.firstname),
-                        customer.get(Customer_.lastname),
+                        user.get(Customer_.customerId),
+                        user.get(Customer_.firstname),
+                        user.get(Customer_.lastname),
                         fromStation.get(Station_.stationId),
                         fromStationSlot.get(StationSlot_.stationSlotPosition),
                         transaction.get(Transaction_.startDateTime)
-                )
-        ).where(builder.and(
-                builder.equal(cardAccount.get(CardAccount_.ownerType), CustomerType.CUSTOMER),
-                builder.equal(pedelec.get(Pedelec_.inTransaction), true),
-                builder.isNull(transaction.get(Transaction_.endDateTime)),
-                builder.isNull(transaction.get(Transaction_.toSlot))
-        ));
+                    )
+                );
+                break;
 
-        return em.createQuery(criteria).getResultList();
-    }
-
-    @SuppressWarnings("unchecked")
-    private List<ViewPedelecDTO> findPedelecsInTransactionWithMajorCustomer(CriteriaBuilder builder) {
-        CriteriaQuery<ViewPedelecDTO> criteria = builder.createQuery(ViewPedelecDTO.class);
-
-        Root<Pedelec> pedelec = criteria.from(Pedelec.class);
-        Join<Pedelec, Transaction> transaction = pedelec.join(Pedelec_.transactions, JoinType.LEFT);
-        Join<Transaction, CardAccount> cardAccount = transaction.join(Transaction_.cardAccount, JoinType.LEFT);
-        Join majorCustomer = cardAccount.join(CardAccount_.user, JoinType.LEFT);
-
-        Join<Transaction, StationSlot> fromStationSlot = transaction.join(Transaction_.fromSlot, JoinType.LEFT);
-        Join<StationSlot, Station> fromStation = fromStationSlot.join(StationSlot_.station, JoinType.LEFT);
-
-        Join<Pedelec, PedelecChargingStatus> chargingStatus = pedelec.join(Pedelec_.chargingStatus, JoinType.LEFT);
-
-        criteria.select(
-                builder.construct(
+            case MAJOR_CUSTOMER:
+                criteria.select(
+                    builder.construct(
                         ViewPedelecDTO.class,
                         pedelec.get(Pedelec_.pedelecId),
                         pedelec.get(Pedelec_.manufacturerId),
@@ -106,17 +88,22 @@ public class PedelecRepositoryImpl implements PedelecRepository {
                         pedelec.get(Pedelec_.state),
                         pedelec.get(Pedelec_.inTransaction),
                         cardAccount.get(CardAccount_.cardId),
-                        majorCustomer.get(MajorCustomer_.name),
+                        user.get(MajorCustomer_.name),
                         fromStation.get(Station_.stationId),
                         fromStationSlot.get(StationSlot_.stationSlotPosition),
                         transaction.get(Transaction_.startDateTime)
-                )
-        ).where(builder.and(
-                builder.equal(cardAccount.get(CardAccount_.ownerType), CustomerType.MAJOR_CUSTOMER),
+                    )
+                );
+                break;
+        }
+
+        criteria.where(
+            builder.and(
+                builder.equal(cardAccount.get(CardAccount_.ownerType), customerType),
                 builder.equal(pedelec.get(Pedelec_.inTransaction), true),
                 builder.isNull(transaction.get(Transaction_.endDateTime)),
                 builder.isNull(transaction.get(Transaction_.toSlot))
-        ));
+            ));
 
         return em.createQuery(criteria).getResultList();
     }
