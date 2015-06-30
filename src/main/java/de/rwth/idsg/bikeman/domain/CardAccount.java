@@ -40,12 +40,12 @@ public class CardAccount extends AbstractTimestampClass implements Serializable 
     private String cardPin;
 
     @Column(name = "in_transaction")
-    private Boolean inTransaction;
+    private Boolean inTransaction = false;
 
     @Column(name = "owner_type")
     @Enumerated(EnumType.STRING)
     private CustomerType ownerType;
-    
+
     @Column(name = "activation_key")
     private String activationKey;
 
@@ -58,7 +58,7 @@ public class CardAccount extends AbstractTimestampClass implements Serializable 
 
     @Column(name = "operation_state")
     @Enumerated(EnumType.STRING)
-    private OperationState operationState;
+    private OperationState operationState = OperationState.INOPERATIVE;
 
     @Column(name = "authentication_trial_count")
     private Integer authenticationTrialCount;
@@ -75,12 +75,8 @@ public class CardAccount extends AbstractTimestampClass implements Serializable 
     @PrePersist
     public void prePersist() {
         super.prePersist();
-
-        if (inTransaction == null) {
-            inTransaction = false;
-        }
     }
-    
+
     public void setCurrentTariff(BookedTariff bookedTariff) {
         if (this.currentTariff != null) {
             if (this.currentTariff.getBookedUntil() == null) {
@@ -90,7 +86,7 @@ public class CardAccount extends AbstractTimestampClass implements Serializable 
             this.currentTariff.setCardAccount(this);
             this.currentTariff.setUsedCardAccount(null);
         }
-        
+
         this.currentTariff = bookedTariff;
         bookedTariff.setUsedCardAccount(this);
     }

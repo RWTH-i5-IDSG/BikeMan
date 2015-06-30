@@ -60,7 +60,7 @@ public class Station extends AbstractTimestampClass implements Serializable {
 
     @Column(name = "state")
     @Enumerated(EnumType.STRING)
-    private OperationState state;
+    private OperationState state = OperationState.INOPERATIVE;
 
     @Column(name = "firmware_version")
     private String firmwareVersion;

@@ -40,7 +40,7 @@ public class Customer extends User {
     private LocalDate birthday;
 
     @Column(name = "is_activated")
-    private Boolean isActivated;
+    private Boolean isActivated = false;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
     private CardAccount cardAccount;
@@ -48,9 +48,5 @@ public class Customer extends User {
     @PrePersist
     public void prePersist() {
         super.prePersist();
-
-        if (isActivated == null) {
-            isActivated = false;
-        }
     }
 }

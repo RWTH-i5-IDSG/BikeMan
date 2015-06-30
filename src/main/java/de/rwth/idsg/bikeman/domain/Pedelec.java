@@ -31,11 +31,11 @@ public class Pedelec extends AbstractTimestampClass implements Serializable {
     private String manufacturerId;
 
     @Column(name = "in_transaction")
-    private Boolean inTransaction;
+    private Boolean inTransaction = false;
 
     @Column(name = "state")
     @Enumerated(EnumType.STRING)
-    private OperationState state;
+    private OperationState state = OperationState.INOPERATIVE;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "pedelec")
     private Set<Transaction> transactions;
@@ -55,9 +55,5 @@ public class Pedelec extends AbstractTimestampClass implements Serializable {
     @PrePersist
     public void prePersist() {
         super.prePersist();
-
-        if (inTransaction == null) {
-            inTransaction = false;
-        }
     }
 }
