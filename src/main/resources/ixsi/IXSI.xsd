@@ -494,35 +494,35 @@
 			</xs:element>
 		</xs:sequence>
 	</xs:complexType>
-        <xs:simpleType name="UserStateType">
-                <xs:annotation>
-                        <xs:documentation>Enumeration for user states.</xs:documentation>
-                </xs:annotation>
-                <xs:restriction base="xs:token"/>
-        </xs:simpleType>
-        <xs:simpleType name="UserFeatureClassType">
-                <xs:annotation>
-                        <xs:documentation>Enumeration for user attribute classes.</xs:documentation>
-                </xs:annotation>
-                <xs:restriction base="xs:token"/>
-        </xs:simpleType>
-        <xs:complexType name="UserFeatureType">
-                <xs:annotation>
-                        <xs:documentation>Type for structured user attribute classification with associated text.</xs:documentation>
-                </xs:annotation>
-                <xs:sequence>
-                        <xs:element name="Value" type="xs:string">
-                                <xs:annotation>
-                                        <xs:documentation>value of the attribute to be shown to the user.</xs:documentation>
-                                </xs:annotation>
-                        </xs:element>
-                        <xs:element name="Class" type="UserFeatureClassType">
-                                <xs:annotation>
-                                        <xs:documentation>Class of the user attribute, taken from the list of allowed values.</xs:documentation>
-                                </xs:annotation>
-                        </xs:element>
-                </xs:sequence>
-        </xs:complexType>
+	<xs:simpleType name="UserStateType">
+		<xs:annotation>
+			<xs:documentation>Enumeration for user states.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:token"/>
+	</xs:simpleType>
+	<xs:simpleType name="UserFeatureClassType">
+		<xs:annotation>
+			<xs:documentation>Enumeration for user attribute classes.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:token"/>
+	</xs:simpleType>
+	<xs:complexType name="UserFeatureType">
+		<xs:annotation>
+			<xs:documentation>Type for structured user attribute classification with associated text.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Value" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>value of the attribute to be shown to the user.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Class" type="UserFeatureClassType">
+				<xs:annotation>
+					<xs:documentation>Class of the user attribute, taken from the list of allowed values.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
 	<xs:complexType name="InfoType">
 		<xs:annotation>
 			<xs:documentation>Type for structured information classification with associated text.</xs:documentation>
@@ -1695,7 +1695,7 @@
 							<xs:documentation>If set, this message is the last one in the corresponding block. Otherwise more messages of the same block will follow.</xs:documentation>
 						</xs:annotation>
 					</xs:element>
-					<xs:element name="ExternalBooking" type="ExternalBookingType">
+					<xs:element name="ExternalBooking" type="ExternalBookingType" minOccurs="0" maxOccurs="unbounded">
 						<xs:annotation>
 							<xs:documentation>Information about bookings added externally.</xs:documentation>
 						</xs:annotation>
