@@ -1,8 +1,6 @@
 package de.rwth.idsg.bikeman.domain;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
@@ -37,7 +35,7 @@ public class TransactionEvent implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE, generator = "transaction_event_gen")
     @Column(name = "transaction_event_id")
-    private long transactionEventId;
+    private Long transactionEventId;
 
     @Column(name = "arrived_timestamp")
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")

@@ -36,6 +36,19 @@ public class StationRepositoryImpl implements StationRepository {
 
     @Override
     @Transactional(readOnly = true)
+    public Station findByManufacturerId(String manufacturerId) throws DatabaseException {
+        final String q = "SELECT s FROM Station s WHERE s.manufacturerId = :manufacturerId";
+        try {
+            return em.createQuery(q, Station.class)
+                .setParameter("manufacturerId", manufacturerId)
+                .getSingleResult();
+        } catch (Exception e) {
+            throw new DatabaseException("Failed to find station with manufacturerId " + manufacturerId, e);
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<ViewStationDTO> findAll() throws DatabaseException {
         try {
             CriteriaBuilder builder = em.getCriteriaBuilder();

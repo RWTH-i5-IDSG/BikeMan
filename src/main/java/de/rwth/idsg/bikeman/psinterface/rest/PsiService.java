@@ -28,6 +28,7 @@ import de.rwth.idsg.bikeman.psinterface.repository.PsiPedelecRepository;
 import de.rwth.idsg.bikeman.psinterface.repository.PsiReservationRepository;
 import de.rwth.idsg.bikeman.psinterface.repository.PsiStationRepository;
 import de.rwth.idsg.bikeman.psinterface.repository.PsiTransactionRepository;
+import de.rwth.idsg.bikeman.service.TransactionEventService;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
@@ -55,6 +56,7 @@ public class PsiService {
     @Inject private AvailabilityPushService availabilityPushService;
     @Inject private PlaceAvailabilityPushService placeAvailabilityPushService;
     @Inject private ExternalBookingPushService externalBookingPushService;
+    @Inject private TransactionEventService transactionEventService;
 
     private static final Integer HEARTBEAT_INTERVAL_IN_SECONDS = 60;
 
@@ -92,6 +94,8 @@ public class PsiService {
     }
 
     public void handleStartTransaction(StartTransactionDTO startTransactionDTO) throws DatabaseException {
+        transactionEventService.createAndSaveStartTransactionEvent(startTransactionDTO);
+
         Transaction t = transactionRepository.start(startTransactionDTO);
 
         List<Reservation> reservationList = reservationRepository.find(t.getCardAccount().getCardAccountId(),
@@ -126,6 +130,8 @@ public class PsiService {
     }
 
     public void handleStopTransaction(StopTransactionDTO stopTransactionDTO) throws DatabaseException {
+        transactionEventService.createAndSaveStopTransactionEvent(stopTransactionDTO);
+
         Transaction t = transactionRepository.stop(stopTransactionDTO);
 
         Booking booking = bookingRepository.findByTransaction(t);
