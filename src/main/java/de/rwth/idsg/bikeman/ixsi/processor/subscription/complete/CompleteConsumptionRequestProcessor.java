@@ -32,6 +32,9 @@ public class CompleteConsumptionRequestProcessor implements
     public CompleteConsumptionResponseType process(CompleteConsumptionRequestType request, String systemId) {
         try {
             List<String> bookingIdListString = consumptionStore.getSubscriptions(systemId);
+            if (bookingIdListString.isEmpty()) {
+                return buildError(ErrorFactory.Sys.invalidRequest("No subscriptions", null));
+            }
             List<Booking> bookingList = bookingRepository.findClosedBookings(bookingIdListString);
             List<ConsumptionType> consumptionList = new ArrayList<>();
             for (Booking b : bookingList) {

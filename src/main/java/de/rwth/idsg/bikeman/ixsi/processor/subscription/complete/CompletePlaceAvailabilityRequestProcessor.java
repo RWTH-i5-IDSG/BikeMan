@@ -31,6 +31,10 @@ public class CompletePlaceAvailabilityRequestProcessor implements
     public CompletePlaceAvailabilityResponseType process(CompletePlaceAvailabilityRequestType request, String systemId) {
         try {
             List<String> ids = placeAvailabilityStore.getSubscriptions(systemId);
+            if (ids.isEmpty()) {
+                return buildError(ErrorFactory.Sys.invalidRequest("No subscriptions", null));
+            }
+
             List<PlaceAvailabilityResponseDTO> dtos = queryIXSIRepository.placeAvailability(ids);
             List<PlaceAvailabilityType> availabilities = placeAvailabilityRequestProcessor.getPlaceAvailabilities(dtos);
 

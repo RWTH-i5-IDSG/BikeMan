@@ -28,6 +28,10 @@ public class CompleteAvailabilityRequestProcessor implements
     public CompleteAvailabilityResponseType process(CompleteAvailabilityRequestType request, String systemId) {
         try {
             List<BookingTargetIDType> targetIds = availabilityStore.getSubscriptions(systemId);
+            if (targetIds.isEmpty()) {
+                return buildError(ErrorFactory.Sys.invalidRequest("No subscriptions", null));
+            }
+
             List<AvailabilityResponseDTO> responseDTOs = queryIXSIRepository.availability(targetIds);
             List<BookingTargetAvailabilityType> availabilities = availabilityRequestProcessor.getBookingTargetAvailabilities(responseDTOs);
 
