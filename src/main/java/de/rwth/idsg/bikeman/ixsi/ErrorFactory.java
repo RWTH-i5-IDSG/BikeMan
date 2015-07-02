@@ -84,6 +84,10 @@ public final class ErrorFactory {
         return setFields(ErrorCodeType.LANGUAGE_NOT_SUPPORTED, systemMsg, userMsg);
     }
 
+    public static ErrorType buildFromException(IxsiCodeException e) {
+        return setFields(e.getErrorCode(), e.getMessage(), e.getMessage());
+    }
+
     private static ErrorType setFields(ErrorCodeType c, String systemMsg, String userMsg) {
         return new ErrorType()
                 .withCode(c)

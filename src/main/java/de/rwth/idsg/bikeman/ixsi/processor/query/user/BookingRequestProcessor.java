@@ -3,6 +3,7 @@ package de.rwth.idsg.bikeman.ixsi.processor.query.user;
 import com.google.common.base.Optional;
 import de.rwth.idsg.bikeman.domain.Booking;
 import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
+import de.rwth.idsg.bikeman.ixsi.IxsiCodeException;
 import de.rwth.idsg.bikeman.ixsi.IxsiProcessingException;
 import de.rwth.idsg.bikeman.ixsi.processor.api.UserRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.schema.BookingRequestType;
@@ -49,6 +50,9 @@ public class BookingRequestProcessor implements
                     .withTimePeriod(timePeriod);
 
             return new BookingResponseType().withBooking(booking);
+
+        } catch (IxsiCodeException e) {
+            return buildError(ErrorFactory.buildFromException(e));
 
         } catch (IxsiProcessingException e) {
             return buildError(ErrorFactory.Booking.targetNotAvail(e.getMessage(), e.getMessage()));
