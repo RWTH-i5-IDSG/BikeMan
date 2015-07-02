@@ -90,7 +90,7 @@ public class AvailabilityRequestProcessor implements
     }
 
     private int roundPercent(Double decimal) {
-        return (int) Math.round(decimal * 100);
+        return (int) Math.round(decimal);
     }
 
     // -------------------------------------------------------------------------
