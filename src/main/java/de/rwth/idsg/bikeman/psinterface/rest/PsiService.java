@@ -146,8 +146,19 @@ public class PsiService {
         placeAvailabilityPushService.reportChange(stopTransactionDTO.getStationManufacturerId());
     }
 
-    public List<String> getAvailablePedelecs(String endpointAddress) throws DatabaseException {
-        return pedelecRepository.findAvailablePedelecs(endpointAddress);
+    public List<String> getAvailablePedelecs(String endpointAddress, String cardId) throws DatabaseException {
+
+        if (cardId == null || cardId.isEmpty()) {
+            return pedelecRepository.findAvailablePedelecs(endpointAddress);
+        }
+
+        List<String> pedelecs = pedelecRepository.findReservedPedelecs(endpointAddress, cardId);
+
+        if (pedelecs.isEmpty()) {
+            pedelecs = pedelecRepository.findAvailablePedelecs(endpointAddress);
+        }
+
+        return pedelecs;
     }
 
     public void handleStationStatusNotification(StationStatusDTO stationStatusDTO) {

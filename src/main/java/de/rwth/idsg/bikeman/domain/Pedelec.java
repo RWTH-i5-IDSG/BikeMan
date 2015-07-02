@@ -9,6 +9,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -45,6 +46,9 @@ public class Pedelec extends AbstractTimestampClass implements Serializable {
 
     @OneToOne(mappedBy = "pedelec")
     private StationSlot stationSlot;
+
+    @OneToMany(mappedBy = "pedelec")
+    private List<Reservation> reservations;
 
     @Column(name = "error_code")
     private String errorCode;

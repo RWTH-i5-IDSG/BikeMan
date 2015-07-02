@@ -10,10 +10,7 @@ import de.rwth.idsg.bikeman.service.CardAccountService;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -71,10 +68,10 @@ public class PsiResource {
     }
 
     @RequestMapping(value = AVAIL_PEDELECS_PATH, method = RequestMethod.GET)
-    public List<String> getAvailablePedelecs(HttpServletRequest request) throws DatabaseException {
+    public List<String> getAvailablePedelecs(@RequestParam("cardId") String cardId, HttpServletRequest request) throws DatabaseException {
         String endpointAddress = Utils.getFrom(request);
         log.debug("[From: {}] Received getAvailablePedelecs", endpointAddress);
-        List<String> list = psiService.getAvailablePedelecs(endpointAddress);
+        List<String> list = psiService.getAvailablePedelecs(endpointAddress, cardId);
         log.debug("getAvailablePedelecs returns {}", list);
         return list;
     }
