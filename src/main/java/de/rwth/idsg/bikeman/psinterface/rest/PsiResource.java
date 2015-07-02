@@ -68,7 +68,7 @@ public class PsiResource {
     }
 
     @RequestMapping(value = AVAIL_PEDELECS_PATH, method = RequestMethod.GET)
-    public List<String> getAvailablePedelecs(@RequestParam("cardId") String cardId, HttpServletRequest request) throws DatabaseException {
+    public List<String> getAvailablePedelecs(@RequestParam(value = "cardId", required = false) String cardId, HttpServletRequest request) throws DatabaseException {
         String endpointAddress = Utils.getFrom(request);
         log.debug("[From: {}] Received getAvailablePedelecs", endpointAddress);
         List<String> list = psiService.getAvailablePedelecs(endpointAddress, cardId);
