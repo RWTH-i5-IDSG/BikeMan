@@ -1,5 +1,6 @@
 package de.rwth.idsg.bikeman.ixsi.processor.subscription.request;
 
+import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
 import de.rwth.idsg.bikeman.ixsi.impl.PlaceAvailabilityStore;
 import de.rwth.idsg.bikeman.ixsi.processor.api.SubscriptionRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
@@ -29,7 +30,10 @@ public class PlaceAvailabilitySubscriptionStatusRequestProcessor implements
 
         List<ProviderPlaceIDType> ids = new ArrayList<>();
         for (String s : subscriptions) {
-            ids.add(new ProviderPlaceIDType().withPlaceID(s));
+            ids.add(new ProviderPlaceIDType()
+                .withPlaceID(s)
+                .withProviderID(IXSIConstants.Provider.id)
+            );
         }
 
         return new PlaceAvailabilitySubscriptionStatusResponseType().withPlaceID(ids);
