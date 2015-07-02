@@ -56,6 +56,8 @@ public class CompletePlaceAvailabilityRequestProcessor implements
 
     @Override
     public CompletePlaceAvailabilityResponseType buildError(ErrorType e) {
-        return new CompletePlaceAvailabilityResponseType().withError(e);
+        return new CompletePlaceAvailabilityResponseType()
+            .withError(e)
+            .withMessageBlockID(Integer.toString(this.hashCode()));
     }
 }

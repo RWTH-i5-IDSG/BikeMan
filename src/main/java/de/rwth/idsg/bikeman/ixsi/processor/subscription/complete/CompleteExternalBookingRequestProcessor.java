@@ -18,8 +18,7 @@ public class CompleteExternalBookingRequestProcessor implements
     @Override
     public CompleteExternalBookingResponseType process(CompleteExternalBookingRequestType request, String systemId) {
         // TODO FUTURE
-        return buildError(ErrorFactory.Sys.notImplemented(null, null))
-            .withMessageBlockID(String.valueOf(request.hashCode()));
+        return buildError(ErrorFactory.Sys.notImplemented(null, null));
     }
 
     // -------------------------------------------------------------------------
@@ -28,6 +27,8 @@ public class CompleteExternalBookingRequestProcessor implements
 
     @Override
     public CompleteExternalBookingResponseType buildError(ErrorType e) {
-        return new CompleteExternalBookingResponseType().withError(e);
+        return new CompleteExternalBookingResponseType()
+            .withError(e)
+            .withMessageBlockID(Integer.toString(this.hashCode()));
     }
 }

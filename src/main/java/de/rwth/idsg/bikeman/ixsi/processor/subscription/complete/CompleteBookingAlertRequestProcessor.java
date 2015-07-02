@@ -18,8 +18,7 @@ public class CompleteBookingAlertRequestProcessor implements
     @Override
     public CompleteBookingAlertResponseType process(CompleteBookingAlertRequestType request, String systemId) {
         // TODO FUTURE
-        return buildError(ErrorFactory.Sys.notImplemented(null, null))
-            .withMessageBlockID(String.valueOf(request.hashCode()));
+        return buildError(ErrorFactory.Sys.notImplemented(null, null));
     }
 
     // -------------------------------------------------------------------------
@@ -28,6 +27,8 @@ public class CompleteBookingAlertRequestProcessor implements
 
     @Override
     public CompleteBookingAlertResponseType buildError(ErrorType e) {
-        return new CompleteBookingAlertResponseType().withError(e);
+        return new CompleteBookingAlertResponseType()
+            .withError(e)
+            .withMessageBlockID(Integer.toString(this.hashCode()));
     }
 }
