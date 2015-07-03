@@ -17,7 +17,7 @@ import java.util.Set;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @TableGenerator(name="pedelec_gen", initialValue=0, allocationSize=1)
 @EqualsAndHashCode(callSuper = false, of = {"pedelecId", "manufacturerId"})
-@ToString(includeFieldNames = true, exclude = {"transactions", "stationSlot"})
+@ToString(includeFieldNames = true, exclude = {"transactions", "stationSlot", "reservations"})
 @Getter
 @Setter
 public class Pedelec extends AbstractTimestampClass implements Serializable {
