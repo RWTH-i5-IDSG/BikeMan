@@ -174,10 +174,7 @@ public class BookingService {
     }
 
     private void check(CardAccount ca) {
-        if (ca == null) {
-            throw new IxsiCodeException("The user is unknown", ErrorCodeType.SYS_REQUEST_NOT_PLAUSIBLE);
-
-        } else if (ca.getInTransaction()) {
+        if (ca.getInTransaction()) {
             throw new IxsiCodeException("The user is already in a transaction", ErrorCodeType.SYS_REQUEST_NOT_PLAUSIBLE);
 
         } else if (ca.getOperationState() != OperationState.OPERATIVE) {
