@@ -56,11 +56,10 @@ public class BookingService {
         }
 
         Pedelec pedelec = pedelecRepository.findByManufacturerId(bookeeId);
-        if (!isAvailable(pedelec)) {
-            throw new IxsiProcessingException("The booking target is not available.");
-        }
+        check(pedelec);
 
         CardAccount cardAccount = cardAccountRepository.findByCardId(cardId);
+        check(cardAccount);
 
         // check for existing reservation in time frame
         List<Reservation> existingReservations = reservationRepository.findByTimeFrameForPedelec(pedelec.getPedelecId(), begin, end);
@@ -162,12 +161,28 @@ public class BookingService {
     /**
      * TODO: What is a reasonable value for lowerLimit?
      */
-    private boolean isAvailable(Pedelec pedelec) {
+    private void check(Pedelec pedelec) {
         final double lowerLimit = 0.0;
 
-        return OperationState.OPERATIVE.equals(pedelec.getState())
+        boolean isAvailable =  OperationState.OPERATIVE.equals(pedelec.getState())
             && !pedelec.getInTransaction()
             && pedelec.getChargingStatus().getBatteryStateOfCharge() > lowerLimit;
+
+        if (!isAvailable) {
+            throw new IxsiProcessingException("The booking target is not available.");
+        }
+    }
+
+    private void check(CardAccount ca) {
+        if (ca == null) {
+            throw new IxsiCodeException("The user is unknown", ErrorCodeType.SYS_REQUEST_NOT_PLAUSIBLE);
+
+        } else if (ca.getInTransaction()) {
+            throw new IxsiCodeException("The user is already in a transaction", ErrorCodeType.SYS_REQUEST_NOT_PLAUSIBLE);
+
+        } else if (ca.getOperationState() != OperationState.OPERATIVE) {
+            throw new IxsiCodeException("The user cannot initiate any booking action", ErrorCodeType.SYS_REQUEST_NOT_PLAUSIBLE);
+        }
     }
 
     /**
