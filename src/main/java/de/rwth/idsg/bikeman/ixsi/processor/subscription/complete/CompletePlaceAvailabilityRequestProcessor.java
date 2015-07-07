@@ -42,7 +42,7 @@ public class CompletePlaceAvailabilityRequestProcessor implements
             // therefore do not split messages!
             return new CompletePlaceAvailabilityResponseType()
                     .withLast(true)
-                    .withMessageBlockID(String.valueOf(request.hashCode()))
+                    .withMessageBlockID("none")
                     .withPlaceAvailability(availabilities);
 
         } catch (Exception e) {
@@ -58,6 +58,6 @@ public class CompletePlaceAvailabilityRequestProcessor implements
     public CompletePlaceAvailabilityResponseType buildError(ErrorType e) {
         return new CompletePlaceAvailabilityResponseType()
             .withError(e)
-            .withMessageBlockID(Integer.toString(this.hashCode()));
+            .withMessageBlockID("none");
     }
 }

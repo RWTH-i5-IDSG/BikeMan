@@ -45,7 +45,7 @@ public class CompleteConsumptionRequestProcessor implements
             // therefore do not split messages!
             return new CompleteConsumptionResponseType()
                     .withLast(true)
-                    .withMessageBlockID(String.valueOf(request.hashCode()))
+                    .withMessageBlockID("none")
                     .withConsumption(consumptionList);
 
         } catch (Exception e) {
@@ -57,6 +57,6 @@ public class CompleteConsumptionRequestProcessor implements
     public CompleteConsumptionResponseType buildError(ErrorType e) {
         return new CompleteConsumptionResponseType()
             .withError(e)
-            .withMessageBlockID(Integer.toString(this.hashCode()));
+            .withMessageBlockID("none");
     }
 }

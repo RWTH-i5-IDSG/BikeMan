@@ -6,7 +6,11 @@ import de.rwth.idsg.bikeman.ixsi.impl.AvailabilityStore;
 import de.rwth.idsg.bikeman.ixsi.processor.api.SubscriptionRequestMessageProcessor;
 import de.rwth.idsg.bikeman.ixsi.processor.query.user.AvailabilityRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.repository.QueryIXSIRepository;
-import de.rwth.idsg.bikeman.ixsi.schema.*;
+import de.rwth.idsg.bikeman.ixsi.schema.BookingTargetAvailabilityType;
+import de.rwth.idsg.bikeman.ixsi.schema.BookingTargetIDType;
+import de.rwth.idsg.bikeman.ixsi.schema.CompleteAvailabilityRequestType;
+import de.rwth.idsg.bikeman.ixsi.schema.CompleteAvailabilityResponseType;
+import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -39,7 +43,7 @@ public class CompleteAvailabilityRequestProcessor implements
             // therefore do not split messages!
             return new CompleteAvailabilityResponseType()
                     .withLast(true)
-                    .withMessageBlockID(String.valueOf(request.hashCode()))
+                    .withMessageBlockID("none")
                     .withBookingTarget(availabilities);
 
         } catch (Exception e) {
@@ -55,7 +59,7 @@ public class CompleteAvailabilityRequestProcessor implements
     public CompleteAvailabilityResponseType buildError(ErrorType e) {
         return new CompleteAvailabilityResponseType()
             .withError(e)
-            .withMessageBlockID(Integer.toString(this.hashCode()));
+            .withMessageBlockID("none");
     }
 
 }

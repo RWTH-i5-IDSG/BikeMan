@@ -29,6 +29,6 @@ public class CompleteExternalBookingRequestProcessor implements
     public CompleteExternalBookingResponseType buildError(ErrorType e) {
         return new CompleteExternalBookingResponseType()
             .withError(e)
-            .withMessageBlockID(Integer.toString(this.hashCode()));
+            .withMessageBlockID("none");
     }
 }

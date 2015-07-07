@@ -29,6 +29,6 @@ public class CompleteBookingAlertRequestProcessor implements
     public CompleteBookingAlertResponseType buildError(ErrorType e) {
         return new CompleteBookingAlertResponseType()
             .withError(e)
-            .withMessageBlockID(Integer.toString(this.hashCode()));
+            .withMessageBlockID("none");
     }
 }
