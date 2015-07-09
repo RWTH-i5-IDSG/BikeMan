@@ -84,7 +84,6 @@ public class BookingTargetsInfoRequestProcessor implements
             bookingTargets.add(new BookingTargetType()
                     .withID(id)
                     .withName(name)
-                    .withMaxDistance(ped.getMaxDistance())
                     .withPlaceGroupID(IXSIConstants.PlaceGroup.id)
                     .withClazz(IXSIConstants.bookeeClassType)
                     .withEngine(IXSIConstants.engineType));

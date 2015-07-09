@@ -67,8 +67,7 @@ public class AvailabilityRequestProcessor implements
             BookingTargetAvailabilityType b = new BookingTargetAvailabilityType()
                     .withID(bookingTargetIDType)
                     .withPlaceID(dto.getStationManufacturerId())
-                    .withCurrentStateOfCharge(percentType)
-                    .withCurrentDrivingRange(0); // TODO get the actual driving range from pedelec!
+                    .withCurrentStateOfCharge(percentType);
 
             // For geo-location queries
             if (dto.getLocationLatitude() != null && dto.getLocationLongitude() != null ) {

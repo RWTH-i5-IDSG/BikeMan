@@ -1,7 +1,12 @@
 package de.rwth.idsg.bikeman.ixsi.repository;
 
 import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
-import de.rwth.idsg.bikeman.ixsi.dto.query.*;
+import de.rwth.idsg.bikeman.ixsi.dto.query.AvailabilityResponseDTO;
+import de.rwth.idsg.bikeman.ixsi.dto.query.BookingTargetsInfoResponseDTO;
+import de.rwth.idsg.bikeman.ixsi.dto.query.ChangedProvidersResponseDTO;
+import de.rwth.idsg.bikeman.ixsi.dto.query.PedelecDTO;
+import de.rwth.idsg.bikeman.ixsi.dto.query.PlaceAvailabilityResponseDTO;
+import de.rwth.idsg.bikeman.ixsi.dto.query.StationDTO;
 import de.rwth.idsg.bikeman.ixsi.schema.BookingTargetIDType;
 import de.rwth.idsg.bikeman.ixsi.schema.BookingTargetPropertiesType;
 import de.rwth.idsg.bikeman.ixsi.schema.GeoCircleType;
@@ -30,10 +35,8 @@ public class QueryIXSIRepositoryImpl implements QueryIXSIRepository {
     @Override
     public BookingTargetsInfoResponseDTO bookingTargetInfos() {
 
-        // TODO: The value 0 for maxDistance is a placeholder! Pedelec entity has to be expanded to contain such a property
-        //
         final String pedelecQuery = "SELECT new de.rwth.idsg.bikeman.ixsi.dto.query." +
-                                    "PedelecDTO(p.manufacturerId, 0) " +
+                                    "PedelecDTO(p.manufacturerId) " +
                                     "FROM Pedelec p";
 
         final String stationQuery = "SELECT new de.rwth.idsg.bikeman.ixsi.dto.query." +
