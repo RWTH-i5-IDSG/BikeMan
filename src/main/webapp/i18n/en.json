@@ -301,6 +301,7 @@
                 "password": "Password",
                 "cardId": "Card ID",
                 "cardPin": "Card PIN",
+                "cardOperationState":"Card State",
                 "tariff": "Tariff",
                 "name": "Name",
                 "address": {

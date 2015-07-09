@@ -100,6 +100,8 @@ public class CustomerRepositoryImpl implements CustomerRepository {
         Customer customer = getCustomerEntity(userId);
         try {
             customer.setIsActivated(true);
+            customer.getCardAccount().setAuthenticationTrialCount(0);
+            customer.getCardAccount().setOperationState(OperationState.OPERATIVE);
             em.merge(customer);
             log.debug("Activated customer {}", customer);
 
@@ -114,6 +116,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
         Customer customer = getCustomerEntity(userId);
         try {
             customer.setIsActivated(false);
+            customer.getCardAccount().setOperationState(OperationState.INOPERATIVE);
             em.merge(customer);
             log.debug("Deactivated customer {}", customer);
 
@@ -255,8 +258,19 @@ public class CustomerRepositoryImpl implements CustomerRepository {
                 cardAccount.setCardId(dto.getCardId());
                 cardAccount.setCardPin(dto.getCardPin());
 
+                boolean newCardIsOperative = OperationState.OPERATIVE.equals(dto.getCardOperationState());
+                boolean oldCardIsInoperative = OperationState.INOPERATIVE.equals(cardAccount.getOperationState());
+
+                if (newCardIsOperative && oldCardIsInoperative) {
+                    cardAccount.setAuthenticationTrialCount(0);
+                }
+
+                if (dto.getIsActivated() || !newCardIsOperative) {
+                    cardAccount.setOperationState(dto.getCardOperationState());
+                }
+
                 // don't update the tariff if it has not been changed
-                if (!dto.getTariff().equals( cardAccount.getCurrentTariff().getName() )) {
+                if (!dto.getTariff().equals(cardAccount.getCurrentTariff().getName() )) {
                     BookedTariff updateBookedTariff = new BookedTariff();
                     updateBookedTariff.setBookedFrom(new LocalDateTime());
 
@@ -264,7 +278,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
                         updateBookedTariff.setBookedUntil(null);
                     } else {
                         updateBookedTariff.setBookedUntil(new LocalDateTime().plusDays(
-                                tariffRepository.findByName(dto.getTariff()).getTerm()
+                            tariffRepository.findByName(dto.getTariff()).getTerm()
                         ));
                     }
                     updateBookedTariff.setTariff(tariffRepository.findByName(dto.getTariff()));
@@ -299,6 +313,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
                         customer.get(Customer_.birthday),
                         cardAccount.get(CardAccount_.cardId),
                         cardAccount.get(CardAccount_.cardPin),
+                        cardAccount.get(CardAccount_.operationState),
                         bookedTariff.get(BookedTariff_.tariff).get(Tariff_.name),
                         address.get(Address_.streetAndHousenumber),
                         address.get(Address_.zip),

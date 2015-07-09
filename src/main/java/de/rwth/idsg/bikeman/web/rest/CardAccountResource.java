@@ -8,7 +8,10 @@ import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditCardAccountDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.view.ViewCardAccountDTO;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.MediaType;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
@@ -40,6 +43,7 @@ public class CardAccountResource {
     public void enableCardAccount(@PathVariable String cardId) throws DatabaseException {
         log.debug("REST request to enable CardAccount with cardID: {}", cardId);
         cardAccountRepository.setOperationStateForCardId(OperationState.OPERATIVE, cardId);
+        cardAccountRepository.resetAuthenticationTrialCount(cardId);
     }
 
     @Timed
@@ -62,7 +66,6 @@ public class CardAccountResource {
         log.debug("REST request to create new cardAccount: {}", createEditCardAccountDTO);
         cardAccountService.createCardAccount(createEditCardAccountDTO);
     }
-
 
 
 }

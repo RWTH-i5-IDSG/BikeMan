@@ -123,11 +123,16 @@ bikeManApp.controller('CustomerDetailController', ['$scope', 'resolvedCustomer',
                 "cardId": $scope.customer.cardId,
                 "cardPin": $scope.customer.cardPin,
                 "tariff": $scope.customer.tariff,
-                "isActivated": $scope.customer.isActivated
+                "isActivated": $scope.customer.isActivated,
+                "cardOperationState": $scope.customer.cardOperationState
             }
 
             Customer.update($scope.saveCustomerDTO, function() {
                 $scope.isEditing = false;
+
+                if (!$scope.customer.isActivated) {
+                    $scope.customer.cardOperationState = 'INOPERATIVE';
+                }
             })
         }
 

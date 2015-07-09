@@ -13,5 +13,8 @@ public interface PsiCustomerRepository {
      *
      * @return userId
      */
-    CardAccount findByCardIdAndCardPin(String cardId, String cardPin) throws DatabaseException;
+    CardAccount findByCardId(String cardId) throws DatabaseException;
+
+    CardAccount saveCardAccount(CardAccount cardAccount);
+    void resetAuthenticationTrialCount(CardAccount cardAccount);
 }

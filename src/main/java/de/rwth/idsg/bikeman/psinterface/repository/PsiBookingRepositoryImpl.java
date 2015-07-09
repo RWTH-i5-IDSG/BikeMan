@@ -26,7 +26,7 @@ public class PsiBookingRepositoryImpl implements PsiBookingRepository {
     @Inject private BookingRepository bookingRepository;
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional
     public Booking save(Booking booking) {
         return bookingRepository.save(booking);
     }

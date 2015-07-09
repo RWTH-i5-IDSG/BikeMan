@@ -74,10 +74,45 @@ public class PsiService {
     }
 
     public AuthorizeConfirmationDTO handleAuthorize(CustomerAuthorizeDTO customerAuthorizeDTO) throws DatabaseException {
-        CardAccount cardAccount = customerRepository.findByCardIdAndCardPin(customerAuthorizeDTO.getCardId(), customerAuthorizeDTO.getCardPin());
 
+        log.info("Card with CardId {} start authorization from Station", customerAuthorizeDTO.getCardId());
+
+        CardAccount cardAccount = customerRepository.findByCardId(customerAuthorizeDTO.getCardId());
+
+        // CardAccount not operational
         if (!OperationState.OPERATIVE.equals(cardAccount.getOperationState())) {
+
+            if (cardAccount.getAuthenticationTrialCount() >= 3) {
+                log.info("Card with CardId {} authorization failed with {}", customerAuthorizeDTO.getCardId(), PsErrorCode.AUTH_ATTEMPTS_EXCEEDED);
+                throw new PsException("Card is not operational!", PsErrorCode.AUTH_ATTEMPTS_EXCEEDED);
+            }
+            log.info("Card with CardId {} authorization failed with {}", customerAuthorizeDTO.getCardId(), PsErrorCode.CONSTRAINT_FAILED);
             throw new PsException("Card is not operational!", PsErrorCode.CONSTRAINT_FAILED);
+        }
+
+        // PIN not correct
+        if (!cardAccount.getCardPin().equals(customerAuthorizeDTO.getCardPin())) {
+
+            // increase auth fail count by one
+            cardAccount.setAuthenticationTrialCount(cardAccount.getAuthenticationTrialCount()+1);
+
+            // auth attempts exceeded
+            if (cardAccount.getAuthenticationTrialCount() >= 3) {
+                cardAccount.setOperationState(OperationState.INOPERATIVE);
+            }
+
+            customerRepository.saveCardAccount(cardAccount);
+
+            if (cardAccount.getAuthenticationTrialCount() >= 3) {
+                log.info("Card with CardId {} authorization failed (3x wrong pin) with {}", customerAuthorizeDTO.getCardId(), PsErrorCode.AUTH_ATTEMPTS_EXCEEDED);
+                throw new PsException("Card is disabled, because of wrong PIN!", PsErrorCode.AUTH_ATTEMPTS_EXCEEDED);
+            }
+
+            log.info("Card with CardId {} authorization failed (wrong pin) with {}", customerAuthorizeDTO.getCardId(), PsErrorCode.CONSTRAINT_FAILED);
+            throw new PsException("Wrong PIN", PsErrorCode.CONSTRAINT_FAILED);
+        } else {
+            // PIN is correct, reset auth trial count
+            customerRepository.resetAuthenticationTrialCount(cardAccount);
         }
 
         // Is the user allowed to rent?
@@ -85,10 +120,6 @@ public class PsiService {
         if (cardAccount.getInTransaction()) {
             accountState = AccountState.HAS_PEDELEC;
         }
-
-//        if (transactionRepository.hasOpenTransactions(customerAuthorizeDTO.getCardId())) {
-//            accountState = AccountState.HAS_PEDELEC;
-//        }
 
         return new AuthorizeConfirmationDTO(cardAccount.getCardId(), accountState);
     }
