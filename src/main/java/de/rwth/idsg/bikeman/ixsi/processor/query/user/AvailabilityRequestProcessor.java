@@ -57,22 +57,16 @@ public class AvailabilityRequestProcessor implements
     public List<BookingTargetAvailabilityType> getBookingTargetAvailabilities(List<AvailabilityResponseDTO> dtoList) {
         List<BookingTargetAvailabilityType> availabilityList = new ArrayList<>();
         for (AvailabilityResponseDTO dto : dtoList) {
-
-            // BookingTargetId
-            String bookeeId = String.valueOf(dto.getManufacturerId());
             BookingTargetIDType bookingTargetIDType = new BookingTargetIDType()
-                    .withBookeeID(bookeeId)
+                    .withBookeeID(dto.getManufacturerId())
                     .withProviderID(IXSIConstants.Provider.id);
-
-            // PlaceID
-            String placeId = String.valueOf(dto.getStationManufacturerId());
 
             PercentType percentType = new PercentType()
                     .withValue(roundPercent(dto.getStateOfCharge()));
 
             BookingTargetAvailabilityType b = new BookingTargetAvailabilityType()
                     .withID(bookingTargetIDType)
-                    .withPlaceID(placeId)
+                    .withPlaceID(dto.getStationManufacturerId())
                     .withCurrentStateOfCharge(percentType)
                     .withCurrentDrivingRange(0); // TODO get the actual driving range from pedelec!
 

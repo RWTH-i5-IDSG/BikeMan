@@ -106,8 +106,7 @@ public class QueryIXSIRepositoryImpl implements QueryIXSIRepository {
                 "p.manufacturerId, s.manufacturerId, cs.batteryStateOfCharge) " +
                 "FROM Pedelec p " +
                 "JOIN p.chargingStatus cs " +
-                "JOIN p.stationSlot slot " +
-                "JOIN slot.station s " +
+                "LEFT JOIN p.stationSlot.station s " +
                 "WHERE p.manufacturerId in :targets");
 
         List<String> idList = new ArrayList<>();
