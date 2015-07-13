@@ -7,7 +7,13 @@ import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
 import de.rwth.idsg.bikeman.ixsi.api.Producer;
 import de.rwth.idsg.bikeman.ixsi.impl.ExternalBookingStore;
 import de.rwth.idsg.bikeman.ixsi.repository.IxsiUserRepository;
-import de.rwth.idsg.bikeman.ixsi.schema.*;
+import de.rwth.idsg.bikeman.ixsi.schema.BookingTargetIDType;
+import de.rwth.idsg.bikeman.ixsi.schema.ExternalBookingPushMessageType;
+import de.rwth.idsg.bikeman.ixsi.schema.ExternalBookingType;
+import de.rwth.idsg.bikeman.ixsi.schema.IxsiMessageType;
+import de.rwth.idsg.bikeman.ixsi.schema.SubscriptionMessageType;
+import de.rwth.idsg.bikeman.ixsi.schema.TimePeriodType;
+import de.rwth.idsg.bikeman.ixsi.schema.UserInfoType;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,12 +29,9 @@ import java.util.Set;
 @Service
 public class ExternalBookingPushService {
 
-    @Autowired
-    private Producer producer;
-    @Autowired
-    private ExternalBookingStore externalBookingStore;
-    @Autowired
-    private IxsiUserRepository ixsiUserRepository;
+    @Autowired private Producer producer;
+    @Autowired private ExternalBookingStore externalBookingStore;
+    @Autowired private IxsiUserRepository ixsiUserRepository;
 
     public void report(Booking booking, Transaction transaction) {
         String cardId = transaction.getCardAccount().getCardId();
@@ -37,7 +40,7 @@ public class ExternalBookingPushService {
         if (optionalMJ.isPresent()) {
             UserInfoType userInfo = new UserInfoType()
                 .withUserID(cardId)
-                .withProviderID(optionalMJ.get());
+                .withProviderID(IXSIConstants.Provider.id);
 
             Set<String> subscribed = externalBookingStore.getSubscribedSystems(userInfo);
             if (subscribed.isEmpty()) {
