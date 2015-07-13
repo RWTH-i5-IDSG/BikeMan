@@ -33,7 +33,7 @@ public class WebSocketSessionStoreImpl implements WebSocketSessionStore {
     private final ConcurrentHashMap<String, Deque<WebSocketSession>> lookupTable = new ConcurrentHashMap<>();
 
     @Override
-    public void add(String systemID, WebSocketSession session) {
+    public synchronized void add(String systemID, WebSocketSession session) {
         Deque<WebSocketSession> sessionSet = lookupTable.get(systemID);
         if (sessionSet == null) {
             sessionSet = new ArrayDeque<>();
@@ -43,20 +43,22 @@ public class WebSocketSessionStoreImpl implements WebSocketSessionStore {
         } else {
             sessionSet.addLast(session); // Adding at the end
         }
-        log.debug("A new WebSocketSession with id '{}' is stored for system '{}'", session.getId(), systemID);
+        log.debug("A new WebSocketSession with id '{}' is stored for system '{}' (size: {})",
+            session.getId(), systemID, sessionSet.size());
     }
 
     @Override
-    public void remove(String systemID, WebSocketSession session) {
+    public synchronized void remove(String systemID, WebSocketSession session) {
         Deque<WebSocketSession> sessionSet = lookupTable.get(systemID);
         if (sessionSet != null) {
             sessionSet.remove(session);
-            log.debug("The WebSocketSession with id '{}' is removed for system '{}'", session.getId(), systemID);
+            log.debug("The WebSocketSession with id '{}' is removed for system '{}' (size: {})",
+                session.getId(), systemID, sessionSet.size());
         }
     }
 
     @Override
-    public WebSocketSession getNext(String systemID) {
+    public synchronized WebSocketSession getNext(String systemID) {
         Deque<WebSocketSession> sessionSet = lookupTable.get(systemID);
         // Get the first item, and add at the end
         WebSocketSession s = sessionSet.removeFirst();

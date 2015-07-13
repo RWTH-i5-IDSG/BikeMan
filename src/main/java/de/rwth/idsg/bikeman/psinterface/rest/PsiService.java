@@ -32,6 +32,7 @@ import de.rwth.idsg.bikeman.service.TransactionEventService;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -148,6 +149,11 @@ public class PsiService {
         booking.setTransaction(t);
         bookingRepository.save(booking);
 
+        performStartPush(startTransactionDTO, t, booking);
+    }
+
+    @Async
+    private void performStartPush(StartTransactionDTO startTransactionDTO, Transaction t, Booking booking) {
         externalBookingPushService.report(booking, t);
 
         Long timestampInMillis = Utils.toMillis(startTransactionDTO.getTimestamp());
@@ -165,6 +171,11 @@ public class PsiService {
 
         Transaction t = transactionRepository.stop(stopTransactionDTO);
 
+        performStopPush(stopTransactionDTO, t);
+    }
+
+    @Async
+    private void performStopPush(StopTransactionDTO stopTransactionDTO, Transaction t) {
         Booking booking = bookingRepository.findByTransaction(t);
         consumptionPushService.report(booking, t);
 

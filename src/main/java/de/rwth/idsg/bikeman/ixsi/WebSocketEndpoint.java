@@ -23,6 +23,8 @@ import java.io.IOException;
 @Component
 public class WebSocketEndpoint extends TextWebSocketHandler {
 
+    private static final Object LOCK = new Object();
+
     @Autowired private WebSocketSessionStore webSocketSessionStore;
     @Autowired private Consumer consumer;
 
@@ -70,16 +72,18 @@ public class WebSocketEndpoint extends TextWebSocketHandler {
     public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception {
         log.info("[id={}] Connection was closed, status: {}", session.getId(), closeStatus);
         String systemId = (String) session.getAttributes().get(HandshakeInterceptor.SYSTEM_ID_KEY);
-        webSocketSessionStore.remove(systemId, session);
+        synchronized (LOCK) {
+            webSocketSessionStore.remove(systemId, session);
 
-        if (webSocketSessionStore.size(systemId) == 0) {
-            log.debug("There are no open connections left to system '{}'. "
+            if (webSocketSessionStore.size(systemId) == 0) {
+                log.debug("There are no open connections left to system '{}'. "
                     + "Removing it from all the subscription stores", systemId);
 
-            availabilityStore.unsubscribeAll(systemId);
-            consumptionStore.unsubscribeAll(systemId);
-            externalBookingStore.unsubscribeAll(systemId);
-            placeAvailabilityStore.unsubscribeAll(systemId);
+                availabilityStore.unsubscribeAll(systemId);
+                consumptionStore.unsubscribeAll(systemId);
+                externalBookingStore.unsubscribeAll(systemId);
+                placeAvailabilityStore.unsubscribeAll(systemId);
+            }
         }
     }
 
