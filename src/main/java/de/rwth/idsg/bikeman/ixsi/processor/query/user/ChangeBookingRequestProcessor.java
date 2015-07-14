@@ -12,6 +12,7 @@ import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
 import de.rwth.idsg.bikeman.ixsi.schema.Language;
 import de.rwth.idsg.bikeman.ixsi.schema.TimePeriodType;
 import de.rwth.idsg.bikeman.ixsi.schema.UserInfoType;
+import de.rwth.idsg.bikeman.ixsi.service.AvailabilityPushService;
 import de.rwth.idsg.bikeman.ixsi.service.BookingService;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ public class ChangeBookingRequestProcessor implements
         UserRequestProcessor<ChangeBookingRequestType, ChangeBookingResponseType> {
 
     @Autowired private BookingService bookingService;
+    @Autowired private AvailabilityPushService availabilityPushService;
 
     @Override
     public ChangeBookingResponseType processAnonymously(ChangeBookingRequestType request, Optional<Language> lan) {
@@ -37,19 +39,10 @@ public class ChangeBookingRequestProcessor implements
                                                     UserInfoType userInfo) {
         try {
             if (request.isSetCancel() && request.isCancel()) {
-                bookingService.cancel(request.getBookingID());
-                return new ChangeBookingResponseType();
+                return proceedCancel(request);
 
             } else {
-                Booking newBooking = bookingService.update(request.getBookingID(), request.getNewTimePeriodProposal());
-                TimePeriodType timePeriod = new TimePeriodType()
-                    .withBegin(newBooking.getReservation().getStartDateTime().toDateTime())
-                    .withEnd(newBooking.getReservation().getEndDateTime().toDateTime());
-                BookingType responseBooking = new BookingType()
-                    .withID(newBooking.getIxsiBookingId())
-                    .withTimePeriod(timePeriod);
-
-                return new ChangeBookingResponseType().withBooking(responseBooking);
+                return proceedChange(request);
             }
         } catch (DatabaseException e) {
             return buildError(ErrorFactory.Booking.idUnknown(e.getMessage(), null));
@@ -57,6 +50,37 @@ public class ChangeBookingRequestProcessor implements
         } catch (IxsiProcessingException e) {
             return buildError(ErrorFactory.Booking.changeNotPossible(e.getMessage(), e.getMessage()));
         }
+    }
+
+    private ChangeBookingResponseType proceedChange(ChangeBookingRequestType request) {
+        Booking oldBooking = bookingService.get(request.getBookingID());
+        TimePeriodType oldTimePeriod = buildTimePeriod(oldBooking);
+
+        Booking newBooking = bookingService.update(oldBooking, request.getNewTimePeriodProposal());
+        TimePeriodType newTimePeriod = buildTimePeriod(newBooking);
+
+        BookingType responseBooking = new BookingType()
+            .withID(newBooking.getIxsiBookingId())
+            .withTimePeriod(newTimePeriod);
+
+        availabilityPushService.changedBooking(request.getBookingID(), oldTimePeriod, newTimePeriod);
+        return new ChangeBookingResponseType().withBooking(responseBooking);
+    }
+
+    private ChangeBookingResponseType proceedCancel(ChangeBookingRequestType request) {
+        Booking booking = bookingService.get(request.getBookingID());
+        bookingService.cancel(booking);
+
+        TimePeriodType timePeriod = buildTimePeriod(booking);
+
+        availabilityPushService.cancelledBooking(request.getBookingID(), timePeriod);
+        return new ChangeBookingResponseType();
+    }
+
+    private TimePeriodType buildTimePeriod(Booking booking) {
+        return new TimePeriodType()
+            .withBegin(booking.getReservation().getStartDateTime().toDateTime())
+            .withEnd(booking.getReservation().getEndDateTime().toDateTime());
     }
 
     // -------------------------------------------------------------------------

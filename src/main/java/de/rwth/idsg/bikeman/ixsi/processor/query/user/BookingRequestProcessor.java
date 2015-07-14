@@ -13,6 +13,7 @@ import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
 import de.rwth.idsg.bikeman.ixsi.schema.Language;
 import de.rwth.idsg.bikeman.ixsi.schema.TimePeriodType;
 import de.rwth.idsg.bikeman.ixsi.schema.UserInfoType;
+import de.rwth.idsg.bikeman.ixsi.service.AvailabilityPushService;
 import de.rwth.idsg.bikeman.ixsi.service.BookingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -26,6 +27,7 @@ public class BookingRequestProcessor implements
         UserRequestProcessor<BookingRequestType, BookingResponseType> {
 
     @Autowired private BookingService bookingService;
+    @Autowired private AvailabilityPushService availabilityPushService;
 
     @Override
     public BookingResponseType processAnonymously(BookingRequestType request, Optional<Language> lan) {
@@ -37,17 +39,20 @@ public class BookingRequestProcessor implements
                                               UserInfoType userInfo) {
         try {
             Booking createdBooking = bookingService.createBookingForUser(
-                    request.getBookingTargetID().getBookeeID(),
-                    userInfo.getUserID(),
-                    request.getTimePeriodProposal());
+                request.getBookingTargetID().getBookeeID(),
+                userInfo.getUserID(),
+                request.getTimePeriodProposal()
+            );
 
             TimePeriodType timePeriod = new TimePeriodType()
-                    .withBegin(createdBooking.getReservation().getStartDateTime().toDateTime())
-                    .withEnd(createdBooking.getReservation().getEndDateTime().toDateTime());
+                .withBegin(createdBooking.getReservation().getStartDateTime().toDateTime())
+                .withEnd(createdBooking.getReservation().getEndDateTime().toDateTime());
+
+            availabilityPushService.placedBooking(request.getBookingTargetID().getBookeeID(), timePeriod);
 
             BookingType booking = new BookingType()
-                    .withID(String.valueOf(createdBooking.getIxsiBookingId()))
-                    .withTimePeriod(timePeriod);
+                .withID(String.valueOf(createdBooking.getIxsiBookingId()))
+                .withTimePeriod(timePeriod);
 
             return new BookingResponseType().withBooking(booking);
 
