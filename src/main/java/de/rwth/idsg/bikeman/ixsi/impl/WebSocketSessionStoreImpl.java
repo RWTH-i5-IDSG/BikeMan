@@ -1,6 +1,7 @@
 package de.rwth.idsg.bikeman.ixsi.impl;
 
 import de.rwth.idsg.bikeman.ixsi.api.WebSocketSessionStore;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.WebSocketSession;
@@ -26,10 +27,12 @@ import java.util.concurrent.ConcurrentHashMap;
 @Service
 public class WebSocketSessionStoreImpl implements WebSocketSessionStore {
 
+
     /**
      * Key   (String)                  = ID of the client system
      * Value (Deque<WebSocketSession>) = WebSocket connections of the client system
      */
+    @Getter
     private final ConcurrentHashMap<String, Deque<WebSocketSession>> lookupTable = new ConcurrentHashMap<>();
 
     @Override

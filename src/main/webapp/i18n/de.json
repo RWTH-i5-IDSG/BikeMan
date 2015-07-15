@@ -15,7 +15,8 @@
                 "audits": "Audits",
                 "login": "Anmelden",
                 "logout": "Abmelden",
-                "apidocs": "API"
+                "apidocs": "API",
+                "monitor": "Monitor"
             },
             "management": {
                 "title": "Verwaltung",

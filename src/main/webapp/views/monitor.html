@@ -1,0 +1,47 @@
+<div>
+    <h3>Bikeman IXSI Monitor</h3>
+
+    <div class="table-responsive well well-sm">
+    <h3>Sessions</h3>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>System ID</th>
+                <th>Session ID</th>
+                <th>Open</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="session in sessionStatus">
+                <td>{{session.systemId}}</td>
+                <td>{{session.sessionId}}</td>
+                <td>{{session.isOpen}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="table-responsive well well-sm">
+        <h3>Stores</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="store in storeList">
+                    <td>{{store.name}}</td>
+                    <td>
+                        <button type="button" class="btn btn-sm btn-info pull-right" ui-sref="monitorDetail({storeName:store.linkName})">
+                            <span class="glyphicon glyphicon-search"></span>
+                            <span>Details</span>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
