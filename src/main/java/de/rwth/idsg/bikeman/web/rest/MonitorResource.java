@@ -52,6 +52,9 @@ public class MonitorResource {
     private static final String CONSUMPTION_STORE = "Consumption Store";
     private static final String EXTERNAL_BOOKING_STORE = "External Booking Store";
 
+    private static final String PLACE_AVAILABILITY_DESCR = "Place Id";
+    private static final String CONSUMPTION_DESCR = "Booking Id";
+
 
     @RequestMapping(value = IXSI_SESSION_STATUS, method = RequestMethod.GET)
     public List<EndpointDTO> getSessionStatus() {
@@ -116,7 +119,7 @@ public class MonitorResource {
         log.debug("REST request for {} data", IXSI_STORE_PLACE_AVAIL);
         StoreDTO<String> pAvail = new StoreDTO<>();
         pAvail.setName(PLACE_AVAILABILITY_STORE);
-        pAvail.setItemDescription("System Id");
+        pAvail.setItemDescription(PLACE_AVAILABILITY_DESCR);
         pAvail.setItems(itemMapToList(placeAvailabilityStore.getLookupTable()));
         pAvail.setSize(pAvail.getItems().size());
 
@@ -128,7 +131,7 @@ public class MonitorResource {
         log.debug("REST request for {} data", IXSI_STORE_CONSUMPTION);
         StoreDTO<String> cons = new StoreDTO<>();
         cons.setName(CONSUMPTION_STORE);
-        cons.setItemDescription("System Id");
+        cons.setItemDescription(CONSUMPTION_DESCR);
         cons.setItems(itemMapToList(consumptionStore.getLookupTable()));
         cons.setSize(cons.getItems().size());
 
