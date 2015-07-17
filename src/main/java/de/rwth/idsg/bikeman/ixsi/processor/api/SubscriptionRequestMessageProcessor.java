@@ -1,8 +1,8 @@
 package de.rwth.idsg.bikeman.ixsi.processor.api;
 
-import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
 import de.rwth.idsg.ixsi.jaxb.RequestMessageGroup;
 import de.rwth.idsg.ixsi.jaxb.ResponseMessageGroup;
+import xjc.schema.ixsi.ErrorType;
 
 /**
  * @author Sevket Goekay <goekay@dbis.rwth-aachen.de>

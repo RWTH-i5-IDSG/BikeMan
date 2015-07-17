@@ -8,8 +8,6 @@ import de.rwth.idsg.bikeman.domain.Reservation;
 import de.rwth.idsg.bikeman.domain.Transaction;
 import de.rwth.idsg.bikeman.ixsi.IxsiCodeException;
 import de.rwth.idsg.bikeman.ixsi.IxsiProcessingException;
-import de.rwth.idsg.bikeman.ixsi.schema.ErrorCodeType;
-import de.rwth.idsg.bikeman.ixsi.schema.TimePeriodProposalType;
 import de.rwth.idsg.bikeman.repository.BookingRepository;
 import de.rwth.idsg.bikeman.repository.CardAccountRepository;
 import de.rwth.idsg.bikeman.repository.PedelecRepository;
@@ -21,6 +19,8 @@ import org.joda.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import xjc.schema.ixsi.ErrorCodeType;
+import xjc.schema.ixsi.TimePeriodProposalType;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;

@@ -5,12 +5,16 @@ import de.rwth.idsg.bikeman.domain.Transaction;
 import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
 import de.rwth.idsg.bikeman.ixsi.api.Producer;
 import de.rwth.idsg.bikeman.ixsi.impl.ConsumptionStore;
-import de.rwth.idsg.bikeman.ixsi.schema.*;
-import de.rwth.idsg.bikeman.repository.BookingRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import xjc.schema.ixsi.ConsumptionPushMessageType;
+import xjc.schema.ixsi.ConsumptionType;
+import xjc.schema.ixsi.IxsiMessageType;
+import xjc.schema.ixsi.SubscriptionMessageType;
+import xjc.schema.ixsi.TextType;
+import xjc.schema.ixsi.TimePeriodType;
 
 import java.util.Set;
 
@@ -22,12 +26,11 @@ import java.util.Set;
 @Service
 public class ConsumptionPushService {
 
-    @Autowired
-    private Producer producer;
-    @Autowired
-    private ConsumptionStore consumptionStore;
+    @Autowired private Producer producer;
+    @Autowired private ConsumptionStore consumptionStore;
 
-    public static final String NAME_FORMAT = "E-bike rental from %s";
+    private static final TextType DESCRIPTION = new TextType().withLanguage(IXSIConstants.DEFAULT_LANGUAGE)
+                                                              .withText("Pedelec Ausleih von Velocity");
 
     public void report(Booking booking, Transaction transaction) {
         String bookingIdSTR = booking.getIxsiBookingId();
@@ -51,13 +54,13 @@ public class ConsumptionPushService {
         LocalDateTime end = t.getEndDateTime();
 
         TimePeriodType timePeriod = new TimePeriodType()
-                .withBegin(start.toDateTime())
-                .withEnd(end.toDateTime());
+            .withBegin(start.toDateTime())
+            .withEnd(end.toDateTime());
 
         return new ConsumptionType()
-                .withBookingID(booking.getIxsiBookingId())
-                .withType(IXSIConstants.consumptionClass)
-                .withName(String.format(NAME_FORMAT, IXSIConstants.Provider.name))
-                .withTimePeriod(timePeriod);
+            .withBookingID(booking.getIxsiBookingId())
+            .withType(IXSIConstants.consumptionClass)
+            .withDescription(DESCRIPTION)
+            .withTimePeriod(timePeriod);
     }
 }

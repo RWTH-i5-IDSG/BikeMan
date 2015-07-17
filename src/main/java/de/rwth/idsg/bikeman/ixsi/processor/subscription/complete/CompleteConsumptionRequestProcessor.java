@@ -4,14 +4,14 @@ import de.rwth.idsg.bikeman.domain.Booking;
 import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
 import de.rwth.idsg.bikeman.ixsi.impl.ConsumptionStore;
 import de.rwth.idsg.bikeman.ixsi.processor.api.SubscriptionRequestMessageProcessor;
-import de.rwth.idsg.bikeman.ixsi.schema.CompleteConsumptionRequestType;
-import de.rwth.idsg.bikeman.ixsi.schema.CompleteConsumptionResponseType;
-import de.rwth.idsg.bikeman.ixsi.schema.ConsumptionType;
-import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
 import de.rwth.idsg.bikeman.ixsi.service.ConsumptionPushService;
 import de.rwth.idsg.bikeman.repository.BookingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import xjc.schema.ixsi.CompleteConsumptionRequestType;
+import xjc.schema.ixsi.CompleteConsumptionResponseType;
+import xjc.schema.ixsi.ConsumptionType;
+import xjc.schema.ixsi.ErrorType;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -5,18 +5,18 @@ import de.rwth.idsg.bikeman.domain.Booking;
 import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
 import de.rwth.idsg.bikeman.ixsi.IxsiProcessingException;
 import de.rwth.idsg.bikeman.ixsi.processor.api.UserRequestProcessor;
-import de.rwth.idsg.bikeman.ixsi.schema.BookingType;
-import de.rwth.idsg.bikeman.ixsi.schema.ChangeBookingRequestType;
-import de.rwth.idsg.bikeman.ixsi.schema.ChangeBookingResponseType;
-import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
-import de.rwth.idsg.bikeman.ixsi.schema.Language;
-import de.rwth.idsg.bikeman.ixsi.schema.TimePeriodType;
-import de.rwth.idsg.bikeman.ixsi.schema.UserInfoType;
 import de.rwth.idsg.bikeman.ixsi.service.AvailabilityPushService;
 import de.rwth.idsg.bikeman.ixsi.service.BookingService;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import xjc.schema.ixsi.BookingType;
+import xjc.schema.ixsi.ChangeBookingRequestType;
+import xjc.schema.ixsi.ChangeBookingResponseType;
+import xjc.schema.ixsi.ErrorType;
+import xjc.schema.ixsi.Language;
+import xjc.schema.ixsi.TimePeriodType;
+import xjc.schema.ixsi.UserInfoType;
 
 /**
  * @author Sevket Goekay <goekay@dbis.rwth-aachen.de>

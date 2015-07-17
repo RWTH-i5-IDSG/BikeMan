@@ -1,9 +1,9 @@
 package de.rwth.idsg.bikeman.ixsi;
 
-import de.rwth.idsg.bikeman.ixsi.schema.ClassType;
-import de.rwth.idsg.bikeman.ixsi.schema.ConsumptionClassType;
-import de.rwth.idsg.bikeman.ixsi.schema.EngineType;
-import de.rwth.idsg.bikeman.ixsi.schema.Language;
+import xjc.schema.ixsi.ClassType;
+import xjc.schema.ixsi.ConsumptionClassType;
+import xjc.schema.ixsi.EngineType;
+import xjc.schema.ixsi.Language;
 
 /**
  * Created by max on 07/10/14.

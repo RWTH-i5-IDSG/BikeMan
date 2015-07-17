@@ -5,7 +5,6 @@ import de.rwth.idsg.bikeman.ixsi.HandshakeInterceptor;
 import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
 import de.rwth.idsg.bikeman.ixsi.WebSocketEndpoint;
 import de.rwth.idsg.bikeman.ixsi.repository.SystemValidator;
-import de.rwth.idsg.bikeman.ixsi.schema.IxsiMessageType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -15,6 +14,7 @@ import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 import org.springframework.web.socket.server.standard.ServletServerContainerFactoryBean;
+import xjc.schema.ixsi.IxsiMessageType;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;

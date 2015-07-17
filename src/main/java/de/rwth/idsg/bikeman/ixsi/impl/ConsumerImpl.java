@@ -5,10 +5,10 @@ import de.rwth.idsg.bikeman.ixsi.IxsiProcessingException;
 import de.rwth.idsg.bikeman.ixsi.api.Consumer;
 import de.rwth.idsg.bikeman.ixsi.api.Parser;
 import de.rwth.idsg.bikeman.ixsi.dispatcher.IncomingIxsiDispatcher;
-import de.rwth.idsg.bikeman.ixsi.schema.IxsiMessageType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import xjc.schema.ixsi.IxsiMessageType;
 
 import javax.xml.bind.JAXBException;
 

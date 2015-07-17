@@ -2,12 +2,12 @@ package de.rwth.idsg.bikeman.ixsi.processor.subscription.request;
 
 import de.rwth.idsg.bikeman.ixsi.impl.PlaceAvailabilityStore;
 import de.rwth.idsg.bikeman.ixsi.processor.api.SubscriptionRequestProcessor;
-import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
-import de.rwth.idsg.bikeman.ixsi.schema.PlaceAvailabilitySubscriptionRequestType;
-import de.rwth.idsg.bikeman.ixsi.schema.PlaceAvailabilitySubscriptionResponseType;
-import de.rwth.idsg.bikeman.ixsi.schema.ProviderPlaceIDType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import xjc.schema.ixsi.ErrorType;
+import xjc.schema.ixsi.PlaceAvailabilitySubscriptionRequestType;
+import xjc.schema.ixsi.PlaceAvailabilitySubscriptionResponseType;
+import xjc.schema.ixsi.ProviderPlaceIDType;
 
 import java.util.ArrayList;
 import java.util.List;

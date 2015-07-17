@@ -2,12 +2,12 @@ package de.rwth.idsg.bikeman.ixsi.processor.subscription.request;
 
 import de.rwth.idsg.bikeman.ixsi.impl.ExternalBookingStore;
 import de.rwth.idsg.bikeman.ixsi.processor.api.SubscriptionRequestProcessor;
-import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
-import de.rwth.idsg.bikeman.ixsi.schema.ExternalBookingSubscriptionRequestType;
-import de.rwth.idsg.bikeman.ixsi.schema.ExternalBookingSubscriptionResponseType;
-import de.rwth.idsg.bikeman.ixsi.schema.UserInfoType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import xjc.schema.ixsi.ErrorType;
+import xjc.schema.ixsi.ExternalBookingSubscriptionRequestType;
+import xjc.schema.ixsi.ExternalBookingSubscriptionResponseType;
+import xjc.schema.ixsi.UserInfoType;
 
 import java.util.List;
 

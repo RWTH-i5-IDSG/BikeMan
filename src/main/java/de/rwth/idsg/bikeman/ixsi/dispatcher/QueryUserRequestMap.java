@@ -3,11 +3,11 @@ package de.rwth.idsg.bikeman.ixsi.dispatcher;
 import de.rwth.idsg.bikeman.ixsi.IxsiProcessingException;
 import de.rwth.idsg.bikeman.ixsi.processor.api.UserRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.processor.query.user.*;
-import de.rwth.idsg.bikeman.ixsi.schema.*;
 import de.rwth.idsg.ixsi.jaxb.UserTriggeredRequestChoice;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import xjc.schema.ixsi.*;
 
 import javax.annotation.PostConstruct;
 import java.util.HashMap;

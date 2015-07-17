@@ -5,8 +5,6 @@ import de.rwth.idsg.bikeman.ixsi.impl.AvailabilityStore;
 import de.rwth.idsg.bikeman.ixsi.impl.ConsumptionStore;
 import de.rwth.idsg.bikeman.ixsi.impl.ExternalBookingStore;
 import de.rwth.idsg.bikeman.ixsi.impl.PlaceAvailabilityStore;
-import de.rwth.idsg.bikeman.ixsi.schema.BookingTargetIDType;
-import de.rwth.idsg.bikeman.ixsi.schema.UserInfoType;
 import de.rwth.idsg.bikeman.web.rest.dto.monitor.EndpointDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.monitor.StoreDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.monitor.StoreItem;
@@ -17,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.socket.WebSocketSession;
+import xjc.schema.ixsi.BookingTargetIDType;
+import xjc.schema.ixsi.UserInfoType;
 
 import java.util.ArrayList;
 import java.util.Deque;

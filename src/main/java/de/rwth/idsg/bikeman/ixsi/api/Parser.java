@@ -1,6 +1,6 @@
 package de.rwth.idsg.bikeman.ixsi.api;
 
-import de.rwth.idsg.bikeman.ixsi.schema.IxsiMessageType;
+import xjc.schema.ixsi.IxsiMessageType;
 
 import javax.xml.bind.JAXBException;
 

@@ -7,12 +7,12 @@ import de.rwth.idsg.bikeman.ixsi.dto.query.ChangedProvidersResponseDTO;
 import de.rwth.idsg.bikeman.ixsi.dto.query.PedelecDTO;
 import de.rwth.idsg.bikeman.ixsi.dto.query.PlaceAvailabilityResponseDTO;
 import de.rwth.idsg.bikeman.ixsi.dto.query.StationDTO;
-import de.rwth.idsg.bikeman.ixsi.schema.BookingTargetIDType;
-import de.rwth.idsg.bikeman.ixsi.schema.BookingTargetPropertiesType;
-import de.rwth.idsg.bikeman.ixsi.schema.GeoCircleType;
-import de.rwth.idsg.bikeman.ixsi.schema.GeoRectangleType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
+import xjc.schema.ixsi.BookingTargetIDType;
+import xjc.schema.ixsi.BookingTargetPropertiesType;
+import xjc.schema.ixsi.GeoCircleType;
+import xjc.schema.ixsi.GeoRectangleType;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;

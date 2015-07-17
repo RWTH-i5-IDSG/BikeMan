@@ -1,7 +1,7 @@
 package de.rwth.idsg.bikeman.ixsi;
 
-import de.rwth.idsg.bikeman.ixsi.schema.ErrorCodeType;
 import lombok.Getter;
+import xjc.schema.ixsi.ErrorCodeType;
 
 /**
  * @author Sevket Goekay <goekay@dbis.rwth-aachen.de>

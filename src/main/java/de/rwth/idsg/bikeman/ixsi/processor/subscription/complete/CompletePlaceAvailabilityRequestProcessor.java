@@ -6,12 +6,12 @@ import de.rwth.idsg.bikeman.ixsi.impl.PlaceAvailabilityStore;
 import de.rwth.idsg.bikeman.ixsi.processor.api.SubscriptionRequestMessageProcessor;
 import de.rwth.idsg.bikeman.ixsi.processor.query.user.PlaceAvailabilityRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.repository.QueryIXSIRepository;
-import de.rwth.idsg.bikeman.ixsi.schema.CompletePlaceAvailabilityRequestType;
-import de.rwth.idsg.bikeman.ixsi.schema.CompletePlaceAvailabilityResponseType;
-import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
-import de.rwth.idsg.bikeman.ixsi.schema.PlaceAvailabilityType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import xjc.schema.ixsi.CompletePlaceAvailabilityRequestType;
+import xjc.schema.ixsi.CompletePlaceAvailabilityResponseType;
+import xjc.schema.ixsi.ErrorType;
+import xjc.schema.ixsi.PlaceAvailabilityType;
 
 import java.util.List;
 

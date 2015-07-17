@@ -2,16 +2,20 @@ package de.rwth.idsg.bikeman.ixsi.impl;
 
 import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
 import de.rwth.idsg.bikeman.ixsi.api.Parser;
-import de.rwth.idsg.bikeman.ixsi.schema.IxsiMessageType;
-import de.rwth.idsg.bikeman.ixsi.schema.ObjectFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.xml.sax.SAXException;
+import xjc.schema.ixsi.IxsiMessageType;
+import xjc.schema.ixsi.ObjectFactory;
 
 import javax.annotation.PostConstruct;
 import javax.xml.XMLConstants;
-import javax.xml.bind.*;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;

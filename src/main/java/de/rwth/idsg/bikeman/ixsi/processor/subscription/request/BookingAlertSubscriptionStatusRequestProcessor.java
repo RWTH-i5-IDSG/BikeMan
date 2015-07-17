@@ -2,10 +2,10 @@ package de.rwth.idsg.bikeman.ixsi.processor.subscription.request;
 
 import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
 import de.rwth.idsg.bikeman.ixsi.processor.api.SubscriptionRequestProcessor;
-import de.rwth.idsg.bikeman.ixsi.schema.BookingAlertSubscriptionStatusRequestType;
-import de.rwth.idsg.bikeman.ixsi.schema.BookingAlertSubscriptionStatusResponseType;
-import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
 import org.springframework.stereotype.Component;
+import xjc.schema.ixsi.BookingAlertSubscriptionStatusRequestType;
+import xjc.schema.ixsi.BookingAlertSubscriptionStatusResponseType;
+import xjc.schema.ixsi.ErrorType;
 
 /**
  * @author Sevket Goekay <goekay@dbis.rwth-aachen.de>

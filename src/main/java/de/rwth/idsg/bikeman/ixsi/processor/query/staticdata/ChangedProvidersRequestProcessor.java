@@ -4,10 +4,10 @@ import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
 import de.rwth.idsg.bikeman.ixsi.dto.query.ChangedProvidersResponseDTO;
 import de.rwth.idsg.bikeman.ixsi.processor.api.StaticRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.repository.QueryIXSIRepository;
-import de.rwth.idsg.bikeman.ixsi.schema.ChangedProvidersRequestType;
-import de.rwth.idsg.bikeman.ixsi.schema.ChangedProvidersResponseType;
-import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
 import org.springframework.stereotype.Component;
+import xjc.schema.ixsi.ChangedProvidersRequestType;
+import xjc.schema.ixsi.ChangedProvidersResponseType;
+import xjc.schema.ixsi.ErrorType;
 
 import javax.inject.Inject;
 

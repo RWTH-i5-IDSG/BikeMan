@@ -6,15 +6,15 @@ import de.rwth.idsg.bikeman.ixsi.dto.query.PedelecDTO;
 import de.rwth.idsg.bikeman.ixsi.dto.query.StationDTO;
 import de.rwth.idsg.bikeman.ixsi.processor.api.StaticRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.repository.QueryIXSIRepository;
-import de.rwth.idsg.bikeman.ixsi.schema.*;
 import de.rwth.idsg.bikeman.web.rest.dto.view.ViewAddressDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Component;
+import xjc.schema.ixsi.*;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
-import javax.inject.Inject;
 
 /**
  * @author Sevket Goekay <goekay@dbis.rwth-aachen.de>

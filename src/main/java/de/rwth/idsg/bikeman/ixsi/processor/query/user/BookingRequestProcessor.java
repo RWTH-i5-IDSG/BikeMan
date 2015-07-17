@@ -6,17 +6,17 @@ import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
 import de.rwth.idsg.bikeman.ixsi.IxsiCodeException;
 import de.rwth.idsg.bikeman.ixsi.IxsiProcessingException;
 import de.rwth.idsg.bikeman.ixsi.processor.api.UserRequestProcessor;
-import de.rwth.idsg.bikeman.ixsi.schema.BookingRequestType;
-import de.rwth.idsg.bikeman.ixsi.schema.BookingResponseType;
-import de.rwth.idsg.bikeman.ixsi.schema.BookingType;
-import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
-import de.rwth.idsg.bikeman.ixsi.schema.Language;
-import de.rwth.idsg.bikeman.ixsi.schema.TimePeriodType;
-import de.rwth.idsg.bikeman.ixsi.schema.UserInfoType;
 import de.rwth.idsg.bikeman.ixsi.service.AvailabilityPushService;
 import de.rwth.idsg.bikeman.ixsi.service.BookingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import xjc.schema.ixsi.BookingRequestType;
+import xjc.schema.ixsi.BookingResponseType;
+import xjc.schema.ixsi.BookingType;
+import xjc.schema.ixsi.ErrorType;
+import xjc.schema.ixsi.Language;
+import xjc.schema.ixsi.TimePeriodType;
+import xjc.schema.ixsi.UserInfoType;
 
 /**
  * @author Sevket Goekay <goekay@dbis.rwth-aachen.de>

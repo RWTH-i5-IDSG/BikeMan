@@ -3,16 +3,16 @@ package de.rwth.idsg.bikeman.ixsi.processor.query.user;
 import com.google.common.base.Optional;
 import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
 import de.rwth.idsg.bikeman.ixsi.processor.api.UserRequestProcessor;
-import de.rwth.idsg.bikeman.ixsi.schema.ChangeUserRequestType;
-import de.rwth.idsg.bikeman.ixsi.schema.ChangeUserResponseType;
-import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
-import de.rwth.idsg.bikeman.ixsi.schema.Language;
-import de.rwth.idsg.bikeman.ixsi.schema.UserInfoType;
-import de.rwth.idsg.bikeman.ixsi.schema.UserType;
 import de.rwth.idsg.bikeman.ixsi.service.IxsiUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import xjc.schema.ixsi.ChangeUserRequestType;
+import xjc.schema.ixsi.ChangeUserResponseType;
+import xjc.schema.ixsi.ErrorType;
+import xjc.schema.ixsi.Language;
+import xjc.schema.ixsi.UserInfoType;
+import xjc.schema.ixsi.UserType;
 
 import java.util.List;
 

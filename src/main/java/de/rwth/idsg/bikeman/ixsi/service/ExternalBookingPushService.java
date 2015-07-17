@@ -7,17 +7,17 @@ import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
 import de.rwth.idsg.bikeman.ixsi.api.Producer;
 import de.rwth.idsg.bikeman.ixsi.impl.ExternalBookingStore;
 import de.rwth.idsg.bikeman.ixsi.repository.IxsiUserRepository;
-import de.rwth.idsg.bikeman.ixsi.schema.BookingTargetIDType;
-import de.rwth.idsg.bikeman.ixsi.schema.ExternalBookingPushMessageType;
-import de.rwth.idsg.bikeman.ixsi.schema.ExternalBookingType;
-import de.rwth.idsg.bikeman.ixsi.schema.IxsiMessageType;
-import de.rwth.idsg.bikeman.ixsi.schema.SubscriptionMessageType;
-import de.rwth.idsg.bikeman.ixsi.schema.TimePeriodType;
-import de.rwth.idsg.bikeman.ixsi.schema.UserInfoType;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import xjc.schema.ixsi.BookingTargetIDType;
+import xjc.schema.ixsi.ExternalBookingPushMessageType;
+import xjc.schema.ixsi.ExternalBookingType;
+import xjc.schema.ixsi.IxsiMessageType;
+import xjc.schema.ixsi.SubscriptionMessageType;
+import xjc.schema.ixsi.TimePeriodType;
+import xjc.schema.ixsi.UserInfoType;
 
 import java.util.Set;
 

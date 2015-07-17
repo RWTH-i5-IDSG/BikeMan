@@ -1,7 +1,7 @@
 package de.rwth.idsg.bikeman.ixsi;
 
-import de.rwth.idsg.bikeman.ixsi.schema.ErrorCodeType;
-import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
+import xjc.schema.ixsi.ErrorCodeType;
+import xjc.schema.ixsi.ErrorType;
 
 /**
  * Error generation should be handled by a central component for better control over the codes and messages.

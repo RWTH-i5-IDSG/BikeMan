@@ -4,9 +4,9 @@ import de.rwth.idsg.bikeman.ixsi.dto.query.AvailabilityResponseDTO;
 import de.rwth.idsg.bikeman.ixsi.dto.query.BookingTargetsInfoResponseDTO;
 import de.rwth.idsg.bikeman.ixsi.dto.query.ChangedProvidersResponseDTO;
 import de.rwth.idsg.bikeman.ixsi.dto.query.PlaceAvailabilityResponseDTO;
-import de.rwth.idsg.bikeman.ixsi.schema.BookingTargetIDType;
-import de.rwth.idsg.bikeman.ixsi.schema.GeoCircleType;
-import de.rwth.idsg.bikeman.ixsi.schema.GeoRectangleType;
+import xjc.schema.ixsi.BookingTargetIDType;
+import xjc.schema.ixsi.GeoCircleType;
+import xjc.schema.ixsi.GeoRectangleType;
 
 import java.util.List;
 

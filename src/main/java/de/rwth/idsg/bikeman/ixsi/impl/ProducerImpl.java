@@ -5,11 +5,11 @@ import de.rwth.idsg.bikeman.ixsi.IxsiProcessingException;
 import de.rwth.idsg.bikeman.ixsi.api.Parser;
 import de.rwth.idsg.bikeman.ixsi.api.Producer;
 import de.rwth.idsg.bikeman.ixsi.api.WebSocketSessionStore;
-import de.rwth.idsg.bikeman.ixsi.schema.IxsiMessageType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
+import xjc.schema.ixsi.IxsiMessageType;
 
 import javax.xml.bind.JAXBException;
 import java.io.IOException;

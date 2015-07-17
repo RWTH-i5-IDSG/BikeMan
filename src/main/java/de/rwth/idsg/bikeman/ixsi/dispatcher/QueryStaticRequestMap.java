@@ -4,12 +4,12 @@ import de.rwth.idsg.bikeman.ixsi.IxsiProcessingException;
 import de.rwth.idsg.bikeman.ixsi.processor.api.StaticRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.processor.query.staticdata.BookingTargetsInfoRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.processor.query.staticdata.ChangedProvidersRequestProcessor;
-import de.rwth.idsg.bikeman.ixsi.schema.BookingTargetsInfoRequestType;
-import de.rwth.idsg.bikeman.ixsi.schema.ChangedProvidersRequestType;
 import de.rwth.idsg.ixsi.jaxb.StaticDataRequestGroup;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import xjc.schema.ixsi.BookingTargetsInfoRequestType;
+import xjc.schema.ixsi.ChangedProvidersRequestType;
 
 import javax.annotation.PostConstruct;
 import java.util.HashMap;

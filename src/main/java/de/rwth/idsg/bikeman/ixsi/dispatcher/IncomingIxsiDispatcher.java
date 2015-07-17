@@ -3,10 +3,10 @@ package de.rwth.idsg.bikeman.ixsi.dispatcher;
 import de.rwth.idsg.bikeman.ixsi.CommunicationContext;
 import de.rwth.idsg.bikeman.ixsi.IxsiProcessingException;
 import de.rwth.idsg.bikeman.ixsi.api.Producer;
-import de.rwth.idsg.bikeman.ixsi.schema.IxsiMessageType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import xjc.schema.ixsi.IxsiMessageType;
 
 /**
  * @author Sevket Goekay <goekay@dbis.rwth-aachen.de>

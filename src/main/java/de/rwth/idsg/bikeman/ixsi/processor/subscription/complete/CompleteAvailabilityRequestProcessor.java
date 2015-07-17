@@ -6,13 +6,13 @@ import de.rwth.idsg.bikeman.ixsi.impl.AvailabilityStore;
 import de.rwth.idsg.bikeman.ixsi.processor.api.SubscriptionRequestMessageProcessor;
 import de.rwth.idsg.bikeman.ixsi.processor.query.user.AvailabilityRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.repository.QueryIXSIRepository;
-import de.rwth.idsg.bikeman.ixsi.schema.BookingTargetAvailabilityType;
-import de.rwth.idsg.bikeman.ixsi.schema.BookingTargetIDType;
-import de.rwth.idsg.bikeman.ixsi.schema.CompleteAvailabilityRequestType;
-import de.rwth.idsg.bikeman.ixsi.schema.CompleteAvailabilityResponseType;
-import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import xjc.schema.ixsi.BookingTargetAvailabilityType;
+import xjc.schema.ixsi.BookingTargetIDType;
+import xjc.schema.ixsi.CompleteAvailabilityRequestType;
+import xjc.schema.ixsi.CompleteAvailabilityResponseType;
+import xjc.schema.ixsi.ErrorType;
 
 import java.util.List;
 

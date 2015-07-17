@@ -4,10 +4,14 @@ import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
 import de.rwth.idsg.bikeman.ixsi.api.Producer;
 import de.rwth.idsg.bikeman.ixsi.impl.PlaceAvailabilityStore;
 import de.rwth.idsg.bikeman.ixsi.repository.QueryIXSIRepository;
-import de.rwth.idsg.bikeman.ixsi.schema.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import xjc.schema.ixsi.IxsiMessageType;
+import xjc.schema.ixsi.PlaceAvailabilityPushMessageType;
+import xjc.schema.ixsi.PlaceAvailabilityType;
+import xjc.schema.ixsi.ProviderPlaceIDType;
+import xjc.schema.ixsi.SubscriptionMessageType;
 
 import java.util.Arrays;
 import java.util.Set;

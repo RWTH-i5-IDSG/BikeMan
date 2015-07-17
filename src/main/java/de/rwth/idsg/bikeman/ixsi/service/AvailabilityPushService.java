@@ -3,17 +3,17 @@ package de.rwth.idsg.bikeman.ixsi.service;
 import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
 import de.rwth.idsg.bikeman.ixsi.api.Producer;
 import de.rwth.idsg.bikeman.ixsi.impl.AvailabilityStore;
-import de.rwth.idsg.bikeman.ixsi.schema.AvailabilityPushMessageType;
-import de.rwth.idsg.bikeman.ixsi.schema.BookingTargetChangeAvailabilityType;
-import de.rwth.idsg.bikeman.ixsi.schema.BookingTargetIDType;
-import de.rwth.idsg.bikeman.ixsi.schema.IxsiMessageType;
-import de.rwth.idsg.bikeman.ixsi.schema.SubscriptionMessageType;
-import de.rwth.idsg.bikeman.ixsi.schema.TimePeriodType;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import xjc.schema.ixsi.AvailabilityPushMessageType;
+import xjc.schema.ixsi.BookingTargetChangeAvailabilityType;
+import xjc.schema.ixsi.BookingTargetIDType;
+import xjc.schema.ixsi.IxsiMessageType;
+import xjc.schema.ixsi.SubscriptionMessageType;
+import xjc.schema.ixsi.TimePeriodType;
 
 import java.util.Set;
 

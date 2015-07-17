@@ -5,11 +5,6 @@ import de.rwth.idsg.bikeman.domain.Booking;
 import de.rwth.idsg.bikeman.domain.Pedelec;
 import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
 import de.rwth.idsg.bikeman.ixsi.processor.api.UserRequestProcessor;
-import de.rwth.idsg.bikeman.ixsi.schema.BookingUnlockRequestType;
-import de.rwth.idsg.bikeman.ixsi.schema.BookingUnlockResponseType;
-import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
-import de.rwth.idsg.bikeman.ixsi.schema.Language;
-import de.rwth.idsg.bikeman.ixsi.schema.UserInfoType;
 import de.rwth.idsg.bikeman.psinterface.dto.request.RemoteAuthorizeDTO;
 import de.rwth.idsg.bikeman.psinterface.rest.client.StationClient;
 import de.rwth.idsg.bikeman.repository.BookingRepository;
@@ -17,6 +12,11 @@ import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import xjc.schema.ixsi.BookingUnlockRequestType;
+import xjc.schema.ixsi.BookingUnlockResponseType;
+import xjc.schema.ixsi.ErrorType;
+import xjc.schema.ixsi.Language;
+import xjc.schema.ixsi.UserInfoType;
 
 /**
  * @author Sevket Goekay <goekay@dbis.rwth-aachen.de>

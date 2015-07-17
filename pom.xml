@@ -53,7 +53,21 @@
         <lombok.version>1.16.0</lombok.version>
     </properties>
 
+
+    <repositories>
+        <repository>
+            <id>TreibhausNexus</id>
+            <name>RWTH IDSG Nexus Repository</name>
+            <url>https://treibhaus.informatik.rwth-aachen.de/nexus/repository/internal/</url>
+        </repository>
+    </repositories>
+
     <dependencies>
+        <dependency>
+            <groupId>de.rwth.idsg</groupId>
+            <artifactId>ixsi-jaxb</artifactId>
+            <version>0.9.3-2</version>
+        </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -575,62 +589,6 @@
                         <argument>--spring.profiles.active=dev</argument>
                     </arguments>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.jvnet.jaxb2.maven2</groupId>
-                <artifactId>maven-jaxb2-plugin</artifactId>
-                <version>0.9.1</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                        <phase>generate-sources</phase>
-                        <configuration>
-                            <schemaDirectory>src/main/resources/ixsi</schemaDirectory>
-                            <generateDirectory>${project.build.directory}/generated-sources</generateDirectory>
-                            <bindingDirectory>src/main/resources/ixsi</bindingDirectory>
-                            <bindingIncludes>
-                                <value>IXSI.xjb</value>
-                            </bindingIncludes>
-                            <schemaIncludes>
-                                <include>IXSI-with-enums.xsd</include>
-                            </schemaIncludes>
-                            <generatePackage>de.rwth.idsg.bikeman.ixsi.schema</generatePackage>
-                            <removeOldOutput>true</removeOldOutput>
-                            <extension>true</extension>
-                            <args>
-                                <arg>-Xinheritance</arg>
-                                <arg>-Xfluent-api</arg>
-                                <arg>-Xannotate</arg>
-                            </args>
-                            <plugins>
-                                <plugin>
-                                    <groupId>org.jvnet.jaxb2_commons</groupId>
-                                    <artifactId>jaxb2-basics</artifactId>
-                                    <version>0.9.0</version>
-                                </plugin>
-                                <plugin>
-                                    <groupId>org.jvnet.jaxb2_commons</groupId>
-                                    <artifactId>jaxb2-basics-annotate</artifactId>
-                                    <version>1.0.1</version>
-                                </plugin>
-                                <plugin>
-                                    <groupId>org.jvnet.jaxb2_commons</groupId>
-                                    <artifactId>jaxb2-fluent-api</artifactId>
-                                    <version>3.0</version>
-                                </plugin>
-                            </plugins>
-                        </configuration>
-                    </execution>
-                </executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.projectlombok</groupId>
-                        <artifactId>lombok</artifactId>
-                        <version>${lombok.version}</version>
-                    </dependency>
-                </dependencies>
             </plugin>
             <plugin>
                 <groupId>org.bsc.maven</groupId>

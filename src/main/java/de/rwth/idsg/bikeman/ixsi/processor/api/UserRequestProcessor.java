@@ -1,11 +1,11 @@
 package de.rwth.idsg.bikeman.ixsi.processor.api;
 
 import com.google.common.base.Optional;
-import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
-import de.rwth.idsg.bikeman.ixsi.schema.Language;
-import de.rwth.idsg.bikeman.ixsi.schema.UserInfoType;
 import de.rwth.idsg.ixsi.jaxb.UserTriggeredRequestChoice;
 import de.rwth.idsg.ixsi.jaxb.UserTriggeredResponseChoice;
+import xjc.schema.ixsi.ErrorType;
+import xjc.schema.ixsi.Language;
+import xjc.schema.ixsi.UserInfoType;
 
 /**
  * @author Sevket Goekay <goekay@dbis.rwth-aachen.de>
