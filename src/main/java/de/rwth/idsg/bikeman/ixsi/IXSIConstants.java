@@ -13,7 +13,7 @@ public final class IXSIConstants {
 
     public static final int MAX_TEXT_MSG_SIZE = 8388608;
 
-    public static final String XML_SCHEMA_FILE = "ixsi/IXSI-with-enums.xsd";
+    public static final String XML_SCHEMA_FILE = "IXSI-with-enums.xsd";
 
     public static final ClassType bookeeClassType = ClassType.BIKE;
     public static final EngineType engineType = EngineType.ELECTRIC;
