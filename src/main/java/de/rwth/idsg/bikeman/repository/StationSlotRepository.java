@@ -11,7 +11,7 @@ public interface StationSlotRepository extends JpaRepository<StationSlot, Long> 
 
     public StationSlot findByStationSlotPositionAndStationStationId(Integer stationSlotPosition, Long stationStationId);
 
-    @Query("select stsl from StationSlot stsl where stsl.manufacturerId = ?1")
-    public StationSlot findByManufacturerId(String manufacturerId);
+    @Query("select stsl from StationSlot stsl where stsl.manufacturerId = ?1 AND stsl.station.manufacturerId = ?2")
+    public StationSlot findByManufacturerId(String slotManufacturerId, String stationManufacturerId);
 
 }

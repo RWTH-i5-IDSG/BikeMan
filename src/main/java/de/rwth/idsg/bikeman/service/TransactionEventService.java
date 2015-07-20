@@ -1,6 +1,10 @@
 package de.rwth.idsg.bikeman.service;
 
-import de.rwth.idsg.bikeman.domain.*;
+import de.rwth.idsg.bikeman.domain.CardAccount;
+import de.rwth.idsg.bikeman.domain.Pedelec;
+import de.rwth.idsg.bikeman.domain.StationSlot;
+import de.rwth.idsg.bikeman.domain.TransactionEvent;
+import de.rwth.idsg.bikeman.domain.TransactionType;
 import de.rwth.idsg.bikeman.psinterface.Utils;
 import de.rwth.idsg.bikeman.psinterface.dto.request.StartTransactionDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.StopTransactionDTO;
@@ -9,6 +13,7 @@ import de.rwth.idsg.bikeman.repository.PedelecRepository;
 import de.rwth.idsg.bikeman.repository.StationSlotRepository;
 import de.rwth.idsg.bikeman.repository.TransactionEventRepository;
 import org.joda.time.LocalDateTime;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,11 +33,14 @@ public class TransactionEventService {
 
     @Inject private TransactionEventRepository transactionEventRepository;
 
+    @Async
     public void createAndSaveStartTransactionEvent(StartTransactionDTO startTransactionDTO) {
 
         CardAccount cardAccount = cardAccountRepository.findByCardId(startTransactionDTO.getCardId());
         Pedelec pedelec = pedelecRepository.findByManufacturerId(startTransactionDTO.getPedelecManufacturerId());
-        StationSlot stationSlot = stationSlotRepository.findByManufacturerId(startTransactionDTO.getSlotManufacturerId());
+        StationSlot stationSlot = stationSlotRepository.findByManufacturerId(
+                startTransactionDTO.getSlotManufacturerId(),
+                startTransactionDTO.getStationManufacturerId());
 
         Long timestampInMillis = Utils.toMillis(startTransactionDTO.getTimestamp());
         LocalDateTime arrivedTimestamp = new LocalDateTime(timestampInMillis);
@@ -50,10 +58,13 @@ public class TransactionEventService {
         transactionEventRepository.save(transactionEvent);
     }
 
+    @Async
     public void createAndSaveStopTransactionEvent(StopTransactionDTO stopTransactionDTO) {
 
         Pedelec pedelec = pedelecRepository.findByManufacturerId(stopTransactionDTO.getPedelecManufacturerId());
-        StationSlot stationSlot = stationSlotRepository.findByManufacturerId(stopTransactionDTO.getSlotManufacturerId());
+        StationSlot stationSlot = stationSlotRepository.findByManufacturerId(
+                stopTransactionDTO.getSlotManufacturerId(),
+                stopTransactionDTO.getStationManufacturerId());
 
         Long timestampInMillis = Utils.toMillis(stopTransactionDTO.getTimestamp());
         LocalDateTime arrivedTimestamp = new LocalDateTime(timestampInMillis);
