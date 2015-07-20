@@ -13,6 +13,7 @@ import xjc.schema.ixsi.IxsiMessageType;
 
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 /**
@@ -22,10 +23,8 @@ import java.util.Set;
 @Component
 public class ProducerImpl implements Producer {
 
-    @Autowired
-    private Parser parser;
-    @Autowired
-    private WebSocketSessionStore webSocketSessionStore;
+    @Autowired private Parser parser;
+    @Autowired private WebSocketSessionStore webSocketSessionStore;
 
     @Override
     public void send(CommunicationContext context) {
@@ -50,14 +49,23 @@ public class ProducerImpl implements Producer {
             TextMessage out = new TextMessage(str);
 
             for (String systemId : systemIdSet) {
-                webSocketSessionStore.getNext(systemId).sendMessage(out);
+                push(systemId, out);
             }
         } catch (JAXBException e) {
             throw new IxsiProcessingException("Could not marshal outgoing message", e);
-
-        } catch (IOException e) {
-            log.error("Exception happened", e);
         }
     }
 
+    /**
+     * Push message exceptions should be handled silently, that is they should not take the ongoing process/thread or
+     * system down. With this, we just log the exception and allow the application to continue with the next system in
+     * line when the current push fails.
+     */
+    private void push(String systemId, TextMessage out) {
+        try {
+            webSocketSessionStore.getNext(systemId).sendMessage(out);
+        } catch (NoSuchElementException | IOException e) {
+            log.error("Exception happened", e);
+        }
+    }
 }

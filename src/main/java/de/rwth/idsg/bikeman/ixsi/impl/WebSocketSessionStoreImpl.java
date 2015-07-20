@@ -8,6 +8,7 @@ import org.springframework.web.socket.WebSocketSession;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.NoSuchElementException;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -60,9 +61,19 @@ public class WebSocketSessionStoreImpl implements WebSocketSessionStore {
         }
     }
 
+    /**
+     * sessionSet.removeFirst() will throw NoSuchElementException, if the sessionSet is empty.
+     *
+     * But the sessionSet itself might be null, if there is no connection established and therefore,
+     * the sessionSet is not initialized, yet. In this case we throw the same exception,
+     * since the ProducerImpl decides on the context based on the exception type.
+     */
     @Override
     public synchronized WebSocketSession getNext(String systemID) {
         Deque<WebSocketSession> sessionSet = lookupTable.get(systemID);
+        if (sessionSet == null) {
+            throw new NoSuchElementException();
+        }
         // Get the first item, and add at the end
         WebSocketSession s = sessionSet.removeFirst();
         sessionSet.addLast(s);
