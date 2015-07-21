@@ -15,7 +15,7 @@
             <tr ng-repeat="session in sessionStatus">
                 <td>{{session.systemId}}</td>
                 <td>{{session.sessionId}}</td>
-                <td>{{session.isOpen}}</td>
+                <td>{{session.open | occupiedFilter}}</td>
             </tr>
             </tbody>
         </table>
