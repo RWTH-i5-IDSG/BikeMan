@@ -112,8 +112,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/logs/**").hasAuthority(AuthoritiesConstants.ADMIN)
                 .antMatchers("/api/**").authenticated()
                 .antMatchers("/api/authenticate").permitAll()
-                // TODO: currently station access is unprotected.
-                .antMatchers("/psi*").permitAll()
+                .antMatchers("/psi*").hasIpAddress("10.10.0.0/16")  // Restricted psi access!!
                 .antMatchers("/api/logs/**").hasAnyAuthority(AuthoritiesConstants.ADMIN)
                 .antMatchers("/api/audits*").hasAuthority(AuthoritiesConstants.MANAGER)
                 .antMatchers("/api/audits/**").hasAuthority(AuthoritiesConstants.MANAGER)
