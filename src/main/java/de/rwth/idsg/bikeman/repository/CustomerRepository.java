@@ -1,5 +1,6 @@
 package de.rwth.idsg.bikeman.repository;
 
+import de.rwth.idsg.bikeman.domain.Customer;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditCustomerDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.view.ViewCustomerDTO;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
@@ -25,6 +26,8 @@ public interface CustomerRepository {
      * Login (aka email) field of each customer is unique
      */
     ViewCustomerDTO findbyLogin(String login) throws DatabaseException;
+
+    Customer findOne (long userId) throws DatabaseException;
 
     void activate(long userId) throws DatabaseException;
 
