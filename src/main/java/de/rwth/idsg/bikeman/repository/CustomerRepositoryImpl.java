@@ -95,6 +95,12 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public Customer findOne(long userId) throws DatabaseException {
+        return getCustomerEntity(userId);
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public void activate(long userId) throws DatabaseException {
         Customer customer = getCustomerEntity(userId);

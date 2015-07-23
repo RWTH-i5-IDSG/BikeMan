@@ -8,6 +8,9 @@ import org.hibernate.annotations.Type;
 import org.joda.time.LocalDate;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 
 @Entity
 @DiscriminatorValue("customer")
@@ -17,6 +20,7 @@ import javax.persistence.*;
                 @Index(columnList="customer_id", unique = true)})
 @EqualsAndHashCode(callSuper = false, of = {"customerId"})
 @ToString(includeFieldNames = true, exclude = {"address", "cardAccount"})
+@XmlAccessorType(XmlAccessType.NONE)
 @Getter
 @Setter
 public class Customer extends User {
@@ -25,9 +29,11 @@ public class Customer extends User {
     @Column(name = "customer_id")
     private String customerId;
 
+    @XmlElement(name = "firstname")
     @Column(name = "first_name")
     private String firstname;
 
+    @XmlElement(name = "lastname")
     @Column(name = "last_name")
     private String lastname;
 

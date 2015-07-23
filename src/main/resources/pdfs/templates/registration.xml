@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<letter>
+    <recipient>
+        ${user}
+        <!--name>Max Mustermann</name>
+        <streetAndHousenumber>Teststr. 123</streetAndHousenumber>
+        <postcode>12345</postcode>
+        <city>Testcity</city-->
+    </recipient>
+
+    <textblock>
+        This is a test.
+    </textblock>
+</letter>
