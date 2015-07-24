@@ -31,6 +31,7 @@ public class StationClient {
     private static final String RESERVE_NOW_PATH = "/reserve-now";
     private static final String CANCEL_RESERVATION_PATH = "/cancel-reservation";
     private static final String UNLOCK_SLOT_PATH = "/unlock/{slotPosition}";
+    private static final String CANCEL_AUTHORIZE_PATH = "/authorize/cancel/{slotPosition}";
 
     public void changeOperationState(String endpointAddress, ChangeStationOperationStateDTO dto) {
         String uri = endpointAddress + STATE_PATH;
@@ -92,6 +93,15 @@ public class StationClient {
         String uri = endpointAddress + CANCEL_RESERVATION_PATH;
         try {
             ResponseEntity<String> response = restTemplate.postForEntity(uri, dto, String.class);
+        } catch (HttpStatusCodeException e) {
+            throw psExceptionBuilder.build(e.getResponseBodyAsString());
+        }
+    }
+
+    public void cancelAuthorize(String slotPosition, String endpointAddress) {
+        String uri = endpointAddress + CANCEL_AUTHORIZE_PATH;
+        try {
+            ResponseEntity<String> response = restTemplate.postForEntity(uri, null, String.class, slotPosition);
         } catch (HttpStatusCodeException e) {
             throw psExceptionBuilder.build(e.getResponseBodyAsString());
         }
