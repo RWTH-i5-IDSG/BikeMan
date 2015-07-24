@@ -33,4 +33,11 @@ public class TestResource {
         stationClient.authorizeRemote("http://10.10.1.101:8080", dto);
         return "OK";
     }
+
+    @RequestMapping(value = "/cancel-auth/{slotPosition}", method = RequestMethod.GET)
+    public String cancelAuth(@PathVariable Integer slotPosition) {
+
+        stationClient.cancelAuthorize(slotPosition, "http://10.10.1.101:8080");
+        return "OK";
+    }
 }

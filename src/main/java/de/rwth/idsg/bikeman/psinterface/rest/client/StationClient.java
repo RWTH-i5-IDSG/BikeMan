@@ -98,7 +98,7 @@ public class StationClient {
         }
     }
 
-    public void cancelAuthorize(String slotPosition, String endpointAddress) {
+    public void cancelAuthorize(Integer slotPosition, String endpointAddress) {
         String uri = endpointAddress + CANCEL_AUTHORIZE_PATH;
         try {
             ResponseEntity<String> response = restTemplate.postForEntity(uri, null, String.class, slotPosition);
