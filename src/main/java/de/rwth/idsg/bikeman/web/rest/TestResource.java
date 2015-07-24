@@ -21,7 +21,7 @@ public class TestResource {
 
     @Autowired private StationClient stationClient;
 
-    private static final String TEST_ENDPOINT = "http://10.10.0.2:8080";
+    private static final String TEST_ENDPOINT = "http://10.10.1.101:8080";
 
     @RequestMapping(value = "/auth/{slotPosition}/{cardId}", method = RequestMethod.GET)
     public String auth(@PathVariable Integer slotPosition,

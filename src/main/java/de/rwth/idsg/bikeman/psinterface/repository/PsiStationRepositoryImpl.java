@@ -50,7 +50,7 @@ public class PsiStationRepositoryImpl implements PsiStationRepository {
         try {
             station = findOneByManufacturerId(stationManufacturerId);
             station.setFirmwareVersion(dto.getFirmwareVersion());
-            station.setEndpointAddress(endpointAddress);
+            station.setEndpointAddress(dto.getStationURL());
             em.merge(station);
 
         } catch (NoResultException e) {

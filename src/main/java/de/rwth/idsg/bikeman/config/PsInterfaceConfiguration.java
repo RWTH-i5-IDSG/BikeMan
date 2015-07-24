@@ -1,5 +1,6 @@
 package de.rwth.idsg.bikeman.config;
 
+import de.rwth.idsg.bikeman.psinterface.rest.client.HeaderInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.StringHttpMessageConverter;
@@ -18,6 +19,7 @@ public class PsInterfaceConfiguration {
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
         restTemplate.getMessageConverters().add(new StringHttpMessageConverter());
+        restTemplate.getInterceptors().add(new HeaderInterceptor());
         return restTemplate;
     }
 }
