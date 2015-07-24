@@ -30,7 +30,7 @@ public class TestResource {
                 .cardId(cardId)
                 .build();
 
-        stationClient.authorizeRemote("http://10.10.0.2:8080", dto);
+        stationClient.authorizeRemote("http://10.10.1.101:8080", dto);
         return "OK";
     }
 }
