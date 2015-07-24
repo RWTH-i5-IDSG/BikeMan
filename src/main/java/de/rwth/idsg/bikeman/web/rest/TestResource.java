@@ -21,6 +21,8 @@ public class TestResource {
 
     @Autowired private StationClient stationClient;
 
+    private static final String TEST_ENDPOINT = "http://10.10.0.2:8080";
+
     @RequestMapping(value = "/auth/{slotPosition}/{cardId}", method = RequestMethod.GET)
     public String auth(@PathVariable Integer slotPosition,
                        @PathVariable String cardId) {
@@ -30,14 +32,14 @@ public class TestResource {
                 .cardId(cardId)
                 .build();
 
-        stationClient.authorizeRemote("http://10.10.1.101:8080", dto);
+        stationClient.authorizeRemote(TEST_ENDPOINT, dto);
         return "OK";
     }
 
     @RequestMapping(value = "/cancel-auth/{slotPosition}", method = RequestMethod.GET)
     public String cancelAuth(@PathVariable Integer slotPosition) {
 
-        stationClient.cancelAuthorize(slotPosition, "http://10.10.1.101:8080");
+        stationClient.cancelAuthorize(slotPosition, TEST_ENDPOINT);
         return "OK";
     }
 }
