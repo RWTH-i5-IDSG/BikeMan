@@ -61,6 +61,7 @@ public class ConsumptionPushService {
             .withBookingID(booking.getIxsiBookingId())
             .withType(IXSIConstants.consumptionClass)
             .withDescription(DESCRIPTION)
+            .withFinal(true)
             .withTimePeriod(timePeriod);
     }
 }
