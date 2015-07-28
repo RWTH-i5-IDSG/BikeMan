@@ -20,6 +20,7 @@ import de.rwth.idsg.bikeman.psinterface.dto.request.StationStatusDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.StopTransactionDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.response.AuthorizeConfirmationDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.response.BootConfirmationDTO;
+import de.rwth.idsg.bikeman.psinterface.dto.response.CardKeyDTO;
 import de.rwth.idsg.bikeman.psinterface.exception.PsErrorCode;
 import de.rwth.idsg.bikeman.psinterface.exception.PsException;
 import de.rwth.idsg.bikeman.psinterface.repository.PsiBookingRepository;
@@ -65,12 +66,12 @@ public class PsiService {
                                                       String endpointAddress) throws DatabaseException {
 
         stationRepository.updateAfterBoot(bootNotificationDTO, endpointAddress);
+        List<CardKeyDTO> cardKeys = stationRepository.getCardKeys();
 
         BootConfirmationDTO bootConfirmationDTO = new BootConfirmationDTO();
         bootConfirmationDTO.setTimestamp(Utils.nowInSeconds());
         bootConfirmationDTO.setHeartbeatInterval(HEARTBEAT_INTERVAL_IN_SECONDS);
-        bootConfirmationDTO.setCardReadEncrKey("tbd"); // TODO
-        bootConfirmationDTO.setCardWriteEncrKey("tbd"); // TODO
+        bootConfirmationDTO.setCardKeys(cardKeys);
         return bootConfirmationDTO;
     }
 

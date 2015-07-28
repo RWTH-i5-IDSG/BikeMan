@@ -10,6 +10,7 @@ import de.rwth.idsg.bikeman.psinterface.Utils;
 import de.rwth.idsg.bikeman.psinterface.dto.request.BootNotificationDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.SlotDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.StationStatusDTO;
+import de.rwth.idsg.bikeman.psinterface.dto.response.CardKeyDTO;
 import de.rwth.idsg.bikeman.psinterface.exception.PsErrorCode;
 import de.rwth.idsg.bikeman.psinterface.exception.PsException;
 import de.rwth.idsg.bikeman.repository.PedelecRepository;
@@ -36,6 +37,15 @@ public class PsiStationRepositoryImpl implements PsiStationRepository {
 
     @PersistenceContext private EntityManager em;
     @Inject private PedelecRepository pedelecRepository;
+
+    @Override
+    public List<CardKeyDTO> getCardKeys() {
+        final String q = "SELECT new de.rwth.idsg.bikeman.psinterface.dto.response." +
+                         "CardKeyDTO(c.name, c.readKey, c.writeKey) " +
+                         "FROM CardKey c";
+
+        return em.createQuery(q, CardKeyDTO.class).getResultList();
+    }
 
     @Override
     @Transactional(rollbackFor = Exception.class)

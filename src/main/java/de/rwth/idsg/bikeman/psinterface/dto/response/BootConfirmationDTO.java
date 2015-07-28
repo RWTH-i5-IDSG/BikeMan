@@ -2,6 +2,8 @@ package de.rwth.idsg.bikeman.psinterface.dto.response;
 
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * Created by swam on 31/07/14.
  */
@@ -10,6 +12,5 @@ import lombok.Data;
 public class BootConfirmationDTO {
     private Long timestamp;
     private Integer heartbeatInterval;
-    private String cardReadEncrKey;
-    private String cardWriteEncrKey;
+    private List<CardKeyDTO> cardKeys;
 }
