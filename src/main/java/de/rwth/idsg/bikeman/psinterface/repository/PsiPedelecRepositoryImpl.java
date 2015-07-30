@@ -25,21 +25,23 @@ public class PsiPedelecRepositoryImpl implements PsiPedelecRepository {
 
     @PersistenceContext private EntityManager em;
 
-    // nachfolgende funktion nur mit einem rückgabewert (keine liste) und als parameter stationId statt endpointAddress
+    // nachfolgende funktion nur mit einem rückgabewert (keine liste)
 
     @Override
     @Transactional(readOnly = true)
     public List<String> findAvailablePedelecs(String stationManufacturerId) {
-        final String q =
-            "SELECT p.manufacturerId " +
-                "from Pedelec p " +
-                "left join p.chargingStatus cs " +
-                "left join p.reservations r " +
-                "where p.stationSlot.station.manufacturerId = :stationManufacturerId " +
-                "and p.stationSlot.state = de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE " +
-                "and p.state = de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE " +
-                "and ((current_timestamp not between r.startDateTime and r.endDateTime) or r is null) " +
-                "order by cs.batteryStateOfCharge desc";
+        final String q = "SELECT p.manufacturerId " +
+                         "FROM Pedelec p " +
+                         "JOIN p.chargingStatus cs " +
+                         "JOIN p.stationSlot ss " +
+                         "JOIN ss.station s " +
+                         "LEFT JOIN p.reservations r " +
+                         "WHERE s.manufacturerId = :stationManufacturerId " +
+                         "AND ss.state = de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE " +
+                         "AND p.state = de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE " +
+                         "AND (CURRENT_TIMESTAMP NOT BETWEEN r.startDateTime AND r.endDateTime) " +
+                         "AND r.pedelec IS NULL " +
+                         "ORDER BY cs.batteryStateOfCharge DESC";
 
         try {
             return em.createQuery(q, String.class)
@@ -55,14 +57,17 @@ public class PsiPedelecRepositoryImpl implements PsiPedelecRepository {
     @Override
     @Transactional(readOnly = true)
     public List<String> findReservedPedelecs(String stationManufacturerId, String cardId) {
-        final String q =
-            "SELECT r.pedelec.manufacturerId " +
-                "from Reservation r " +
-                "where r.cardAccount.cardId = :cardId " +
-                "and (current_timestamp between r.startDateTime and r.endDateTime) " +
-                "and r.pedelec.stationSlot.station.manufacturerId = :stationManufacturerId " +
-                "and r.pedelec.stationSlot.state = de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE " +
-                "and r.pedelec.state = de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE ";
+        final String q = "SELECT p.manufacturerId " +
+                         "FROM Reservation r " +
+                         "JOIN r.pedelec p " +
+                         "JOIN r.cardAccount ca " +
+                         "JOIN p.stationSlot ss " +
+                         "JOIN ss.station s " +
+                         "WHERE ca.cardId = :cardId " +
+                         "AND (CURRENT_TIMESTAMP BETWEEN r.startDateTime AND r.endDateTime) " +
+                         "AND s.manufacturerId = :stationManufacturerId " +
+                         "AND ss.state = de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE " +
+                         "AND p.state = de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE ";
 
         try {
             return em.createQuery(q, String.class)

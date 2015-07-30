@@ -1,5 +1,6 @@
 package de.rwth.idsg.bikeman.psinterface.rest;
 
+import com.google.common.base.Strings;
 import de.rwth.idsg.bikeman.domain.Booking;
 import de.rwth.idsg.bikeman.domain.CardAccount;
 import de.rwth.idsg.bikeman.domain.OperationState;
@@ -189,13 +190,16 @@ public class PsiService {
     }
 
     public List<String> getAvailablePedelecs(String stationManufacturerId, String cardId) throws DatabaseException {
-        if (cardId == null || cardId.isEmpty()) {
+        if (Strings.isNullOrEmpty(cardId)) {
+            log.debug("cardId is not set. Returning available pedelecs");
             return pedelecRepository.findAvailablePedelecs(stationManufacturerId);
         }
 
+        log.debug("Querying reserved pedelecs for cardId '{}'", cardId);
         List<String> pedelecs = pedelecRepository.findReservedPedelecs(stationManufacturerId, cardId);
 
         if (pedelecs.isEmpty()) {
+            log.debug("cardId '{}' has no reservations. Returning available pedelecs", cardId);
             pedelecs = pedelecRepository.findAvailablePedelecs(stationManufacturerId);
         }
 
