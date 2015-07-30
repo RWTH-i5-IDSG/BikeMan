@@ -4,8 +4,10 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import xjc.schema.ixsi.TimePeriodType;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * Created by max on 06/10/14.
@@ -22,6 +24,7 @@ public class AvailabilityResponseDTO {
     private BigDecimal locationLongitude;
     private Double stateOfCharge;
 //    private Float drivingRange;
+    private List<TimePeriodType> inavailabilities;
 
     // For simple queries
     public AvailabilityResponseDTO(String manufacturerId, String stationManufacturerId, Double stateOfCharge) {

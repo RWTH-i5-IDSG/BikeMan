@@ -4,6 +4,7 @@ import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
 import de.rwth.idsg.bikeman.ixsi.dto.AvailabilityResponseDTO;
 import de.rwth.idsg.bikeman.ixsi.dto.BookingTargetsInfoResponseDTO;
 import de.rwth.idsg.bikeman.ixsi.dto.ChangedProvidersResponseDTO;
+import de.rwth.idsg.bikeman.ixsi.dto.InavailabilityDTO;
 import de.rwth.idsg.bikeman.ixsi.dto.PedelecDTO;
 import de.rwth.idsg.bikeman.ixsi.dto.PlaceAvailabilityResponseDTO;
 import de.rwth.idsg.bikeman.ixsi.dto.StationDTO;
@@ -13,6 +14,7 @@ import xjc.schema.ixsi.BookingTargetIDType;
 import xjc.schema.ixsi.BookingTargetPropertiesType;
 import xjc.schema.ixsi.GeoCircleType;
 import xjc.schema.ixsi.GeoRectangleType;
+import xjc.schema.ixsi.TimePeriodType;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -21,6 +23,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Created by max on 06/10/14.
@@ -104,21 +108,96 @@ public class QueryIXSIRepositoryImpl implements QueryIXSIRepository {
     @Override
     @SuppressWarnings("unchecked")
     public List<AvailabilityResponseDTO> availability(List<BookingTargetIDType> targets) {
-        Query q = em.createQuery(
-                "SELECT new de.rwth.idsg.bikeman.ixsi.dto.AvailabilityResponseDTO(" +
-                "p.manufacturerId, s.manufacturerId, cs.batteryStateOfCharge) " +
-                "FROM Pedelec p " +
-                "JOIN p.chargingStatus cs " +
-                "LEFT JOIN p.stationSlot.station s " +
-                "WHERE p.manufacturerId in :targets");
 
-        List<String> idList = new ArrayList<>();
+        // -------------------------------------------------------------------------
+        // 1. Get all data as flat tables
+        // -------------------------------------------------------------------------
+
+        // Open reservations
+        String reservationQuery = "SELECT new de.rwth.idsg.bikeman.ixsi.dto." +
+                                  "InavailabilityDTO(p.manufacturerId, r.startDateTime, r.endDateTime) " +
+                                  "FROM Reservation r " +
+                                  "JOIN r.pedelec p " +
+                                  "WHERE p.manufacturerId IN :idList " +
+                                  "AND (current_timestamp BETWEEN r.startDateTime AND r.endDateTime)";
+
+        // Open transactions
+        String transactionQuery = "SELECT new de.rwth.idsg.bikeman.ixsi.dto." +
+                                  "InavailabilityDTO(p.manufacturerId, t.startDateTime, t.endDateTime) " +
+                                  "FROM Transaction t " +
+                                  "JOIN t.pedelec p " +
+                                  "WHERE p.manufacturerId IN :idList " +
+                                  "AND t.endDateTime IS NULL " +
+                                  "AND t.toSlot IS NULL";
+
+        String statusQuery = "SELECT new de.rwth.idsg.bikeman.ixsi.dto." +
+                             "AvailabilityResponseDTO(p.manufacturerId, s.manufacturerId, cs.batteryStateOfCharge) " +
+                             "FROM Pedelec p " +
+                             "JOIN p.chargingStatus cs " +
+                             "LEFT JOIN p.stationSlot.station s " +
+                             "WHERE p.manufacturerId in :idList";
+
+        List<String> idList = new ArrayList<>(targets.size());
         for (BookingTargetIDType id : targets) {
             idList.add(id.getBookeeID());
         }
-        q.setParameter("targets", idList);
 
-        return q.getResultList();
+        List<InavailabilityDTO> reservList = em.createQuery(reservationQuery, InavailabilityDTO.class)
+                                               .setParameter("idList", idList)
+                                               .getResultList();
+
+        List<InavailabilityDTO> transList = em.createQuery(transactionQuery, InavailabilityDTO.class)
+                                              .setParameter("idList", idList)
+                                              .getResultList();
+
+        List<AvailabilityResponseDTO> responseList = em.createQuery(statusQuery, AvailabilityResponseDTO.class)
+                                                       .setParameter("idList", idList)
+                                                       .getResultList();
+
+        // -------------------------------------------------------------------------
+        // 2. Build the object graph
+        // -------------------------------------------------------------------------
+
+        Map<String, List<TimePeriodType>> inavailabilityMap = merge(toMap(reservList), toMap(transList));
+
+        responseList.forEach(p -> p.setInavailabilities(inavailabilityMap.get(p.getManufacturerId())));
+
+        return responseList;
+    }
+
+    /**
+     * Applies two transformations:
+     *
+     * 1. Converts the list to map using the manufacturer id as the key.
+     *    Result is of the form Map<String, List<InavailabilityDTO>>.
+     *
+     * 2. Converts the entry value List<InavailabilityDTO> to List<TimePeriodType>
+     *    for every entry in the map.
+     */
+    private Map<String, List<TimePeriodType>> toMap(List<InavailabilityDTO> list) {
+        return list.stream()
+                   .collect(Collectors.groupingBy(InavailabilityDTO::getPedelecManufacturerId))
+                   .entrySet()
+                   .parallelStream()
+                   .collect(Collectors.toMap(Map.Entry::getKey,
+                                             e -> e.getValue()
+                                                   .parallelStream()
+                                                   .map(i -> new TimePeriodType().withBegin(i.getBegin())
+                                                                                 .withEnd(i.getEnd()))
+                                                   .collect(Collectors.toList())));
+    }
+
+    /**
+     * Merges m2 into m1
+     */
+    private Map<String, List<TimePeriodType>> merge(Map<String, List<TimePeriodType>> m1,
+                                                    Map<String, List<TimePeriodType>> m2) {
+
+        m2.forEach((k, v) ->
+                m1.merge(k, v, (list1, list2) ->
+                        { list1.addAll(list2);
+                          return list1; }));
+        return m1;
     }
 
     @Override
