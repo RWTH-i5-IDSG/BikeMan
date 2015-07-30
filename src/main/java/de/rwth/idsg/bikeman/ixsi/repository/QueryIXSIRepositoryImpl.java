@@ -1,12 +1,12 @@
 package de.rwth.idsg.bikeman.ixsi.repository;
 
 import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
-import de.rwth.idsg.bikeman.ixsi.dto.query.AvailabilityResponseDTO;
-import de.rwth.idsg.bikeman.ixsi.dto.query.BookingTargetsInfoResponseDTO;
-import de.rwth.idsg.bikeman.ixsi.dto.query.ChangedProvidersResponseDTO;
-import de.rwth.idsg.bikeman.ixsi.dto.query.PedelecDTO;
-import de.rwth.idsg.bikeman.ixsi.dto.query.PlaceAvailabilityResponseDTO;
-import de.rwth.idsg.bikeman.ixsi.dto.query.StationDTO;
+import de.rwth.idsg.bikeman.ixsi.dto.AvailabilityResponseDTO;
+import de.rwth.idsg.bikeman.ixsi.dto.BookingTargetsInfoResponseDTO;
+import de.rwth.idsg.bikeman.ixsi.dto.ChangedProvidersResponseDTO;
+import de.rwth.idsg.bikeman.ixsi.dto.PedelecDTO;
+import de.rwth.idsg.bikeman.ixsi.dto.PlaceAvailabilityResponseDTO;
+import de.rwth.idsg.bikeman.ixsi.dto.StationDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import xjc.schema.ixsi.BookingTargetIDType;
@@ -35,11 +35,11 @@ public class QueryIXSIRepositoryImpl implements QueryIXSIRepository {
     @Override
     public BookingTargetsInfoResponseDTO bookingTargetInfos() {
 
-        final String pedelecQuery = "SELECT new de.rwth.idsg.bikeman.ixsi.dto.query." +
+        final String pedelecQuery = "SELECT new de.rwth.idsg.bikeman.ixsi.dto." +
                                     "PedelecDTO(p.manufacturerId) " +
                                     "FROM Pedelec p";
 
-        final String stationQuery = "SELECT new de.rwth.idsg.bikeman.ixsi.dto.query." +
+        final String stationQuery = "SELECT new de.rwth.idsg.bikeman.ixsi.dto." +
                                     "StationDTO(s.manufacturerId, s.locationLongitude, s.locationLatitude, " +
                                     "s.stationSlots.size, s.name, s.note, " +
                                     "a.streetAndHousenumber, a.zip, a.city, a.country) " +
@@ -105,7 +105,7 @@ public class QueryIXSIRepositoryImpl implements QueryIXSIRepository {
     @SuppressWarnings("unchecked")
     public List<AvailabilityResponseDTO> availability(List<BookingTargetIDType> targets) {
         Query q = em.createQuery(
-                "SELECT new de.rwth.idsg.bikeman.ixsi.dto.query.AvailabilityResponseDTO(" +
+                "SELECT new de.rwth.idsg.bikeman.ixsi.dto.AvailabilityResponseDTO(" +
                 "p.manufacturerId, s.manufacturerId, cs.batteryStateOfCharge) " +
                 "FROM Pedelec p " +
                 "JOIN p.chargingStatus cs " +
@@ -182,7 +182,7 @@ public class QueryIXSIRepositoryImpl implements QueryIXSIRepository {
     @Override
     @SuppressWarnings("unchecked")
     public List<PlaceAvailabilityResponseDTO> placeAvailability(List<String> placeIdList) {
-        final String q = "SELECT new de.rwth.idsg.bikeman.ixsi.dto.query.PlaceAvailabilityResponseDTO(" +
+        final String q = "SELECT new de.rwth.idsg.bikeman.ixsi.dto.PlaceAvailabilityResponseDTO(" +
                          "slot.station.manufacturerId, CAST(count(slot) as integer)) " +
                          "FROM StationSlot slot " +
                          "WHERE NOT slot.isOccupied = true AND " +
