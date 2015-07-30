@@ -60,7 +60,9 @@ public class PsiPedelecRepositoryImpl implements PsiPedelecRepository {
                 "from Reservation r " +
                 "where r.cardAccount.cardId = :cardId " +
                 "and (current_timestamp between r.startDateTime and r.endDateTime) " +
-                "and r.pedelec.stationSlot.station.manufacturerId = :stationManufacturerId";
+                "and r.pedelec.stationSlot.station.manufacturerId = :stationManufacturerId " +
+                "and r.pedelec.stationSlot.state = de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE " +
+                "and r.pedelec.state = de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE ";
 
         try {
             return em.createQuery(q, String.class)
