@@ -1,4 +1,4 @@
-package de.rwth.idsg.bikeman.ixsi.dto.query;
+package de.rwth.idsg.bikeman.ixsi.dto;
 
 import lombok.Data;
 

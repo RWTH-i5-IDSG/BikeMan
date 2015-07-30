@@ -1,9 +1,9 @@
 package de.rwth.idsg.bikeman.ixsi.processor.query.staticdata;
 
 import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
-import de.rwth.idsg.bikeman.ixsi.dto.query.BookingTargetsInfoResponseDTO;
-import de.rwth.idsg.bikeman.ixsi.dto.query.PedelecDTO;
-import de.rwth.idsg.bikeman.ixsi.dto.query.StationDTO;
+import de.rwth.idsg.bikeman.ixsi.dto.BookingTargetsInfoResponseDTO;
+import de.rwth.idsg.bikeman.ixsi.dto.PedelecDTO;
+import de.rwth.idsg.bikeman.ixsi.dto.StationDTO;
 import de.rwth.idsg.bikeman.ixsi.processor.api.StaticRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.repository.QueryIXSIRepository;
 import de.rwth.idsg.bikeman.web.rest.dto.view.ViewAddressDTO;

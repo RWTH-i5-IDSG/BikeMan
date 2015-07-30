@@ -3,7 +3,7 @@ package de.rwth.idsg.bikeman.ixsi.processor.query.user;
 import com.google.common.base.Optional;
 import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
 import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
-import de.rwth.idsg.bikeman.ixsi.dto.query.AvailabilityResponseDTO;
+import de.rwth.idsg.bikeman.ixsi.dto.AvailabilityResponseDTO;
 import de.rwth.idsg.bikeman.ixsi.processor.api.UserRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.repository.QueryIXSIRepository;
 import lombok.extern.slf4j.Slf4j;

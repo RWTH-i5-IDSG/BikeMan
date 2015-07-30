@@ -1,7 +1,7 @@
 package de.rwth.idsg.bikeman.ixsi.processor.query.staticdata;
 
 import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
-import de.rwth.idsg.bikeman.ixsi.dto.query.ChangedProvidersResponseDTO;
+import de.rwth.idsg.bikeman.ixsi.dto.ChangedProvidersResponseDTO;
 import de.rwth.idsg.bikeman.ixsi.processor.api.StaticRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.repository.QueryIXSIRepository;
 import org.springframework.stereotype.Component;

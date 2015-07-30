@@ -1,7 +1,7 @@
 package de.rwth.idsg.bikeman.ixsi.processor.subscription.complete;
 
 import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
-import de.rwth.idsg.bikeman.ixsi.dto.query.AvailabilityResponseDTO;
+import de.rwth.idsg.bikeman.ixsi.dto.AvailabilityResponseDTO;
 import de.rwth.idsg.bikeman.ixsi.impl.AvailabilityStore;
 import de.rwth.idsg.bikeman.ixsi.processor.api.SubscriptionRequestMessageProcessor;
 import de.rwth.idsg.bikeman.ixsi.processor.query.user.AvailabilityRequestProcessor;

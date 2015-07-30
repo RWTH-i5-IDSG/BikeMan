@@ -3,7 +3,7 @@ package de.rwth.idsg.bikeman.ixsi.processor.query.user;
 import com.google.common.base.Optional;
 import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
 import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
-import de.rwth.idsg.bikeman.ixsi.dto.query.PlaceAvailabilityResponseDTO;
+import de.rwth.idsg.bikeman.ixsi.dto.PlaceAvailabilityResponseDTO;
 import de.rwth.idsg.bikeman.ixsi.processor.api.UserRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.repository.QueryIXSIRepository;
 import org.springframework.beans.factory.annotation.Autowired;

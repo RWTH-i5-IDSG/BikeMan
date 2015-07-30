@@ -1,4 +1,4 @@
-package de.rwth.idsg.bikeman.ixsi.dto.query;
+package de.rwth.idsg.bikeman.ixsi.dto;
 
 import de.rwth.idsg.bikeman.web.rest.dto.view.ViewAddressDTO;
 import lombok.Getter;
