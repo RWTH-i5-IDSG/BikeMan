@@ -67,6 +67,7 @@ public class AvailabilityRequestProcessor implements
             BookingTargetAvailabilityType b = new BookingTargetAvailabilityType()
                     .withID(bookingTargetIDType)
                     .withPlaceID(dto.getStationManufacturerId())
+                    .withInavailability(dto.getInavailabilities())
                     .withCurrentStateOfCharge(percentType);
 
             // For geo-location queries

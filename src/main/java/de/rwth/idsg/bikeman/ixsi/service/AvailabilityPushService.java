@@ -110,7 +110,7 @@ public class AvailabilityPushService {
     private TimePeriodType buildTimePeriodForTransaction(DateTime departure) {
         return new TimePeriodType()
             .withBegin(departure)
-            .withEnd(departure.plusHours(6)); // TODO: Does not make sense at all. Find a solution!
+            .withEnd(departure.plusHours(IXSIConstants.HOUR_OFFSET_FOR_OPEN_TRANSACTIONS));
     }
 
 }
