@@ -49,7 +49,7 @@ public class PsiStationRepositoryImpl implements PsiStationRepository {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void updateAfterBoot(BootNotificationDTO dto, String endpointAddress) {
+    public void updateAfterBoot(BootNotificationDTO dto) {
 
         // -------------------------------------------------------------------------
         // Find the station and update

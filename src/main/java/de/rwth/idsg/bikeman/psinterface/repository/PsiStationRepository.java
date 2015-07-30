@@ -12,6 +12,6 @@ import java.util.List;
  */
 public interface PsiStationRepository {
     List<CardKeyDTO> getCardKeys();
-    void updateAfterBoot(BootNotificationDTO dto, String endpointAddress);
+    void updateAfterBoot(BootNotificationDTO dto);
     void updateStationStatus(StationStatusDTO dto);
 }

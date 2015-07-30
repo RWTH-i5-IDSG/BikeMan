@@ -51,9 +51,9 @@ public class PsiResource {
     @RequestMapping(value = BOOT_NOTIFICATION_PATH, method = RequestMethod.POST)
     public BootConfirmationDTO bootNotification(@RequestBody BootNotificationDTO bootNotificationDTO,
                                                 HttpServletRequest request) throws DatabaseException {
-        String endpointAddress = Utils.getFrom(request);
-        log.debug("[From: {}] Received bootNotification {}", endpointAddress, bootNotificationDTO);
-        BootConfirmationDTO dto = psiService.handleBootNotification(bootNotificationDTO, endpointAddress);
+        String from = Utils.getFrom(request);
+        log.debug("[From: {}] Received bootNotification {}", from, bootNotificationDTO);
+        BootConfirmationDTO dto = psiService.handleBootNotification(bootNotificationDTO);
         log.debug("bootNotification returns {}", dto);
         return dto;
     }
@@ -70,9 +70,9 @@ public class PsiResource {
     @RequestMapping(value = AVAIL_PEDELECS_PATH, method = RequestMethod.GET)
     public List<String> getAvailablePedelecs(@RequestParam(value = "cardId", required = false) String cardId,
                                              HttpServletRequest request) throws DatabaseException {
-        String endpointAddress = Utils.getFrom(request);
-        log.debug("[From: {}] Received getAvailablePedelecs for cardId '{}'", endpointAddress, cardId);
-        List<String> list = psiService.getAvailablePedelecs(endpointAddress, cardId);
+        String from = Utils.getFrom(request);
+        log.debug("[From: {}] Received getAvailablePedelecs for cardId '{}'", from, cardId);
+        List<String> list = psiService.getAvailablePedelecs(from, cardId);
         log.debug("getAvailablePedelecs returns {}", list);
         return list;
     }

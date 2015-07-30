@@ -62,10 +62,9 @@ public class PsiService {
 
     private static final Integer HEARTBEAT_INTERVAL_IN_SECONDS = 60;
 
-    public BootConfirmationDTO handleBootNotification(BootNotificationDTO bootNotificationDTO,
-                                                      String endpointAddress) throws DatabaseException {
+    public BootConfirmationDTO handleBootNotification(BootNotificationDTO bootNotificationDTO) throws DatabaseException {
 
-        stationRepository.updateAfterBoot(bootNotificationDTO, endpointAddress);
+        stationRepository.updateAfterBoot(bootNotificationDTO);
         List<CardKeyDTO> cardKeys = stationRepository.getCardKeys();
 
         BootConfirmationDTO bootConfirmationDTO = new BootConfirmationDTO();
@@ -189,16 +188,15 @@ public class PsiService {
         placeAvailabilityPushService.reportChange(stopTransactionDTO.getStationManufacturerId());
     }
 
-    public List<String> getAvailablePedelecs(String endpointAddress, String cardId) throws DatabaseException {
-
+    public List<String> getAvailablePedelecs(String stationManufacturerId, String cardId) throws DatabaseException {
         if (cardId == null || cardId.isEmpty()) {
-            return pedelecRepository.findAvailablePedelecs(endpointAddress);
+            return pedelecRepository.findAvailablePedelecs(stationManufacturerId);
         }
 
-        List<String> pedelecs = pedelecRepository.findReservedPedelecs(endpointAddress, cardId);
+        List<String> pedelecs = pedelecRepository.findReservedPedelecs(stationManufacturerId, cardId);
 
         if (pedelecs.isEmpty()) {
-            pedelecs = pedelecRepository.findAvailablePedelecs(endpointAddress);
+            pedelecs = pedelecRepository.findAvailablePedelecs(stationManufacturerId);
         }
 
         return pedelecs;

@@ -10,8 +10,8 @@ import java.util.List;
  * @since 16.06.2015
  */
 public interface PsiPedelecRepository {
-    List<String> findAvailablePedelecs(String endpointAddress);
-    List<String> findReservedPedelecs(String endpointAddress, String cardId);
+    List<String> findAvailablePedelecs(String stationManufacturerId);
+    List<String> findReservedPedelecs(String stationManufacturerId, String cardId);
     void updatePedelecStatus(PedelecStatusDTO dto);
     void updatePedelecChargingStatus(List<ChargingStatusDTO> dtoList);
 }

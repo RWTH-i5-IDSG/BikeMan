@@ -29,13 +29,13 @@ public class PsiPedelecRepositoryImpl implements PsiPedelecRepository {
 
     @Override
     @Transactional(readOnly = true)
-    public List<String> findAvailablePedelecs(String endpointAddress) {
+    public List<String> findAvailablePedelecs(String stationManufacturerId) {
         final String q =
             "SELECT p.manufacturerId " +
                 "from Pedelec p " +
                 "left join p.chargingStatus cs " +
                 "left join p.reservations r " +
-                "where p.stationSlot.station.endpointAddress = :endpointAddress " +
+                "where p.stationSlot.station.manufacturerId = :stationManufacturerId " +
                 "and p.stationSlot.state = de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE " +
                 "and p.state = de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE " +
                 "and ((current_timestamp not between r.startDateTime and r.endDateTime) or r is null) " +
@@ -43,59 +43,36 @@ public class PsiPedelecRepositoryImpl implements PsiPedelecRepository {
 
         try {
             return em.createQuery(q, String.class)
-                .setParameter("endpointAddress", endpointAddress)
+                .setParameter("stationManufacturerId", stationManufacturerId)
                 .setMaxResults(5)
                 .getResultList();
         } catch (Exception e) {
-            throw new DatabaseException("Failed to find pedelecs in station with endpoint address "
-                + endpointAddress, e);
+            throw new DatabaseException("Failed to find pedelecs in station with manufacturerId "
+                + stationManufacturerId, e);
         }
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<String> findReservedPedelecs(String endpointAddress, String cardId) {
+    public List<String> findReservedPedelecs(String stationManufacturerId, String cardId) {
         final String q =
             "SELECT r.pedelec.manufacturerId " +
                 "from Reservation r " +
                 "where r.cardAccount.cardId = :cardId " +
                 "and (current_timestamp between r.startDateTime and r.endDateTime) " +
-                "and r.pedelec.stationSlot.station.endpointAddress = :endpointAddress";
+                "and r.pedelec.stationSlot.station.manufacturerId = :stationManufacturerId";
 
         try {
             return em.createQuery(q, String.class)
-                .setParameter("endpointAddress", endpointAddress)
+                .setParameter("stationManufacturerId", stationManufacturerId)
                 .setParameter("cardId", cardId)
                 .setMaxResults(1)
                 .getResultList();
         } catch (Exception e) {
-            throw new DatabaseException("Failed to find pedelecs in station with endpoint address "
-                + endpointAddress, e);
+            throw new DatabaseException("Failed to find pedelecs in station with manufacturerId "
+                + stationManufacturerId, e);
         }
     }
-
-
-//    @Override
-//    @Transactional(readOnly = true)
-//    public List<String> findAvailablePedelecs(String endpointAddress) {
-//        final String q = "SELECT p.manufacturerId " +
-//                         "from Pedelec p " +
-//                         "join p.chargingStatus cs " +
-//                         "where p.stationSlot.station.endpointAddress = :endpointAddress " +
-//                         "and p.stationSlot.state = de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE " +
-//                         "and p.state = de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE " +
-//                         "order by cs.batteryStateOfCharge desc";
-//
-//        try {
-//            return em.createQuery(q, String.class)
-//                    .setParameter("endpointAddress", endpointAddress)
-//                    .setMaxResults(5)
-//                    .getResultList();
-//        } catch (Exception e) {
-//            throw new DatabaseException("Failed to find pedelecs in station with endpoint address"
-//                + endpointAddress, e);
-//        }
-//    }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
