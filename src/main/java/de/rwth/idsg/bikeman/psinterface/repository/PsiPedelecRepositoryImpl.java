@@ -39,8 +39,7 @@ public class PsiPedelecRepositoryImpl implements PsiPedelecRepository {
                          "WHERE s.manufacturerId = :stationManufacturerId " +
                          "AND ss.state = de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE " +
                          "AND p.state = de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE " +
-                         "AND (CURRENT_TIMESTAMP NOT BETWEEN r.startDateTime AND r.endDateTime) " +
-                         "AND r.pedelec IS NULL " +
+                         "AND ((CURRENT_TIMESTAMP NOT BETWEEN r.startDateTime AND r.endDateTime) OR r.pedelec IS NULL) " +
                          "ORDER BY cs.batteryStateOfCharge DESC";
 
         try {
