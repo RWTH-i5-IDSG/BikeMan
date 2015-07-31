@@ -48,7 +48,13 @@ public class BookingRequestProcessor implements
                 .withBegin(createdBooking.getReservation().getStartDateTime().toDateTime())
                 .withEnd(createdBooking.getReservation().getEndDateTime().toDateTime());
 
-            availabilityPushService.placedBooking(request.getBookingTargetID().getBookeeID(), timePeriod);
+            String placeId = createdBooking.getReservation()
+                                           .getPedelec()
+                                           .getStationSlot()
+                                           .getStation()
+                                           .getManufacturerId();
+
+            availabilityPushService.placedBooking(request.getBookingTargetID().getBookeeID(), placeId, timePeriod);
 
             BookingType booking = new BookingType()
                 .withID(String.valueOf(createdBooking.getIxsiBookingId()))

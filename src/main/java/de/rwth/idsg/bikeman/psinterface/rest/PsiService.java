@@ -161,7 +161,6 @@ public class PsiService {
 
         availabilityPushService.takenFromPlace(
             startTransactionDTO.getPedelecManufacturerId(),
-            startTransactionDTO.getStationManufacturerId(),
             new DateTime(timestampInMillis));
 
         placeAvailabilityPushService.reportChange(startTransactionDTO.getStationManufacturerId());

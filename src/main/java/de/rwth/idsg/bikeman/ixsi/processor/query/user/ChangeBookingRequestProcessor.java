@@ -63,7 +63,13 @@ public class ChangeBookingRequestProcessor implements
             .withID(newBooking.getIxsiBookingId())
             .withTimePeriod(newTimePeriod);
 
-        availabilityPushService.changedBooking(request.getBookingID(), oldTimePeriod, newTimePeriod);
+        String placeId = newBooking.getReservation()
+                                   .getPedelec()
+                                   .getStationSlot()
+                                   .getStation()
+                                   .getManufacturerId();
+
+        availabilityPushService.changedBooking(request.getBookingID(), placeId, oldTimePeriod, newTimePeriod);
         return new ChangeBookingResponseType().withBooking(responseBooking);
     }
 
@@ -73,7 +79,13 @@ public class ChangeBookingRequestProcessor implements
 
         TimePeriodType timePeriod = buildTimePeriod(booking);
 
-        availabilityPushService.cancelledBooking(request.getBookingID(), timePeriod);
+        String placeId = booking.getReservation()
+                                .getPedelec()
+                                .getStationSlot()
+                                .getStation()
+                                .getManufacturerId();
+
+        availabilityPushService.cancelledBooking(request.getBookingID(), placeId, timePeriod);
         return new ChangeBookingResponseType();
     }
 

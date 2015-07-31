@@ -33,19 +33,20 @@ public class AvailabilityPushService {
     // -------------------------------------------------------------------------
 
     @Async
-    public void placedBooking(String bookeeID, TimePeriodType timePeriod) {
-        buildAndSend(bookeeID, null, timePeriod, false);
+    public void placedBooking(String bookeeID, String placeId, TimePeriodType timePeriod) {
+        buildAndSend(bookeeID, placeId, timePeriod, false);
     }
 
     @Async
-    public void changedBooking(String bookeeID, TimePeriodType oldTimePeriod, TimePeriodType newTimePeriod) {
-        cancelledBooking(bookeeID, oldTimePeriod);
-        placedBooking(bookeeID, newTimePeriod);
+    public void changedBooking(String bookeeID, String placeId,
+                               TimePeriodType oldTimePeriod, TimePeriodType newTimePeriod) {
+        cancelledBooking(bookeeID, placeId, oldTimePeriod);
+        placedBooking(bookeeID, placeId, newTimePeriod);
     }
 
     @Async
-    public void cancelledBooking(String bookeeID, TimePeriodType timePeriod) {
-        buildAndSend(bookeeID, null, timePeriod, true);
+    public void cancelledBooking(String bookeeID, String placeId, TimePeriodType timePeriod) {
+        buildAndSend(bookeeID, placeId, timePeriod, true);
     }
 
     // -------------------------------------------------------------------------
@@ -54,12 +55,11 @@ public class AvailabilityPushService {
 
     /**
      * @param bookeeID  Manufacturer ID of the pedelec.
-     * @param placeID   Manufacturer ID of the station.
      * @param departure Date/time of the start of the transaction.
      */
-    public void takenFromPlace(String bookeeID, String placeID, DateTime departure) {
+    public void takenFromPlace(String bookeeID, DateTime departure) {
         TimePeriodType tp = buildTimePeriodForTransaction(departure);
-        buildAndSend(bookeeID, placeID, tp, false);
+        buildAndSend(bookeeID, null, tp, false);
     }
 
     /**
@@ -67,7 +67,7 @@ public class AvailabilityPushService {
      * @param placeID   Manufacturer ID of the station.
      * @param departure Date/time of the start of the transaction. This is rightfully so and not the date/time
      *                  of the arrival, because in client system we want to invalidate the time period that
-     *                  was sent earlier with {@link #takenFromPlace(String, String, org.joda.time.DateTime)}.
+     *                  was sent earlier with {@link #takenFromPlace(String, org.joda.time.DateTime)}.
      *                  Therefore, the two values have to match.
      */
     public void arrivedAtPlace(String bookeeID, String placeID, DateTime departure) {
