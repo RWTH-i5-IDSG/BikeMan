@@ -10,6 +10,7 @@ import de.rwth.idsg.bikeman.ixsi.service.BookingService;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import xjc.schema.ixsi.BookingType;
 import xjc.schema.ixsi.ChangeBookingRequestType;
 import xjc.schema.ixsi.ChangeBookingResponseType;
@@ -52,6 +53,7 @@ public class ChangeBookingRequestProcessor implements
         }
     }
 
+    @Transactional
     private ChangeBookingResponseType proceedChange(ChangeBookingRequestType request) {
         Booking oldBooking = bookingService.get(request.getBookingID());
         TimePeriodType oldTimePeriod = buildTimePeriod(oldBooking);
@@ -73,6 +75,7 @@ public class ChangeBookingRequestProcessor implements
         return new ChangeBookingResponseType().withBooking(responseBooking);
     }
 
+    @Transactional
     private ChangeBookingResponseType proceedCancel(ChangeBookingRequestType request) {
         Booking booking = bookingService.get(request.getBookingID());
         bookingService.cancel(booking);
