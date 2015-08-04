@@ -24,7 +24,6 @@ public class BookingRepositoryImpl implements BookingRepository {
     private EntityManager em;
 
     @Override
-    @Transactional(readOnly = false)
     public Booking save(Booking b) {
         em.persist(b);
 
@@ -37,7 +36,6 @@ public class BookingRepositoryImpl implements BookingRepository {
     }
 
     @Override
-    @Transactional
     public void cancel(Booking booking) {
         // TODO: Really delete from DB or some other logic (setting a flag)?
         em.remove(booking);
@@ -57,7 +55,6 @@ public class BookingRepositoryImpl implements BookingRepository {
     }
 
     @Override
-    @Transactional
     public Booking findByIxsiBookingId(String ixsiBookingId) {
         final String query = "SELECT b FROM Booking b WHERE b.ixsiBookingId = :ixsiBookingId";
 

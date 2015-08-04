@@ -85,12 +85,10 @@ public class BookingService {
         }
     }
 
-    @Transactional(readOnly = true)
     public Booking get(String bookingId) {
         return bookingRepository.findByIxsiBookingId(bookingId);
     }
 
-    @Transactional
     public void cancel(Booking booking) {
         Transaction transaction = booking.getTransaction();
         if (transaction != null) {
@@ -108,7 +106,6 @@ public class BookingService {
         bookingRepository.cancel(booking);
     }
 
-    @Transactional
     public Booking update(Booking booking, TimePeriodProposalType newTimePeriodProposal) {
         Reservation reservation = booking.getReservation();
 
