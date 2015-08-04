@@ -93,11 +93,19 @@ public class QueryRequestTypeDispatcher implements Dispatcher {
 
         // System validation
         //
+        boolean isValid = systemValidator.validate(request.getSystemID());
+        if (!isValid) {
+            return new QueryResponseType()
+                    .withStaticDataResponseGroup(p.buildError(ErrorFactory.Sys.idUknown()));
+        }
+
+        // Catch all exceptions down the pipeline caused by processors and do not let the communication fail!
+        // Otherwise, the connection will break
         StaticDataResponseGroup res;
-        if (systemValidator.validate(request.getSystemID())) {
+        try {
             res = p.process(req);
-        } else {
-            res = p.buildError(ErrorFactory.Sys.idUknown());
+        } catch (Exception e) {
+            res = p.buildError(ErrorFactory.Sys.backendFailed(e.getMessage(), null));
         }
 
         return new QueryResponseType()
@@ -113,15 +121,23 @@ public class QueryRequestTypeDispatcher implements Dispatcher {
 
         // System validation
         //
-        UserTriggeredResponseChoice responseChoice;
-        if (systemValidator.validate(request.getSystemID())) {
-            responseChoice = delegateUserRequest(c, p, Optional.fromNullable(request.getLanguage()), request.getAuth());
-        } else {
-            responseChoice = p.buildError(ErrorFactory.Sys.idUknown());
+        boolean isValid = systemValidator.validate(request.getSystemID());
+        if (!isValid) {
+            return new QueryResponseType()
+                    .withUserTriggeredResponseGroup(p.buildError(ErrorFactory.Sys.idUknown()));
+        }
+
+        // Catch all exceptions down the pipeline caused by processors and do not let the communication fail!
+        // Otherwise, the connection will break
+        UserTriggeredResponseChoice res;
+        try {
+            res = delegateUserRequest(c, p, Optional.fromNullable(request.getLanguage()), request.getAuth());
+        } catch (Exception e) {
+            res = p.buildError(ErrorFactory.Sys.backendFailed(e.getMessage(), null));
         }
 
         return new QueryResponseType()
-                .withUserTriggeredResponseGroup(responseChoice);
+                .withUserTriggeredResponseGroup(res);
     }
 
     @SuppressWarnings("unchecked")
