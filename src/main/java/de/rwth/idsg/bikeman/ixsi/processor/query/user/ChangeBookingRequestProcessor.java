@@ -10,7 +10,6 @@ import de.rwth.idsg.bikeman.ixsi.service.BookingService;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import xjc.schema.ixsi.BookingType;
 import xjc.schema.ixsi.ChangeBookingRequestType;
 import xjc.schema.ixsi.ChangeBookingResponseType;
@@ -64,13 +63,17 @@ public class ChangeBookingRequestProcessor implements
             .withID(newBooking.getIxsiBookingId())
             .withTimePeriod(newTimePeriod);
 
+        String pedelecId = newBooking.getReservation()
+                                     .getPedelec()
+                                     .getManufacturerId();
+
         String placeId = newBooking.getReservation()
                                    .getPedelec()
                                    .getStationSlot()
                                    .getStation()
                                    .getManufacturerId();
 
-        availabilityPushService.changedBooking(request.getBookingID(), placeId, oldTimePeriod, newTimePeriod);
+        availabilityPushService.changedBooking(pedelecId, placeId, oldTimePeriod, newTimePeriod);
         return new ChangeBookingResponseType().withBooking(responseBooking);
     }
 
@@ -79,13 +82,17 @@ public class ChangeBookingRequestProcessor implements
 
         TimePeriodType timePeriod = buildTimePeriod(booking);
 
+        String pedelecId = booking.getReservation()
+                                  .getPedelec()
+                                  .getManufacturerId();
+
         String placeId = booking.getReservation()
                                 .getPedelec()
                                 .getStationSlot()
                                 .getStation()
                                 .getManufacturerId();
 
-        availabilityPushService.cancelledBooking(request.getBookingID(), placeId, timePeriod);
+        availabilityPushService.cancelledBooking(pedelecId, placeId, timePeriod);
         return new ChangeBookingResponseType();
     }
 
