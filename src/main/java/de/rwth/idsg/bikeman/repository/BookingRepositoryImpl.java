@@ -57,7 +57,7 @@ public class BookingRepositoryImpl implements BookingRepository {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public Booking findByIxsiBookingId(String ixsiBookingId) {
         final String query = "SELECT b FROM Booking b WHERE b.ixsiBookingId = :ixsiBookingId";
 
