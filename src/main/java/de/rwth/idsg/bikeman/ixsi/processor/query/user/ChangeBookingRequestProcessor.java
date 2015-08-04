@@ -53,7 +53,6 @@ public class ChangeBookingRequestProcessor implements
         }
     }
 
-    @Transactional
     private ChangeBookingResponseType proceedChange(ChangeBookingRequestType request) {
         Booking oldBooking = bookingService.get(request.getBookingID());
         TimePeriodType oldTimePeriod = buildTimePeriod(oldBooking);
@@ -75,10 +74,8 @@ public class ChangeBookingRequestProcessor implements
         return new ChangeBookingResponseType().withBooking(responseBooking);
     }
 
-    @Transactional
     private ChangeBookingResponseType proceedCancel(ChangeBookingRequestType request) {
-        Booking booking = bookingService.get(request.getBookingID());
-        bookingService.cancel(booking);
+        Booking booking = bookingService.cancel(request.getBookingID());
 
         TimePeriodType timePeriod = buildTimePeriod(booking);
 

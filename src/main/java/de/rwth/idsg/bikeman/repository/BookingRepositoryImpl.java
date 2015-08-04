@@ -36,6 +36,7 @@ public class BookingRepositoryImpl implements BookingRepository {
     }
 
     @Override
+    @Transactional
     public void cancel(Booking booking) {
         // TODO: Really delete from DB or some other logic (setting a flag)?
         em.remove(booking);

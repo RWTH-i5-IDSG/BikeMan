@@ -89,7 +89,13 @@ public class BookingService {
         return bookingRepository.findByIxsiBookingId(bookingId);
     }
 
-    public void cancel(Booking booking) {
+    /**
+     * @return Cancelled booking
+     */
+    @Transactional
+    public Booking cancel(String bookingId) {
+        Booking booking = bookingRepository.findByIxsiBookingId(bookingId);
+
         Transaction transaction = booking.getTransaction();
         if (transaction != null) {
             throw new IxsiProcessingException("The pedelec is already taken, too late cannot cancel");
@@ -104,8 +110,10 @@ public class BookingService {
         }
 
         bookingRepository.cancel(booking);
+        return booking;
     }
 
+    @Transactional
     public Booking update(Booking booking, TimePeriodProposalType newTimePeriodProposal) {
         Reservation reservation = booking.getReservation();
 
