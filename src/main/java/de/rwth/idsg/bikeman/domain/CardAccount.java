@@ -22,7 +22,7 @@ import java.util.Set;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @TableGenerator(name="card_account_gen", initialValue=0, allocationSize=1)
 @EqualsAndHashCode(of = {"cardId"}, callSuper = false)
-@ToString(includeFieldNames = true, exclude = {})
+@ToString(includeFieldNames = true, exclude = {"transactions", "bookedTariffs"})
 @Getter
 @Setter
 public class CardAccount extends AbstractTimestampClass implements Serializable {
