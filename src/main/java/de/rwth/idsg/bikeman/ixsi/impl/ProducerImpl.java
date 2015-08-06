@@ -14,7 +14,6 @@ import xjc.schema.ixsi.IxsiMessageType;
 
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
-import java.util.NoSuchElementException;
 import java.util.Set;
 
 /**
@@ -23,6 +22,8 @@ import java.util.Set;
 @Slf4j
 @Component
 public class ProducerImpl implements Producer {
+
+    private static final Object LOCK = new Object();
 
     @Autowired private Parser parser;
     @Autowired private WebSocketSessionStore webSocketSessionStore;
@@ -35,7 +36,7 @@ public class ProducerImpl implements Producer {
 
             WebSocketSession session = context.getSession();
             log.debug("[id: {}] Sending message: {}", session.getId(), str);
-            session.sendMessage(out);
+            synchronizedSend(session, out);
 
         } catch (JAXBException e) {
             throw new IxsiProcessingException("Could not marshal outgoing message", e);
@@ -43,7 +44,6 @@ public class ProducerImpl implements Producer {
         } catch (Exception e) {
             log.error("Exception happened", e);
         }
-
     }
 
     @Override
@@ -69,10 +69,24 @@ public class ProducerImpl implements Producer {
         try {
             WebSocketSession session = webSocketSessionStore.getNext(systemId);
             log.debug("[id: {}] Sending message: {}", session.getId(), out.getPayload());
-            session.sendMessage(out);
+            synchronizedSend(session, out);
 
         } catch (Exception e) {
             log.error("Exception happened", e);
+        }
+    }
+
+    /**
+     * Dirty, dirty hack using synchronized to prevent exceptions like:
+     *
+     * IllegalStateException:
+     * The remote endpoint was in state [TEXT_PARTIAL_WRITING] which is an invalid state for called method
+     *
+     * This happens, when req/res communication and sub push messages try to use the same session at the same time.
+     */
+    private void synchronizedSend(WebSocketSession session, TextMessage out) throws IOException {
+        synchronized (LOCK) {
+            session.sendMessage(out);
         }
     }
 }
