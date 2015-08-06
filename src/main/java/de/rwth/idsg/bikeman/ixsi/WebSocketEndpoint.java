@@ -35,7 +35,7 @@ public class WebSocketEndpoint extends TextWebSocketHandler {
 
     @Override
     public void handleTextMessage(WebSocketSession session, TextMessage webSocketMessage) throws Exception {
-        log.info("[id={}] Received text message: {}", session.getId(), webSocketMessage);
+        log.info("[id={}] Received message: {}", session.getId(), webSocketMessage.getPayload());
 
         String payload = webSocketMessage.getPayload();
         CommunicationContext context = new CommunicationContext(session, payload);
@@ -95,6 +95,6 @@ public class WebSocketEndpoint extends TextWebSocketHandler {
 
     @Override
     public boolean supportsPartialMessages() {
-        return true;
+        return false;
     }
 }

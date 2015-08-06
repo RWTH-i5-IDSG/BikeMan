@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
+import org.springframework.web.socket.WebSocketSession;
 import xjc.schema.ixsi.IxsiMessageType;
 
 import javax.xml.bind.JAXBException;
@@ -31,7 +32,10 @@ public class ProducerImpl implements Producer {
         try {
             String str = parser.marshal(context.getOutgoingIxsi());
             TextMessage out = new TextMessage(str);
-            context.getSession().sendMessage(out);
+
+            WebSocketSession session = context.getSession();
+            log.debug("[id: {}] Sending message: {}", session.getId(), str);
+            session.sendMessage(out);
 
         } catch (JAXBException e) {
             throw new IxsiProcessingException("Could not marshal outgoing message", e);
@@ -63,7 +67,10 @@ public class ProducerImpl implements Producer {
      */
     private void push(String systemId, TextMessage out) {
         try {
-            webSocketSessionStore.getNext(systemId).sendMessage(out);
+            WebSocketSession session = webSocketSessionStore.getNext(systemId);
+            log.debug("[id: {}] Sending message: {}", session.getId(), out.getPayload());
+            session.sendMessage(out);
+
         } catch (NoSuchElementException | IOException e) {
             log.error("Exception happened", e);
         }
