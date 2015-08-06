@@ -26,7 +26,6 @@ public class PsiBookingRepositoryImpl implements PsiBookingRepository {
     @Inject private BookingRepository bookingRepository;
 
     @Override
-    @Transactional
     public Booking save(Booking booking) {
         return bookingRepository.save(booking);
     }
@@ -45,7 +44,6 @@ public class PsiBookingRepositoryImpl implements PsiBookingRepository {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public Booking findByReservation(Reservation reservation) {
         final String query = "SELECT b FROM Booking b WHERE b.reservation = :reservation";
         try {

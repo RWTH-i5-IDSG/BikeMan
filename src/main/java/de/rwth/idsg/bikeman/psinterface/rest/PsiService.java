@@ -36,6 +36,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -126,6 +127,7 @@ public class PsiService {
         return new AuthorizeConfirmationDTO(cardAccount.getCardId(), accountState);
     }
 
+    @Transactional
     public void handleStartTransaction(StartTransactionDTO startTransactionDTO) throws DatabaseException {
         transactionEventService.createAndSaveStartTransactionEvent(startTransactionDTO);
 
@@ -166,6 +168,7 @@ public class PsiService {
         placeAvailabilityPushService.reportChange(startTransactionDTO.getStationManufacturerId());
     }
 
+    @Transactional
     public void handleStopTransaction(StopTransactionDTO stopTransactionDTO) throws DatabaseException {
         transactionEventService.createAndSaveStopTransactionEvent(stopTransactionDTO);
 
