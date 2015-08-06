@@ -54,12 +54,13 @@ public class PsiPedelecRepositoryImpl implements PsiPedelecRepository {
                          "and p.state = de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE " +
                          "and p not in (select r.pedelec from Reservation r " +
                             "where r.state = de.rwth.idsg.bikeman.domain.ReservationState.CREATED " +
-                            "and (current_timestamp between r.startDateTime and r.endDateTime)) " +
+                            "and (:now between r.startDateTime and r.endDateTime)) " +
                          "order by cs.batteryStateOfCharge desc";
 
         try {
             return em.createQuery(q, String.class)
                      .setParameter("stationManufacturerId", stationManufacturerId)
+                     .setParameter("now", new LocalDateTime())
                      .setMaxResults(5)
                      .getResultList();
         } catch (Exception e) {
@@ -78,7 +79,7 @@ public class PsiPedelecRepositoryImpl implements PsiPedelecRepository {
                          "JOIN p.stationSlot ss " +
                          "JOIN ss.station s " +
                          "WHERE ca.cardId = :cardId " +
-                         "AND (CURRENT_TIMESTAMP BETWEEN r.startDateTime AND r.endDateTime) " +
+                         "AND (:now BETWEEN r.startDateTime AND r.endDateTime) " +
                          "AND s.manufacturerId = :stationManufacturerId " +
                          "AND ss.state = de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE " +
                          "AND p.state = de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE " +
@@ -88,6 +89,7 @@ public class PsiPedelecRepositoryImpl implements PsiPedelecRepository {
             return em.createQuery(q, String.class)
                 .setParameter("stationManufacturerId", stationManufacturerId)
                 .setParameter("cardId", cardId)
+                .setParameter("now", new LocalDateTime())
                 .setMaxResults(1)
                 .getResultList();
         } catch (Exception e) {
