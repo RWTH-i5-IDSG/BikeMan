@@ -67,12 +67,11 @@ public class BookingService {
             throw new IxsiProcessingException("There is an overlapping booking for the target in this time period");
         }
 
-        Reservation reservation = Reservation.builder()
-            .cardAccount(cardAccount)
-            .startDateTime(begin)
-            .endDateTime(end)
-            .pedelec(pedelec)
-            .build();
+        Reservation reservation = new Reservation();
+        reservation.setCardAccount(cardAccount);
+        reservation.setStartDateTime(begin);
+        reservation.setEndDateTime(end);
+        reservation.setPedelec(pedelec);
 
         Reservation savedReservation = reservationRepository.save(reservation);
 

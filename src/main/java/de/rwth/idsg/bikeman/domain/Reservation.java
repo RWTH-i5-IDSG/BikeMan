@@ -1,6 +1,11 @@
 package de.rwth.idsg.bikeman.domain;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.Type;
 import org.joda.time.LocalDateTime;
 
@@ -11,7 +16,6 @@ import javax.persistence.*;
  * @since 20.11.2014
  */
 @Entity
-@Builder
 @Table(name="T_RESERVATION")
 @TableGenerator(name="reservation_gen", initialValue=0, allocationSize=1)
 @EqualsAndHashCode(of = {"reservationId"})

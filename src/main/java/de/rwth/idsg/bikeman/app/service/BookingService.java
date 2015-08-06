@@ -47,12 +47,12 @@ public class BookingService {
         LocalDateTime begin = LocalDateTime.now();
         LocalDateTime end = LocalDateTime.now().plusMinutes(15);
 
-        Reservation reservation = Reservation.builder()
-            .cardAccount(customer.getCardAccount())
-            .startDateTime(begin)
-            .endDateTime(end)
-            .pedelec(pedelec)
-            .build();
+
+        Reservation reservation = new Reservation();
+        reservation.setCardAccount(customer.getCardAccount());
+        reservation.setStartDateTime(begin);
+        reservation.setEndDateTime(end);
+        reservation.setPedelec(pedelec);
 
         Reservation savedReservation = reservationRepository.save(reservation);
 

@@ -30,12 +30,9 @@ import java.util.List;
 @Slf4j
 public class CardAccountService {
 
-    @Inject
-    private CardAccountRepository cardAccountRepository;
-    @Inject
-    private UserRepository userRepository;
-    @Inject
-    private TariffRepository tariffRepository;
+    @Inject private CardAccountRepository cardAccountRepository;
+    @Inject private UserRepository userRepository;
+    @Inject private TariffRepository tariffRepository;
 
     public Optional<AuthorizeConfirmationDTO> activateCardAccount(CardActivationDTO cardActivationDTO) {
         CardAccount cardAccount = cardAccountRepository.findByActivationKey(cardActivationDTO.getActivationKey());
@@ -92,16 +89,13 @@ public class CardAccountService {
             ));
         }
 
-        CardAccount cardAccount = CardAccount.builder()
-            .cardId(createEditCardAccountDTO.getCardId())
-            .cardPin(createEditCardAccountDTO.getCardPin())
-            .activationKey(RandomStringUtils.randomNumeric(12))
-            .inTransaction(false)
-            .operationState(OperationState.OPERATIVE)
-            .ownerType(CustomerType.MAJOR_CUSTOMER)
-            .user(user)
-            .build();
-
+        CardAccount cardAccount = new CardAccount();
+        cardAccount.setCardId(createEditCardAccountDTO.getCardId());
+        cardAccount.setCardPin(createEditCardAccountDTO.getCardPin());
+        cardAccount.setActivationKey(RandomStringUtils.randomNumeric(12));
+        cardAccount.setOperationState(OperationState.OPERATIVE);
+        cardAccount.setOwnerType(CustomerType.MAJOR_CUSTOMER);
+        cardAccount.setUser(user);
         cardAccount.setCurrentTariff(bookedTariff);
 
         try {
