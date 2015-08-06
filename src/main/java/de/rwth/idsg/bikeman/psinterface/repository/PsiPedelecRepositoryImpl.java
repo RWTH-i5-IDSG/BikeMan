@@ -30,26 +30,41 @@ public class PsiPedelecRepositoryImpl implements PsiPedelecRepository {
     @Override
     @Transactional(readOnly = true)
     public List<String> findAvailablePedelecs(String stationManufacturerId) {
-        final String q = "SELECT p.manufacturerId " +
-                         "FROM Pedelec p " +
-                         "JOIN p.chargingStatus cs " +
-                         "JOIN p.stationSlot ss " +
-                         "JOIN ss.station s " +
-                         "LEFT JOIN p.reservations r " +
-                         "WHERE s.manufacturerId = :stationManufacturerId " +
-                         "AND ss.state = de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE " +
-                         "AND p.state = de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE " +
-                         "AND ((CURRENT_TIMESTAMP NOT BETWEEN r.startDateTime AND r.endDateTime) OR r.pedelec IS NULL) " +
-                         "ORDER BY cs.batteryStateOfCharge DESC";
+//        final String q = "select p.manufacturerId " +
+//                         "from Pedelec p " +
+//                         "join p.chargingStatus cs " +
+//                         "join p.stationSlot ss " +
+//                         "join ss.station s " +
+//                         "left join p.reservations r on (p = r.pedelec " +
+//                            "and not r.state = de.rwth.idsg.bikeman.domain.ReservationState.USED " +
+//                            "and (CURRENT_TIMESTAMP between r.startDateTime and r.endDateTime)) " +
+//                         "where s.manufacturerId = :stationManufacturerId " +
+//                         "and ss.state = de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE " +
+//                         "and p.state = de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE " +
+//                         "and r.pedelec IS NULL " +
+//                         "order by cs.batteryStateOfCharge desc";
+
+        final String q = "select p.manufacturerId " +
+                         "from Pedelec p " +
+                         "join p.chargingStatus cs " +
+                         "join p.stationSlot sl " +
+                         "join sl.station s " +
+                         "where s.manufacturerId = :stationManufacturerId " +
+                         "and sl.state = de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE " +
+                         "and p.state = de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE " +
+                         "and p not in (select r.pedelec from Reservation r " +
+                            "where r.state = de.rwth.idsg.bikeman.domain.ReservationState.CREATED " +
+                            "and (current_timestamp between r.startDateTime and r.endDateTime)) " +
+                         "order by cs.batteryStateOfCharge desc";
 
         try {
             return em.createQuery(q, String.class)
-                .setParameter("stationManufacturerId", stationManufacturerId)
-                .setMaxResults(5)
-                .getResultList();
+                     .setParameter("stationManufacturerId", stationManufacturerId)
+                     .setMaxResults(5)
+                     .getResultList();
         } catch (Exception e) {
             throw new DatabaseException("Failed to find pedelecs in station with manufacturerId "
-                + stationManufacturerId, e);
+                    + stationManufacturerId, e);
         }
     }
 
