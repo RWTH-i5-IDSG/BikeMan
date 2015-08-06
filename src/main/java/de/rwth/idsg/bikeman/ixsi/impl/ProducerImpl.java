@@ -40,7 +40,7 @@ public class ProducerImpl implements Producer {
         } catch (JAXBException e) {
             throw new IxsiProcessingException("Could not marshal outgoing message", e);
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.error("Exception happened", e);
         }
 
@@ -71,7 +71,7 @@ public class ProducerImpl implements Producer {
             log.debug("[id: {}] Sending message: {}", session.getId(), out.getPayload());
             session.sendMessage(out);
 
-        } catch (NoSuchElementException | IOException e) {
+        } catch (Exception e) {
             log.error("Exception happened", e);
         }
     }
