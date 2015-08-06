@@ -20,4 +20,10 @@
 
     </changeSet>
 
+    <changeSet id="1409564974611-02" author="goekay">
+        <addColumn tableName="T_RESERVATION">
+            <column name="state" type="VARCHAR(255)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

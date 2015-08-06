@@ -42,4 +42,8 @@ public class Reservation {
     @ManyToOne
     @JoinColumn(name = "pedelec_id")
     private Pedelec pedelec;
+
+    @Column(name = "state")
+    @Enumerated(EnumType.STRING)
+    private ReservationState state = ReservationState.CREATED;
 }
