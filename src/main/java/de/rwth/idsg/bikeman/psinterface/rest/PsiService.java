@@ -5,6 +5,7 @@ import de.rwth.idsg.bikeman.domain.Booking;
 import de.rwth.idsg.bikeman.domain.CardAccount;
 import de.rwth.idsg.bikeman.domain.OperationState;
 import de.rwth.idsg.bikeman.domain.Reservation;
+import de.rwth.idsg.bikeman.domain.ReservationState;
 import de.rwth.idsg.bikeman.domain.Transaction;
 import de.rwth.idsg.bikeman.ixsi.service.AvailabilityPushService;
 import de.rwth.idsg.bikeman.ixsi.service.ConsumptionPushService;
@@ -143,7 +144,9 @@ public class PsiService {
             booking = new Booking();
 
         } else if (reservationList.size() == 1) {
-            booking = bookingRepository.findByReservation(reservationList.get(0));
+            Reservation res = reservationList.get(0);
+            reservationRepository.updateState(res, ReservationState.USED);
+            booking = bookingRepository.findByReservation(res);
 
         } else {
             throw new PsException("More than one reservation found", PsErrorCode.CONSTRAINT_FAILED);

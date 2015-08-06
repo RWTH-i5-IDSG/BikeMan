@@ -16,17 +16,17 @@ public interface ReservationRepository extends JpaRepository<Reservation, String
 
     @Query("SELECT r FROM Reservation r " +
            "WHERE r.pedelec.pedelecId = :pedelecId " +
-           "AND (r.startDateTime <= :endTime " +
-           "AND :startTime <= r.endDateTime)")
+           "AND (r.startDateTime <= :endTime AND :startTime <= r.endDateTime)" +
+           "AND r.state = de.rwth.idsg.bikeman.domain.ReservationState.CREATED")
     List<Reservation> findByTimeFrameForPedelec(@Param("pedelecId") long pedelecId,
                                                 @Param("startTime") LocalDateTime start,
                                                 @Param("endTime") LocalDateTime end);
 
     @Query("SELECT r FROM Reservation r " +
-        "WHERE r.pedelec.pedelecId = :pedelecId " +
-        "AND NOT (r.reservationId = :reservationId)" +
-        "AND (r.startDateTime <= :endTime " +
-        "AND :startTime <= r.endDateTime)")
+           "WHERE r.pedelec.pedelecId = :pedelecId " +
+           "AND (r.startDateTime <= :endTime AND :startTime <= r.endDateTime)" +
+           "AND r.state = de.rwth.idsg.bikeman.domain.ReservationState.CREATED " +
+           "AND NOT (r.reservationId = :reservationId)")
     List<Reservation> findOverlappingReservations(@Param("pedelecId") long pedelecId,
                                                   @Param("reservationId") long reservationId,
                                                   @Param("startTime") LocalDateTime start,

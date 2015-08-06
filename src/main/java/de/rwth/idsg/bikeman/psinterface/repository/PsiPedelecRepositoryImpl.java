@@ -81,7 +81,8 @@ public class PsiPedelecRepositoryImpl implements PsiPedelecRepository {
                          "AND (CURRENT_TIMESTAMP BETWEEN r.startDateTime AND r.endDateTime) " +
                          "AND s.manufacturerId = :stationManufacturerId " +
                          "AND ss.state = de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE " +
-                         "AND p.state = de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE ";
+                         "AND p.state = de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE " +
+                         "AND r.state = de.rwth.idsg.bikeman.domain.ReservationState.CREATED";
 
         try {
             return em.createQuery(q, String.class)
