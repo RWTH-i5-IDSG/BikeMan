@@ -9,6 +9,7 @@ import de.rwth.idsg.bikeman.ixsi.dto.PedelecDTO;
 import de.rwth.idsg.bikeman.ixsi.dto.PlaceAvailabilityResponseDTO;
 import de.rwth.idsg.bikeman.ixsi.dto.StationDTO;
 import lombok.extern.slf4j.Slf4j;
+import org.joda.time.LocalDateTime;
 import org.springframework.stereotype.Repository;
 import xjc.schema.ixsi.BookingTargetIDType;
 import xjc.schema.ixsi.BookingTargetPropertiesType;
@@ -122,7 +123,7 @@ public class QueryIXSIRepositoryImpl implements QueryIXSIRepository {
                                   "FROM Reservation r " +
                                   "JOIN r.pedelec p " +
                                   "WHERE p.manufacturerId IN :idList " +
-                                  "AND (current_timestamp BETWEEN r.startDateTime AND r.endDateTime)";
+                                  "AND (:now BETWEEN r.startDateTime AND r.endDateTime)";
 
         // Open transactions
         String transactionQuery = "SELECT new de.rwth.idsg.bikeman.ixsi.dto." +
@@ -147,6 +148,7 @@ public class QueryIXSIRepositoryImpl implements QueryIXSIRepository {
 
         List<InavailabilityDTO> reservList = em.createQuery(reservationQuery, InavailabilityDTO.class)
                                                .setParameter("idList", idList)
+                                               .setParameter("now", new LocalDateTime())
                                                .getResultList();
 
         List<InavailabilityDTO> transList = em.createQuery(transactionQuery, InavailabilityDTO.class)
