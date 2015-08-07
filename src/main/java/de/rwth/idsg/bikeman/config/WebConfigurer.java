@@ -50,9 +50,6 @@ public class WebConfigurer implements ServletContextInitializer, EmbeddedServlet
             initGzipFilter(servletContext, disps);
         }
 
-        DateTimeZone.setDefault(DateTimeZone.UTC);
-        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
-
         log.info("Web application fully configured");
     }
 

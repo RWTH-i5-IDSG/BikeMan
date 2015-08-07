@@ -3,6 +3,7 @@ package de.rwth.idsg.bikeman.psinterface;
 import de.rwth.idsg.bikeman.psinterface.exception.PsErrorCode;
 import de.rwth.idsg.bikeman.psinterface.exception.PsException;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDateTime;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.concurrent.TimeUnit;
@@ -24,6 +25,10 @@ public final class Utils {
 
     public static long toMillis(long seconds) {
         return TimeUnit.SECONDS.toMillis(seconds);
+    }
+
+    public static long toMillis(LocalDateTime localDateTime) {
+        return localDateTime.toDateTime().getMillis();
     }
 
     public static long nowInSeconds() {

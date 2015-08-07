@@ -1,6 +1,7 @@
 package de.rwth.idsg.bikeman;
 
 import de.rwth.idsg.bikeman.config.Constants;
+import org.joda.time.DateTimeZone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -18,6 +19,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Arrays;
+import java.util.TimeZone;
 
 @ComponentScan
 @EnableAutoConfiguration(exclude = {MetricFilterAutoConfiguration.class, MetricRepositoryAutoConfiguration.class})
@@ -47,6 +49,10 @@ public class Application {
      * Main method, used to run the application.
      */
     public static void main(String[] args) throws UnknownHostException {
+
+        DateTimeZone.setDefault(DateTimeZone.UTC);
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+
         SpringApplication app = new SpringApplication(Application.class);
         app.setShowBanner(false);
 

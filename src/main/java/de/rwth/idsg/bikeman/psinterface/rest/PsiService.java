@@ -155,14 +155,23 @@ public class PsiService {
         booking.setTransaction(t);
         bookingRepository.save(booking);
 
+        if (reservationList == null || reservationList.isEmpty()) {
+            performExternalBookingPush(booking, t);
+        }
+
         performStartPush(startTransactionDTO, t, booking);
     }
 
     @Async
-    private void performStartPush(StartTransactionDTO startTransactionDTO, Transaction t, Booking booking) {
-        externalBookingPushService.report(booking, t);
+    private void performExternalBookingPush(Booking booking, Transaction transaction) {
+        externalBookingPushService.report(booking, transaction);
+    }
 
-        Long timestampInMillis = Utils.toMillis(startTransactionDTO.getTimestamp());
+    @Async
+    private void performStartPush(StartTransactionDTO startTransactionDTO, Transaction t, Booking booking) {
+//        externalBookingPushService.report(booking, t);
+
+        Long timestampInMillis = Utils.toMillis(t.getStartDateTime());
 
         availabilityPushService.takenFromPlace(
             startTransactionDTO.getPedelecManufacturerId(),
