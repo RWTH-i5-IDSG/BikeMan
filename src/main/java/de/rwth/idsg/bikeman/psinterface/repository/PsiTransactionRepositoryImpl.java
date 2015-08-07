@@ -87,7 +87,10 @@ public class PsiTransactionRepositoryImpl implements PsiTransactionRepository {
         }
 
         Transaction transaction = new Transaction();
-        Long timestampInMillis = Utils.toMillis(dto.getTimestamp());
+
+        // add one sec to timestamp, because of rounding error: UNIX timestamp kills millis
+        Long timestampInMillis = Utils.toMillis(dto.getTimestamp() + 1L);
+
         transaction.setStartDateTime(new LocalDateTime(timestampInMillis));
         transaction.setCardAccount(cardAccount);
         transaction.setPedelec(pedelec);

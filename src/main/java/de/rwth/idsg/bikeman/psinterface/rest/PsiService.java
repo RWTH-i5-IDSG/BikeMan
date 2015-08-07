@@ -35,7 +35,6 @@ import de.rwth.idsg.bikeman.service.TransactionEventService;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
-import org.joda.time.LocalDateTime;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -135,12 +134,9 @@ public class PsiService {
 
         Transaction t = transactionRepository.start(startTransactionDTO);
 
-        // rounding error: UNIX timestamp kills millis
-        LocalDateTime startDateTime = t.getStartDateTime().plusSeconds(1);
-
         List<Reservation> reservationList = reservationRepository.find(t.getCardAccount().getCardAccountId(),
                                                                        t.getPedelec().getPedelecId(),
-                                                                       startDateTime);
+                                                                       t.getStartDateTime());
 
         Booking booking;
 
