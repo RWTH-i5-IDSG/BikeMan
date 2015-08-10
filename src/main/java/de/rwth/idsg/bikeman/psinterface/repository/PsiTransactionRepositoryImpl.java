@@ -9,6 +9,7 @@ import de.rwth.idsg.bikeman.psinterface.dto.request.StartTransactionDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.StopTransactionDTO;
 import de.rwth.idsg.bikeman.psinterface.exception.PsErrorCode;
 import de.rwth.idsg.bikeman.psinterface.exception.PsException;
+import de.rwth.idsg.bikeman.repository.helper.JpaHelper;
 import de.rwth.idsg.bikeman.service.TariffService;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
@@ -133,14 +134,30 @@ public class PsiTransactionRepositoryImpl implements PsiTransactionRepository {
                                  "WHERE ss.manufacturerId = :slotManufacturerId " +
                                  "AND ss.station = (SELECT s FROM Station s WHERE s.manufacturerId = :stationManufacturerId)";
 
-        Transaction transaction = em.createQuery(endQuery, Transaction.class)
-                                    .setParameter("pedelecManufacturerId", dto.getPedelecManufacturerId())
-                                    .getSingleResult();
+        final String pedelecQuery = "SELECT p FROM Pedelec p WHERE p.manufacturerId = :pedelecManufacturerId";
+
+        Transaction transaction = JpaHelper.getSingleResult(em.createQuery(endQuery, Transaction.class)
+                                              .setParameter("pedelecManufacturerId", dto.getPedelecManufacturerId()));
 
         StationSlot slot = em.createQuery(slotQuery, StationSlot.class)
                              .setParameter("slotManufacturerId", dto.getSlotManufacturerId())
                              .setParameter("stationManufacturerId", dto.getStationManufacturerId())
                              .getSingleResult();
+
+        Pedelec pedelec = em.createQuery(pedelecQuery, Pedelec.class)
+                .setParameter("pedelecManufacturerId", dto.getPedelecManufacturerId()).getSingleResult();
+
+        if (transaction == null) {
+            pedelec.getStationSlot().setPedelec(null);
+            pedelec.setStationSlot(slot);
+            slot.setPedelec(pedelec);
+
+            em.merge(pedelec.getStationSlot());
+            em.merge(pedelec);
+            em.merge(slot);
+
+            return null;
+        }
 
         Long timestampInMillis = Utils.toMillis(dto.getTimestamp());
         transaction.setEndDateTime(new LocalDateTime(timestampInMillis));
@@ -153,7 +170,7 @@ public class PsiTransactionRepositoryImpl implements PsiTransactionRepository {
         // -------------------------------------------------------------------------
 
         CardAccount cardAccount = transaction.getCardAccount();
-        Pedelec pedelec = transaction.getPedelec();
+//        Pedelec pedelec = transaction.getPedelec();
 
         cardAccount.setInTransaction(false);
         pedelec.setInTransaction(false);

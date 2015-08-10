@@ -186,7 +186,9 @@ public class PsiService {
 
         Transaction t = transactionRepository.stop(stopTransactionDTO);
 
-        performStopPush(stopTransactionDTO, t);
+        if (t != null) {
+            performStopPush(stopTransactionDTO, t);
+        }
     }
 
     @Async
