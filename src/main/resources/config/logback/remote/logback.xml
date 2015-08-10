@@ -3,10 +3,10 @@
 <configuration scan="true">
 
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${HOME}/logs/bikeman.log</file>
+        <file>${catalina.base}/logs/bikeman.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- daily rollover -->
-            <fileNamePattern>${HOME}/logs/bikeman.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>${catalina.base}/logs/bikeman.%d{yyyy-MM-dd}.log</fileNamePattern>
             <!-- keep 15 days' worth of history -->
             <maxHistory>15</maxHistory>
         </rollingPolicy>
