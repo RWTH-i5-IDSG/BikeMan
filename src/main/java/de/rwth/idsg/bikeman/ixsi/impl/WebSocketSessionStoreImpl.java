@@ -54,10 +54,20 @@ public class WebSocketSessionStoreImpl implements WebSocketSessionStore {
     @Override
     public synchronized void remove(String systemID, WebSocketSession session) {
         Deque<WebSocketSession> sessionSet = lookupTable.get(systemID);
-        if (sessionSet != null) {
-            sessionSet.remove(session);
-            log.debug("The WebSocketSession with id '{}' is removed for system '{}' (size: {})",
-                session.getId(), systemID, sessionSet.size());
+        if (sessionSet == null) {
+            return;
+        }
+
+        for (WebSocketSession wss : sessionSet) {
+            if (wss.getId().equals(session.getId())) {
+                if (sessionSet.remove(wss)) {
+                    log.debug("The WebSocketSession with id '{}' is removed for system '{}' (size: {})",
+                            session.getId(), systemID, sessionSet.size());
+                } else {
+                    log.error("Failed to remove the WebSocketSession with id '{}' for system '{}'",
+                            session.getId(), systemID);
+                }
+            }
         }
     }
 
