@@ -127,7 +127,7 @@ public class BookingTargetsInfoRequestProcessor implements
                     .withAttributeID(BIKE_SHARING_ATTR_ID)
                     .withGeoPosition(geoPosition)
                     .withID(stat.getManufacturerId())
-                    .withCapacity(stat.getSlotCount())
+                    .withCapacity((int) stat.getSlotCount())
                     .withName(name)
                     .withProviderID(IXSIConstants.Provider.id));
         }

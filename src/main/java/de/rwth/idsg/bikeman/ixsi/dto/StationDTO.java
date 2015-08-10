@@ -16,13 +16,13 @@ public class StationDTO {
     private String manufacturerId;
     private BigDecimal location_longitude;
     private BigDecimal location_latitude;
-    private Integer slotCount;
+    private long slotCount;
     private String name;
     private String note;
     private ViewAddressDTO address;
 
     public StationDTO(String manufacturerId, BigDecimal location_longitude, BigDecimal location_latitude,
-                      Integer slotCount, String name, String note,
+                      long slotCount, String name, String note,
                       String streetAndHousenumber, String zip, String city, String country) {
         this.manufacturerId = manufacturerId;
         this.location_longitude = location_longitude;
