@@ -440,7 +440,8 @@
                 "stateOfCharge": "Ladezustand",
                 "state": "Status",
                 "station": "Station (Stellplatz)",
-                "customer": "Kunde"
+                "customer": "Kunde",
+                "lastUpdate": "Letztes Update"
             },
             "body": {
                 "details": "Details"

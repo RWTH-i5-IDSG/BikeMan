@@ -14,11 +14,12 @@
                     <th translate="pedelecs.table.header.state">State</th>
                     <th translate="pedelecs.table.header.station">Station (Slot)</th>
                     <th translate="pedelecs.table.header.customer">Customer</th>
+                    <th translate="pedelecs.table.header.lastUpdate">Last Update</th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="pedelec in pedelecs">
+                <tr ng-repeat="pedelec in pedelecs | orderBy:'-lastUpdate'">
                     <td>{{pedelec.manufacturerId}}</td>
                     <td>
                         <div class="progress">
@@ -32,6 +33,7 @@
                     <td>{{pedelec.station.stationManufacturerId}} <span class="badge">{{pedelec.station.stationSlotPosition}}</span></td>
                     <td ng-if="!pedelec.transaction.majorCustomerName">{{pedelec.transaction.firstname + " " + pedelec.transaction.lastname}}</td>
                     <td ng-if="pedelec.transaction.majorCustomerName">{{pedelec.transaction.majorCustomerName}}</td>
+                    <td>{{pedelec.lastUpdate | date:'medium'}}</td>
                     <td>
                         <button type="button" class="btn btn-info pull-right" ui-sref="pedelecDetail({pedelecId:{{pedelec.pedelecId}}})">
                             <span class="glyphicon glyphicon-eye-open"></span>

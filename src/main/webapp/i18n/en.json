@@ -454,7 +454,8 @@
                 "stateOfCharge": "State of Charge",
                 "state": "State",
                 "station": "Station (Slot)",
-                "customer": "Customer"
+                "customer": "Customer",
+                "lastUpdate": "Last Update"
             },
             "body": {
                 "details": "Details"

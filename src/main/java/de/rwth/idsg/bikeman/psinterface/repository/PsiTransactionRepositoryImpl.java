@@ -148,6 +148,7 @@ public class PsiTransactionRepositoryImpl implements PsiTransactionRepository {
                 .setParameter("pedelecManufacturerId", dto.getPedelecManufacturerId()).getSingleResult();
 
         if (transaction == null) {
+            log.error("StopTransaction is missing StartTransaction. Skip Transaction and rearrange pedelec.");
             pedelec.getStationSlot().setPedelec(null);
             pedelec.setStationSlot(slot);
             slot.setPedelec(pedelec);

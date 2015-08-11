@@ -156,7 +156,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr ng-repeat="slot in station.slots | orderBy:'stationSlotId'">
+        <tr ng-repeat="slot in station.slots | orderBy:'manufacturerId'">
             <td>{{slot.manufacturerId}}</td>
             <td>{{slot.isOccupied | occupiedFilter}}</td>
             <td>
