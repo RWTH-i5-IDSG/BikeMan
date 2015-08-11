@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
-import org.springframework.web.socket.handler.ConcurrentWebSocketSessionDecorator;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
@@ -66,11 +65,6 @@ public class WebSocketEndpoint extends TextWebSocketHandler {
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         log.info("New connection established: {}", session);
         String systemId = (String) session.getAttributes().get(HandshakeInterceptor.SYSTEM_ID_KEY);
-
-        session = new ConcurrentWebSocketSessionDecorator(session,
-                                                          IXSIConstants.SEND_TIME_LIMIT,
-                                                          IXSIConstants.BUFFER_SIZE_LIMIT);
-
         webSocketSessionStore.add(systemId, session);
     }
 

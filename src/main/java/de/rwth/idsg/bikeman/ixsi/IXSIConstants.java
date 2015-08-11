@@ -5,8 +5,6 @@ import xjc.schema.ixsi.ConsumptionClassType;
 import xjc.schema.ixsi.EngineType;
 import xjc.schema.ixsi.Language;
 
-import java.util.concurrent.TimeUnit;
-
 /**
  * Created by max on 07/10/14.
  */
@@ -21,11 +19,7 @@ public final class IXSIConstants {
     //
     public static final int HOUR_OFFSET_FOR_OPEN_TRANSACTIONS = 6;
 
-    public static final int MAX_TEXT_MSG_SIZE = 8_388_608;
-
-    // Used to init ConcurrentWebSocketSessionDecorator
-    public static final int SEND_TIME_LIMIT = (int) TimeUnit.SECONDS.toMillis(10);
-    public static final int BUFFER_SIZE_LIMIT = 5 * MAX_TEXT_MSG_SIZE;
+    public static final int MAX_TEXT_MSG_SIZE = 8388608;
 
     public static final String XML_SCHEMA_FILE = "IXSI-with-enums.xsd";
 
