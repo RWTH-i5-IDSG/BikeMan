@@ -271,7 +271,8 @@ public class QueryIXSIRepositoryImpl implements QueryIXSIRepository {
                          "slot.station.manufacturerId, CAST(count(slot) as integer)) " +
                          "FROM StationSlot slot " +
                          "WHERE NOT slot.isOccupied = true AND " +
-                         "slot.station.manufacturerId in :placeIds " +
+                         "slot.station.manufacturerId in :placeIds AND " +
+                         "slot.state = de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE " +
                          "GROUP by slot.station.manufacturerId";
 
         return em.createQuery(q, PlaceAvailabilityResponseDTO.class)
