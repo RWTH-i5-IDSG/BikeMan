@@ -50,9 +50,6 @@ public class Application {
      */
     public static void main(String[] args) throws UnknownHostException {
 
-        DateTimeZone.setDefault(DateTimeZone.UTC);
-        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
-
         SpringApplication app = new SpringApplication(Application.class);
         app.setShowBanner(false);
 

@@ -132,34 +132,38 @@ public class PsiService {
     public void handleStartTransaction(StartTransactionDTO startTransactionDTO) throws DatabaseException {
         transactionEventService.createAndSaveStartTransactionEvent(startTransactionDTO);
 
-        Transaction t = transactionRepository.start(startTransactionDTO);
+        Transaction transaction = transactionRepository.start(startTransactionDTO);
 
-        List<Reservation> reservationList = reservationRepository.find(t.getCardAccount().getCardAccountId(),
-                                                                       t.getPedelec().getPedelecId(),
-                                                                       t.getStartDateTime());
+        List<Reservation> reservationList = reservationRepository.find(transaction.getCardAccount().getCardAccountId(),
+                                                                       transaction.getPedelec().getPedelecId(),
+                                                                       transaction.getStartDateTime());
 
         Booking booking;
 
         if (reservationList == null || reservationList.isEmpty()) {
+            log.debug("No reservation found for startTransaction.");
             booking = new Booking();
 
         } else if (reservationList.size() == 1) {
             Reservation res = reservationList.get(0);
             reservationRepository.updateState(res, ReservationState.USED);
             booking = bookingRepository.findByReservation(res);
+            log.debug("Found Reservation: {}", res);
 
         } else {
             throw new PsException("More than one reservation found", PsErrorCode.CONSTRAINT_FAILED);
         }
 
-        booking.setTransaction(t);
+        booking.setTransaction(transaction);
         bookingRepository.save(booking);
 
         if (reservationList == null || reservationList.isEmpty()) {
-            performExternalBookingPush(booking, t);
+            performExternalBookingPush(booking, transaction);
+            log.debug("Perform External Booking for booking: {} and Transaction: {}", booking, transaction);
         }
 
-        performStartPush(startTransactionDTO, t, booking);
+        performStartPush(startTransactionDTO, transaction, booking);
+        log.debug("Perform Start Push for Transaction: {} and Booking: {}", transaction, booking);
     }
 
     @Async
