@@ -39,7 +39,7 @@ public class PsiBookingRepositoryImpl implements PsiBookingRepository {
                      .setParameter("transaction", transaction)
                      .getSingleResult();
         } catch (NoResultException e) {
-            throw new DatabaseException("Could not find booking for specified transaction.", e);
+            throw new DatabaseException("Could not find booking for specified transaction " + transaction, e);
         }
     }
 
@@ -51,7 +51,7 @@ public class PsiBookingRepositoryImpl implements PsiBookingRepository {
                      .setParameter("reservation", reservation)
                      .getSingleResult();
         } catch (NoResultException e) {
-            throw new DatabaseException("Could not find booking for specified reservation.", e);
+            throw new DatabaseException("Could not find booking for specified reservation " + reservation, e);
         }
     }
 
