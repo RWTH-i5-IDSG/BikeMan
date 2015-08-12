@@ -145,17 +145,20 @@ public class PsiTransactionRepositoryImpl implements PsiTransactionRepository {
                              .getSingleResult();
 
         Pedelec pedelec = em.createQuery(pedelecQuery, Pedelec.class)
-                .setParameter("pedelecManufacturerId", dto.getPedelecManufacturerId()).getSingleResult();
+                            .setParameter("pedelecManufacturerId", dto.getPedelecManufacturerId()).getSingleResult();
 
         if (transaction == null) {
             log.error("StopTransaction is missing StartTransaction. Skip Transaction and rearrange pedelec.");
-            pedelec.getStationSlot().setPedelec(null);
-            pedelec.setStationSlot(slot);
-            slot.setPedelec(pedelec);
 
-            em.merge(pedelec.getStationSlot());
-            em.merge(pedelec);
-            em.merge(slot);
+            em.createQuery("UPDATE StationSlot ss SET ss.pedelec = NULL, ss.isOccupied = FALSE WHERE ss.pedelec = :pedelec")
+              .setParameter("pedelec", pedelec)
+              .executeUpdate();
+
+            // Register the pedelec back at the starting station slot
+            em.createQuery("UPDATE StationSlot ss SET ss.isOccupied = true, ss.pedelec = :pedelec WHERE ss = :stationSlot")
+              .setParameter("pedelec", pedelec)
+              .setParameter("stationSlot", slot)
+              .executeUpdate();
 
             return null;
         }
