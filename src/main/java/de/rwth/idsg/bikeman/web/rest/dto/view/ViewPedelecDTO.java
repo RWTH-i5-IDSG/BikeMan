@@ -24,7 +24,7 @@ public class ViewPedelecDTO {
     private ViewTransactionDTO transaction;
 
     @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
-    private LocalDateTime lastUpdate;
+    private LocalDateTime lastChargingUpdate;
 
 
     // Basic
@@ -41,13 +41,13 @@ public class ViewPedelecDTO {
     public ViewPedelecDTO(Long pedelecId, String manufacturerId, Double stateOfCharge,
                           OperationState state, Boolean inTransaction,
                           Long stationId, String stationManufacturerId,
-                          Integer stationSlotPosition, LocalDateTime lastUpdate) {
+                          Integer stationSlotPosition, LocalDateTime lastChargingUpdate) {
         this.pedelecId = pedelecId;
         this.manufacturerId = manufacturerId;
         this.stateOfCharge = stateOfCharge;
         this.state = state;
         this.inTransaction = inTransaction;
-        this.lastUpdate = lastUpdate;
+        this.lastChargingUpdate = lastChargingUpdate;
 
         this.station = new ViewStationDTO(stationId, stationManufacturerId, stationSlotPosition);
     }

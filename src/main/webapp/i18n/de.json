@@ -441,7 +441,7 @@
                 "state": "Status",
                 "station": "Station (Stellplatz)",
                 "customer": "Kunde",
-                "lastUpdate": "Letztes Update"
+                "lastChargingUpdate": "Letztes Lade-Update"
             },
             "body": {
                 "details": "Details"
