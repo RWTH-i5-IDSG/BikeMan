@@ -270,19 +270,33 @@ public class QueryIXSIRepositoryImpl implements QueryIXSIRepository {
     @Override
     @SuppressWarnings("unchecked")
     public List<PlaceAvailabilityResponseDTO> placeAvailability(List<String> placeIdList) {
-        final String q = "SELECT new de.rwth.idsg.bikeman.ixsi.dto.PlaceAvailabilityResponseDTO(" +
-                         "slot.station.manufacturerId, CAST(count(slot) as Integer) " +
-                         "FROM Station s " +
-                         "LEFT JOIN StationSlot slot " +
-                         "ON slot.station = s " +
-                         "AND slot.isOccupied = false " +
-                         "AND slot.state = de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE " +
-                         "WHERE slot.station.manufacturerId in :placeIds " +
-                         "GROUP by slot.station.manufacturerId";
+        Query q = em.createNativeQuery(
+                "SELECT s.manufacturer_id, CAST(count(slot) as Integer) " +
+                "FROM t_station s " +
+                "LEFT JOIN t_station_slot slot ON s.station_id = slot.station_id " +
+                "AND slot.state = 'OPERATIVE' " +
+                "AND slot.is_occupied = FALSE " +
+                "WHERE s.manufacturer_id IN (:placeIds) " +
+                "GROUP BY s.manufacturer_id"
+        );
 
-        return em.createQuery(q, PlaceAvailabilityResponseDTO.class)
-                 .setParameter("placeIds", placeIdList)
-                 .getResultList();
+        q.setParameter("placeIds", placeIdList);
+
+        return getPlaceAvailabilityResponseDTOs(q);
+
+//        final String q = "SELECT new de.rwth.idsg.bikeman.ixsi.dto.PlaceAvailabilityResponseDTO(" +
+//                         "slot.station.manufacturerId, CAST(count(slot) as Integer) " +
+//                         "FROM Station s " +
+//                         "LEFT JOIN StationSlot slot " +
+//                         "ON slot.station = s " +
+//                         "AND slot.isOccupied = false " +
+//                         "AND slot.state = de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE " +
+//                         "WHERE slot.station.manufacturerId in :placeIds " +
+//                         "GROUP by slot.station.manufacturerId";
+//
+//        return em.createQuery(q, PlaceAvailabilityResponseDTO.class)
+//                 .setParameter("placeIds", placeIdList)
+//                 .getResultList();
     }
 
     @Override
