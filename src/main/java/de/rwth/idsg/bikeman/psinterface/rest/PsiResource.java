@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -141,7 +142,7 @@ public class PsiResource {
     }
 
     @RequestMapping(value = CHARGING_STATUS_PATH, method = RequestMethod.POST)
-    public void chargingStatusNotification(@RequestBody List<ChargingStatusDTO> chargingStatusDTOs,
+    public void chargingStatusNotification(@Valid @RequestBody List<ChargingStatusDTO> chargingStatusDTOs,
                                            HttpServletRequest request) {
         log.debug("[From: {}] Received chargingStatusNotification: {}", Utils.getFrom(request), chargingStatusDTOs);
         psiService.handleChargingStatusNotification(chargingStatusDTOs);
