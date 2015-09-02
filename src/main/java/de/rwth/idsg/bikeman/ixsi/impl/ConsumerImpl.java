@@ -19,22 +19,15 @@ import javax.xml.bind.JAXBException;
 @Component
 public class ConsumerImpl implements Consumer {
 
-    @Autowired
-    private Parser parser;
-    @Autowired
-    private IncomingIxsiDispatcher dispatcher;
+    @Autowired private Parser parser;
+    @Autowired private IncomingIxsiDispatcher dispatcher;
 
     @Override
     public void consume(CommunicationContext context) {
         log.trace("Entered consume...");
 
-        try {
-            IxsiMessageType i = parser.unmarshal(context.getIncomingString());
-            context.setIncomingIxsi(i);
-            dispatcher.handle(context);
-
-        } catch (JAXBException e) {
-            throw new IxsiProcessingException("Could not unmarshal incoming message", e);
-        }
+        IxsiMessageType i = parser.unmarshal(context.getIncomingString());
+        context.setIncomingIxsi(i);
+        dispatcher.handle(context);
     }
 }
