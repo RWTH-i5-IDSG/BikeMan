@@ -124,6 +124,7 @@ public class QueryIXSIRepositoryImpl implements QueryIXSIRepository {
                                   "FROM Reservation r " +
                                   "JOIN r.pedelec p " +
                                   "WHERE p.manufacturerId IN :idList " +
+                                  "AND r.state = de.rwth.idsg.bikeman.domain.ReservationState.CREATED " +
                                   "AND (:now BETWEEN r.startDateTime AND r.endDateTime)";
 
         // Open transactions
@@ -140,7 +141,9 @@ public class QueryIXSIRepositoryImpl implements QueryIXSIRepository {
                              "FROM Pedelec p " +
                              "JOIN p.chargingStatus cs " +
                              "LEFT JOIN p.stationSlot.station s " +
-                             "WHERE p.manufacturerId in :idList";
+                             "WHERE p.manufacturerId IN :idList " +
+                             "AND p.stationSlot.state = de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE " +
+                             "AND s.state = de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE ";
 
         List<String> idList = new ArrayList<>(targets.size());
         for (BookingTargetIDType id : targets) {
@@ -268,11 +271,13 @@ public class QueryIXSIRepositoryImpl implements QueryIXSIRepository {
     @SuppressWarnings("unchecked")
     public List<PlaceAvailabilityResponseDTO> placeAvailability(List<String> placeIdList) {
         final String q = "SELECT new de.rwth.idsg.bikeman.ixsi.dto.PlaceAvailabilityResponseDTO(" +
-                         "slot.station.manufacturerId, CAST(count(slot) as integer)) " +
-                         "FROM StationSlot slot " +
-                         "WHERE NOT slot.isOccupied = true AND " +
-                         "slot.station.manufacturerId in :placeIds AND " +
-                         "slot.state = de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE " +
+                         "slot.station.manufacturerId, CAST(count(slot) as Integer) " +
+                         "FROM Station s " +
+                         "LEFT JOIN StationSlot slot " +
+                         "ON slot.station = s " +
+                         "AND slot.isOccupied = false " +
+                         "AND slot.state = de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE " +
+                         "WHERE slot.station.manufacturerId in :placeIds " +
                          "GROUP by slot.station.manufacturerId";
 
         return em.createQuery(q, PlaceAvailabilityResponseDTO.class)
