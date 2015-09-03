@@ -1,7 +1,10 @@
 package de.rwth.idsg.bikeman.service;
 
+import de.rwth.idsg.bikeman.domain.OperationState;
+import de.rwth.idsg.bikeman.domain.StationSlot;
 import de.rwth.idsg.bikeman.psinterface.rest.client.StationClient;
 import de.rwth.idsg.bikeman.repository.StationRepository;
+import de.rwth.idsg.bikeman.repository.StationSlotRepository;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.ChangeStationOperationStateDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditStationDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.StationConfigurationDTO;
@@ -22,6 +25,8 @@ public class StationService {
 
     @Autowired private StationClient stationClient;
     @Autowired private StationRepository stationRepository;
+    @Autowired private OperationStateService operationStateService;
+    @Autowired private StationSlotRepository stationSlotRepository;
 
     public void create(CreateEditStationDTO dto) throws DatabaseException {
         stationRepository.create(dto);
@@ -69,6 +74,12 @@ public class StationService {
         String endpointAddress = stationRepository.getEndpointAddress(dto.getStationId());
         stationClient.changeOperationState(endpointAddress, changeDTO);
         stationRepository.update(dto);
+
+        if (dto.getState() == OperationState.INOPERATIVE) {
+            operationStateService.pushStationInavailability(dto.getManufacturerId());
+        } else {
+            operationStateService.pushStationAvailability(dto.getManufacturerId());
+        }
     }
 
     public void changeSlotState(Long stationId, ChangeStationOperationStateDTO dto) throws DatabaseException {
@@ -81,5 +92,13 @@ public class StationService {
         String endpointAddress = stationRepository.getEndpointAddress(stationId);
         stationClient.changeOperationState(endpointAddress, changeDTO);
         stationRepository.changeSlotState(stationId, dto.getSlotPosition(), dto.getState());
+
+        StationSlot stationSlot = stationSlotRepository.findByStationSlotPositionAndStationStationId(dto.getSlotPosition(), stationId);
+
+        if (dto.getState() == OperationState.INOPERATIVE) {
+            operationStateService.pushSlotInavailability(stationSlot.getManufacturerId());
+        } else {
+            operationStateService.pushSlotAvailability(stationSlot.getManufacturerId());
+        }
     }
 }

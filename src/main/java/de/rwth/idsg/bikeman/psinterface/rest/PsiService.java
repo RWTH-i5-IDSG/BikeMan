@@ -31,6 +31,7 @@ import de.rwth.idsg.bikeman.psinterface.repository.PsiPedelecRepository;
 import de.rwth.idsg.bikeman.psinterface.repository.PsiReservationRepository;
 import de.rwth.idsg.bikeman.psinterface.repository.PsiStationRepository;
 import de.rwth.idsg.bikeman.psinterface.repository.PsiTransactionRepository;
+import de.rwth.idsg.bikeman.service.OperationStateService;
 import de.rwth.idsg.bikeman.service.TransactionEventService;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
@@ -62,6 +63,7 @@ public class PsiService {
     @Inject private PlaceAvailabilityPushService placeAvailabilityPushService;
     @Inject private ExternalBookingPushService externalBookingPushService;
     @Inject private TransactionEventService transactionEventService;
+    @Inject private OperationStateService operationStateService;
 
     private static final Integer HEARTBEAT_INTERVAL_IN_SECONDS = 60;
 
@@ -227,10 +229,16 @@ public class PsiService {
     }
 
     public void handleStationStatusNotification(StationStatusDTO stationStatusDTO) {
+        operationStateService.pushAvailability(stationStatusDTO);
+        operationStateService.pushInavailability(stationStatusDTO);
+
         stationRepository.updateStationStatus(stationStatusDTO);
     }
 
     public void handlePedelecStatusNotification(PedelecStatusDTO pedelecStatusDTO) {
+        operationStateService.pushAvailability(pedelecStatusDTO);
+        operationStateService.pushInavailability(pedelecStatusDTO);
+
         pedelecRepository.updatePedelecStatus(pedelecStatusDTO);
     }
 

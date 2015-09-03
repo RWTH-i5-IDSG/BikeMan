@@ -27,6 +27,7 @@ public class PedelecService {
 
     @Autowired private PedelecClient pedelecClient;
     @Autowired private PedelecRepository pedelecRepository;
+    @Autowired private OperationStateService operationStateService;
 
     public List<ViewPedelecDTO> getAll() throws DatabaseException {
         return pedelecRepository.findAll();
@@ -67,6 +68,12 @@ public class PedelecService {
         pedelecClient.changeOperationState(station.getEndpointAddress(), pedelec.getManufacturerId(), changeDto);
 
         pedelecRepository.update(dto);
+
+        if (dto.getState() == OperationState.INOPERATIVE) {
+            operationStateService.pushPedelecInavailability(pedelec.getManufacturerId());
+        } else {
+            operationStateService.pushPedelecAvailability(pedelec.getManufacturerId());
+        }
     }
 
     public PedelecConfigurationDTO getConfig(Long pedelecId) throws DatabaseException, RestClientException {
