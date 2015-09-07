@@ -85,7 +85,9 @@ public class BookingService {
     }
 
     public Booking get(String bookingId, String userId) {
-        return bookingRepository.findByIxsiBookingIdForUser(bookingId, userId);
+        Booking b = bookingRepository.findByIxsiBookingIdForUser(bookingId, userId);
+        checkState(b.getReservation().getCardAccount());
+        return b;
     }
 
     /**
@@ -93,7 +95,7 @@ public class BookingService {
      */
     @Transactional
     public Booking cancel(String bookingId, String userId) {
-        Booking booking = bookingRepository.findByIxsiBookingIdForUser(bookingId, userId);
+        Booking booking = this.get(bookingId, userId);
 
         Transaction transaction = booking.getTransaction();
         if (transaction != null) {
@@ -184,10 +186,15 @@ public class BookingService {
     }
 
     private void check(CardAccount ca) {
+        checkState(ca);
+
         if (ca.getInTransaction()) {
             throw new IxsiCodeException("The user is already in a transaction", ErrorCodeType.SYS_REQUEST_NOT_PLAUSIBLE);
+        }
+    }
 
-        } else if (ca.getOperationState() != OperationState.OPERATIVE) {
+    private void checkState(CardAccount ca) {
+        if (ca.getOperationState() != OperationState.OPERATIVE) {
             throw new IxsiCodeException("The user cannot initiate any booking action", ErrorCodeType.SYS_REQUEST_NOT_PLAUSIBLE);
         }
     }
