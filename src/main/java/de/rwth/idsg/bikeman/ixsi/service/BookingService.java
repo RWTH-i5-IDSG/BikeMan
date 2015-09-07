@@ -84,16 +84,16 @@ public class BookingService {
         }
     }
 
-    public Booking get(String bookingId) {
-        return bookingRepository.findByIxsiBookingId(bookingId);
+    public Booking get(String bookingId, String userId) {
+        return bookingRepository.findByIxsiBookingIdForUser(bookingId, userId);
     }
 
     /**
      * @return Cancelled booking
      */
     @Transactional
-    public Booking cancel(String bookingId) {
-        Booking booking = bookingRepository.findByIxsiBookingId(bookingId);
+    public Booking cancel(String bookingId, String userId) {
+        Booking booking = bookingRepository.findByIxsiBookingIdForUser(bookingId, userId);
 
         Transaction transaction = booking.getTransaction();
         if (transaction != null) {
@@ -135,6 +135,10 @@ public class BookingService {
 
         return booking;
     }
+
+    // -------------------------------------------------------------------------
+    // Private helpers
+    // -------------------------------------------------------------------------
 
     /**
      * In this context, the actual IXSI begin and end timestamps are not important,

@@ -4,10 +4,11 @@ import com.google.common.base.Optional;
 import de.rwth.idsg.bikeman.domain.Booking;
 import de.rwth.idsg.bikeman.domain.Pedelec;
 import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
+import de.rwth.idsg.bikeman.ixsi.IxsiProcessingException;
 import de.rwth.idsg.bikeman.ixsi.processor.api.UserRequestProcessor;
+import de.rwth.idsg.bikeman.ixsi.service.BookingService;
 import de.rwth.idsg.bikeman.psinterface.dto.request.RemoteAuthorizeDTO;
 import de.rwth.idsg.bikeman.psinterface.rest.client.StationClient;
-import de.rwth.idsg.bikeman.repository.BookingRepository;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,7 @@ import xjc.schema.ixsi.UserInfoType;
 public class BookingUnlockRequestProcessor implements
     UserRequestProcessor<BookingUnlockRequestType, BookingUnlockResponseType> {
 
-    @Autowired private BookingRepository bookingRepository;
+    @Autowired private BookingService bookingService;
     @Autowired private StationClient stationClient;
 
     @Override
@@ -39,7 +40,8 @@ public class BookingUnlockRequestProcessor implements
     public BookingUnlockResponseType processForUser(BookingUnlockRequestType request, Optional<Language> lan,
                                                     UserInfoType userInfo) {
         try {
-            Booking booking = bookingRepository.findByIxsiBookingId(request.getBookingID());
+            Booking booking = bookingService.get(request.getBookingID(), userInfo.getUserID());
+
             Pedelec pedelec = booking.getReservation().getPedelec();
             Integer stationSlotPosition = pedelec.getStationSlot().getStationSlotPosition();
             String endpointAddress = pedelec.getStationSlot().getStation().getEndpointAddress();
@@ -56,8 +58,8 @@ public class BookingUnlockRequestProcessor implements
         } catch (DatabaseException e) {
             return buildError(ErrorFactory.Sys.invalidRequest(e.getMessage(), null));
 
-        } catch (Exception e) {
-            return buildError(ErrorFactory.Sys.backendFailed(e.getMessage(), null));
+        } catch (IxsiProcessingException e) {
+            return buildError(ErrorFactory.Booking.changeNotPossible(e.getMessage(), e.getMessage()));
         }
     }
 

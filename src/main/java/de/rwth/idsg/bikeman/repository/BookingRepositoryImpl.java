@@ -56,15 +56,19 @@ public class BookingRepositoryImpl implements BookingRepository {
     }
 
     @Override
-    public Booking findByIxsiBookingId(String ixsiBookingId) {
-        final String query = "SELECT b FROM Booking b WHERE b.ixsiBookingId = :ixsiBookingId";
+    public Booking findByIxsiBookingIdForUser(String ixsiBookingId, String userId) {
+        final String query = "SELECT b FROM Booking b " +
+                             "WHERE b.ixsiBookingId = :ixsiBookingId " +
+                             "AND b.reservation.cardAccount.cardAccountId = :userId";
 
         try {
             return em.createQuery(query, Booking.class)
-                .setParameter("ixsiBookingId", ixsiBookingId)
-                .getSingleResult();
+                     .setParameter("ixsiBookingId", ixsiBookingId)
+                     .setParameter("userId", userId)
+                     .getSingleResult();
         } catch (NoResultException e) {
-            throw new DatabaseException("Could not find booking for the given id '" + ixsiBookingId + "'", e);
+            throw new DatabaseException(
+                    "Could not find booking for the given id " + ixsiBookingId + " and user " + userId, e);
         }
     }
 

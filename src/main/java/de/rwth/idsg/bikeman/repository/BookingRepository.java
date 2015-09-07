@@ -13,5 +13,5 @@ public interface BookingRepository {
     Booking save(Booking booking);
     void cancel(Booking booking);
     List<Booking> findClosedBookings(List<String> ixsiBookingIdList);
-    Booking findByIxsiBookingId(String ixsiBookingId);
+    Booking findByIxsiBookingIdForUser(String ixsiBookingId, String userId);
 }

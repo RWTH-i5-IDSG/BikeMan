@@ -39,10 +39,10 @@ public class ChangeBookingRequestProcessor implements
                                                     UserInfoType userInfo) {
         try {
             if (request.isSetCancel() && request.isCancel()) {
-                return proceedCancel(request);
+                return proceedCancel(request, userInfo);
 
             } else {
-                return proceedChange(request);
+                return proceedChange(request, userInfo);
             }
         } catch (DatabaseException e) {
             return buildError(ErrorFactory.Booking.idUnknown(e.getMessage(), null));
@@ -52,8 +52,8 @@ public class ChangeBookingRequestProcessor implements
         }
     }
 
-    private ChangeBookingResponseType proceedChange(ChangeBookingRequestType request) {
-        Booking oldBooking = bookingService.get(request.getBookingID());
+    private ChangeBookingResponseType proceedChange(ChangeBookingRequestType request, UserInfoType userInfo) {
+        Booking oldBooking = bookingService.get(request.getBookingID(), userInfo.getUserID());
         TimePeriodType oldTimePeriod = buildTimePeriod(oldBooking);
 
         Booking newBooking = bookingService.update(oldBooking, request.getNewTimePeriodProposal());
@@ -77,9 +77,8 @@ public class ChangeBookingRequestProcessor implements
         return new ChangeBookingResponseType().withBooking(responseBooking);
     }
 
-    private ChangeBookingResponseType proceedCancel(ChangeBookingRequestType request) {
-        Booking booking = bookingService.cancel(request.getBookingID());
-
+    private ChangeBookingResponseType proceedCancel(ChangeBookingRequestType request, UserInfoType userInfo) {
+        Booking booking = bookingService.cancel(request.getBookingID(), userInfo.getUserID());
         TimePeriodType timePeriod = buildTimePeriod(booking);
 
         String pedelecId = booking.getReservation()
