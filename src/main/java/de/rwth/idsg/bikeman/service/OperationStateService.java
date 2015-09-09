@@ -98,6 +98,8 @@ public class OperationStateService {
         pushInavailability(stationManufacturerId, pedelecManufacturerIds);
     }
 
+
+    // TODO: push list of inavailabilities
     private void pushInavailability(String stationManufacturerId, List<String> pedelecManufacturerIds) {
         TimePeriodType timePeriodType = new TimePeriodType()
                 .withBegin(DateTime.now())
@@ -114,13 +116,32 @@ public class OperationStateService {
 
     public void pushStationAvailability(String stationManufacturerId) {
         List<String> pedelecManufacturerIds = pedelecRepository.findManufacturerIdsByStation(stationManufacturerId);
+
+        // TODO remove disabled or deleted pedelecs and slots from list
         pushAvailability(stationManufacturerId, pedelecManufacturerIds);
     }
 
     public void pushSlotAvailability(String slotManufacturerId) {
+
         List<String> pedelecManufacturerIds = new ArrayList<>();
 
         Pedelec pedelec = pedelecRepository.findByStationSlot(slotManufacturerId);
+
+        Station station = pedelec.getStationSlot().getStation();
+
+        boolean stationIsOperative = (station.getState() == de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE);
+
+        if (!stationIsOperative) {
+            return;
+        }
+
+        boolean pedelecIsOperative = (pedelec.getState() == de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE);
+        boolean slotIsOperative = (pedelec.getStationSlot().getState() == de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE);
+
+        if (!(pedelecIsOperative && slotIsOperative)) {
+            return;
+        }
+
         pedelecManufacturerIds.add(pedelec.getManufacturerId());
 
         String stationManufacturerId = pedelec.getStationSlot().getStation().getManufacturerId();
@@ -132,6 +153,27 @@ public class OperationStateService {
         List<String> pedelecManufacturerIds = new ArrayList<>();
 
         Pedelec pedelec = pedelecRepository.findByManufacturerId(pedelecManufacturerId);
+
+        Station station = pedelec.getStationSlot().getStation();
+
+        boolean stationIsOperative = (station.getState() == de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE);
+
+        if (!stationIsOperative) {
+            return;
+        }
+
+        boolean slotIsOperative = (pedelec.getStationSlot().getState() == de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE);
+
+        if (!slotIsOperative) {
+            return;
+        }
+
+        boolean pedelecIsOperative = (pedelec.getState() == de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE);
+
+        if (!pedelecIsOperative) {
+            return;
+        }
+
         pedelecManufacturerIds.add(pedelec.getManufacturerId());
 
         String stationManufacturerId = pedelec.getStationSlot().getStation().getManufacturerId();
@@ -143,9 +185,9 @@ public class OperationStateService {
         List<String> pedelecManufacturerIds = new ArrayList<>();
 
         Station station = stationRepository.findByManufacturerId(stationStatusDTO.getStationManufacturerId());
-        boolean stationWasInoperative = station.getState() == de.rwth.idsg.bikeman.domain.OperationState.INOPERATIVE;
+        boolean stationWasInoperative = (station.getState() != de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE);
 
-        boolean stationIsOperative = stationStatusDTO.getStationState() == OperationState.OPERATIVE;
+        boolean stationIsOperative = (stationStatusDTO.getStationState() == OperationState.OPERATIVE);
 
         if (stationIsOperative && stationWasInoperative) {
             List<Pedelec> pedelecs = pedelecRepository.findByStation(stationStatusDTO.getStationManufacturerId());
@@ -164,13 +206,13 @@ public class OperationStateService {
 
                 StationSlot slot = stationSlotRepository.findByManufacturerId(slotStatus.getSlotManufacturerId(), station.getManufacturerId());
 
-                boolean slotWasInoperative = slot.getState() == de.rwth.idsg.bikeman.domain.OperationState.INOPERATIVE;
-                boolean slotIsOperative = slotStatus.getSlotState() == OperationState.OPERATIVE;
+                boolean slotWasInoperative = (slot.getState() != de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE);
+                boolean slotIsOperative = (slotStatus.getSlotState() == OperationState.OPERATIVE);
 
                 if (slotIsOperative && slotWasInoperative) {
                     Pedelec pedelec = pedelecRepository.findByStationSlot(slotStatus.getSlotManufacturerId());
 
-                    boolean pedelecIsOperative = pedelec.getState() == de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE;
+                    boolean pedelecIsOperative = (pedelec.getState() == de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE);
 
                     if (pedelecIsOperative) {
                         pedelecManufacturerIds.add(pedelec.getManufacturerId());
@@ -189,10 +231,10 @@ public class OperationStateService {
 
         if (pedelecStatus.getPedelecState() == OperationState.OPERATIVE) {
 
-            boolean readyToUse = (pedelec.getState() == de.rwth.idsg.bikeman.domain.OperationState.INOPERATIVE);
+            boolean slotWasInoperative = (pedelec.getState() != de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE);
             boolean slotIsOperative = (pedelec.getStationSlot().getState() == de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE);
 
-            if (readyToUse && slotIsOperative) {
+            if (slotIsOperative && (slotWasInoperative || slotWasInoperative)) {
                 pedelecManufacturerIds.add(pedelecStatus.getPedelecManufacturerId());
             }
         }
@@ -202,6 +244,7 @@ public class OperationStateService {
         pushAvailability(stationManufacturerId, pedelecManufacturerIds);
     }
 
+    // TODO: push list of availabilities
     private void pushAvailability(String stationManufacturerId, List<String> pedelecManufacturerIds) {
         TimePeriodType timePeriodType = new TimePeriodType()
                 .withBegin(DateTime.now())

@@ -77,7 +77,7 @@ public class StationService {
 
         if (dto.getState() == OperationState.INOPERATIVE) {
             operationStateService.pushStationInavailability(dto.getManufacturerId());
-        } else {
+        } else if (dto.getState() == OperationState.OPERATIVE) {
             operationStateService.pushStationAvailability(dto.getManufacturerId());
         }
     }
@@ -97,7 +97,7 @@ public class StationService {
 
         if (dto.getState() == OperationState.INOPERATIVE) {
             operationStateService.pushSlotInavailability(stationSlot.getManufacturerId());
-        } else {
+        } else if (dto.getState() == OperationState.OPERATIVE) {
             operationStateService.pushSlotAvailability(stationSlot.getManufacturerId());
         }
     }
