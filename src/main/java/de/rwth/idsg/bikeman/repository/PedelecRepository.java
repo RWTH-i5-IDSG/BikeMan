@@ -12,10 +12,22 @@ import java.util.List;
  */
 public interface PedelecRepository {
     List<ViewPedelecDTO> findAll() throws DatabaseException;
+
     ViewPedelecDTO findOneDTO(Long pedelecId) throws DatabaseException;
+
     Pedelec findOne(long pedelecId) throws DatabaseException;
+
     Pedelec findByManufacturerId(String manufacturerId) throws DatabaseException;
+
+    List<Pedelec> findByStation(String stationManufacturerId) throws DatabaseException;
+
+    List<String> findManufacturerIdsByStation(String stationManufacturerId) throws DatabaseException;
+
+    Pedelec findByStationSlot(String stationSlotManufacturerId) throws DatabaseException;
+
     void create(CreateEditPedelecDTO dto) throws DatabaseException;
+
     void update(CreateEditPedelecDTO dto) throws DatabaseException;
+
     void delete(long pedelecId) throws DatabaseException;
 }
