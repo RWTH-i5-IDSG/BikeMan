@@ -31,7 +31,6 @@ import de.rwth.idsg.bikeman.psinterface.repository.PsiPedelecRepository;
 import de.rwth.idsg.bikeman.psinterface.repository.PsiReservationRepository;
 import de.rwth.idsg.bikeman.psinterface.repository.PsiStationRepository;
 import de.rwth.idsg.bikeman.psinterface.repository.PsiTransactionRepository;
-import de.rwth.idsg.bikeman.service.OperationStateService;
 import de.rwth.idsg.bikeman.service.TransactionEventService;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
@@ -63,11 +62,12 @@ public class PsiService {
     @Inject private PlaceAvailabilityPushService placeAvailabilityPushService;
     @Inject private ExternalBookingPushService externalBookingPushService;
     @Inject private TransactionEventService transactionEventService;
-    @Inject private OperationStateService operationStateService;
+    //@Inject private OperationStateService operationStateService;
 
     private static final Integer HEARTBEAT_INTERVAL_IN_SECONDS = 60;
 
-    public BootConfirmationDTO handleBootNotification(BootNotificationDTO bootNotificationDTO) throws DatabaseException {
+    public BootConfirmationDTO handleBootNotification(BootNotificationDTO bootNotificationDTO)
+            throws DatabaseException {
 
         stationRepository.updateAfterBoot(bootNotificationDTO);
         List<CardKeyDTO> cardKeys = stationRepository.getCardKeys();
@@ -79,7 +79,8 @@ public class PsiService {
         return bootConfirmationDTO;
     }
 
-    public AuthorizeConfirmationDTO handleAuthorize(CustomerAuthorizeDTO customerAuthorizeDTO) throws DatabaseException {
+    public AuthorizeConfirmationDTO handleAuthorize(CustomerAuthorizeDTO customerAuthorizeDTO)
+            throws DatabaseException {
 
         log.info("Card with CardId {} start authorization from Station", customerAuthorizeDTO.getCardId());
 
@@ -100,7 +101,7 @@ public class PsiService {
         if (!cardAccount.getCardPin().equals(customerAuthorizeDTO.getCardPin())) {
 
             // increase auth fail count by one
-            cardAccount.setAuthenticationTrialCount(cardAccount.getAuthenticationTrialCount()+1);
+            cardAccount.setAuthenticationTrialCount(cardAccount.getAuthenticationTrialCount() + 1);
 
             // auth attempts exceeded
             if (cardAccount.getAuthenticationTrialCount() >= 3) {
@@ -137,8 +138,8 @@ public class PsiService {
         Transaction transaction = transactionRepository.start(startTransactionDTO);
 
         List<Reservation> reservationList = reservationRepository.find(transaction.getCardAccount().getCardAccountId(),
-                                                                       transaction.getPedelec().getPedelecId(),
-                                                                       transaction.getStartDateTime());
+                transaction.getPedelec().getPedelecId(),
+                transaction.getStartDateTime());
 
         Booking booking;
 
@@ -180,8 +181,8 @@ public class PsiService {
         Long timestampInMillis = Utils.toMillis(t.getStartDateTime());
 
         availabilityPushService.takenFromPlace(
-            startTransactionDTO.getPedelecManufacturerId(),
-            new DateTime(timestampInMillis));
+                startTransactionDTO.getPedelecManufacturerId(),
+                new DateTime(timestampInMillis));
 
         placeAvailabilityPushService.reportChange(startTransactionDTO.getStationManufacturerId());
     }
@@ -204,9 +205,9 @@ public class PsiService {
 
         DateTime startDateTime = t.getStartDateTime().toDateTime();
         availabilityPushService.arrivedAtPlace(
-            stopTransactionDTO.getPedelecManufacturerId(),
-            stopTransactionDTO.getStationManufacturerId(),
-            startDateTime);
+                stopTransactionDTO.getPedelecManufacturerId(),
+                stopTransactionDTO.getStationManufacturerId(),
+                startDateTime);
 
         placeAvailabilityPushService.reportChange(stopTransactionDTO.getStationManufacturerId());
     }
@@ -229,15 +230,15 @@ public class PsiService {
     }
 
     public void handleStationStatusNotification(StationStatusDTO stationStatusDTO) {
-        operationStateService.pushAvailability(stationStatusDTO);
-        operationStateService.pushInavailability(stationStatusDTO);
+        //operationStateService.pushAvailability(stationStatusDTO);
+        //operationStateService.pushInavailability(stationStatusDTO);
 
         stationRepository.updateStationStatus(stationStatusDTO);
     }
 
     public void handlePedelecStatusNotification(PedelecStatusDTO pedelecStatusDTO) {
-        operationStateService.pushAvailability(pedelecStatusDTO);
-        operationStateService.pushInavailability(pedelecStatusDTO);
+        //operationStateService.pushAvailability(pedelecStatusDTO);
+        //operationStateService.pushInavailability(pedelecStatusDTO);
 
         pedelecRepository.updatePedelecStatus(pedelecStatusDTO);
     }
