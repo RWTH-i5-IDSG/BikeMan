@@ -65,7 +65,7 @@ public class CardAccount extends AbstractTimestampClass implements Serializable 
     private OperationState operationState = OperationState.INOPERATIVE;
 
     @Column(name = "authentication_trial_count")
-    private Integer authenticationTrialCount;
+    private Integer authenticationTrialCount = 0;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "cardAccount", orphanRemoval = true)
     private Set<BookedTariff> bookedTariffs;
