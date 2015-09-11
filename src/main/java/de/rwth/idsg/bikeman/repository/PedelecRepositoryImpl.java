@@ -216,6 +216,21 @@ public class PedelecRepositoryImpl implements PedelecRepository {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
+    public List<Pedelec> findPedelecsByStationSlot(String stationSlotManufacturerId) throws DatabaseException {
+
+        final String q = "SELECT p FROM Pedelec p WHERE p.stationSlot.manufacturerId = :manufacturerId";
+
+        try {
+            return em.createQuery(q, Pedelec.class)
+                     .setParameter("manufacturerId", stationSlotManufacturerId)
+                     .getResultList();
+        } catch (Exception e) {
+            throw new DatabaseException("Failed to find pedelec with stationSlotManufacturerId " + stationSlotManufacturerId, e);
+        }
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
     public void create(CreateEditPedelecDTO dto) throws DatabaseException {
         Pedelec pedelec = new Pedelec();
         setFields(pedelec, dto);

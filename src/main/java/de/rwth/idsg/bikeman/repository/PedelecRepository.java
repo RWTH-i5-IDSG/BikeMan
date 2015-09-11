@@ -23,6 +23,8 @@ public interface PedelecRepository {
 
     List<String> findManufacturerIdsByStation(String stationManufacturerId) throws DatabaseException;
 
+    List<Pedelec> findPedelecsByStationSlot(String stationSlotManufacturerId) throws DatabaseException;
+
     Pedelec findByStationSlot(String stationSlotManufacturerId) throws DatabaseException;
 
     void create(CreateEditPedelecDTO dto) throws DatabaseException;
