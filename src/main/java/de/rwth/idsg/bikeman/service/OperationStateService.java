@@ -50,13 +50,13 @@ public class OperationStateService {
     public void pushSlotInavailability(String slotManufacturerId) {
         List<String> pedelecManufacturerIds = new ArrayList<>();
 
-        Pedelec pedelec = null;
+        List<Pedelec> pedelecs = pedelecRepository.findPedelecsByStationSlot(slotManufacturerId);
 
-        try {
-            pedelec = pedelecRepository.findByStationSlot(slotManufacturerId);
-        } catch (NoResultException ex) {
+        if (Utils.isEmpty(pedelecs)) {
             return;
         }
+
+        Pedelec pedelec = pedelecs.get(0);
 
         pedelecManufacturerIds.add(pedelec.getManufacturerId());
 
@@ -91,13 +91,13 @@ public class OperationStateService {
             for (SlotDTO.StationStatus slotStatus : stationStatusDTO.getSlots()) {
                 if (slotStatus.getSlotState() == OperationState.INOPERATIVE) {
 
-                    Pedelec pedelec = null;
+                    List<Pedelec> pedelecs = pedelecRepository.findPedelecsByStationSlot(slotStatus.getSlotManufacturerId());
 
-                    try {
-                        pedelec = pedelecRepository.findByStationSlot(slotStatus.getSlotManufacturerId());
-                    } catch (NoResultException ex) {
-
+                    if (Utils.isEmpty(pedelecs)) {
+                        return;
                     }
+
+                    Pedelec pedelec = pedelecs.get(0);
 
                     if (pedelec != null) {
                         pedelecManufacturerIds.add(pedelec.getManufacturerId());
@@ -171,13 +171,13 @@ public class OperationStateService {
 
         List<String> pedelecManufacturerIds = new ArrayList<>();
 
-        Pedelec pedelec;
+        List<Pedelec> pedelecs = pedelecRepository.findPedelecsByStationSlot(slotManufacturerId);
 
-        try {
-            pedelec = pedelecRepository.findByStationSlot(slotManufacturerId);
-        } catch (NoResultException ex) {
+        if (Utils.isEmpty(pedelecs)) {
             return;
         }
+
+        Pedelec pedelec = pedelecs.get(0);
 
         Station station = pedelec.getStationSlot().getStation();
 
