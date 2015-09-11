@@ -4,6 +4,7 @@ import de.rwth.idsg.bikeman.domain.Pedelec;
 import de.rwth.idsg.bikeman.domain.Station;
 import de.rwth.idsg.bikeman.domain.StationSlot;
 import de.rwth.idsg.bikeman.ixsi.service.AvailabilityPushService;
+import de.rwth.idsg.bikeman.psinterface.Utils;
 import de.rwth.idsg.bikeman.psinterface.dto.OperationState;
 import de.rwth.idsg.bikeman.psinterface.dto.request.PedelecStatusDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.SlotDTO;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import xjc.schema.ixsi.TimePeriodType;
 
 import javax.inject.Inject;
+import javax.persistence.NoResultException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,13 +43,21 @@ public class OperationStateService {
 
     public void pushStationInavailability(String stationManufacturerId) {
         List<String> pedelecManufacturerIds = pedelecRepository.findManufacturerIdsByStation(stationManufacturerId);
+
         pushInavailability(stationManufacturerId, pedelecManufacturerIds);
     }
 
     public void pushSlotInavailability(String slotManufacturerId) {
         List<String> pedelecManufacturerIds = new ArrayList<>();
 
-        Pedelec pedelec = pedelecRepository.findByStationSlot(slotManufacturerId);
+        Pedelec pedelec = null;
+
+        try {
+            pedelec = pedelecRepository.findByStationSlot(slotManufacturerId);
+        } catch (NoResultException ex) {
+            return;
+        }
+
         pedelecManufacturerIds.add(pedelec.getManufacturerId());
 
         String stationManufacturerId = pedelec.getStationSlot().getStation().getManufacturerId();
@@ -59,6 +69,11 @@ public class OperationStateService {
         List<String> pedelecManufacturerIds = new ArrayList<>();
 
         Pedelec pedelec = pedelecRepository.findByManufacturerId(pedelecManufacturerId);
+
+        if (pedelec.getStationSlot() == null) {
+            return;
+        }
+
         pedelecManufacturerIds.add(pedelec.getManufacturerId());
 
         String stationManufacturerId = pedelec.getStationSlot().getStation().getManufacturerId();
@@ -72,11 +87,21 @@ public class OperationStateService {
 
         if (stationStatusDTO.getStationState() == OperationState.INOPERATIVE) {
             pedelecManufacturerIds = pedelecRepository.findManufacturerIdsByStation(stationStatusDTO.getStationManufacturerId());
-        } else if (!stationStatusDTO.getSlots().isEmpty()) {
+        } else if (!Utils.isEmpty(stationStatusDTO.getSlots())) {
             for (SlotDTO.StationStatus slotStatus : stationStatusDTO.getSlots()) {
                 if (slotStatus.getSlotState() == OperationState.INOPERATIVE) {
-                    Pedelec pedelec = pedelecRepository.findByStationSlot(slotStatus.getSlotManufacturerId());
-                    pedelecManufacturerIds.add(pedelec.getManufacturerId());
+
+                    Pedelec pedelec = null;
+
+                    try {
+                        pedelec = pedelecRepository.findByStationSlot(slotStatus.getSlotManufacturerId());
+                    } catch (NoResultException ex) {
+
+                    }
+
+                    if (pedelec != null) {
+                        pedelecManufacturerIds.add(pedelec.getManufacturerId());
+                    }
                 }
             }
         }
@@ -88,6 +113,10 @@ public class OperationStateService {
         List<String> pedelecManufacturerIds = new ArrayList<>();
 
         Pedelec pedelec = pedelecRepository.findByManufacturerId(pedelecStatus.getPedelecManufacturerId());
+
+        if (pedelec.getStationSlot() == null) {
+            return;
+        }
 
         if (pedelecStatus.getPedelecState() == OperationState.INOPERATIVE) {
             pedelecManufacturerIds.add(pedelecStatus.getPedelecManufacturerId());
@@ -101,6 +130,11 @@ public class OperationStateService {
 
     // TODO: push list of inavailabilities
     private void pushInavailability(String stationManufacturerId, List<String> pedelecManufacturerIds) {
+
+        if (Utils.isEmpty(pedelecManufacturerIds)) {
+            return;
+        }
+
         TimePeriodType timePeriodType = new TimePeriodType()
                 .withBegin(DateTime.now())
                 .withEnd(DateTime.now().plusDays(90));
@@ -115,9 +149,21 @@ public class OperationStateService {
     // ==============================
 
     public void pushStationAvailability(String stationManufacturerId) {
-        List<String> pedelecManufacturerIds = pedelecRepository.findManufacturerIdsByStation(stationManufacturerId);
+        List<Pedelec> pedelecs = pedelecRepository.findByStation(stationManufacturerId);
 
-        // TODO remove disabled or deleted pedelecs and slots from list
+        List<String> pedelecManufacturerIds = new ArrayList<>(pedelecs.size());
+
+        for (Pedelec pedelec : pedelecs) {
+            boolean pedelecIsOperative = (pedelec.getState() == de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE);
+            boolean slotIsOperative = (pedelec.getStationSlot().getState() == de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE);
+
+            if (!(pedelecIsOperative && slotIsOperative)) {
+                continue;
+            }
+
+            pedelecManufacturerIds.add(pedelec.getManufacturerId());
+        }
+
         pushAvailability(stationManufacturerId, pedelecManufacturerIds);
     }
 
@@ -125,7 +171,13 @@ public class OperationStateService {
 
         List<String> pedelecManufacturerIds = new ArrayList<>();
 
-        Pedelec pedelec = pedelecRepository.findByStationSlot(slotManufacturerId);
+        Pedelec pedelec;
+
+        try {
+            pedelec = pedelecRepository.findByStationSlot(slotManufacturerId);
+        } catch (NoResultException ex) {
+            return;
+        }
 
         Station station = pedelec.getStationSlot().getStation();
 
@@ -153,6 +205,10 @@ public class OperationStateService {
         List<String> pedelecManufacturerIds = new ArrayList<>();
 
         Pedelec pedelec = pedelecRepository.findByManufacturerId(pedelecManufacturerId);
+
+        if (pedelec.getStationSlot() == null) {
+            return;
+        }
 
         Station station = pedelec.getStationSlot().getStation();
 
@@ -201,10 +257,14 @@ public class OperationStateService {
                     pedelecManufacturerIds.add(pedelec.getManufacturerId());
                 }
             }
-        } else if (!stationStatusDTO.getSlots().isEmpty()) {
+        } else if (!Utils.isEmpty(stationStatusDTO.getSlots())) {
             for (SlotDTO.StationStatus slotStatus : stationStatusDTO.getSlots()) {
 
                 StationSlot slot = stationSlotRepository.findByManufacturerId(slotStatus.getSlotManufacturerId(), station.getManufacturerId());
+
+                if (slot.getPedelec() == null) {
+                    continue;
+                }
 
                 boolean slotWasInoperative = (slot.getState() != de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE);
                 boolean slotIsOperative = (slotStatus.getSlotState() == OperationState.OPERATIVE);
@@ -246,6 +306,11 @@ public class OperationStateService {
 
     // TODO: push list of availabilities
     private void pushAvailability(String stationManufacturerId, List<String> pedelecManufacturerIds) {
+
+        if (Utils.isEmpty(pedelecManufacturerIds)) {
+            return;
+        }
+
         TimePeriodType timePeriodType = new TimePeriodType()
                 .withBegin(DateTime.now())
                 .withEnd(DateTime.now().plusDays(90));

@@ -6,6 +6,8 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDateTime;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -35,6 +37,14 @@ public final class Utils {
         return toSeconds(new DateTime().getMillis());
     }
 
+    public static boolean isEmpty(List array) {
+        if (array == null || array.isEmpty()) {
+            return true;
+        }
+
+        return false;
+    }
+
     private static String getIp(HttpServletRequest request) {
         String remoteAddress = request.getHeader("X-Real-IP");
 
@@ -51,9 +61,9 @@ public final class Utils {
      */
     private static String getStationId(HttpServletRequest request) {
         String stationId = request.getHeader("STATION-ID");
-        if (stationId == null) {
-            throw new PsException("A required header is not set", PsErrorCode.CONSTRAINT_FAILED);
-        }
+//        if (stationId == null) {
+//            throw new PsException("A required header is not set", PsErrorCode.CONSTRAINT_FAILED);
+//        }
         return stationId;
     }
 }
