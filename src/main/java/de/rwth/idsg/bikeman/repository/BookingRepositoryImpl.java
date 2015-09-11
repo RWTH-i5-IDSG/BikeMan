@@ -59,7 +59,7 @@ public class BookingRepositoryImpl implements BookingRepository {
     public Booking findByIxsiBookingIdForUser(String ixsiBookingId, String userId) {
         final String query = "SELECT b FROM Booking b " +
                              "WHERE b.ixsiBookingId = :ixsiBookingId " +
-                             "AND b.reservation.cardAccount.cardAccountId = :userId";
+                             "AND b.reservation.cardAccount.cardId = :userId";
 
         try {
             return em.createQuery(query, Booking.class)
