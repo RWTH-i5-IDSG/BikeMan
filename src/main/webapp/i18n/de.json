@@ -440,7 +440,7 @@
                 "manufacturerId": "Hersteller-ID",
                 "stateOfCharge": "Ladezustand",
                 "state": "Status",
-                "station": "Station (Stellplatz)",
+                "station": "Ort",
                 "customer": "Kunde",
                 "lastChargingUpdate": "Letztes Lade-Update"
             },

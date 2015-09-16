@@ -454,7 +454,7 @@
                 "manufacturerId": "Manufacturer ID",
                 "stateOfCharge": "State of Charge",
                 "state": "State",
-                "station": "Station (Slot)",
+                "station": "Location",
                 "customer": "Customer",
                 "lastChargingUpdate": "Last Charging Update"
             },
