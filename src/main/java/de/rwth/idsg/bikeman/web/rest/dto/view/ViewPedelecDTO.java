@@ -40,7 +40,7 @@ public class ViewPedelecDTO {
     // Constructor for stationary pedelecs
     public ViewPedelecDTO(Long pedelecId, String manufacturerId, Double stateOfCharge,
                           OperationState state, Boolean inTransaction,
-                          Long stationId, String stationManufacturerId,
+                          Long stationId, String stationName,
                           Integer stationSlotPosition, LocalDateTime lastChargingUpdate) {
         this.pedelecId = pedelecId;
         this.manufacturerId = manufacturerId;
@@ -49,7 +49,7 @@ public class ViewPedelecDTO {
         this.inTransaction = inTransaction;
         this.lastChargingUpdate = lastChargingUpdate;
 
-        this.station = new ViewStationDTO(stationId, stationManufacturerId, stationSlotPosition);
+        this.station = new ViewStationDTO(stationId, stationName, stationSlotPosition);
     }
 
     // Constructor for pedelecs in transaction with customer
@@ -87,7 +87,7 @@ public class ViewPedelecDTO {
     @Data
     private class ViewStationDTO {
         private final Long id;
-        private final String stationManufacturerId;
+        private final String stationName;
         private final Integer stationSlotPosition;
     }
 

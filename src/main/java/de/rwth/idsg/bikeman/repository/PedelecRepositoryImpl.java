@@ -122,7 +122,7 @@ public class PedelecRepositoryImpl implements PedelecRepository {
                         pedelec.get(Pedelec_.state),
                         pedelec.get(Pedelec_.inTransaction),
                         station.get(Station_.stationId),
-                        station.get(Station_.manufacturerId),
+                        station.get(Station_.name),
                         stationSlot.get(StationSlot_.stationSlotPosition),
                         chargingStatus.get(PedelecChargingStatus_.timestamp)
                 )
