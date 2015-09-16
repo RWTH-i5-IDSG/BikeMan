@@ -165,6 +165,7 @@
         "table": {
             "title": "Stationsstellplätze",
             "header": {
+                "slotPosition": "Position",
                 "manufacturerId": "Hersteller ID",
                 "occupied": "Besetzt",
                 "state": "Status",

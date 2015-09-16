@@ -175,6 +175,7 @@
         "table": {
             "title": "Station Slots",
             "header": {
+                "slotPosition": "Position",
                 "manufacturerId": "Manufacturer ID",
                 "occupied": "Occupied",
                 "state": "State",

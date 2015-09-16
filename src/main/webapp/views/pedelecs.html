@@ -30,7 +30,8 @@
                         </div>
                     </td>
                     <td>{{pedelec.state}}</td>
-                    <td>{{pedelec.station.stationManufacturerId}} <span class="badge">{{pedelec.station.stationSlotPosition}}</span></td>
+                    <!--<td>{{pedelec.station.stationManufacturerId}} <span class="badge">{{pedelec.station.stationSlotPosition}}</span></td>-->
+                    <td><a ui-sref="stationDetail({stationId: pedelec.station.id})"><span ng-hide="pedelec.station.stationName == null">{{pedelec.station.stationName}} <span class="badge">{{pedelec.station.stationSlotPosition}}</span></span></a></td>
                     <td ng-if="!pedelec.transaction.majorCustomerName">{{pedelec.transaction.firstname + " " + pedelec.transaction.lastname}}</td>
                     <td ng-if="pedelec.transaction.majorCustomerName">{{pedelec.transaction.majorCustomerName}}</td>
                     <td>{{pedelec.lastChargingUpdate | date:'medium'}}</td>

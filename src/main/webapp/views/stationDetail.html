@@ -149,6 +149,7 @@
     <table class="table table-striped">
         <thead>
         <tr>
+            <th translate="stationDetail.table.header.slotPosition">Position</th>
             <th translate="stationDetail.table.header.manufacturerId">Manufacturer ID</th>
             <th translate="stationDetail.table.header.occupied">Occupied</th>
             <th translate="stationDetail.table.header.state">State</th>
@@ -156,7 +157,8 @@
         </tr>
         </thead>
         <tbody>
-        <tr ng-repeat="slot in station.slots | orderBy:'manufacturerId'">
+        <tr ng-repeat="slot in station.slots | orderBy:'slotPosition'">
+            <td>{{slot.slotPosition}}</td>
             <td>{{slot.manufacturerId}}</td>
             <td>{{slot.isOccupied | occupiedFilter}}</td>
             <td>
