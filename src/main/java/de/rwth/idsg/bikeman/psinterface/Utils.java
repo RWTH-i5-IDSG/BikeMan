@@ -61,9 +61,9 @@ public final class Utils {
      */
     private static String getStationId(HttpServletRequest request) {
         String stationId = request.getHeader("STATION-ID");
-//        if (stationId == null) {
-//            throw new PsException("A required header is not set", PsErrorCode.CONSTRAINT_FAILED);
-//        }
+        if (stationId == null) {
+            throw new PsException("A required header is not set", PsErrorCode.CONSTRAINT_FAILED);
+        }
         return stationId;
     }
 }
