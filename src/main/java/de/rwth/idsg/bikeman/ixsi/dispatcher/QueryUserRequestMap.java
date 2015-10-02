@@ -29,7 +29,7 @@ public class QueryUserRequestMap extends HashMap<Class<?>, UserRequestProcessor>
     @Autowired private PriceInformationRequestProcessor priceInformationRequestProcessor;
     @Autowired private BookingRequestProcessor bookingRequestProcessor;
     @Autowired private ChangeBookingRequestProcessor changeBookingRequestProcessor;
-    @Autowired private BookingUnlockRequestProcessor bookingUnlockRequestProcessor;
+    @Autowired private ChangeBookingStateRequestProcessor changeBookingStateRequestProcessor;
     @Autowired private CreateUserRequestProcessor createUserRequestProcessor;
     @Autowired private ChangeUserRequestProcessor changeUserRequestProcessor;
 
@@ -43,7 +43,7 @@ public class QueryUserRequestMap extends HashMap<Class<?>, UserRequestProcessor>
         super.put(PriceInformationRequestType.class, priceInformationRequestProcessor);
         super.put(BookingRequestType.class, bookingRequestProcessor);
         super.put(ChangeBookingRequestType.class, changeBookingRequestProcessor);
-        super.put(BookingUnlockRequestType.class, bookingUnlockRequestProcessor);
+        super.put(ChangeBookingStateRequestType.class, changeBookingStateRequestProcessor);
         super.put(CreateUserRequestType.class, createUserRequestProcessor);
         super.put(ChangeUserRequestType.class, changeUserRequestProcessor);
         log.trace("Ready");
