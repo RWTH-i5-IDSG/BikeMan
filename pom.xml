@@ -686,12 +686,17 @@
         </profile>
         <profile>
             <id>prod</id>
-            <dependencies>
-                <dependency>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-tomcat</artifactId>
-                </dependency>
-            </dependencies>
+
+            <!-- Since we don't run the app in embedded server and deploy the war to local Tomcat instance,
+                 this dependency is not needed. Thus, the commented dependency -->
+
+            <!--<dependencies>-->
+                <!--<dependency>-->
+                    <!--<groupId>org.springframework.boot</groupId>-->
+                    <!--<artifactId>spring-boot-starter-tomcat</artifactId>-->
+                <!--</dependency>-->
+            <!--</dependencies>-->
+
             <build>
                 <plugins>
                     <plugin>
