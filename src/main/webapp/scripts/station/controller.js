@@ -56,7 +56,10 @@ bikeManApp.controller('StationDetailController', ['$scope', 'resolvedStation', '
         };
 
         $scope.getConfig = function () {
-            $scope.stationConfig = CreateEditStation.getConfig({id: $scope.station.stationId});
+            $scope.stationConfig = CreateEditStation.getConfig({id: $scope.station.stationId}, function (data) {}, function (err) {
+                // dismiss the modal view on error!
+                $('#detailModal').modal('hide');
+            });
         };
 
         $scope.updateConfig = function () {
