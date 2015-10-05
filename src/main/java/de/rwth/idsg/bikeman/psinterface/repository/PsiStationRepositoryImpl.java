@@ -1,7 +1,7 @@
 package de.rwth.idsg.bikeman.psinterface.repository;
 
 import com.google.common.base.Strings;
-import de.rwth.idsg.bikeman.ItemIdComparator;
+import de.rwth.idsg.bikeman.utils.ItemIdComparator;
 import de.rwth.idsg.bikeman.domain.OperationState;
 import de.rwth.idsg.bikeman.domain.Pedelec;
 import de.rwth.idsg.bikeman.domain.Station;

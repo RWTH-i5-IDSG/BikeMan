@@ -1,4 +1,4 @@
-package de.rwth.idsg.bikeman;
+package de.rwth.idsg.bikeman.utils;
 
 import lombok.Getter;
 import lombok.Setter;

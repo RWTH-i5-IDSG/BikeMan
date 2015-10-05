@@ -1,6 +1,5 @@
 package de.rwth.idsg.bikeman.config;
 
-import de.rwth.idsg.bikeman.ApplicationConfig;
 import de.rwth.idsg.bikeman.ixsi.HandshakeInterceptor;
 import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
 import de.rwth.idsg.bikeman.ixsi.WebSocketEndpoint;
@@ -28,14 +27,15 @@ import javax.xml.datatype.DatatypeFactory;
 @Slf4j
 public class IxsiConfiguration implements WebSocketConfigurer {
 
-    @Autowired
-    private WebSocketEndpoint webSocketEndpoint;
-    @Autowired
-    private SystemValidator systemValidator;
+    public static final String WS_ENDPOINT  = "/ws";
+    public static final String SYSTEM_ID_KEY = "systemId";
+    
+    @Autowired private WebSocketEndpoint webSocketEndpoint;
+    @Autowired private SystemValidator systemValidator;
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(webSocketEndpoint, ApplicationConfig.IXSI.WS_ENDPOINT).setAllowedOrigins("*")
+        registry.addHandler(webSocketEndpoint, WS_ENDPOINT).setAllowedOrigins("*")
                 .addInterceptors(new HandshakeInterceptor(systemValidator));
     }
 

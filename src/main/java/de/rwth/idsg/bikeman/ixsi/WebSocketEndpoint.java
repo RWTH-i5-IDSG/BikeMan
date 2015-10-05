@@ -1,5 +1,6 @@
 package de.rwth.idsg.bikeman.ixsi;
 
+import de.rwth.idsg.bikeman.config.IxsiConfiguration;
 import de.rwth.idsg.bikeman.ixsi.api.Consumer;
 import de.rwth.idsg.bikeman.ixsi.api.WebSocketSessionStore;
 import de.rwth.idsg.bikeman.ixsi.impl.AvailabilityStore;
@@ -64,14 +65,14 @@ public class WebSocketEndpoint extends TextWebSocketHandler {
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         log.info("New connection established: {}", session);
-        String systemId = (String) session.getAttributes().get(HandshakeInterceptor.SYSTEM_ID_KEY);
+        String systemId = (String) session.getAttributes().get(IxsiConfiguration.SYSTEM_ID_KEY);
         webSocketSessionStore.add(systemId, session);
     }
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception {
         log.info("[id={}] Connection was closed, status: {}", session.getId(), closeStatus);
-        String systemId = (String) session.getAttributes().get(HandshakeInterceptor.SYSTEM_ID_KEY);
+        String systemId = (String) session.getAttributes().get(IxsiConfiguration.SYSTEM_ID_KEY);
         synchronized (LOCK) {
             webSocketSessionStore.remove(systemId, session);
 
