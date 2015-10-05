@@ -33,7 +33,7 @@ public class ChangeBookingStateRequestProcessor implements
 
     @Override
     public ChangeBookingStateResponseType processAnonymously(ChangeBookingStateRequestType request, Optional<Language> lan) {
-        return buildError(ErrorFactory.Auth.notAnonym("Anonymous booking unlock request not allowed", null));
+        return buildError(ErrorFactory.Auth.notAnonym("Anonymous change booking state request not allowed", null));
     }
 
     @Override
