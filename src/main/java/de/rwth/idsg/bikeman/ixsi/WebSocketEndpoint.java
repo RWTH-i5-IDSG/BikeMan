@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
-import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
 
@@ -22,7 +21,7 @@ import java.io.IOException;
  */
 @Slf4j
 @Component
-public class WebSocketEndpoint extends TextWebSocketHandler {
+public class WebSocketEndpoint extends ConcurrentTextWebSocketHandler {
 
     private static final Object LOCK = new Object();
 
@@ -35,7 +34,7 @@ public class WebSocketEndpoint extends TextWebSocketHandler {
     @Autowired private PlaceAvailabilityStore placeAvailabilityStore;
 
     @Override
-    public void handleTextMessage(WebSocketSession session, TextMessage webSocketMessage) throws Exception {
+    public void onMessage(WebSocketSession session, TextMessage webSocketMessage) throws Exception {
         log.info("[id={}] Received message: {}", session.getId(), webSocketMessage.getPayload());
 
         String payload = webSocketMessage.getPayload();
@@ -63,14 +62,14 @@ public class WebSocketEndpoint extends TextWebSocketHandler {
     }
 
     @Override
-    public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+    public void onOpen(WebSocketSession session) throws Exception {
         log.info("New connection established: {}", session);
         String systemId = (String) session.getAttributes().get(IxsiConfiguration.SYSTEM_ID_KEY);
         webSocketSessionStore.add(systemId, session);
     }
 
     @Override
-    public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception {
+    public void onClose(WebSocketSession session, CloseStatus closeStatus) throws Exception {
         log.info("[id={}] Connection was closed, status: {}", session.getId(), closeStatus);
         String systemId = (String) session.getAttributes().get(IxsiConfiguration.SYSTEM_ID_KEY);
         synchronized (LOCK) {
@@ -89,7 +88,7 @@ public class WebSocketEndpoint extends TextWebSocketHandler {
     }
 
     @Override
-    public void handleTransportError(WebSocketSession session, Throwable throwable) throws Exception {
+    public void onError(WebSocketSession session, Throwable throwable) throws Exception {
         log.error("Oops", throwable);
         // TODO catch transportexceptions!
     }
