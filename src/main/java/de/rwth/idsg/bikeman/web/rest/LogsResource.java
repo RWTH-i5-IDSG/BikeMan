@@ -68,22 +68,29 @@ public class LogsResource {
     }
 
     /**
-     * Prints the application logs
+     * Return the application logs
      */
     @RequestMapping(value = "/logs/bikeman", method = RequestMethod.GET)
-    public void log(HttpServletResponse response) {
+    public String log(HttpServletResponse response) {
         response.setContentType("text/plain");
 
+        if (logPath == null) {
+            return "Not available. Log file does not exist.";
+        }
+
+        String fileName = "bikeman.log";
+        String headerKey = "Content-Disposition";
+        String headerValue = String.format("attachment; filename=\"%s\"", fileName);
+        response.setHeader(headerKey, headerValue);
+
         try (PrintWriter writer = response.getWriter()) {
-            if (logPath == null) {
-                writer.write("Not available. Log file does not exist.");
-            } else {
-                Files.lines(logPath, StandardCharsets.UTF_8)
-                     .forEach(writer::println);
-            }
+            Files.lines(logPath, StandardCharsets.UTF_8)
+                 .forEach(writer::println);
         } catch (IOException e) {
             log.error("Exception happened", e);
         }
+
+        return null;
     }
 
     /**
