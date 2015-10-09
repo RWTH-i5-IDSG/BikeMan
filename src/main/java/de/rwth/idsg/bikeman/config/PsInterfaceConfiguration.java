@@ -22,15 +22,15 @@ import java.util.List;
 @Configuration
 public class PsInterfaceConfiguration {
 
-//    @Bean
-//    public FilterRegistrationBean resourceLogFilter() {
-//        log.debug("Initializing resource log filter");
-//        FilterRegistrationBean registration = new FilterRegistrationBean();
-//        registration.setFilter(new ResourceLogFilter());
-//        registration.addUrlPatterns("/psi/*");
-//        registration.setOrder(2);
-//        return registration;
-//    }
+    @Bean
+    public FilterRegistrationBean resourceLogFilter() {
+        log.debug("Initializing resource log filter");
+        FilterRegistrationBean registration = new FilterRegistrationBean();
+        registration.setFilter(new ResourceLogFilter());
+        registration.addUrlPatterns("/psi/*");
+        registration.setOrder(2);
+        return registration;
+    }
 
     @Bean
     public RestTemplate restTemplate() {
