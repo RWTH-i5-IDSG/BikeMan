@@ -3,7 +3,9 @@
 bikeManApp.controller('StationController', ['$scope', 'resolvedStation', 'Station',
     function ($scope, resolvedStation, Station) {
 
-        $scope.stations = resolvedStation;
+        $scope.sfStations = resolvedStation;
+
+        $scope.stations = [];
 
         $scope.getStationDetails = function(station) {
 
@@ -17,6 +19,22 @@ bikeManApp.controller('StationController', ['$scope', 'resolvedStation', 'Statio
 //            $scope.station = {manufacturerId: null, address: null, name: null, locationLatitude: null, locationLongitude: null, note: null, state: 'OPERATIVE'}
             $scope.station = null;
         };
+
+
+        $scope.concatAddress = function(address) {
+            address.string = address.streetAndHousenumber + ', ' + address.zip + ', ' + address.city + ', ' + address.country;
+            return address.string;
+        }
+
+        $scope.getters={
+            address: function (value) {
+
+                console.log(value);
+
+                return value.address.streetAndHousenumber + ', ' + value.address.zip + ', ' + value.address.city + ', ' + value.address.country;
+            }
+        }
+
     }]);
 
 

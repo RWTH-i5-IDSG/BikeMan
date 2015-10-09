@@ -6,62 +6,58 @@
     </div>
 
     <div class="table-responsive">
-        <table class="table table-hover">
+        <table st-table="stations" st-safe-src="sfStations" class="table table-hover">
             <thead>
-                <tr>
-                    <!--<th>ID</th>-->
-                    <th></th>
-                    <th translate="stations.table.header.name">Name</th>
-                    <th translate="stations.table.header.manufacturerId">Manufacturer ID</th>
-                    <th translate="stations.table.header.address">Address</th>
-                    <th translate="stations.table.header.state">State</th>
-                    <th translate="stations.table.header.allocation">Allocation</th>
-                    <th></th>
-                </tr>
+            <tr>
+                <!--<th>ID</th>-->
+                <th st-sort="name" st-sort-default="true" translate="stations.table.header.name">Name</th>
+                <th st-sort="manufacturerId" translate="stations.table.header.manufacturerId">Manufacturer ID</th>
+                <th translate="stations.table.header.address">Address</th>
+                <th st-sort="state" translate="stations.table.header.state">State</th>
+                <th st-sort="numFreeSlots" translate="stations.table.header.allocation">Allocation</th>
+                <th></th>
+            </tr>
+
+            <tr>
+                <th>
+                    <input st-search="name" placeholder="search for name" class="input-sm form-control" type="search"/>
+                </th>
+                <th>
+                    <input st-search="manufacturerId" placeholder="search for manufacturer ID" class="input-sm form-control" type="search"/>
+                </th>
+                <th>
+                    <input st-search="address.string" placeholder="search for address" class="input-sm form-control" type="search"/>
+                </th>
+                <th>
+                    <select class="form-control input-sm" st-search="state">
+                        <option value="">All</option>
+                        <option value="OPERATIVE">OPERATIVE</option>
+                        <option value="INOPERATIVE">INOPERATIVE</option>
+                    </select>
+                </th>
+                <th></th>
+                <th></th>
+            </tr>
+
             </thead>
             <tbody>
-                <tr ng-repeat-start="station in stations" data-parent="#stations-table" data-toggle="collapse"
-                    data-target="#{{station.stationId}}" ng-click="getStationDetails(station)">
-                    <td><a class="dropdown-toggle" data-toggle="dropdown"  href="javascript:;">
-                        <span class="fa fa-angle-right"></span>
-                    </a></span></td>
-                    <td>{{station.name}}</td>
-                    <td>{{station.manufacturerId}}</td>
-                    <td><small>{{station.address.streetAndHousenumber + ', ' + station.address.zip + ', '
-                        + station.address.city + ', ' + station.address.country}}</small></td>
-                    <td>{{station.state}}</td>
-                    <td>{{station.numAllSlots - station.numFreeSlots}} / {{station.numAllSlots}}</td>
-                    <td><button type="button" class="btn btn-info pull-right" ui-sref="stationDetail({stationId:{{'station.stationId'}}})">
+            <tr ng-repeat="station in stations" ng-click="getStationDetails(station)">
+                <td>{{station.name}}</td>
+                <td>{{station.manufacturerId}}</td>
+                <td>
+                    <small>{{concatAddress(station.address)}}
+                    </small>
+                </td>
+                <td>{{station.state}}</td>
+                <td>{{station.numAllSlots - station.numFreeSlots}} / {{station.numAllSlots}}</td>
+                <td>
+                    <button type="button" class="btn btn-info pull-right"
+                            ui-sref="stationDetail({stationId:{{'station.stationId'}}})">
                         <span class="glyphicon glyphicon-eye-open"></span>
                         <span translate="stations.table.body.details">Details</span>
-                    </button></td>
-                </tr>
-                <tr ng-repeat-end>
-                    <td colspan="7" class="hiddenRow">
-                        <div class="accordian-body collapse stations-inside panel panel-default" id="{{station.stationId}}">
-                            <table class="table table-curved stations-inside-table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th translate="stations.table.hiddenRow.slot">Slot</th>
-                                        <th translate="stations.table.hiddenRow.manufacturerId">Manufacturer ID</th>
-                                        <th translate="stations.table.hiddenRow.state">State</th>
-                                        <th translate="stations.table.hiddenRow.occupied">Occupied</th>
-                                        <th translate="stations.table.hiddenRow.pedelec">Pedelec (Manufacturer ID)</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr ng-repeat="slot in station.slots | orderBy : 'slotPosition'">
-                                        <td>{{slot.slotPosition}}</td>
-                                        <td>{{slot.manufacturerId}}</td>
-                                        <td>{{slot.state}}</td>
-                                        <td class="text-center">{{slot.isOccupied | occupiedFilter}}</td>
-                                        <td>{{slot.pedelec | pedelecViewFilter}}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </td>
-                </tr>
+                    </button>
+                </td>
+            </tr>
             </tbody>
         </table>
     </div>

@@ -2,7 +2,8 @@
 
 /* App Module */
 var bikeManApp = angular.module('bikeManApp', ['http-auth-interceptor', 'tmh.dynamicLocale',
-    'ngResource', 'ngCookies', 'bikeManAppUtils', 'pascalprecht.translate', 'truncate', 'ui.router', 'ui.bootstrap', 'ui.bootstrap.showErrors']);
+    'ngResource', 'ngCookies', 'bikeManAppUtils', 'pascalprecht.translate', 'truncate', 'ui.router',
+    'ui.bootstrap', 'ui.bootstrap.showErrors', 'angular-loading-bar', 'smart-table']);
 
 var httpHeaders;
 

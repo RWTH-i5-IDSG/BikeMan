@@ -30,6 +30,8 @@ module.exports = function (config) {
             'main/webapp/bower_components/ngInfiniteScroll/build/ng-infinite-scroll.js',
             'main/webapp/bower_components/angular-bootstrap-show-errors/src/showErrors.js',
             'main/webapp/bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
+            'main/webapp/bower_components/angular-loading-bar/build/loading-bar.js',
+            'main/webapp/bower_components/angular-smart-table/dist/smart-table.js',
             'main/webapp/bower_components/angular-mocks/angular-mocks.js',
             // endbower
             'main/webapp/scripts/app/app.js',
