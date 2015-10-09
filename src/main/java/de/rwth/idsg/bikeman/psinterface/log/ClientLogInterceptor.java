@@ -40,6 +40,7 @@ public class ClientLogInterceptor implements ClientHttpRequestInterceptor {
 
     private void logResponse(String stationUrl, int requestId, ClientHttpResponse response) throws IOException {
         String message = IOUtils.toString(response.getBody(), StandardCharsets.UTF_8.name());
-        log.debug("[stationUrl={}, requestId={}] Received response: {}", stationUrl, requestId, message);
+        log.debug("[stationUrl={}, requestId={}] Received response: {}, Status code: {}",
+                stationUrl, requestId, message, response.getRawStatusCode());
     }
 }

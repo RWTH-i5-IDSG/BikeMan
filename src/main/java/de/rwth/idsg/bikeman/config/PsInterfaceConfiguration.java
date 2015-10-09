@@ -2,6 +2,7 @@ package de.rwth.idsg.bikeman.config;
 
 import de.rwth.idsg.bikeman.psinterface.log.ClientLogInterceptor;
 import de.rwth.idsg.bikeman.psinterface.log.ResourceLogFilter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.embedded.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,14 +18,17 @@ import java.util.List;
  * @author Sevket Goekay <goekay@dbis.rwth-aachen.de>
  * @since 10.10.2014
  */
+@Slf4j
 @Configuration
 public class PsInterfaceConfiguration {
 
     @Bean
     public FilterRegistrationBean resourceLogFilter() {
+        log.debug("Initializing resource log filter");
         FilterRegistrationBean registration = new FilterRegistrationBean();
         registration.setFilter(new ResourceLogFilter());
-        registration.addUrlPatterns("/psi/**");
+        registration.addUrlPatterns("/psi/*");
+        registration.setOrder(2);
         return registration;
     }
 
