@@ -12,6 +12,7 @@
                 "tracker": "User tracker",
                 "metrics": "Metriken",
                 "logs": "Logs",
+                "applicationLogs": "Application Logs",
                 "audits": "Audits",
                 "login": "Anmelden",
                 "logout": "Abmelden",
