@@ -7,8 +7,8 @@
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- daily rollover -->
             <fileNamePattern>${catalina.base}/logs/bikeman.%d{yyyy-MM-dd}.log</fileNamePattern>
-            <!-- keep 15 days' worth of history -->
-            <maxHistory>15</maxHistory>
+            <!-- keep 30 days' worth of history -->
+            <maxHistory>30</maxHistory>
         </rollingPolicy>
         <encoder>
             <charset>utf-8</charset>
