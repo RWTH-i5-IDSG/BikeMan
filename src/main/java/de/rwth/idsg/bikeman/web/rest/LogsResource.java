@@ -78,6 +78,12 @@ public class LogsResource {
             return "Not available. Log file does not exist.";
         }
 
+        try {
+            response.setContentLength((int) Files.size(logPath));
+        } catch (IOException e) {
+            log.error("File size could not be calculated", e);
+        }
+
         String fileName = "bikeman.log";
         String headerKey = "Content-Disposition";
         String headerValue = String.format("attachment; filename=\"%s\"", fileName);
