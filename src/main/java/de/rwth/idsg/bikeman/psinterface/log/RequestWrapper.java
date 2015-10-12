@@ -21,10 +21,12 @@ public class RequestWrapper extends HttpServletRequestWrapper {
     private final ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
     @Getter private String prefix;
+    @Getter private boolean stationHeaderMissing;
 
-    public RequestWrapper(String prefix, HttpServletRequest request) {
+    public RequestWrapper(String prefix, HttpServletRequest request, boolean stationHeaderMissing) {
         super(request);
         this.prefix = prefix;
+        this.stationHeaderMissing = stationHeaderMissing;
     }
 
     @Override

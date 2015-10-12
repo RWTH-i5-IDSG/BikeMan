@@ -1,6 +1,8 @@
 package de.rwth.idsg.bikeman.psinterface.log;
 
+import com.google.common.base.Joiner;
 import de.rwth.idsg.bikeman.psinterface.Utils;
+import de.rwth.idsg.bikeman.psinterface.exception.PsException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -10,6 +12,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -26,14 +31,23 @@ public class ResourceLogFilter extends OncePerRequestFilter {
     private static final String RESPONSE_PREFIX = "Response: ";
 
     private AtomicInteger id = new AtomicInteger(0);
+    private static final Joiner.MapJoiner joiner = Joiner.on(", ").withKeyValueSeparator("=");
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     final FilterChain filterChain) throws ServletException, IOException {
         if (log.isDebugEnabled()) {
-            String prefix = String.format(PREFIX_FORMAT, Utils.getFrom(request), id.incrementAndGet());
+            String from = null;
+            boolean stationHeaderMissing = false;
+            try {
+                from = Utils.getFrom(request);
+            } catch (PsException e) {
+                stationHeaderMissing = true;
+            }
 
-            request = new RequestWrapper(prefix, request);
+            String prefix = String.format(PREFIX_FORMAT, from, id.incrementAndGet());
+
+            request = new RequestWrapper(prefix, request, stationHeaderMissing);
             response = new ResponseWrapper(prefix, response);
         }
 
@@ -65,6 +79,9 @@ public class ResourceLogFilter extends OncePerRequestFilter {
                 log.warn("Failed to parse request payload", e);
             }
 
+            if (wrap.isStationHeaderMissing()) {
+                log.error("stationId header was missing. Headers=[{}]", joiner.join(getHeadersMap(request)));
+            }
             log.debug(msg.toString());
         }
     }
@@ -88,5 +105,16 @@ public class ResourceLogFilter extends OncePerRequestFilter {
 
             log.debug(msg.toString());
         }
+    }
+
+    private Map<String, String> getHeadersMap(HttpServletRequest request) {
+        Map<String, String> map = new HashMap<>();
+        Enumeration names = request.getHeaderNames();
+        while (names.hasMoreElements()) {
+            String key = (String) names.nextElement();
+            String value = request.getHeader(key);
+            map.put(key, value);
+        }
+        return map;
     }
 }
