@@ -36,7 +36,7 @@ public class PsiCustomerRepositoryImpl implements PsiCustomerRepository {
                 .getSingleResult();
 
         } catch (NoResultException e) {
-            throw new PsException("No customer found with cardId " + cardId,
+            throw new PsException("Card account is unknown",
                 e, PsErrorCode.NOT_REGISTERED);
 
         } catch (Exception e) {

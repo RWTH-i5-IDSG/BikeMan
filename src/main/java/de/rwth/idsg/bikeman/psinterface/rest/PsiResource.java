@@ -6,6 +6,8 @@ import de.rwth.idsg.bikeman.psinterface.dto.request.*;
 import de.rwth.idsg.bikeman.psinterface.dto.response.AuthorizeConfirmationDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.response.BootConfirmationDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.response.HeartbeatDTO;
+import de.rwth.idsg.bikeman.psinterface.exception.PsErrorCode;
+import de.rwth.idsg.bikeman.psinterface.exception.PsException;
 import de.rwth.idsg.bikeman.service.CardAccountService;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
@@ -91,8 +93,7 @@ public class PsiResource {
         if (optional.isPresent()) {
             return optional.get();
         } else {
-            response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
-            return null;
+            throw new PsException("Credentials are not accepted", PsErrorCode.CONSTRAINT_FAILED);
         }
     }
 

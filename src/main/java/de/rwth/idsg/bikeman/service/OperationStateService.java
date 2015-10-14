@@ -173,6 +173,7 @@ public class OperationStateService {
 
         List<Pedelec> pedelecs = pedelecRepository.findPedelecsByStationSlot(slotManufacturerId);
 
+        // ignore when slot is empty
         if (Utils.isEmpty(pedelecs)) {
             return;
         }
@@ -190,6 +191,7 @@ public class OperationStateService {
         boolean pedelecIsOperative = (pedelec.getState() == de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE);
         boolean slotIsOperative = (pedelec.getStationSlot().getState() == de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE);
 
+        // when pedelec or slot inoperative, skip method
         if (!(pedelecIsOperative && slotIsOperative)) {
             return;
         }

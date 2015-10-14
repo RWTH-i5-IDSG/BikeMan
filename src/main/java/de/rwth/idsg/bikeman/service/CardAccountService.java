@@ -45,7 +45,10 @@ public class CardAccountService {
         cardAccount.setCardPin(cardActivationDTO.getCardPin());
         cardAccountRepository.save(cardAccount);
 
-        AuthorizeConfirmationDTO dto = new AuthorizeConfirmationDTO(cardAccount.getCardId(), AccountState.HAS_NO_PEDELEC);
+        // TODO: count for max rented pedelecs (tarrifs, not implemented yet)
+        int canRentCount = 2;
+
+        AuthorizeConfirmationDTO dto = new AuthorizeConfirmationDTO(cardAccount.getCardId(), 0, canRentCount);
         return Optional.of(dto);
     }
 

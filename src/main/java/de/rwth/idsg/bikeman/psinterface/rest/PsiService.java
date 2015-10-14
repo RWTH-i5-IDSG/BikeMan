@@ -92,10 +92,10 @@ public class PsiService {
 
             if (cardAccount.getAuthenticationTrialCount() >= 3) {
                 log.info("Card with CardId {} authorization failed with {}", customerAuthorizeDTO.getCardId(), PsErrorCode.AUTH_ATTEMPTS_EXCEEDED);
-                throw new PsException("Card is not operational!", PsErrorCode.AUTH_ATTEMPTS_EXCEEDED);
+                throw new PsException("No trials remaining and account gets disabled", PsErrorCode.AUTH_ATTEMPTS_EXCEEDED);
             }
             log.info("Card with CardId {} authorization failed with {}", customerAuthorizeDTO.getCardId(), PsErrorCode.CONSTRAINT_FAILED);
-            throw new PsException("Card is not operational!", PsErrorCode.CONSTRAINT_FAILED);
+            throw new PsException("Card account is disabled", PsErrorCode.CONSTRAINT_FAILED);
         }
 
         // PIN not correct
@@ -113,7 +113,7 @@ public class PsiService {
 
             if (cardAccount.getAuthenticationTrialCount() >= 3) {
                 log.info("Card with CardId {} authorization failed (3x wrong pin) with {}", customerAuthorizeDTO.getCardId(), PsErrorCode.AUTH_ATTEMPTS_EXCEEDED);
-                throw new PsException("Card is disabled, because of wrong PIN!", PsErrorCode.AUTH_ATTEMPTS_EXCEEDED);
+                throw new PsException("No trials remaining and account gets disabled", PsErrorCode.AUTH_ATTEMPTS_EXCEEDED);
             }
 
             log.info("Card with CardId {} authorization failed (wrong pin) with {}", customerAuthorizeDTO.getCardId(), PsErrorCode.CONSTRAINT_FAILED);
@@ -129,7 +129,11 @@ public class PsiService {
             accountState = AccountState.HAS_PEDELEC;
         }
 
-        return new AuthorizeConfirmationDTO(cardAccount.getCardId(), accountState);
+        int actualRentedPedelecs = cardAccount.getTransactions().size();
+        // TODO: count for max rented pedelecs (tarrifs, not implemented yet)
+        int canRentCount = 2;
+
+        return new AuthorizeConfirmationDTO(cardAccount.getCardId(), actualRentedPedelecs, canRentCount);
     }
 
     @Transactional
