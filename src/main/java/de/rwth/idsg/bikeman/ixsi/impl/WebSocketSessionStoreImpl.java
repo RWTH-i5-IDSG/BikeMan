@@ -58,16 +58,24 @@ public class WebSocketSessionStoreImpl implements WebSocketSessionStore {
             return;
         }
 
+        // Prevent java.util.ConcurrentModificationException: null
+        // Reason: Cannot modify the set (remove the item) we are iterating
+        // Solution: Iterate the set, find the item, remove the item after the for-loop
+        //
+        WebSocketSession toRemove = null;
         for (WebSocketSession wss : sessionSet) {
             if (wss.getId().equals(session.getId())) {
-                if (sessionSet.remove(wss)) {
-                    log.debug("The WebSocketSession with id '{}' is removed for system '{}' (size: {})",
-                            session.getId(), systemID, sessionSet.size());
-                } else {
-                    log.error("Failed to remove the WebSocketSession with id '{}' for system '{}'",
-                            session.getId(), systemID);
-                }
+                toRemove = wss;
+                break;
             }
+        }
+
+        if (toRemove != null && sessionSet.remove(toRemove)) {
+            log.debug("The WebSocketSession with id '{}' is removed for system '{}' (size: {})",
+                    session.getId(), systemID, sessionSet.size());
+        } else {
+            log.error("Failed to remove the WebSocketSession with id '{}' for system '{}'",
+                    session.getId(), systemID);
         }
     }
 
