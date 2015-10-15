@@ -34,6 +34,7 @@ public class CardAccountService {
     @Inject private UserRepository userRepository;
     @Inject private TariffRepository tariffRepository;
 
+    @Transactional(readOnly = true)
     public Optional<AuthorizeConfirmationDTO> activateCardAccount(CardActivationDTO cardActivationDTO) {
         CardAccount cardAccount = cardAccountRepository.findByActivationKey(cardActivationDTO.getActivationKey());
         if (cardAccount == null) {
@@ -45,8 +46,7 @@ public class CardAccountService {
         cardAccount.setCardPin(cardActivationDTO.getCardPin());
         cardAccountRepository.save(cardAccount);
 
-        // TODO: count for max rented pedelecs (tarrifs, not implemented yet)
-        int canRentCount = 2;
+        int canRentCount = cardAccount.getCurrentTariff().getTariff().getMaxNumberPedelecs();
 
         AuthorizeConfirmationDTO dto = new AuthorizeConfirmationDTO(cardAccount.getCardId(), 0, canRentCount);
         return Optional.of(dto);

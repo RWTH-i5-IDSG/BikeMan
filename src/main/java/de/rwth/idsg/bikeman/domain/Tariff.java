@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 /**
@@ -46,5 +47,9 @@ public class Tariff {
 
     @Column(name = "periodic_rate")
     private BigDecimal periodicRate;
+
+    @NotNull
+    @Column(name = "max_num_pedelecs")
+    private Integer maxNumberPedelecs;
 
 }

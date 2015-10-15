@@ -80,6 +80,7 @@ public class PsiService {
         return bootConfirmationDTO;
     }
 
+    @Transactional(readOnly = true)
     public AuthorizeConfirmationDTO handleAuthorize(CustomerAuthorizeDTO customerAuthorizeDTO)
             throws DatabaseException {
 
@@ -130,8 +131,7 @@ public class PsiService {
         }
 
         int actualRentedPedelecs = cardAccount.getTransactions().size();
-        // TODO: count for max rented pedelecs (tarrifs, not implemented yet)
-        int canRentCount = 2;
+        int canRentCount = cardAccount.getCurrentTariff().getTariff().getMaxNumberPedelecs();
 
         return new AuthorizeConfirmationDTO(cardAccount.getCardId(), actualRentedPedelecs, canRentCount);
     }

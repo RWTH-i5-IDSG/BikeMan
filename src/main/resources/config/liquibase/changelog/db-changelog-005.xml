@@ -26,4 +26,16 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="1409564974611-03" author="wkluth">
+        <addColumn tableName="T_TARIFF">
+            <column name="max_num_pedelecs" type="INT"/>
+        </addColumn>
+    </changeSet>
+    
+    <changeSet id="1409564974611-04" author="wkluth">
+        <update tableName="T_TARIFF">
+            <column name="max_num_pedelecs" value="1"></column>
+        </update>
+    </changeSet>
+
 </databaseChangeLog>
