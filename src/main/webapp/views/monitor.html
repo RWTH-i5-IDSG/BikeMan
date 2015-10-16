@@ -9,6 +9,7 @@
                 <th>System ID</th>
                 <th>Session ID</th>
                 <th>Open</th>
+                <th></th>
             </tr>
             </thead>
             <tbody>
@@ -16,6 +17,10 @@
                 <td>{{session.systemId}}</td>
                 <td>{{session.sessionId}}</td>
                 <td>{{session.open | occupiedFilter}}</td>
+                <td><button type="button" class="btn btn-sm btn-danger pull-right" ng-click="kill(session.systemId, session.sessionId)">
+                    <span class="glyphicon glyphicon-remove"></span>
+                    <span>Kill</span>
+                </button></td>
             </tr>
             </tbody>
         </table>

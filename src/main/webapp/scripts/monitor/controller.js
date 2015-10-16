@@ -9,6 +9,12 @@ bikeManApp.controller('MonitorController', ['$scope', 'Monitor', 'resolvedSessio
             $scope.storeList = Monitor.storeList();
         }
 
+        $scope.kill = function(systemId, sessionId) {
+            Monitor.kill({systemId: systemId, sessionId: sessionId}, function() {
+                $scope.sessionStatus = Monitor.get();
+            });
+        }
+
 
     }]);
 
