@@ -1,5 +1,6 @@
 package de.rwth.idsg.bikeman.web.rest;
 
+import com.google.common.base.Optional;
 import de.rwth.idsg.bikeman.ixsi.api.WebSocketSessionStore;
 import de.rwth.idsg.bikeman.ixsi.impl.AvailabilityStore;
 import de.rwth.idsg.bikeman.ixsi.impl.ConsumptionStore;
@@ -11,13 +12,16 @@ import de.rwth.idsg.bikeman.web.rest.dto.monitor.StoreItem;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.WebSocketSession;
 import xjc.schema.ixsi.BookingTargetIDType;
 import xjc.schema.ixsi.UserInfoType;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
@@ -40,12 +44,12 @@ public class MonitorResource {
 
     private static final String BASE_PATH                   = "monitor/";
     private static final String IXSI_SESSION_STATUS         = "monitor/session-status";
+    private static final String IXSI_SESSION_KILL           = "monitor/session/{systemId}/{sessionId}";
     private static final String IXSI_STORE_LIST             = "monitor/store-list";
     private static final String IXSI_STORE_AVAIL            = "monitor/store/avail";
     private static final String IXSI_STORE_PLACE_AVAIL      = "monitor/store/place-avail";
     private static final String IXSI_STORE_CONSUMPTION      = "monitor/store/consumption";
     private static final String IXSI_STORE_EX_BOOK          = "monitor/store/external-book";
-
 
     private static final String AVAILABILITY_STORE = "Availability Store";
     private static final String PLACE_AVAILABILITY_STORE = "Place Availability Store";
@@ -150,6 +154,21 @@ public class MonitorResource {
         return exBook;
     }
 
+    @RequestMapping(value = IXSI_SESSION_KILL, method = RequestMethod.PUT)
+    public void killSession(@PathVariable String systemId, @PathVariable String sessionId) {
+        Optional<WebSocketSession> optional = webSocketSessionStore.get(systemId, sessionId);
+
+        if (optional.isPresent()) {
+            WebSocketSession session = optional.get();
+            if (session.isOpen()) {
+                try {
+                    session.close(new CloseStatus(1000, "User requested disconnection"));
+                } catch (IOException e) {
+                    throw new RuntimeException("Failed to close the session", e);
+                }
+            }
+        }
+    }
 
     private <T> List<StoreItem<T>> itemMapToList(Map<T, Set<String>> map) {
         List<StoreItem<T>> items = new ArrayList<>();

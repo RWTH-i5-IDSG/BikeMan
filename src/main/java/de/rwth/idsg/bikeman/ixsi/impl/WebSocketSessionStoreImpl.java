@@ -1,5 +1,6 @@
 package de.rwth.idsg.bikeman.ixsi.impl;
 
+import com.google.common.base.Optional;
 import de.rwth.idsg.bikeman.ixsi.api.WebSocketSessionStore;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -77,6 +78,21 @@ public class WebSocketSessionStoreImpl implements WebSocketSessionStore {
             log.error("Failed to remove the WebSocketSession with id '{}' for system '{}'",
                     session.getId(), systemID);
         }
+    }
+
+    @Override
+    public synchronized Optional<WebSocketSession> get(String systemID, String sessionID) {
+        Deque<WebSocketSession> sessionSet = lookupTable.get(systemID);
+
+        if (sessionSet != null) {
+            for (WebSocketSession wss : sessionSet) {
+                if (wss.getId().equals(sessionID)) {
+                    return Optional.of(wss);
+                }
+            }
+        }
+
+        return Optional.absent();
     }
 
     /**
