@@ -34,15 +34,14 @@ public class PsiTransactionRepositoryImpl implements PsiTransactionRepository {
 
     @Override
     @Transactional(readOnly = true)
-    public boolean hasOpenTransactions(String cardId) {
+    public int countOpenTransactions(String cardId) {
         final String query = "SELECT COUNT(t) FROM Transaction t " +
                              "WHERE t.cardAccount.cardId = :cardId AND t.endDateTime IS NULL AND t.toSlot IS NULL";
 
-        Long count = em.createQuery(query, Long.class)
-                       .setParameter("cardId", cardId)
-                       .getSingleResult();
-
-        return count >= 1;
+        return em.createQuery(query, Long.class)
+                 .setParameter("cardId", cardId)
+                 .getSingleResult()
+                 .intValue();
     }
 
     @Override

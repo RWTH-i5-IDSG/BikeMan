@@ -93,7 +93,7 @@ public class PsiService {
         checkOperationState(cardAccount, customerAuthorizeDTO);
         checkPin(cardAccount, customerAuthorizeDTO);
 
-        int actualRentedPedelecs = cardAccount.getTransactions().size();
+        int actualRentedPedelecs = transactionRepository.countOpenTransactions(cardAccount.getCardId());
         int canRentCount = cardAccount.getCurrentTariff().getTariff().getMaxNumberPedelecs();
 
         return new AuthorizeConfirmationDTO(cardAccount.getCardId(), actualRentedPedelecs, canRentCount);

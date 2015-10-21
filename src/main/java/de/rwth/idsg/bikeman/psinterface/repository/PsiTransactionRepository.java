@@ -11,10 +11,10 @@ import de.rwth.idsg.bikeman.psinterface.dto.request.StopTransactionDTO;
 public interface PsiTransactionRepository {
 
     /**
-     * Find the OPEN (ONGOING) transactions for ONE card account.
+     * Count the number of OPEN (ONGOING) transactions for ONE card account.
      *
      */
-    boolean hasOpenTransactions(String cardId);
+    int countOpenTransactions(String cardId);
 
     Transaction start(StartTransactionDTO dto);
     Transaction stop(StopTransactionDTO dto);
