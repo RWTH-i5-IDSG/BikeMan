@@ -1,6 +1,5 @@
 package de.rwth.idsg.bikeman.psinterface.dto.response;
 
-import de.rwth.idsg.bikeman.psinterface.dto.AccountState;
 import lombok.Data;
 
 /**

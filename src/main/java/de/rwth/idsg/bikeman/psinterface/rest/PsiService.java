@@ -12,7 +12,6 @@ import de.rwth.idsg.bikeman.ixsi.service.ConsumptionPushService;
 import de.rwth.idsg.bikeman.ixsi.service.ExternalBookingPushService;
 import de.rwth.idsg.bikeman.ixsi.service.PlaceAvailabilityPushService;
 import de.rwth.idsg.bikeman.psinterface.Utils;
-import de.rwth.idsg.bikeman.psinterface.dto.AccountState;
 import de.rwth.idsg.bikeman.psinterface.dto.request.BootNotificationDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.ChargingStatusDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.CustomerAuthorizeDTO;
@@ -23,7 +22,6 @@ import de.rwth.idsg.bikeman.psinterface.dto.request.StopTransactionDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.response.AuthorizeConfirmationDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.response.BootConfirmationDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.response.CardKeyDTO;
-import de.rwth.idsg.bikeman.psinterface.exception.PsErrorCode;
 import de.rwth.idsg.bikeman.psinterface.exception.PsException;
 import de.rwth.idsg.bikeman.psinterface.repository.PsiBookingRepository;
 import de.rwth.idsg.bikeman.psinterface.repository.PsiCustomerRepository;
@@ -42,6 +40,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import java.util.List;
+
+import static de.rwth.idsg.bikeman.psinterface.exception.PsErrorCode.AUTH_ATTEMPTS_EXCEEDED;
+import static de.rwth.idsg.bikeman.psinterface.exception.PsErrorCode.CONSTRAINT_FAILED;
 
 /**
  * Created by swam on 04/08/14.
@@ -66,6 +67,7 @@ public class PsiService {
     @Inject private OperationStateService operationStateService;
 
     private static final Integer HEARTBEAT_INTERVAL_IN_SECONDS = 60;
+    private static final int MAX_AUTH_RETRIES = 3;
 
     public BootConfirmationDTO handleBootNotification(BootNotificationDTO bootNotificationDTO)
             throws DatabaseException {
@@ -80,7 +82,7 @@ public class PsiService {
         return bootConfirmationDTO;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public AuthorizeConfirmationDTO handleAuthorize(CustomerAuthorizeDTO customerAuthorizeDTO)
             throws DatabaseException {
 
@@ -88,47 +90,8 @@ public class PsiService {
 
         CardAccount cardAccount = customerRepository.findByCardId(customerAuthorizeDTO.getCardId());
 
-        // CardAccount not operational
-        if (!OperationState.OPERATIVE.equals(cardAccount.getOperationState())) {
-
-            if (cardAccount.getAuthenticationTrialCount() >= 3) {
-                log.info("Card with CardId {} authorization failed with {}", customerAuthorizeDTO.getCardId(), PsErrorCode.AUTH_ATTEMPTS_EXCEEDED);
-                throw new PsException("No trials remaining and account gets disabled", PsErrorCode.AUTH_ATTEMPTS_EXCEEDED);
-            }
-            log.info("Card with CardId {} authorization failed with {}", customerAuthorizeDTO.getCardId(), PsErrorCode.CONSTRAINT_FAILED);
-            throw new PsException("Card account is disabled", PsErrorCode.CONSTRAINT_FAILED);
-        }
-
-        // PIN not correct
-        if (!cardAccount.getCardPin().equals(customerAuthorizeDTO.getCardPin())) {
-
-            // increase auth fail count by one
-            cardAccount.setAuthenticationTrialCount(cardAccount.getAuthenticationTrialCount() + 1);
-
-            // auth attempts exceeded
-            if (cardAccount.getAuthenticationTrialCount() >= 3) {
-                cardAccount.setOperationState(OperationState.INOPERATIVE);
-            }
-
-            customerRepository.saveCardAccount(cardAccount);
-
-            if (cardAccount.getAuthenticationTrialCount() >= 3) {
-                log.info("Card with CardId {} authorization failed (3x wrong pin) with {}", customerAuthorizeDTO.getCardId(), PsErrorCode.AUTH_ATTEMPTS_EXCEEDED);
-                throw new PsException("No trials remaining and account gets disabled", PsErrorCode.AUTH_ATTEMPTS_EXCEEDED);
-            }
-
-            log.info("Card with CardId {} authorization failed (wrong pin) with {}", customerAuthorizeDTO.getCardId(), PsErrorCode.CONSTRAINT_FAILED);
-            throw new PsException("Wrong PIN", PsErrorCode.CONSTRAINT_FAILED);
-        } else {
-            // PIN is correct, reset auth trial count
-            customerRepository.resetAuthenticationTrialCount(cardAccount);
-        }
-
-        // Is the user allowed to rent?
-        AccountState accountState = AccountState.HAS_NO_PEDELEC;
-        if (cardAccount.getInTransaction()) {
-            accountState = AccountState.HAS_PEDELEC;
-        }
+        checkOperationState(cardAccount, customerAuthorizeDTO);
+        checkPin(cardAccount, customerAuthorizeDTO);
 
         int actualRentedPedelecs = cardAccount.getTransactions().size();
         int canRentCount = cardAccount.getCurrentTariff().getTariff().getMaxNumberPedelecs();
@@ -159,7 +122,7 @@ public class PsiService {
             log.debug("Found Reservation: {}", res);
 
         } else {
-            throw new PsException("More than one reservation found", PsErrorCode.CONSTRAINT_FAILED);
+            throw new PsException("More than one reservation found", CONSTRAINT_FAILED);
         }
 
         booking.setTransaction(transaction);
@@ -250,5 +213,50 @@ public class PsiService {
 
     public void handleChargingStatusNotification(List<ChargingStatusDTO> chargingStatusDTO) {
         pedelecRepository.updatePedelecChargingStatus(chargingStatusDTO);
+    }
+
+    // -------------------------------------------------------------------------
+    // Private helpers
+    // -------------------------------------------------------------------------
+
+    private void checkOperationState(CardAccount ca, CustomerAuthorizeDTO dto) {
+        if (OperationState.OPERATIVE.equals(ca.getOperationState())) {
+            return;
+        }
+
+        log.info("Card with CardId {} authorization failed with {}", dto.getCardId(), CONSTRAINT_FAILED);
+        throw new PsException("Card account is disabled", CONSTRAINT_FAILED);
+    }
+
+    private void checkPin(CardAccount ca, CustomerAuthorizeDTO dto) {
+        if (ca.getCardPin().equals(dto.getCardPin())) {
+            // PIN is correct, reset auth trial count
+            customerRepository.resetAuthenticationTrialCount(ca);
+            return;
+        }
+
+        // increase auth fail count by one
+        ca.setAuthenticationTrialCount(ca.getAuthenticationTrialCount() + 1);
+
+        try {
+            checkPinRetryLimit(ca);
+        } finally {
+            customerRepository.saveCardAccount(ca);
+        }
+
+        log.info("Card with CardId {} authorization failed (wrong pin) with {}", dto.getCardId(), CONSTRAINT_FAILED);
+        throw new PsException("Wrong PIN", CONSTRAINT_FAILED);
+    }
+
+    private void checkPinRetryLimit(CardAccount ca) {
+        boolean exceeded = ca.getAuthenticationTrialCount() >= MAX_AUTH_RETRIES;
+
+        // auth attempts exceeded
+        if (exceeded) {
+            ca.setOperationState(OperationState.INOPERATIVE);
+
+            log.warn("Card with CardId {} authorization failed (3x wrong pin) with {}", ca.getCardId(), AUTH_ATTEMPTS_EXCEEDED);
+            throw new PsException("No trials remaining and account gets disabled", AUTH_ATTEMPTS_EXCEEDED);
+        }
     }
 }
