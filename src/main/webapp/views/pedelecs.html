@@ -6,17 +6,41 @@
     </div>
 
     <div class="table-responsive">
-        <table class="table table-hover">
+        <table st-table="pedelecs" st-safe-src="sfPedelecs" class="table table-hover">
             <thead>
                 <tr>
-                    <th translate="pedelecs.table.header.manufacturerId">Manufacturer ID</th>
-                    <th translate="pedelecs.table.header.stateOfCharge">State of Charge</th>
-                    <th translate="pedelecs.table.header.state">State</th>
-                    <th translate="pedelecs.table.header.station">Station (Slot)</th>
-                    <th translate="pedelecs.table.header.customer">Customer</th>
-                    <th translate="pedelecs.table.header.lastChargingUpdate">Last Charging Update</th>
+                    <th st-sort="manufacturerId" translate="pedelecs.table.header.manufacturerId">Manufacturer ID</th>
+                    <th st-sort="stateOfCharge" translate="pedelecs.table.header.stateOfCharge">State of Charge</th>
+                    <th st-sort="state" translate="pedelecs.table.header.state">State</th>
+                    <th st-sort="station.stationName" translate="pedelecs.table.header.station">Station (Slot)</th>
+                    <th st-sort="station.transaction.lastname" translate="pedelecs.table.header.customer">Customer</th>
+                    <th st-sort="lastChargingUpdate" st-sort-default="true" translate="pedelecs.table.header.lastChargingUpdate">Last Charging Update</th>
                     <th></th>
                 </tr>
+                <tr>
+                    <th>
+                        <input st-search="manufacturerId" placeholder="search for manufacturer ID" class="input-sm form-control" type="search"/>
+                    </th>
+
+                    <th>
+
+                    </th>
+                    <th>
+                        <select class="form-control input-sm" st-search="state">
+                            <option value="">All</option>
+                            <option value="OPERATIVE">OPERATIVE</option>
+                            <option value="INOPERATIVE">INOPERATIVE</option>
+                        </select>
+                    </th>
+                    <th>
+                        <input st-search="pedelec.station.stationName" placeholder="search for station name" class="input-sm form-control" type="search"/>
+                    </th>
+                    <th>
+                        <input st-search="pedelec.transaction.majorCustomer.lastname" placeholder="search for user's lastname" class="input-sm form-control" type="search"/>
+                    </th>
+                    <th></th>
+                </tr>
+
             </thead>
             <tbody>
                 <tr ng-repeat="pedelec in pedelecs | orderBy:'-lastChargingUpdate'">

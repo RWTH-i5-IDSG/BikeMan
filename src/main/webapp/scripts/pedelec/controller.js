@@ -3,7 +3,9 @@
 bikeManApp.controller('PedelecController', ['$scope', 'resolvedPedelec', 'Pedelec',
     function ($scope, resolvedPedelec, Pedelec) {
 
-        $scope.pedelecs = resolvedPedelec;
+        $scope.sfPedelecs = resolvedPedelec;
+
+        $scope.pedelecs = [];
 
         $scope.create = function () {
             console.log($scope.pedelec);

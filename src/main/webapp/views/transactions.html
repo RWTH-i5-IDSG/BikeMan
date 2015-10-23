@@ -6,16 +6,36 @@
     </div>
 
     <div class="table-responsive">
-        <table class="table table-striped">
+        <table st-table="transactions" st-safe-src="sfTransactions" class="table table-hover">
             <thead>
             <tr>
-                <th translate="transactions.table.header.customer">Customer</th>
-                <th translate="transactions.table.header.pedelec">Pedelec</th>
-                <th translate="transactions.table.header.startTime">Start Time</th>
-                <th translate="transactions.table.header.endTime">End Time</th>
-                <th translate="transactions.table.header.fromLocation">From Location</th>
-                <th translate="transactions.table.header.toLocation">To Location</th>
+                <th st-sort="customer.lastname" translate="transactions.table.header.customer">Customer</th>
+                <th st-sort="pedelec.manufacturerId" translate="transactions.table.header.pedelec">Pedelec</th>
+                <th st-sort="startDateTime" st-sort-default="true" translate="transactions.table.header.startTime">Start Time</th>
+                <th st-sort="endDateTime" translate="transactions.table.header.endTime">End Time</th>
+                <th st-sort="fromStation.name" translate="transactions.table.header.fromLocation">From Location</th>
+                <th st-sort="toStation.name" translate="transactions.table.header.toLocation">To Location</th>
                 <th></th>
+            </tr>
+            <tr>
+                <th>
+                    <input st-search="customer.lastname" placeholder="search for user's lastname" class="input-sm form-control" type="search"/>
+                </th>
+                <th>
+                    <input st-search="pedelec.manufacturerId" placeholder="search for pedelec manufacturer ID" class="input-sm form-control" type="search"/>
+                </th>
+                <th>
+
+                </th>
+                <th>
+
+                </th>
+                <th>
+                    <input st-search="fromStation.name" placeholder="search for from location" class="input-sm form-control" type="search"/>
+                </th>
+                <th>
+
+                </th>
             </tr>
             </thead>
             <tbody>

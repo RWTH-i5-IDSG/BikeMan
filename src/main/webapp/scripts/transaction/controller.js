@@ -3,7 +3,9 @@
 bikeManApp.controller('TransactionController', ['$scope', 'resolvedTransaction', 'Transaction',
     function ($scope, resolvedTransaction, Transaction) {
 
-        $scope.transactions = resolvedTransaction;
+        $scope.sfTransactions = resolvedTransaction;
+
+        $scope.transactions = [];
 
         $scope.create = function () {
             Transaction.save($scope.transaction,
