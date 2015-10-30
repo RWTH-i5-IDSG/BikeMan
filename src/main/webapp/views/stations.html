@@ -31,7 +31,6 @@
                 <th>
                     <select class="form-control input-sm" st-search="state">
                         <option value="">All</option>
-                        <option value="OPERATIVE">OPERATIVE</option>
                         <option value="INOPERATIVE">INOPERATIVE</option>
                     </select>
                 </th>
@@ -42,16 +41,21 @@
             </thead>
             <tbody>
             <tr ng-repeat="station in stations" ng-click="getStationDetails(station)">
-                <td>{{station.name}}</td>
-                <td>{{station.manufacturerId}}</td>
+                <td><span class="h5">{{station.name}}</span></td>
+                <td><span class="h5">{{station.manufacturerId}}</span></td>
                 <td>
                     <small>{{concatAddress(station.address)}}
                     </small>
                 </td>
-                <td>{{station.state}}</td>
-                <td>{{station.numAllSlots - station.numFreeSlots}} / {{station.numAllSlots}}</td>
                 <td>
-                    <button type="button" class="btn btn-info pull-right"
+                    <span ng-show="station.state === 'OPERATIVE'" class="label label-success">{{station.state}}</span>
+                    <span ng-show="station.state === 'INOPERATIVE'" class="label label-danger">{{station.state}}</span>
+                    <span ng-show="station.state === 'DELETED'" class="label label-default">{{station.state}}</span>
+
+                </td>
+                <td><span class="badge">{{station.numAllSlots - station.numFreeSlots}} / {{station.numAllSlots}}</span></td>
+                <td>
+                    <button type="button" class="btn btn-info pull-right btn-xs"
                             ui-sref="stationDetail({stationId:{{'station.stationId'}}})">
                         <span class="glyphicon glyphicon-eye-open"></span>
                         <span translate="stations.table.body.details">Details</span>

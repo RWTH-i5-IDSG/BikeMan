@@ -58,7 +58,7 @@ bikeManApp.filter('myFilter', [function () {
             }
 
             if (expression.state) {
-                return standardComparator(val.state, expression.state);
+                return val.state === expression.state;
             }
 
             if (expression.transaction && expression.transaction.majorCustomerName) {

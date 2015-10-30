@@ -22,15 +22,12 @@ bikeManApp.controller('StationController', ['$scope', 'resolvedStation', 'Statio
 
 
         $scope.concatAddress = function(address) {
-            address.string = address.streetAndHousenumber + ', ' + address.zip + ', ' + address.city + ', ' + address.country;
+            address.string = address.streetAndHousenumber + ', ' + address.zip + ' ' + address.city + ', ' + address.country;
             return address.string;
         }
 
         $scope.getters={
             address: function (value) {
-
-                console.log(value);
-
                 return value.address.streetAndHousenumber + ', ' + value.address.zip + ', ' + value.address.city + ', ' + value.address.country;
             }
         }
