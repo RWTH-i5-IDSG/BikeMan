@@ -457,7 +457,8 @@
                 "state": "State",
                 "station": "Location",
                 "customer": "Customer",
-                "lastChargingUpdate": "Last Charging Update"
+                "lastChargingUpdate": "Last Charging Update",
+                "chargingState": "Charging State"
             },
             "body": {
                 "details": "Details"

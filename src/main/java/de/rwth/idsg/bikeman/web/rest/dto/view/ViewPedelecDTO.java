@@ -1,6 +1,7 @@
 package de.rwth.idsg.bikeman.web.rest.dto.view;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import de.rwth.idsg.bikeman.domain.ChargingState;
 import de.rwth.idsg.bikeman.domain.OperationState;
 import de.rwth.idsg.bikeman.domain.util.CustomLocalDateTimeSerializer;
 import lombok.Data;
@@ -26,6 +27,8 @@ public class ViewPedelecDTO {
     @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
     private LocalDateTime lastChargingUpdate;
 
+    private ChargingState chargingState;
+
 
     // Basic
     public ViewPedelecDTO(Long pedelecId, String manufacturerId, Double stateOfCharge,
@@ -41,13 +44,15 @@ public class ViewPedelecDTO {
     public ViewPedelecDTO(Long pedelecId, String manufacturerId, Double stateOfCharge,
                           OperationState state, Boolean inTransaction,
                           Long stationId, String stationName,
-                          Integer stationSlotPosition, LocalDateTime lastChargingUpdate) {
+                          Integer stationSlotPosition, LocalDateTime lastChargingUpdate,
+                          ChargingState chargingState) {
         this.pedelecId = pedelecId;
         this.manufacturerId = manufacturerId;
         this.stateOfCharge = stateOfCharge;
         this.state = state;
         this.inTransaction = inTransaction;
         this.lastChargingUpdate = lastChargingUpdate;
+        this.chargingState = chargingState;
 
         this.station = new ViewStationDTO(stationId, stationName, stationSlotPosition);
     }

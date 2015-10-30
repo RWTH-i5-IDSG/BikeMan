@@ -124,7 +124,8 @@ public class PedelecRepositoryImpl implements PedelecRepository {
                         station.get(Station_.stationId),
                         station.get(Station_.name),
                         stationSlot.get(StationSlot_.stationSlotPosition),
-                        chargingStatus.get(PedelecChargingStatus_.timestamp)
+                        chargingStatus.get(PedelecChargingStatus_.timestamp),
+                        chargingStatus.get(PedelecChargingStatus_.state)
                 )
         ).where(builder.equal(pedelec.get(Pedelec_.inTransaction), false));
 

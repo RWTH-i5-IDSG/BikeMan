@@ -441,9 +441,10 @@
                 "manufacturerId": "Hersteller-ID",
                 "stateOfCharge": "Ladezustand",
                 "state": "Status",
-                "station": "Ort",
+                "station": "Aktueller Standort",
                 "customer": "Kunde",
-                "lastChargingUpdate": "Letztes Lade-Update"
+                "lastChargingUpdate": "letztes Ladeupdate",
+                "chargingState": "Ladezustand"
             },
             "body": {
                 "details": "Details"

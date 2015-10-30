@@ -32,7 +32,47 @@ bikeManApp.controller('PedelecController', ['$scope', 'resolvedPedelec', 'Pedele
         $scope.clear = function () {
             $scope.pedelec = {"manufacturerId": null, "state": null};
         };
-    }]);
+    }
+]);
+
+bikeManApp.filter('myFilter', [function () {
+
+    var standardComparator = function standardComparator(obj, text) {
+        text = ('' + text).toLowerCase();
+        return ('' + obj).toLowerCase().indexOf(text) > -1;
+    };
+
+    return function (array, expression) {
+        //an example
+
+        return array.filter(function (val, index) {
+
+            if (expression.station && expression.station.stationName) {
+                if (!(val.station && val.station.stationName)) return false;
+
+                return standardComparator(val.station.stationName, expression.station.stationName);
+            }
+
+            if (expression.manufacturerId) {
+                return standardComparator(val.manufacturerId, expression.manufacturerId);
+            }
+
+            if (expression.state) {
+                return standardComparator(val.state, expression.state);
+            }
+
+            if (expression.transaction && expression.transaction.majorCustomerName) {
+                console.log(expression.transaction.majorCustomerName)
+                if (!(val.transaction && val.transaction.majorCustomerName)) return false;
+                return standardComparator(val.transaction.majorCustomerName, expression.transaction.majorCustomerName);
+            }
+
+            return true;
+
+
+        });
+    };
+}]);
 
 
 bikeManApp.controller('PedelecDetailController', ['$scope', 'resolvedPedelec', 'Pedelec', 'Transaction', '$stateParams',
@@ -44,7 +84,10 @@ bikeManApp.controller('PedelecDetailController', ['$scope', 'resolvedPedelec', '
 
         $scope.resultSize = 10;
 
-        $scope.transactions = Transaction.queryTransactionsOfPedelecWithSize({pedelecId : $stateParams.pedelecId, resultSize : $scope.resultSize});
+        $scope.transactions = Transaction.queryTransactionsOfPedelecWithSize({
+            pedelecId: $stateParams.pedelecId,
+            resultSize: $scope.resultSize
+        });
 
         $scope.isEditing = false;
 
@@ -55,9 +98,12 @@ bikeManApp.controller('PedelecDetailController', ['$scope', 'resolvedPedelec', '
 
         $scope.updateTransactions = function () {
             if ($scope.resultSize === "all") {
-                $scope.transactions = Transaction.queryTransactionsOfPedelecWithSize({pedelecId : $stateParams.pedelecId});
+                $scope.transactions = Transaction.queryTransactionsOfPedelecWithSize({pedelecId: $stateParams.pedelecId});
             } else {
-                $scope.transactions = Transaction.queryTransactionsOfPedelecWithSize({pedelecId : $stateParams.pedelecId, resultSize : $scope.resultSize});
+                $scope.transactions = Transaction.queryTransactionsOfPedelecWithSize({
+                    pedelecId: $stateParams.pedelecId,
+                    resultSize: $scope.resultSize
+                });
             }
         }
 
@@ -92,7 +138,7 @@ bikeManApp.controller('PedelecDetailController', ['$scope', 'resolvedPedelec', '
     }]);
 
 bikeManApp.controller('PedelecCreateController', ['$scope', 'Pedelec', '$timeout',
-    function ($scope, Pedelec, $timeout)  {
+    function ($scope, Pedelec, $timeout) {
 
         $scope.pedelec = null;
         $scope.createSuccess = false;
@@ -101,7 +147,9 @@ bikeManApp.controller('PedelecCreateController', ['$scope', 'Pedelec', '$timeout
 
             $scope.$broadcast('show-errors-check-validity');
 
-            if ($scope.form.$invalid) { return; }
+            if ($scope.form.$invalid) {
+                return;
+            }
 
             Pedelec.save($scope.pedelec,
                 function () {
