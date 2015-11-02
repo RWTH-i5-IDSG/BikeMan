@@ -1,5 +1,6 @@
 package de.rwth.idsg.bikeman.repository;
 
+import com.google.common.base.Optional;
 import de.rwth.idsg.bikeman.domain.Pedelec;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditPedelecDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.view.ViewPedelecDTO;
@@ -23,7 +24,7 @@ public interface PedelecRepository {
 
     List<String> findManufacturerIdsByStation(String stationManufacturerId) throws DatabaseException;
 
-    List<Pedelec> findPedelecsByStationSlot(String stationSlotManufacturerId) throws DatabaseException;
+    Optional<Pedelec> findPedelecsByStationSlot(String stationManufacturerId, String stationSlotManufacturerId) throws DatabaseException;
 
     Pedelec findByStationSlot(String stationSlotManufacturerId) throws DatabaseException;
 
