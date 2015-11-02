@@ -34,6 +34,7 @@ import de.rwth.idsg.bikeman.service.TransactionEventService;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDateTime;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -107,7 +108,7 @@ public class PsiService {
 
         List<Reservation> reservationList = reservationRepository.find(transaction.getCardAccount().getCardAccountId(),
                 transaction.getPedelec().getPedelecId(),
-                transaction.getStartDateTime());
+                LocalDateTime.now());
 
         Booking booking;
 
