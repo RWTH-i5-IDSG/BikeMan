@@ -95,9 +95,9 @@ public class StationService {
         StationSlot stationSlot = stationSlotRepository.findByStationSlotPositionAndStationStationId(dto.getSlotPosition(), stationId);
 
         if (dto.getState() == OperationState.INOPERATIVE) {
-            operationStateService.pushSlotInavailability(stationSlot.getManufacturerId());
+            operationStateService.pushSlotInavailability(stationSlot.getStation().getManufacturerId(), stationSlot.getManufacturerId());
         } else if (dto.getState() == OperationState.OPERATIVE) {
-            operationStateService.pushSlotAvailability(stationSlot.getManufacturerId());
+            operationStateService.pushSlotAvailability(stationSlot.getStation().getManufacturerId(), stationSlot.getManufacturerId());
         }
     }
 }

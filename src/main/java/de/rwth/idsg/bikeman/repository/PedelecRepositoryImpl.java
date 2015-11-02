@@ -1,5 +1,6 @@
 package de.rwth.idsg.bikeman.repository;
 
+import com.google.common.base.Optional;
 import de.rwth.idsg.bikeman.domain.*;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditPedelecDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.view.ViewPedelecDTO;
@@ -10,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -217,16 +219,24 @@ public class PedelecRepositoryImpl implements PedelecRepository {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public List<Pedelec> findPedelecsByStationSlot(String stationSlotManufacturerId) throws DatabaseException {
+    public Optional<Pedelec> findPedelecsByStationSlot(String stationManufacturerId, String stationSlotManufacturerId)
+            throws DatabaseException {
 
-        final String q = "SELECT p FROM Pedelec p WHERE p.stationSlot.manufacturerId = :manufacturerId";
+        final String q = "SELECT p FROM Pedelec p " +
+                         "WHERE p.stationSlot.manufacturerId = :stationSlotManufacturerId " +
+                         "AND p.stationSlot.station.manufacturerId = :stationManufacturerId";
 
         try {
-            return em.createQuery(q, Pedelec.class)
-                     .setParameter("manufacturerId", stationSlotManufacturerId)
-                     .getResultList();
+            Pedelec p = em.createQuery(q, Pedelec.class)
+                          .setParameter("stationSlotManufacturerId", stationSlotManufacturerId)
+                          .setParameter("stationManufacturerId", stationManufacturerId)
+                          .getSingleResult();
+
+            return Optional.of(p);
+
         } catch (Exception e) {
-            throw new DatabaseException("Failed to find pedelec with stationSlotManufacturerId " + stationSlotManufacturerId, e);
+            log.error("Error occurred", e);
+            return Optional.absent();
         }
     }
 

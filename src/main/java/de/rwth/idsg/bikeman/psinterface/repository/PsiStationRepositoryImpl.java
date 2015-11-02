@@ -26,6 +26,7 @@ import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Sevket Goekay <goekay@dbis.rwth-aachen.de>
@@ -72,12 +73,11 @@ public class PsiStationRepositoryImpl implements PsiStationRepository {
         // Find the slots, and decide whether to Update/Insert/Delete
         // -------------------------------------------------------------------------
 
-        List<String> newList = new ArrayList<>();
         List<SlotDTO.Boot> stationSlotList = dto.getSlots();
 
-        for (SlotDTO.Boot slot : stationSlotList) {
-            newList.add(slot.getSlotManufacturerId());
-        }
+        List<String> newList = stationSlotList.parallelStream()
+                                              .map(SlotDTO.Boot::getSlotManufacturerId)
+                                              .collect(Collectors.toList());
 
         final String q = "SELECT ss.manufacturerId FROM StationSlot ss WHERE ss.station = :station";
 
