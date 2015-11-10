@@ -1,6 +1,5 @@
 package de.rwth.idsg.bikeman.service;
 
-import de.rwth.idsg.bikeman.domain.OperationState;
 import de.rwth.idsg.bikeman.domain.StationSlot;
 import de.rwth.idsg.bikeman.psinterface.rest.client.StationClient;
 import de.rwth.idsg.bikeman.repository.StationRepository;
@@ -74,11 +73,7 @@ public class StationService {
         stationClient.changeOperationState(endpointAddress, changeDTO);
         stationRepository.update(dto);
 
-        if (dto.getState() == OperationState.INOPERATIVE) {
-            operationStateService.pushStationInavailability(dto.getManufacturerId());
-        } else if (dto.getState() == OperationState.OPERATIVE) {
-            operationStateService.pushStationAvailability(dto.getManufacturerId());
-        }
+        operationStateService.pushStationChange(dto);
     }
 
     public void changeSlotState(Long stationId, ChangeStationOperationStateDTO dto) throws DatabaseException {
@@ -94,10 +89,6 @@ public class StationService {
 
         StationSlot stationSlot = stationSlotRepository.findByStationSlotPositionAndStationStationId(dto.getSlotPosition(), stationId);
 
-        if (dto.getState() == OperationState.INOPERATIVE) {
-            operationStateService.pushSlotInavailability(stationSlot.getStation().getManufacturerId(), stationSlot.getManufacturerId());
-        } else if (dto.getState() == OperationState.OPERATIVE) {
-            operationStateService.pushSlotAvailability(stationSlot.getStation().getManufacturerId(), stationSlot.getManufacturerId());
-        }
+        operationStateService.pushSlotChange(stationSlot);
     }
 }

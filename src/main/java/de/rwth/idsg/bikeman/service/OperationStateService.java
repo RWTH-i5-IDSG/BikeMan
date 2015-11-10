@@ -13,6 +13,7 @@ import de.rwth.idsg.bikeman.psinterface.dto.request.StationStatusDTO;
 import de.rwth.idsg.bikeman.repository.PedelecRepository;
 import de.rwth.idsg.bikeman.repository.StationRepository;
 import de.rwth.idsg.bikeman.repository.StationSlotRepository;
+import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditStationDTO;
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,17 +37,47 @@ public class OperationStateService {
     @Inject private StationSlotRepository stationSlotRepository;
     @Inject private AvailabilityPushService availabilityPushService;
 
+    public void pushStationChange(CreateEditStationDTO dto) {
+        switch (dto.getState()) {
+            case OPERATIVE:
+                pushStationAvailability(dto.getManufacturerId());
+                break;
+
+            case INOPERATIVE:
+                pushStationInavailability(dto.getManufacturerId());
+                break;
+
+            case DELETED:
+                break;
+        }
+    }
+
+    public void pushSlotChange(StationSlot slot) {
+        switch (slot.getState()) {
+            case OPERATIVE:
+                pushSlotAvailability(slot.getStation().getManufacturerId(), slot.getManufacturerId());
+                break;
+
+            case INOPERATIVE:
+                pushSlotInavailability(slot.getStation().getManufacturerId(), slot.getManufacturerId());
+                break;
+
+            case DELETED:
+                break;
+        }
+    }
+
     // -------------------------------------------------------------------------
     // PUSH INAVAILABILITY
     // -------------------------------------------------------------------------
 
-    public void pushStationInavailability(String stationManufacturerId) {
+    private void pushStationInavailability(String stationManufacturerId) {
         List<String> pedelecManufacturerIds = pedelecRepository.findManufacturerIdsByStation(stationManufacturerId);
 
         pushInavailability(stationManufacturerId, pedelecManufacturerIds);
     }
 
-    public void pushSlotInavailability(String stationManufacturerId, String slotManufacturerId) {
+    private void pushSlotInavailability(String stationManufacturerId, String slotManufacturerId) {
         Optional<Pedelec> pedelec = pedelecRepository.findPedelecsByStationSlot(stationManufacturerId, slotManufacturerId);
 
         if (pedelec.isPresent()) {
@@ -95,7 +126,7 @@ public class OperationStateService {
     // PUSH AVAILABILITY
     // -------------------------------------------------------------------------
 
-    public void pushStationAvailability(String stationManufacturerId) {
+    private void pushStationAvailability(String stationManufacturerId) {
         List<Pedelec> pedelecs = pedelecRepository.findByStation(stationManufacturerId);
 
         List<String> pedelecManufacturerIds =
@@ -107,7 +138,7 @@ public class OperationStateService {
         pushAvailability(stationManufacturerId, pedelecManufacturerIds);
     }
 
-    public void pushSlotAvailability(String stationManufacturerId, String slotManufacturerId) {
+    private void pushSlotAvailability(String stationManufacturerId, String slotManufacturerId) {
         Optional<Pedelec> pedelec = pedelecRepository.findPedelecsByStationSlot(stationManufacturerId, slotManufacturerId);
 
         if (pedelec.isPresent() && shouldSendAvailability(pedelec.get())) {
