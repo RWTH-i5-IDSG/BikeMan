@@ -154,9 +154,11 @@ public class PsiStationRepositoryImpl implements PsiStationRepository {
         if (!deleteList.isEmpty()) {
             final String deleteQuery = "UPDATE StationSlot ss " +
                                        "SET ss.state = de.rwth.idsg.bikeman.domain.OperationState.DELETED " +
-                                       "WHERE ss.manufacturerId IN :slotManufacturerIdList";
+                                       "WHERE ss.manufacturerId IN :slotManufacturerIdList " +
+                                       "AND ss.station = :station";
 
             em.createQuery(deleteQuery)
+              .setParameter("station", station)
               .setParameter("slotManufacturerIdList", deleteList)
               .executeUpdate();
         }
