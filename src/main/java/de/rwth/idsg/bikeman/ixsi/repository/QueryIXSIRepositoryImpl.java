@@ -47,7 +47,7 @@ public class QueryIXSIRepositoryImpl implements QueryIXSIRepository {
 
         final String stationQuery = "SELECT new de.rwth.idsg.bikeman.ixsi.dto." +
                                     "StationDTO(s.manufacturerId, s.locationLongitude, s.locationLatitude, " +
-                                    "(SELECT count(sl) FROM StationSlot sl WHERE s = sl.station AND sl.state = de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE), " +
+                                    "(SELECT count(sl) FROM StationSlot sl WHERE s = sl.station AND NOT sl.state = de.rwth.idsg.bikeman.domain.OperationState.DELETED), " +
                                     "s.name, s.note, " +
                                     "a.streetAndHousenumber, a.zip, a.city, a.country) " +
                                     "FROM Station s " +
