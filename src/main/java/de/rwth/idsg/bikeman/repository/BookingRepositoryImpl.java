@@ -4,6 +4,7 @@ import de.rwth.idsg.bikeman.domain.Booking;
 import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
+import org.joda.time.LocalDateTime;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,6 +43,37 @@ public class BookingRepositoryImpl implements BookingRepository {
         em.remove(booking);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public boolean isNotUsedAndExpired(String ixsiBookingId) {
+        final String query = "SELECT COUNT(b) FROM Booking b " +
+                             "JOIN b.reservation r " +
+                             "WHERE b.ixsiBookingId = :ixsiBookingId " +
+                             "AND b.transaction IS NULL " +
+                             "AND (:now > r.endDateTime)";
+
+        Long count = em.createQuery(query, Long.class)
+                       .setParameter("ixsiBookingId", ixsiBookingId)
+                       .setParameter("now", new LocalDateTime())
+                       .getSingleResult();
+
+        return count == 1;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Booking> findNotUsedAndExpiredBookings(List<String> ixsiBookingIdList) {
+        final String query = "SELECT b FROM Booking b " +
+                             "JOIN b.reservation r " +
+                             "WHERE b.ixsiBookingId IN (:ixsiBookingIdList) " +
+                             "AND b.transaction IS NULL " +
+                             "AND (:now > r.endDateTime)";
+
+        return em.createQuery(query, Booking.class)
+                 .setParameter("ixsiBookingIdList", ixsiBookingIdList)
+                 .setParameter("now", new LocalDateTime())
+                 .getResultList();
+    }
 
     @Override
     @Transactional(readOnly = true)

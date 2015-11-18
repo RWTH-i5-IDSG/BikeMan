@@ -170,7 +170,7 @@ public class PsiService {
     @Async
     private void performStopPush(StopTransactionDTO stopTransactionDTO, Transaction t) {
         Booking booking = bookingRepository.findByTransaction(t);
-        consumptionPushService.report(booking, t);
+        consumptionPushService.report(booking);
 
         DateTime startDateTime = t.getStartDateTime().toDateTime();
         availabilityPushService.arrivedAtPlace(

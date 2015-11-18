@@ -7,6 +7,7 @@ import de.rwth.idsg.bikeman.ixsi.IxsiCodeException;
 import de.rwth.idsg.bikeman.ixsi.IxsiProcessingException;
 import de.rwth.idsg.bikeman.ixsi.processor.api.UserRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.service.AvailabilityPushService;
+import de.rwth.idsg.bikeman.ixsi.service.BookingCheckService;
 import de.rwth.idsg.bikeman.ixsi.service.BookingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -28,6 +29,7 @@ public class BookingRequestProcessor implements
 
     @Autowired private BookingService bookingService;
     @Autowired private AvailabilityPushService availabilityPushService;
+    @Autowired private BookingCheckService bookingCheckService;
 
     @Override
     public BookingResponseType processAnonymously(BookingRequestType request, Optional<Language> lan) {
@@ -55,6 +57,7 @@ public class BookingRequestProcessor implements
                                            .getManufacturerId();
 
             availabilityPushService.placedBooking(request.getBookingTargetID().getBookeeID(), placeId, timePeriod);
+            bookingCheckService.placedBooking(createdBooking);
 
             BookingType booking = new BookingType()
                 .withID(String.valueOf(createdBooking.getIxsiBookingId()))

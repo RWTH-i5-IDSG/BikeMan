@@ -6,6 +6,7 @@ import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
 import de.rwth.idsg.bikeman.ixsi.IxsiProcessingException;
 import de.rwth.idsg.bikeman.ixsi.processor.api.UserRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.service.AvailabilityPushService;
+import de.rwth.idsg.bikeman.ixsi.service.BookingCheckService;
 import de.rwth.idsg.bikeman.ixsi.service.BookingService;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,7 @@ public class ChangeBookingRequestProcessor implements
 
     @Autowired private BookingService bookingService;
     @Autowired private AvailabilityPushService availabilityPushService;
+    @Autowired private BookingCheckService bookingCheckService;
 
     @Override
     public ChangeBookingResponseType processAnonymously(ChangeBookingRequestType request, Optional<Language> lan) {
@@ -74,6 +76,8 @@ public class ChangeBookingRequestProcessor implements
                                    .getManufacturerId();
 
         availabilityPushService.changedBooking(pedelecId, placeId, oldTimePeriod, newTimePeriod);
+        bookingCheckService.changedBooking(oldBooking, newBooking);
+
         return new ChangeBookingResponseType().withBooking(responseBooking);
     }
 
@@ -92,6 +96,8 @@ public class ChangeBookingRequestProcessor implements
                                 .getManufacturerId();
 
         availabilityPushService.cancelledBooking(pedelecId, placeId, timePeriod);
+        bookingCheckService.cancelledBooking(booking);
+
         return new ChangeBookingResponseType();
     }
 
