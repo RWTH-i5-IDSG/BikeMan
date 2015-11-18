@@ -1,11 +1,14 @@
 package de.rwth.idsg.bikeman.ixsi.processor.subscription.request;
 
-import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
+import de.rwth.idsg.bikeman.ixsi.impl.BookingAlertStore;
 import de.rwth.idsg.bikeman.ixsi.processor.api.SubscriptionRequestProcessor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import xjc.schema.ixsi.BookingAlertSubscriptionRequestType;
 import xjc.schema.ixsi.BookingAlertSubscriptionResponseType;
 import xjc.schema.ixsi.ErrorType;
+
+import java.util.List;
 
 /**
  * @author Sevket Goekay <goekay@dbis.rwth-aachen.de>
@@ -15,10 +18,20 @@ import xjc.schema.ixsi.ErrorType;
 public class BookingAlertSubscriptionRequestProcessor implements
         SubscriptionRequestProcessor<BookingAlertSubscriptionRequestType, BookingAlertSubscriptionResponseType> {
 
+    @Autowired private BookingAlertStore bookingAlertStore;
+
     @Override
     public BookingAlertSubscriptionResponseType process(BookingAlertSubscriptionRequestType request, String systemId) {
-        // TODO FUTURE
-        return buildError(ErrorFactory.Sys.notImplemented(null, null));
+
+        List<String> bookingIds = request.getBookingID();
+
+        if (request.isSetUnsubscription() && request.isUnsubscription()) {
+            bookingAlertStore.unsubscribe(systemId, bookingIds);
+        } else {
+            bookingAlertStore.subscribe(systemId, bookingIds);
+        }
+
+        return new BookingAlertSubscriptionResponseType();
     }
 
     // -------------------------------------------------------------------------
