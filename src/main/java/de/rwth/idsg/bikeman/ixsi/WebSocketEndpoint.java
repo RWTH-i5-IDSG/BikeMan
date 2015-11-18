@@ -4,6 +4,7 @@ import de.rwth.idsg.bikeman.config.IxsiConfiguration;
 import de.rwth.idsg.bikeman.ixsi.api.Consumer;
 import de.rwth.idsg.bikeman.ixsi.api.WebSocketSessionStore;
 import de.rwth.idsg.bikeman.ixsi.impl.AvailabilityStore;
+import de.rwth.idsg.bikeman.ixsi.impl.BookingAlertStore;
 import de.rwth.idsg.bikeman.ixsi.impl.ConsumptionStore;
 import de.rwth.idsg.bikeman.ixsi.impl.ExternalBookingStore;
 import de.rwth.idsg.bikeman.ixsi.impl.PlaceAvailabilityStore;
@@ -32,6 +33,7 @@ public class WebSocketEndpoint extends ConcurrentTextWebSocketHandler {
     @Autowired private ConsumptionStore consumptionStore;
     @Autowired private ExternalBookingStore externalBookingStore;
     @Autowired private PlaceAvailabilityStore placeAvailabilityStore;
+    @Autowired private BookingAlertStore bookingAlertStore;
 
     @Override
     public void onMessage(WebSocketSession session, TextMessage webSocketMessage) throws Exception {
@@ -76,15 +78,20 @@ public class WebSocketEndpoint extends ConcurrentTextWebSocketHandler {
             webSocketSessionStore.remove(systemId, session);
 
             if (webSocketSessionStore.size(systemId) == 0) {
-                log.debug("There are no open connections left to system '{}'. "
-                    + "Removing it from all the subscription stores", systemId);
-
-                availabilityStore.unsubscribeAll(systemId);
-                consumptionStore.unsubscribeAll(systemId);
-                externalBookingStore.unsubscribeAll(systemId);
-                placeAvailabilityStore.unsubscribeAll(systemId);
+                unSubscribeStores(systemId);
             }
         }
+    }
+
+    private void unSubscribeStores(String systemId) {
+        log.debug("There are no open connections left to system '{}'. "
+                + "Removing it from all the subscription stores", systemId);
+
+        availabilityStore.unsubscribeAll(systemId);
+        consumptionStore.unsubscribeAll(systemId);
+        externalBookingStore.unsubscribeAll(systemId);
+        placeAvailabilityStore.unsubscribeAll(systemId);
+        bookingAlertStore.unsubscribeAll(systemId);
     }
 
     @Override
