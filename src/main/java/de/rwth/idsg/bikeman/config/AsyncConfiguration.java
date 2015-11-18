@@ -1,5 +1,7 @@
 package de.rwth.idsg.bikeman.config;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import de.rwth.idsg.bikeman.async.ExceptionHandlingAsyncTaskExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
@@ -15,9 +17,12 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
+import javax.annotation.PreDestroy;
 import java.util.concurrent.Executor;
-
-import de.rwth.idsg.bikeman.async.ExceptionHandlingAsyncTaskExecutor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
 
 @Configuration
 @EnableAsync
@@ -27,6 +32,7 @@ public class AsyncConfiguration implements AsyncConfigurer, EnvironmentAware {
 
     private final Logger log = LoggerFactory.getLogger(AsyncConfiguration.class);
 
+    private ScheduledThreadPoolExecutor executor;
     private RelaxedPropertyResolver propertyResolver;
 
     @Override
@@ -49,5 +55,42 @@ public class AsyncConfiguration implements AsyncConfigurer, EnvironmentAware {
     @Override
     public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
         return new SimpleAsyncUncaughtExceptionHandler();
+    }
+
+    /**
+     * TODO:
+     * In an ideal world, we should converge getAsyncExecutor() and scheduledExecutorService(),
+     * so that we have only one global executor service for the whole application
+     */
+    @Bean
+    public ScheduledThreadPoolExecutor scheduledExecutorService() {
+        ThreadFactory threadFactory = new ThreadFactoryBuilder().setNameFormat("bikeman-Executor-Service-%d")
+                                                                .build();
+
+        executor = new ScheduledThreadPoolExecutor(5, threadFactory);
+        return executor;
+    }
+
+    @PreDestroy
+    public void shutDown() {
+        if (executor != null) {
+            gracefulShutDown(executor);
+        }
+    }
+
+    private void gracefulShutDown(ExecutorService executor) {
+        try {
+            executor.shutdown();
+            executor.awaitTermination(30, TimeUnit.SECONDS);
+
+        } catch (InterruptedException e) {
+            log.error("Termination interrupted", e);
+
+        } finally {
+            if (!executor.isTerminated()) {
+                log.warn("Killing non-finished tasks");
+            }
+            executor.shutdownNow();
+        }
     }
 }
