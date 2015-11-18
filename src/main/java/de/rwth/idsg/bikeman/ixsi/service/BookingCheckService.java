@@ -5,7 +5,6 @@ import de.rwth.idsg.bikeman.ixsi.BookingCheckTask;
 import de.rwth.idsg.bikeman.repository.BookingRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
-import org.joda.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,8 +38,7 @@ public class BookingCheckService {
     public void placedBooking(Booking booking) {
         String ixsiBookingId = booking.getIxsiBookingId();
 
-        LocalDateTime end = booking.getReservation().getEndDateTime();
-        DateTime reservationEnd = new DateTime(end);
+        DateTime reservationEnd = booking.getReservation().getEndDateTime().toDateTime();
 
         BookingCheckTask c = new BookingCheckTask(ixsiBookingId, this, () -> {
            boolean notUsed = bookingRepository.isNotUsedAndExpired(ixsiBookingId);

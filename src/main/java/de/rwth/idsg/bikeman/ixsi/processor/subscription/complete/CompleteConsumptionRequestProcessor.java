@@ -47,7 +47,7 @@ public class CompleteConsumptionRequestProcessor implements
             List<Booking> notUsedList = bookingRepository.findNotUsedAndExpiredBookings(bookingIdListString);
             for (Booking b : notUsedList) {
                 String ixsiBookingId = b.getIxsiBookingId();
-                DateTime dt = new DateTime(b.getReservation().getStartDateTime());
+                DateTime dt = b.getReservation().getStartDateTime().toDateTime();
                 consumptionList.add(consumptionPushService.createEmptyConsumption(ixsiBookingId, dt));
             }
 
