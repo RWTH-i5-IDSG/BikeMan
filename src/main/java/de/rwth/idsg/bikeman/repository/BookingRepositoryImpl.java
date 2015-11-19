@@ -47,10 +47,9 @@ public class BookingRepositoryImpl implements BookingRepository {
     @Transactional(readOnly = true)
     public boolean isNotUsedAndExpired(String ixsiBookingId) {
         final String query = "SELECT COUNT(b) FROM Booking b " +
-                             "JOIN b.reservation r " +
                              "WHERE b.ixsiBookingId = :ixsiBookingId " +
                              "AND b.transaction IS NULL " +
-                             "AND (:now > r.endDateTime)";
+                             "AND (:now > b.reservation.endDateTime)";
 
         Long count = em.createQuery(query, Long.class)
                        .setParameter("ixsiBookingId", ixsiBookingId)
@@ -64,10 +63,9 @@ public class BookingRepositoryImpl implements BookingRepository {
     @Transactional(readOnly = true)
     public List<Booking> findNotUsedAndExpiredBookings(List<String> ixsiBookingIdList) {
         final String query = "SELECT b FROM Booking b " +
-                             "JOIN b.reservation r " +
                              "WHERE b.ixsiBookingId IN (:ixsiBookingIdList) " +
                              "AND b.transaction IS NULL " +
-                             "AND (:now > r.endDateTime)";
+                             "AND (:now > b.reservation.endDateTime)";
 
         return em.createQuery(query, Booking.class)
                  .setParameter("ixsiBookingIdList", ixsiBookingIdList)
