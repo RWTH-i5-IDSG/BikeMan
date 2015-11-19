@@ -2,6 +2,7 @@ package de.rwth.idsg.bikeman.ixsi.processor.subscription.complete;
 
 import de.rwth.idsg.bikeman.domain.Booking;
 import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
+import de.rwth.idsg.bikeman.ixsi.dto.BookingDTO;
 import de.rwth.idsg.bikeman.ixsi.impl.ConsumptionStore;
 import de.rwth.idsg.bikeman.ixsi.processor.api.SubscriptionRequestMessageProcessor;
 import de.rwth.idsg.bikeman.ixsi.service.ConsumptionPushService;
@@ -44,10 +45,10 @@ public class CompleteConsumptionRequestProcessor implements
                 consumptionList.add(consumptionPushService.createConsumption(b));
             }
 
-            List<Booking> notUsedList = bookingRepository.findNotUsedAndExpiredBookings(bookingIdListString);
-            for (Booking b : notUsedList) {
+            List<BookingDTO> notUsedList = bookingRepository.findNotUsedAndExpiredBookings(bookingIdListString);
+            for (BookingDTO b : notUsedList) {
                 String ixsiBookingId = b.getIxsiBookingId();
-                DateTime dt = b.getReservation().getStartDateTime().toDateTime();
+                DateTime dt = b.getReservationStart();
                 consumptionList.add(consumptionPushService.createEmptyConsumption(ixsiBookingId, dt));
             }
 
