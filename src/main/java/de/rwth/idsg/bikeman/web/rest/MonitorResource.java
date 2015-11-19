@@ -110,9 +110,9 @@ public class MonitorResource {
         stores.add(ext);
 
         StoreDTO balert = new StoreDTO();
-        ext.setName(BOOKING_ALERT_STORE);
-        ext.setLinkName(IXSI_STORE_BOOKING_ALERT.substring(IXSI_STORE_BOOKING_ALERT.lastIndexOf('/')+1));
-        stores.add(ext);
+        balert.setName(BOOKING_ALERT_STORE);
+        balert.setLinkName(IXSI_STORE_BOOKING_ALERT.substring(IXSI_STORE_BOOKING_ALERT.lastIndexOf('/')+1));
+        stores.add(balert);
 
         return stores;
     }
