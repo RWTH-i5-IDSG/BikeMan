@@ -3,6 +3,7 @@ package de.rwth.idsg.bikeman.web.rest;
 import com.google.common.base.Optional;
 import de.rwth.idsg.bikeman.ixsi.api.WebSocketSessionStore;
 import de.rwth.idsg.bikeman.ixsi.impl.AvailabilityStore;
+import de.rwth.idsg.bikeman.ixsi.impl.BookingAlertStore;
 import de.rwth.idsg.bikeman.ixsi.impl.ConsumptionStore;
 import de.rwth.idsg.bikeman.ixsi.impl.ExternalBookingStore;
 import de.rwth.idsg.bikeman.ixsi.impl.PlaceAvailabilityStore;
@@ -27,6 +28,7 @@ import java.util.Deque;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by max on 15/07/15.
@@ -41,6 +43,7 @@ public class MonitorResource {
     @Autowired private ConsumptionStore consumptionStore;
     @Autowired private ExternalBookingStore externalBookingStore;
     @Autowired private PlaceAvailabilityStore placeAvailabilityStore;
+    @Autowired private BookingAlertStore bookingAlertStore;
 
     private static final String BASE_PATH                   = "monitor/";
     private static final String IXSI_SESSION_STATUS         = "monitor/session-status";
@@ -50,14 +53,17 @@ public class MonitorResource {
     private static final String IXSI_STORE_PLACE_AVAIL      = "monitor/store/place-avail";
     private static final String IXSI_STORE_CONSUMPTION      = "monitor/store/consumption";
     private static final String IXSI_STORE_EX_BOOK          = "monitor/store/external-book";
+    private static final String IXSI_STORE_BOOKING_ALERT    = "monitor/store/booking-alert";
 
     private static final String AVAILABILITY_STORE = "Availability Store";
     private static final String PLACE_AVAILABILITY_STORE = "Place Availability Store";
     private static final String CONSUMPTION_STORE = "Consumption Store";
     private static final String EXTERNAL_BOOKING_STORE = "External Booking Store";
+    private static final String BOOKING_ALERT_STORE = "Booking Alert Store";
 
     private static final String PLACE_AVAILABILITY_DESCR = "Place Id";
     private static final String CONSUMPTION_DESCR = "Booking Id";
+    private static final String BOOKING_ALERT_DESCR = "Booking Id";
 
 
     @RequestMapping(value = IXSI_SESSION_STATUS, method = RequestMethod.GET)
@@ -101,6 +107,11 @@ public class MonitorResource {
         StoreDTO ext = new StoreDTO();
         ext.setName(EXTERNAL_BOOKING_STORE);
         ext.setLinkName(IXSI_STORE_EX_BOOK.substring(IXSI_STORE_EX_BOOK.lastIndexOf('/')+1));
+        stores.add(ext);
+
+        StoreDTO balert = new StoreDTO();
+        ext.setName(BOOKING_ALERT_STORE);
+        ext.setLinkName(IXSI_STORE_BOOKING_ALERT.substring(IXSI_STORE_BOOKING_ALERT.lastIndexOf('/')+1));
         stores.add(ext);
 
         return stores;
@@ -154,6 +165,18 @@ public class MonitorResource {
         return exBook;
     }
 
+    @RequestMapping(value = IXSI_STORE_BOOKING_ALERT, method = RequestMethod.GET)
+    public StoreDTO<String> getBookingAlertStore() {
+        log.debug("REST request for {} data", IXSI_STORE_BOOKING_ALERT);
+        StoreDTO<String> alertStore = new StoreDTO<>();
+        alertStore.setName(BOOKING_ALERT_STORE);
+        alertStore.setItemDescription(BOOKING_ALERT_DESCR);
+        alertStore.setItems(itemMapToList(bookingAlertStore.getLookupTable()));
+        alertStore.setSize(alertStore.getItems().size());
+
+        return alertStore;
+    }
+
     @RequestMapping(value = IXSI_SESSION_KILL, method = RequestMethod.PUT)
     public void killSession(@PathVariable String systemId, @PathVariable String sessionId) {
         Optional<WebSocketSession> optional = webSocketSessionStore.get(systemId, sessionId);
@@ -173,9 +196,10 @@ public class MonitorResource {
     private <T> List<StoreItem<T>> itemMapToList(Map<T, Set<String>> map) {
         List<StoreItem<T>> items = new ArrayList<>();
         for (Map.Entry<T, Set<String>> entry : map.entrySet()) {
-            for (String system : entry.getValue()) {
-                items.add(new StoreItem<>(system, entry.getKey()));
-            }
+            items.addAll(entry.getValue()
+                .stream()
+                .map(system -> new StoreItem<>(system, entry.getKey()))
+                .collect(Collectors.toList()));
         }
         return items;
     }
