@@ -5,6 +5,7 @@ import de.rwth.idsg.bikeman.ixsi.BookingCheckTask;
 import de.rwth.idsg.bikeman.repository.BookingRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
+import org.joda.time.Duration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,11 +41,11 @@ public class BookingCheckService {
 
         String ixsiBookingId = booking.getIxsiBookingId();
         DateTime reservationEnd = booking.getReservation().getEndDateTime().toDateTime();
+        Duration duration = new Duration(DateTime.now(), reservationEnd.plusMinutes(BUFFER_IN_MIN));
 
         BookingCheckTask c = new BookingCheckTask(this, ixsiBookingId, reservationEnd);
 
-        long endTimestamp = reservationEnd.plusMinutes(BUFFER_IN_MIN).getMillis();
-        ScheduledFuture ff = executorService.schedule(c, endTimestamp, TimeUnit.MILLISECONDS);
+        ScheduledFuture ff = executorService.schedule(c, duration.getMillis(), TimeUnit.MILLISECONDS);
         lookupTable.put(booking.getIxsiBookingId(), ff);
     }
 
