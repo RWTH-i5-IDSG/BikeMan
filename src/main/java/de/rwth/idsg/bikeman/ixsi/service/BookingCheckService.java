@@ -36,17 +36,12 @@ public class BookingCheckService {
     public static final int BUFFER_IN_MIN = 2;
 
     public void placedBooking(Booking booking) {
-        String ixsiBookingId = booking.getIxsiBookingId();
+        log.debug("New booking is placed");
 
+        String ixsiBookingId = booking.getIxsiBookingId();
         DateTime reservationEnd = booking.getReservation().getEndDateTime().toDateTime();
 
-        BookingCheckTask c = new BookingCheckTask(ixsiBookingId, this, () -> {
-           boolean notUsed = bookingRepository.isNotUsedAndExpired(ixsiBookingId);
-            if (notUsed) {
-                bookingAlertPushService.alertNotUsed(ixsiBookingId);
-                consumptionPushService.reportNotUsed(ixsiBookingId, reservationEnd);
-            }
-        });
+        BookingCheckTask c = new BookingCheckTask(this, ixsiBookingId, reservationEnd);
 
         long endTimestamp = reservationEnd.plusMinutes(BUFFER_IN_MIN).getMillis();
         ScheduledFuture ff = executorService.schedule(c, endTimestamp, TimeUnit.MILLISECONDS);
@@ -54,18 +49,34 @@ public class BookingCheckService {
     }
 
     public void changedBooking(Booking oldBooking, Booking newBooking) {
+        log.debug("Booking is changed");
+
         cancelledBooking(oldBooking);
         placedBooking(newBooking);
     }
 
     public void cancelledBooking(Booking booking) {
+        log.debug("Booking is cancelled");
+
         ScheduledFuture f = lookupTable.remove(booking.getIxsiBookingId());
         if (f != null) {
             f.cancel(true);
         }
     }
 
-    public void completed(String ixsiBookingId) {
-        lookupTable.remove(ixsiBookingId);
+    public void check(String ixsiBookingId, DateTime reservationEnd) {
+        log.debug("Running the booking check");
+
+        try {
+            boolean notUsed = bookingRepository.isNotUsedAndExpired(ixsiBookingId);
+            if (notUsed) {
+                log.debug("Booking '{}' is not used, reporting to IXSI server", ixsiBookingId);
+
+                bookingAlertPushService.alertNotUsed(ixsiBookingId);
+                consumptionPushService.reportNotUsed(ixsiBookingId, reservationEnd);
+            }
+        } finally {
+            lookupTable.remove(ixsiBookingId);
+        }
     }
 }
