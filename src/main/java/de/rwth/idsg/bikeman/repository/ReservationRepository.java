@@ -42,8 +42,9 @@ public interface ReservationRepository extends JpaRepository<Reservation, String
 
     @Query("SELECT r FROM Reservation r " +
            "WHERE r.cardAccount.cardAccountId = :cardAccountID " +
-           "AND (r.startDateTime <= :dateTime AND r.endDateTime >= :dateTime)")
-    Reservation findByCustomerIdAndTime (@Param("cardAccountID") long cardAccountId,
+           "AND (r.startDateTime <= :dateTime AND r.endDateTime >= :dateTime)" +
+           "AND r.state = de.rwth.idsg.bikeman.domain.ReservationState.CREATED")
+    List<Reservation> findByCustomerIdAndTime (@Param("cardAccountID") long cardAccountId,
                                          @Param("dateTime") LocalDateTime dateTime);
 
     @Modifying

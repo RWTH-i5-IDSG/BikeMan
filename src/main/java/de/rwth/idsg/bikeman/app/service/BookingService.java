@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 
 @Service("BookingServiceApp")
 @Slf4j
@@ -27,11 +29,9 @@ public class BookingService {
     @Autowired
     private ReservationRepository reservationRepository;
 
-    @Transactional(readOnly = false, rollbackFor = Exception.class)
+    @Transactional(readOnly=false, rollbackFor=Exception.class)
     public ViewBookingDTO create(Long stationId, Customer customer) {
-        Reservation existingReservation = reservationRepository.findByCustomerIdAndTime(
-            customer.getCardAccount().getCardAccountId(),
-            LocalDateTime.now());
+        Reservation existingReservation = this.getReservation(customer);
 
         // allow only one reservation at the same time
         if (existingReservation != null) {
@@ -47,11 +47,11 @@ public class BookingService {
         LocalDateTime begin = LocalDateTime.now();
         LocalDateTime end = LocalDateTime.now().plusMinutes(15);
 
-
         Reservation reservation = new Reservation();
         reservation.setCardAccount(customer.getCardAccount());
         reservation.setStartDateTime(begin);
         reservation.setEndDateTime(end);
+        reservation.setState(ReservationState.CREATED);
         reservation.setPedelec(pedelec);
 
         Reservation savedReservation = reservationRepository.save(reservation);
@@ -70,10 +70,9 @@ public class BookingService {
         }
     }
 
+    @Transactional(readOnly=true)
     public ViewBookingDTO getDTO(Customer customer) {
-        Reservation reservation = reservationRepository.findByCustomerIdAndTime(
-                        customer.getCardAccount().getCardAccountId(),
-                        LocalDateTime.now());
+        Reservation reservation = this.getReservation(customer);
 
         if (reservation == null) {
             return null;
@@ -89,9 +88,7 @@ public class BookingService {
 
     @Transactional(readOnly=true)
     public ViewPedelecSlotDTO getSlot(Customer customer) {
-        Reservation reservation = reservationRepository.findByCustomerIdAndTime(
-            customer.getCardAccount().getCardAccountId(),
-            LocalDateTime.now());
+        Reservation reservation = this.getReservation(customer);
 
         if (reservation == null) {
             return null;
@@ -103,17 +100,32 @@ public class BookingService {
             .build();
     }
 
-    @Transactional(readOnly = false)
+    @Transactional(readOnly=false)
     public void delete(Customer customer) {
-        Reservation reservation = reservationRepository.findByCustomerIdAndTime(
-            customer.getCardAccount().getCardAccountId(),
-            LocalDateTime.now());
+        Reservation reservation = this.getReservation(customer);
 
         if (reservation == null) {
             throw new AppException("No valid Reservation found!", AppErrorCode.CONSTRAINT_FAILED);
         }
 
         reservationRepository.updateEndDateTime(reservation.getReservationId(), LocalDateTime.now());
+    }
+
+    @Transactional(readOnly=true)
+    private Reservation getReservation(Customer customer) {
+        List<Reservation> reservations = reservationRepository.findByCustomerIdAndTime(
+            customer.getCardAccount().getCardAccountId(),
+            LocalDateTime.now());
+
+        if (reservations == null || reservations.isEmpty()) {
+            return null;
+        }
+
+        if (reservations.size() > 1) {
+            throw new AppException("More than one Reservations found!", AppErrorCode.CONSTRAINT_FAILED);
+        }
+
+        return reservations.get(0);
     }
 
 }
