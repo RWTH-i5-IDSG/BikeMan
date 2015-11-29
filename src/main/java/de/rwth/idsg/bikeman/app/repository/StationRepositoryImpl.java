@@ -76,7 +76,7 @@ public class StationRepositoryImpl implements StationRepository {
         Root<StationSlot> stationSlot = criteria.from(StationSlot.class);
         Join<StationSlot, Pedelec> pedelec = stationSlot.join(StationSlot_.pedelec, JoinType.LEFT);
 
-        Join<Pedelec, PedelecChargingStatus> chargingStatus = pedelec.join(Pedelec_.chargingStatus, JoinType.INNER);
+        Join<Pedelec, PedelecChargingStatus> chargingStatus = pedelec.join(Pedelec_.chargingStatus, JoinType.LEFT);
 
         criteria.select(
                 builder.construct(
