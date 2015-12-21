@@ -64,6 +64,10 @@ public class CardAccountService {
         return Optional.of(dto);
     }
 
+    public void setCardOperative(String cardId) {
+        cardAccountRepository.setOperationStateForCardId(OperationState.OPERATIVE, cardId);
+    }
+
     @Transactional(readOnly = true)
     public List<ViewCardAccountDTO> getCardAccountsOfCurrentUser() {
 

@@ -4,6 +4,7 @@ import com.google.common.base.Optional;
 import de.rwth.idsg.bikeman.psinterface.Utils;
 import de.rwth.idsg.bikeman.psinterface.dto.request.BootNotificationDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.CardActivationDTO;
+import de.rwth.idsg.bikeman.psinterface.dto.request.CardActivationStatusDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.ChargingStatusDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.CustomerAuthorizeDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.FirmwareStatusDTO;
@@ -12,9 +13,9 @@ import de.rwth.idsg.bikeman.psinterface.dto.request.PedelecStatusDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.StartTransactionDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.StationStatusDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.StopTransactionDTO;
-import de.rwth.idsg.bikeman.psinterface.dto.response.CardActivationResponseDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.response.AuthorizeConfirmationDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.response.BootConfirmationDTO;
+import de.rwth.idsg.bikeman.psinterface.dto.response.CardActivationResponseDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.response.HeartbeatDTO;
 import de.rwth.idsg.bikeman.psinterface.exception.PsErrorCode;
 import de.rwth.idsg.bikeman.psinterface.exception.PsException;
@@ -52,6 +53,7 @@ public class PsiResource {
     private static final String ACTIVATE_CARD_PATH = "/activate-card";
     private static final String AVAIL_PEDELECS_PATH = "/available-pedelecs";
 
+    private static final String CARD_ACTIVATION_STATUS_PATH = "/status/card-activation";
     private static final String STATION_STATUS_PATH = "/status/station";
     private static final String PEDELEC_STATUS_PATH = "/status/pedelec";
     private static final String CHARGING_STATUS_PATH = "/status/charging";
@@ -141,6 +143,19 @@ public class PsiResource {
     // -------------------------------------------------------------------------
     // Status
     // -------------------------------------------------------------------------
+
+    @RequestMapping(value = CARD_ACTIVATION_STATUS_PATH, method = RequestMethod.POST)
+    public void stationCardActivationNotification(@RequestBody CardActivationStatusDTO dto,
+                                                  HttpServletRequest request) {
+        log.debug("[From: {}] Received cardActivationNotification: {}", Utils.getFrom(request), dto);
+
+        if (dto.isSuccessfulActivation()) {
+            cardAccountService.setCardOperative(dto.getCardId());
+        } else {
+            // TODO: We should probably raise an exception, or notice somebody instead
+            log.warn("The cardId '{}' could not be activated", dto.getCardId());
+        }
+    }
 
     @RequestMapping(value = STATION_STATUS_PATH, method = RequestMethod.POST)
     public void stationStatusNotification(@RequestBody StationStatusDTO stationStatusDTO,
