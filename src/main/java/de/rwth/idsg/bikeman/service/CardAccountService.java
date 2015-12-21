@@ -40,7 +40,7 @@ public class CardAccountService {
             return Optional.absent();
         }
 
-        cardAccount.setOperationState(OperationState.OPERATIVE);
+        cardAccount.setOperationState(OperationState.INOPERATIVE);
         cardAccount.setActivationKey(null);
         cardAccount.setCardPin(cardActivationDTO.getCardPin());
         cardAccountRepository.save(cardAccount);
