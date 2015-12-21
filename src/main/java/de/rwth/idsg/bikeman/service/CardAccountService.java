@@ -1,9 +1,15 @@
 package de.rwth.idsg.bikeman.service;
 
 import com.google.common.base.Optional;
-import de.rwth.idsg.bikeman.domain.*;
+import de.rwth.idsg.bikeman.domain.BookedTariff;
+import de.rwth.idsg.bikeman.domain.CardAccount;
+import de.rwth.idsg.bikeman.domain.CustomerType;
+import de.rwth.idsg.bikeman.domain.OperationState;
+import de.rwth.idsg.bikeman.domain.User;
 import de.rwth.idsg.bikeman.psinterface.dto.request.CardActivationDTO;
-import de.rwth.idsg.bikeman.psinterface.dto.response.AuthorizeConfirmationDTO;
+import de.rwth.idsg.bikeman.psinterface.dto.response.CardActivationResponseDTO;
+import de.rwth.idsg.bikeman.psinterface.dto.response.CardKeyDTO;
+import de.rwth.idsg.bikeman.psinterface.repository.PsiStationRepository;
 import de.rwth.idsg.bikeman.repository.CardAccountRepository;
 import de.rwth.idsg.bikeman.repository.TariffRepository;
 import de.rwth.idsg.bikeman.repository.UserRepository;
@@ -32,9 +38,10 @@ public class CardAccountService {
     @Inject private CardAccountRepository cardAccountRepository;
     @Inject private UserRepository userRepository;
     @Inject private TariffRepository tariffRepository;
+    @Inject private PsiStationRepository stationRepository;
 
     @Transactional(readOnly = true)
-    public Optional<AuthorizeConfirmationDTO> activateCardAccount(CardActivationDTO cardActivationDTO) {
+    public Optional<CardActivationResponseDTO> activateCardAccount(CardActivationDTO cardActivationDTO) {
         CardAccount cardAccount = cardAccountRepository.findByActivationKey(cardActivationDTO.getActivationKey());
         if (cardAccount == null) {
             return Optional.absent();
@@ -45,9 +52,15 @@ public class CardAccountService {
         cardAccount.setCardPin(cardActivationDTO.getCardPin());
         cardAccountRepository.save(cardAccount);
 
-        int canRentCount = cardAccount.getCurrentTariff().getTariff().getMaxNumberPedelecs();
+        CardKeyDTO.Write keys = stationRepository.getCardWriteKey();
 
-        AuthorizeConfirmationDTO dto = new AuthorizeConfirmationDTO(cardAccount.getCardId(), 0, canRentCount);
+        CardActivationResponseDTO dto = CardActivationResponseDTO.builder()
+                                                                 .cardId(cardAccount.getCardId())
+                                                                 .readKey(keys.getReadKey())
+                                                                 .writeKey(keys.getWriteKey())
+                                                                 .applicationKey(keys.getApplicationKey())
+                                                                 .build();
+
         return Optional.of(dto);
     }
 

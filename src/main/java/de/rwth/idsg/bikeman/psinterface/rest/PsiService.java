@@ -74,7 +74,7 @@ public class PsiService {
             throws DatabaseException {
 
         stationRepository.updateAfterBoot(bootNotificationDTO);
-        List<CardKeyDTO> cardKeys = stationRepository.getCardKeys();
+        List<CardKeyDTO.ReadOnly> cardKeys = stationRepository.getCardReadKeys();
 
         BootConfirmationDTO bootConfirmationDTO = new BootConfirmationDTO();
         bootConfirmationDTO.setTimestamp(Utils.nowInSeconds());

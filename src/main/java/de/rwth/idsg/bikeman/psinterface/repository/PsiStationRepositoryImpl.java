@@ -1,7 +1,6 @@
 package de.rwth.idsg.bikeman.psinterface.repository;
 
 import com.google.common.base.Strings;
-import de.rwth.idsg.bikeman.utils.ItemIdComparator;
 import de.rwth.idsg.bikeman.domain.OperationState;
 import de.rwth.idsg.bikeman.domain.Pedelec;
 import de.rwth.idsg.bikeman.domain.Station;
@@ -14,6 +13,7 @@ import de.rwth.idsg.bikeman.psinterface.dto.response.CardKeyDTO;
 import de.rwth.idsg.bikeman.psinterface.exception.PsErrorCode;
 import de.rwth.idsg.bikeman.psinterface.exception.PsException;
 import de.rwth.idsg.bikeman.repository.PedelecRepository;
+import de.rwth.idsg.bikeman.utils.ItemIdComparator;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
@@ -23,7 +23,6 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -40,12 +39,24 @@ public class PsiStationRepositoryImpl implements PsiStationRepository {
     @Inject private PedelecRepository pedelecRepository;
 
     @Override
-    public List<CardKeyDTO> getCardKeys() {
+    public List<CardKeyDTO.ReadOnly> getCardReadKeys() {
         final String q = "SELECT new de.rwth.idsg.bikeman.psinterface.dto.response." +
-                         "CardKeyDTO(c.name, c.readKey, c.writeKey) " +
+                         "CardKeyDTO.ReadOnly(c.name, c.readKey) " +
                          "FROM CardKey c";
 
-        return em.createQuery(q, CardKeyDTO.class).getResultList();
+        return em.createQuery(q, CardKeyDTO.ReadOnly.class).getResultList();
+    }
+
+    @Override
+    public CardKeyDTO.Write getCardWriteKey() {
+
+        // TODO: the decision with "is not null" is dirty. ideally,
+        // we should know beforehand what kind of card this is and get keys by the name
+        final String q = "SELECT new de.rwth.idsg.bikeman.psinterface.dto.response." +
+                         "CardKeyDTO.Write(c.name, c.readKey, c.writeKey, c.applicationKey) " +
+                         "FROM CardKey c WHERE c.applicationKey is not null";
+
+        return em.createQuery(q, CardKeyDTO.Write.class).getSingleResult();
     }
 
     @Override

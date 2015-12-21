@@ -2,7 +2,17 @@ package de.rwth.idsg.bikeman.psinterface.rest;
 
 import com.google.common.base.Optional;
 import de.rwth.idsg.bikeman.psinterface.Utils;
-import de.rwth.idsg.bikeman.psinterface.dto.request.*;
+import de.rwth.idsg.bikeman.psinterface.dto.request.BootNotificationDTO;
+import de.rwth.idsg.bikeman.psinterface.dto.request.CardActivationDTO;
+import de.rwth.idsg.bikeman.psinterface.dto.request.ChargingStatusDTO;
+import de.rwth.idsg.bikeman.psinterface.dto.request.CustomerAuthorizeDTO;
+import de.rwth.idsg.bikeman.psinterface.dto.request.FirmwareStatusDTO;
+import de.rwth.idsg.bikeman.psinterface.dto.request.LogsStatusDTO;
+import de.rwth.idsg.bikeman.psinterface.dto.request.PedelecStatusDTO;
+import de.rwth.idsg.bikeman.psinterface.dto.request.StartTransactionDTO;
+import de.rwth.idsg.bikeman.psinterface.dto.request.StationStatusDTO;
+import de.rwth.idsg.bikeman.psinterface.dto.request.StopTransactionDTO;
+import de.rwth.idsg.bikeman.psinterface.dto.response.CardActivationResponseDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.response.AuthorizeConfirmationDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.response.BootConfirmationDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.response.HeartbeatDTO;
@@ -12,7 +22,11 @@ import de.rwth.idsg.bikeman.service.CardAccountService;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -85,11 +99,11 @@ public class PsiResource {
     // -------------------------------------------------------------------------
 
     @RequestMapping(value = ACTIVATE_CARD_PATH, method = RequestMethod.POST)
-    public AuthorizeConfirmationDTO activateCard(@RequestBody CardActivationDTO cardActivationDTO,
-                                                 HttpServletRequest request, HttpServletResponse response) {
+    public CardActivationResponseDTO activateCard(@RequestBody CardActivationDTO cardActivationDTO,
+                                                  HttpServletRequest request, HttpServletResponse response) {
         log.info("[From: {}] Received activateCard {}", Utils.getFrom(request), cardActivationDTO);
 
-        Optional<AuthorizeConfirmationDTO> optional = cardAccountService.activateCardAccount(cardActivationDTO);
+        Optional<CardActivationResponseDTO> optional = cardAccountService.activateCardAccount(cardActivationDTO);
         if (optional.isPresent()) {
             return optional.get();
         } else {

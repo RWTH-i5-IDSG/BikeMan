@@ -11,7 +11,8 @@ import java.util.List;
  * @since 16.06.2015
  */
 public interface PsiStationRepository {
-    List<CardKeyDTO> getCardKeys();
+    List<CardKeyDTO.ReadOnly> getCardReadKeys();
+    CardKeyDTO.Write getCardWriteKey();
     void updateAfterBoot(BootNotificationDTO dto);
     void updateStationStatus(StationStatusDTO dto);
 }

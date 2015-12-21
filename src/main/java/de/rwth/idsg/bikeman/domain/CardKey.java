@@ -43,6 +43,9 @@ public class CardKey extends AbstractTimestampClass implements Serializable {
     @Column(name = "write_key")
     private String writeKey;
 
+    @Column(name = "application_key")
+    private String applicationKey;
+
     @PrePersist
     public void prePersist() {
         super.prePersist();
