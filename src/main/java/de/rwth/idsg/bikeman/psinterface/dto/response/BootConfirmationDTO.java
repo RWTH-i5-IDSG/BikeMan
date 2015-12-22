@@ -12,5 +12,5 @@ import java.util.List;
 public class BootConfirmationDTO {
     private Long timestamp;
     private Integer heartbeatInterval;
-    private List<CardKeyDTO.ReadOnly> cardKeys;
+    private List<CardReadKeyDTO> cardKeys;
 }

@@ -9,7 +9,8 @@ import de.rwth.idsg.bikeman.psinterface.Utils;
 import de.rwth.idsg.bikeman.psinterface.dto.request.BootNotificationDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.SlotDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.StationStatusDTO;
-import de.rwth.idsg.bikeman.psinterface.dto.response.CardKeyDTO;
+import de.rwth.idsg.bikeman.psinterface.dto.response.CardReadKeyDTO;
+import de.rwth.idsg.bikeman.psinterface.dto.response.CardWriteKeyDTO;
 import de.rwth.idsg.bikeman.psinterface.exception.PsErrorCode;
 import de.rwth.idsg.bikeman.psinterface.exception.PsException;
 import de.rwth.idsg.bikeman.repository.PedelecRepository;
@@ -39,24 +40,24 @@ public class PsiStationRepositoryImpl implements PsiStationRepository {
     @Inject private PedelecRepository pedelecRepository;
 
     @Override
-    public List<CardKeyDTO.ReadOnly> getCardReadKeys() {
+    public List<CardReadKeyDTO> getCardReadKeys() {
         final String q = "SELECT new de.rwth.idsg.bikeman.psinterface.dto.response." +
-                         "CardKeyDTO.ReadOnly(c.name, c.readKey) " +
+                         "CardReadKeyDTO(c.name, c.readKey) " +
                          "FROM CardKey c";
 
-        return em.createQuery(q, CardKeyDTO.ReadOnly.class).getResultList();
+        return em.createQuery(q, CardReadKeyDTO.class).getResultList();
     }
 
     @Override
-    public CardKeyDTO.Write getCardWriteKey() {
+    public CardWriteKeyDTO getCardWriteKey() {
 
         // TODO: the decision with "is not null" is dirty. ideally,
         // we should know beforehand what kind of card this is and get keys by the name
         final String q = "SELECT new de.rwth.idsg.bikeman.psinterface.dto.response." +
-                         "CardKeyDTO.Write(c.name, c.readKey, c.writeKey, c.applicationKey) " +
+                         "CardWriteKeyDTO(c.name, c.readKey, c.writeKey, c.applicationKey) " +
                          "FROM CardKey c WHERE c.applicationKey is not null";
 
-        return em.createQuery(q, CardKeyDTO.Write.class).getSingleResult();
+        return em.createQuery(q, CardWriteKeyDTO.class).getSingleResult();
     }
 
     @Override

@@ -8,7 +8,7 @@ import de.rwth.idsg.bikeman.domain.OperationState;
 import de.rwth.idsg.bikeman.domain.User;
 import de.rwth.idsg.bikeman.psinterface.dto.request.CardActivationDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.response.CardActivationResponseDTO;
-import de.rwth.idsg.bikeman.psinterface.dto.response.CardKeyDTO;
+import de.rwth.idsg.bikeman.psinterface.dto.response.CardWriteKeyDTO;
 import de.rwth.idsg.bikeman.psinterface.repository.PsiStationRepository;
 import de.rwth.idsg.bikeman.repository.CardAccountRepository;
 import de.rwth.idsg.bikeman.repository.TariffRepository;
@@ -52,7 +52,7 @@ public class CardAccountService {
         cardAccount.setCardPin(cardActivationDTO.getCardPin());
         cardAccountRepository.save(cardAccount);
 
-        CardKeyDTO.Write keys = stationRepository.getCardWriteKey();
+        CardWriteKeyDTO keys = stationRepository.getCardWriteKey();
 
         CardActivationResponseDTO dto = CardActivationResponseDTO.builder()
                                                                  .cardId(cardAccount.getCardId())

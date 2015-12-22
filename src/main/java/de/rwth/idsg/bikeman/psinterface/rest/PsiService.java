@@ -21,7 +21,7 @@ import de.rwth.idsg.bikeman.psinterface.dto.request.StationStatusDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.StopTransactionDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.response.AuthorizeConfirmationDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.response.BootConfirmationDTO;
-import de.rwth.idsg.bikeman.psinterface.dto.response.CardKeyDTO;
+import de.rwth.idsg.bikeman.psinterface.dto.response.CardReadKeyDTO;
 import de.rwth.idsg.bikeman.psinterface.exception.PsException;
 import de.rwth.idsg.bikeman.psinterface.repository.PsiBookingRepository;
 import de.rwth.idsg.bikeman.psinterface.repository.PsiCustomerRepository;
@@ -74,7 +74,7 @@ public class PsiService {
             throws DatabaseException {
 
         stationRepository.updateAfterBoot(bootNotificationDTO);
-        List<CardKeyDTO.ReadOnly> cardKeys = stationRepository.getCardReadKeys();
+        List<CardReadKeyDTO> cardKeys = stationRepository.getCardReadKeys();
 
         BootConfirmationDTO bootConfirmationDTO = new BootConfirmationDTO();
         bootConfirmationDTO.setTimestamp(Utils.nowInSeconds());
