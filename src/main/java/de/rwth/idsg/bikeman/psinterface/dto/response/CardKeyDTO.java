@@ -1,6 +1,5 @@
 package de.rwth.idsg.bikeman.psinterface.dto.response;
 
-import lombok.Builder;
 import lombok.Data;
 
 /**
@@ -10,14 +9,12 @@ import lombok.Data;
 public class CardKeyDTO {
 
     @Data
-    @Builder
-    public static final class ReadOnly {
+    public static class ReadOnly {
         private final String name, readKey;
     }
 
     @Data
-    @Builder
-    public static final class Write {
+    public static class Write {
         private final String name, readKey, writeKey, applicationKey;
     }
 
