@@ -73,19 +73,8 @@ public abstract class ConcurrentTextWebSocketHandler extends TextWebSocketHandle
     // Implement in extending classes
     // -------------------------------------------------------------------------
 
-    public void onMessage(WebSocketSession session, TextMessage webSocketMessage) throws Exception {
-
-    }
-
-    public void onOpen(WebSocketSession session) throws Exception {
-
-    }
-
-    public void onClose(WebSocketSession session, CloseStatus closeStatus) throws Exception {
-
-    }
-
-    public void onError(WebSocketSession session, Throwable throwable) throws Exception {
-
-    }
+    abstract void onMessage(WebSocketSession session, TextMessage webSocketMessage) throws Exception;
+    abstract void onOpen(WebSocketSession session) throws Exception;
+    abstract void onClose(WebSocketSession session, CloseStatus closeStatus) throws Exception;
+    abstract void onError(WebSocketSession session, Throwable throwable) throws Exception;
 }
