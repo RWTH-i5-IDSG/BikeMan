@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -235,10 +236,13 @@ public class PedelecRepositoryImpl implements PedelecRepository {
 
             return Optional.of(p);
 
+        } catch (NoResultException e) {
+            // Do nothing, this is a valid outcome
         } catch (Exception e) {
             log.error("Error occurred", e);
-            return Optional.absent();
         }
+
+        return Optional.absent();
     }
 
     @Override
