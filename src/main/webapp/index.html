@@ -278,6 +278,25 @@
                         <!-- /.nav-second-level -->
                     </li>
 
+                    <li ng-show="isAuthorized([userRoles.admin, userRoles.manager])">
+                        <a href="#"><i class="fa fa-exclamation-circle"></i>
+                            <span translate="global.menu.error.errors">Errors</span>
+                            <span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                            <li ui-sref-active="selectedNavItem">
+                                <a ui-sref="stationErrors">
+                                    <span translate="global.menu.error.stationErrors">Station Errors</span>
+                                </a>
+                            </li>
+                            <li ui-sref-active="selectedNavItem">
+                                <a ui-sref="pedelecErrors">
+                                    <span translate="global.menu.error.pedelecErrors">Pedelec Errors</span>
+                                </a>
+                            </li>
+                        </ul>
+                        <!-- /.nav-second-level -->
+                    </li>
+
                 </ul>
                 <!-- /#side-menu -->
             </div>
@@ -378,6 +397,9 @@
 <script src="scripts/monitor/controller.js"></script>
 <script src="scripts/monitor/router.js"></script>
 <script src="scripts/monitor/service.js"></script>
+<script src="scripts/errors/controller.js"></script>
+<script src="scripts/errors/router.js"></script>
+<script src="scripts/errors/service.js"></script>
 
 <!-- endbuild -->
 </body>

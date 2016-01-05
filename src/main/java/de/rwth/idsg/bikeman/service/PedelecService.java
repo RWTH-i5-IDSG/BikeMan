@@ -9,6 +9,7 @@ import de.rwth.idsg.bikeman.repository.PedelecRepository;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.ChangePedelecOperationStateDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditPedelecDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.PedelecConfigurationDTO;
+import de.rwth.idsg.bikeman.web.rest.dto.view.ViewErrorDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.view.ViewPedelecDTO;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by max on 18/08/14.
@@ -43,6 +45,13 @@ public class PedelecService {
 
     public void delete(Long pedelecId) throws DatabaseException {
         pedelecRepository.delete(pedelecId);
+    }
+
+    public List<ViewErrorDTO> getErrors() throws DatabaseException {
+        return pedelecRepository.findErrors()
+                                .stream()
+                                .sorted((e1, e2) -> e2.getLastUpdated().compareTo(e1.getLastUpdated()))
+                                .collect(Collectors.toList());
     }
 
     public void changeOperationState(CreateEditPedelecDTO dto) throws DatabaseException, RestClientException {

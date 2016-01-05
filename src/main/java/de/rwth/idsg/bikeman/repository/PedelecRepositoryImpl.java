@@ -2,7 +2,9 @@ package de.rwth.idsg.bikeman.repository;
 
 import com.google.common.base.Optional;
 import de.rwth.idsg.bikeman.domain.*;
+import de.rwth.idsg.bikeman.domain.CustomerType;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditPedelecDTO;
+import de.rwth.idsg.bikeman.web.rest.dto.view.ViewErrorDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.view.ViewPedelecDTO;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
@@ -11,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -237,6 +238,22 @@ public class PedelecRepositoryImpl implements PedelecRepository {
         } catch (Exception e) {
             log.error("Error occurred", e);
             return Optional.absent();
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ViewErrorDTO> findErrors() throws DatabaseException {
+        String q = "SELECT new de.rwth.idsg.bikeman.web.rest.dto.view.ViewErrorDTO" +
+                "(p.pedelecId, p.manufacturerId, p.errorCode, p.errorInfo, p.updated) " +
+                "FROM Pedelec p where not (p.errorCode = '') and p.errorCode is not null";
+
+        try {
+            return em.createQuery(q, ViewErrorDTO.class)
+                    .getResultList();
+        } catch (Exception e) {
+            log.error("Error occurred", e);
+            throw new DatabaseException("PedelecRepository exception while looking for errors");
         }
     }
 

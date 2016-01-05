@@ -1,0 +1,30 @@
+<div>
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">Pedelec Errors</h1>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table st-table="pedelecErrors" st-safe-src="sfPedelecErrors" class="table table-striped">
+            <thead>
+            <tr>
+                <th>Timestamp</th>
+                <th>Pedelec</th>
+                <th>Error Code</th>
+                <th>Error Info</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            <tr ng-repeat="pedelecError in pedelecErrors">
+                <td>{{pedelecError.lastUpdated | date:'d.M.yy - HH:mm:ss'}}</td>
+                <td> <a ui-sref="pedelecDetail({pedelecId: pedelecError.pedelecId})">{{pedelecError.pedelecManufacturerId}}</a></td>
+                <td>{{pedelecError.errorCode}}</td>
+                <td>{{pedelecError.errorInfo}}</td>
+            </tr>
+
+            </tbody>
+        </table>
+    </div>
+</div>

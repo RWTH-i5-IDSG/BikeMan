@@ -5,6 +5,7 @@ import de.rwth.idsg.bikeman.service.StationService;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.ChangeStationOperationStateDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditStationDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.StationConfigurationDTO;
+import de.rwth.idsg.bikeman.web.rest.dto.view.ViewErrorDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.view.ViewStationDTO;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +29,7 @@ public class StationResource {
 
     private static final String BASE_PATH = "/stations";
     private static final String ID_PATH = "/stations/{id}";
+    private static final String ERROR_PATH = "/stations/errors";
 
     @Timed
     @RequestMapping(value = BASE_PATH, method = RequestMethod.POST)
@@ -90,5 +92,12 @@ public class StationResource {
     public void updateConfig(@PathVariable Long id, @Valid @RequestBody StationConfigurationDTO dto) throws DatabaseException {
         log.debug("REST request to change station configuration: {}", dto);
         stationService.updateConfig(id, dto);
+    }
+
+    @Timed
+    @RequestMapping(value = ERROR_PATH, method = RequestMethod.GET)
+    public List<ViewErrorDTO> getErrors() {
+        log.debug("REST request to get station and stationSlot errors.");
+        return stationService.getErrors();
     }
 }

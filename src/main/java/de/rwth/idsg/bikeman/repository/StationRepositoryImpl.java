@@ -1,13 +1,17 @@
 package de.rwth.idsg.bikeman.repository;
 
-import de.rwth.idsg.bikeman.domain.*;
+import de.rwth.idsg.bikeman.domain.Address;
 import de.rwth.idsg.bikeman.domain.Address_;
+import de.rwth.idsg.bikeman.domain.OperationState;
+import de.rwth.idsg.bikeman.domain.Pedelec;
 import de.rwth.idsg.bikeman.domain.Pedelec_;
+import de.rwth.idsg.bikeman.domain.Station;
+import de.rwth.idsg.bikeman.domain.StationSlot;
 import de.rwth.idsg.bikeman.domain.StationSlot_;
 import de.rwth.idsg.bikeman.domain.Station_;
-
 import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditAddressDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditStationDTO;
+import de.rwth.idsg.bikeman.web.rest.dto.view.ViewErrorDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.view.ViewStationDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.view.ViewStationSlotDTO;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
@@ -18,8 +22,12 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.*;
-
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Root;
 import java.util.List;
 
 /**
@@ -104,12 +112,26 @@ public class StationRepositoryImpl implements StationRepository {
 
     @Override
     @Transactional(readOnly = true)
+    public List<ViewErrorDTO> findErrors() throws DatabaseException {
+        final String q = "SELECT new de.rwth.idsg.bikeman.web.rest.dto.view.ViewErrorDTO(" +
+                "s.stationId, s.manufacturerId, s.name, s.errorCode, s.errorInfo, s.updated) " +
+                "FROM Station s where not (s.errorCode = '') and s.errorCode is not null";
+        try {
+            return em.createQuery(q, ViewErrorDTO.class)
+                     .getResultList();
+        } catch (Exception e) {
+            throw new DatabaseException("Failed to find stations with error messages");
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public String getEndpointAddress(long stationId) throws DatabaseException {
         final String q = "SELECT s.endpointAddress FROM Station s WHERE s.stationId = :stationId";
         try {
             return em.createQuery(q, String.class)
-                    .setParameter("stationId", stationId)
-                    .getSingleResult();
+                     .setParameter("stationId", stationId)
+                     .getSingleResult();
         } catch (Exception e) {
             throw new DatabaseException("Failed to find station with stationId " + stationId, e);
         }

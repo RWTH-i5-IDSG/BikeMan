@@ -48,6 +48,11 @@
             "majorcustomerlog" : {
                 "title": "Majorcustomer's Logbook"
             },
+            "error" : {
+                "errors" : "Errors",
+                "pedelecErrors" : "Pedelec Errors",
+                "stationErrors" : "Station Errors"
+            },
             "admin": "Administration",
             "language": "Language"
         },

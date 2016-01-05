@@ -7,13 +7,16 @@ import de.rwth.idsg.bikeman.repository.StationSlotRepository;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.ChangeStationOperationStateDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditStationDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.StationConfigurationDTO;
+import de.rwth.idsg.bikeman.web.rest.dto.view.ViewErrorDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.view.ViewStationDTO;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by max on 18/08/14.
@@ -47,6 +50,20 @@ public class StationService {
     public StationConfigurationDTO getConfig(Long id) throws DatabaseException {
         String endpointAddress = stationRepository.getEndpointAddress(id);
         return stationClient.getConfig(endpointAddress);
+    }
+
+    public List<ViewErrorDTO> getErrors() throws DatabaseException {
+        List<ViewErrorDTO> stationErrors = stationRepository.findErrors();
+        List<ViewErrorDTO> stationSlotErrors = stationSlotRepository.findErrors();
+
+        List<ViewErrorDTO> errors = new ArrayList<>(stationErrors);
+
+        errors.addAll(stationSlotErrors);
+
+        return errors
+                .stream()
+                .sorted((e1, e2) -> e2.getLastUpdated().compareTo(e1.getLastUpdated()))
+                .collect(Collectors.toList());
     }
 
     public void updateConfig(Long id, StationConfigurationDTO dto) throws DatabaseException {
