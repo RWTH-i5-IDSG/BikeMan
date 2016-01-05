@@ -49,7 +49,6 @@ public class ResourceLogFilter extends OncePerRequestFilter {
 
             request = new RequestWrapper(prefix, request, stationHeaderMissing);
             response = new ResponseWrapper(prefix, response);
-            logRequest(request);
         }
 
         try {
@@ -57,6 +56,7 @@ public class ResourceLogFilter extends OncePerRequestFilter {
             //response.flushBuffer();
         } finally {
             if (log.isDebugEnabled()) {
+                logRequest(request);
                 logResponse(response);
             }
         }
