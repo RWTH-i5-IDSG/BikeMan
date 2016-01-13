@@ -10,4 +10,29 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="1409564974612-02" author="wkluth">
+        <createTable tableName="T_ACTIVATION_KEY" schemaName="public">
+            <column name="activation_key_id" type="INT8"/>
+            <column name="user_id" type="INT8"/>
+            <column name="created_at" type="TIMESTAMP"/>
+            <column name="key" type="VARCHAR(255)"/>
+            <column name="type" type="VARCHAR(50)"/>
+            <column name="used" type="BOOLEAN"/>
+            <column name="valid_until" type="TIMESTAMP"/>
+        </createTable>
+
+        <addPrimaryKey tableName="T_ACTIVATION_KEY" columnNames="activation_key_id" constraintName="PK_T_ACTIVATION_KEY"
+                       schemaName="public"/>
+
+        <addForeignKeyConstraint baseTableName="T_ACTIVATION_KEY" baseColumnNames="user_id"
+                                 constraintName="fk_activation_key_customer"
+                                 referencedTableName="T_CUSTOMER"
+                                 referencedColumnNames="user_id"/>
+
+        <createIndex tableName="T_ACTIVATION_KEY" indexName="i_activation_key_key">
+            <column name="key"></column>
+        </createIndex>
+
+    </changeSet>
+
 </databaseChangeLog>
