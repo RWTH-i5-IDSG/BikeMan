@@ -11,6 +11,7 @@ import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import java.util.Set;
 
 @Entity
 @DiscriminatorValue("customer")
@@ -50,6 +51,9 @@ public class Customer extends User {
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
     private CardAccount cardAccount;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "customer", orphanRemoval = true)
+    private Set<ActivationKey> activationKeys;
 
     @PrePersist
     public void prePersist() {

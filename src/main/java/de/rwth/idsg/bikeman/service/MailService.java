@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.core.env.Environment;
+import org.springframework.mail.MailSendException;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
@@ -15,6 +16,7 @@ import org.thymeleaf.spring4.SpringTemplateEngine;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
 /**
@@ -45,10 +47,14 @@ public class MailService {
      * System default email address that sends the e-mails.
      */
     private String from;
+    private String passwordUrl;
+    private String activationUrl;
 
     @PostConstruct
     public void init() {
         this.from = env.getProperty("spring.mail.from");
+        this.passwordUrl = env.getProperty("spring.mail.passwordUrl");
+        this.activationUrl = env.getProperty("spring.mail.activationUrl");
     }
 
     @Async
@@ -72,6 +78,51 @@ public class MailService {
     }
 
     @Async
+    public void sendActivationEmail(User user, String key) throws Exception {
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+        try {
+            MimeMessageHelper message = new MimeMessageHelper(mimeMessage, false, CharEncoding.UTF_8);
+            message.setTo(user.getLogin());
+            message.setFrom(from);
+            message.setSubject("Welcome");
+            message.setText("Hello,\n" +
+                "please open the following link to activate your user account:\n" +
+                "<" + this.activationUrl + ">\n", false);
+
+            javaMailSender.send(mimeMessage);
+
+            log.debug("Sent e-mail to User '{}'", user.getLogin());
+        } catch (MessagingException e) {
+            log.error("Error creating Mail: ", e);
+        } catch (MailSendException e) {
+            log.error("Error sending mail: ", e);
+        }
+    }
+
+    @Async
+    public void sendPasswortResetEmail(User user, String key) {
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+        try {
+            MimeMessageHelper message = new MimeMessageHelper(mimeMessage, false, CharEncoding.UTF_8);
+            message.setTo(user.getLogin());
+            message.setFrom(from);
+            message.setSubject("Password reset");
+            message.setText("Hello,\n" +
+                "you or someone else requested a reset of your password.\n" +
+                "To define a new password follow this link:\n" +
+                "<" + this.passwordUrl + key + ">\n", false);
+
+            javaMailSender.send(mimeMessage);
+
+            log.debug("Sent e-mail to User '{}'", user.getLogin());
+        } catch (MessagingException e) {
+            log.error("Error creating Mail: ", e);
+        } catch (MailSendException e) {
+            log.error("Error sending mail: ", e);
+        }
+    }
+
+    /*@Async
     public void sendActivationEmail(User user, String baseUrl) {
         log.debug("Sending activation e-mail to '{}'", user.getLogin());
 //        Locale locale = Locale.forLanguageTag(user.getLangKey());
@@ -87,5 +138,5 @@ public class MailService {
         } catch (Exception e) {
             log.warn("E-mail could not be sent to user '{}', exception is: {}", user.getLogin(), e.getMessage());
         }
-    }
+    }*/
 }

@@ -131,6 +131,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/app/stations*").permitAll()
                 .antMatchers("/app/stations/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/app/customer").permitAll()
+                .antMatchers(HttpMethod.POST, "/app/customer/passwordreset").permitAll()
                 .antMatchers("/app/**").authenticated()
                 .antMatchers("/app*").authenticated()
                 .antMatchers("/metrics/**").hasAuthority(AuthoritiesConstants.ADMIN)

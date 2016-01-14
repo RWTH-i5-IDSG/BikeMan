@@ -29,6 +29,8 @@ spring:
 
     mail:
         baseUrl: http://localhost:8080
+        passwordUrl: http://google.de/?q=
+        activationUrl: http://google.de/?q=
 
     thymeleaf:
         mode: XHTML

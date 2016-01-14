@@ -9,6 +9,7 @@ import de.rwth.idsg.bikeman.domain.*;
 import de.rwth.idsg.bikeman.domain.Address_;
 import de.rwth.idsg.bikeman.domain.Customer_;
 import de.rwth.idsg.bikeman.security.AuthoritiesConstants;
+import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.*;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Random;
 
 @Repository("CustomerRepositoryImplApp")
@@ -69,6 +71,19 @@ public class CustomerRepositoryImpl implements CustomerRepository {
         } catch (Exception e) {
             throw new AppException("Failed during database operation", e, AppErrorCode.DATABASE_OPERATION_FAILED);
         }
+    }
+
+    @Override
+    @Transactional
+    public Optional<Customer> findByLogin (String login) {
+        final String q = "SELECT c FROM Customer c WHERE UPPER(c.login) = UPPER(:login)";
+
+        return em.createQuery(q, Customer.class)
+            .setParameter("login", login)
+            .setMaxResults(1)
+            .getResultList()
+            .stream()
+            .findFirst();
     }
 
     @Override
