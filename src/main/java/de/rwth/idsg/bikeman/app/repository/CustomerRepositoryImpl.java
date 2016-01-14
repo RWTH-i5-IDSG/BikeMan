@@ -78,12 +78,13 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     public Optional<Customer> findByLogin (String login) {
         final String q = "SELECT c FROM Customer c WHERE UPPER(c.login) = UPPER(:login)";
 
-        return em.createQuery(q, Customer.class)
-            .setParameter("login", login)
-            .setMaxResults(1)
-            .getResultList()
-            .stream()
-            .findFirst();
+        try {
+            return Optional.of(em.createQuery(q, Customer.class)
+                     .setParameter("login", login)
+                     .getSingleResult());
+        } catch (NoResultException ex) {
+            return Optional.empty();
+        }
     }
 
     @Override

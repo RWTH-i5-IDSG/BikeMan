@@ -34,21 +34,18 @@ public class CustomerService {
         return obj;
     }
 
-    public Optional<Customer> get(String login) {
-        return customerRepository.findByLogin(login);
-    }
-
     @Transactional
     public Boolean resetPassword(String login) {
-        Optional<Customer> customer = this.get(login);
+        Optional<Customer> customer = customerRepository.findByLogin(login);
 
-        if (!customer.isPresent())
+        if (!customer.isPresent()) {
             return false;
+        }
 
         return this.resetPassword(customer.get());
     }
 
-    public Boolean resetPassword(Customer customer) {
+    private Boolean resetPassword(Customer customer) {
         String key = activationKeyService.createForPasswordReset(customer);
 
         mailService.sendPasswortResetEmail(customer, key);

@@ -34,7 +34,7 @@ public class SwaggerConfiguration implements EnvironmentAware {
     private final Logger log = LoggerFactory.getLogger(SwaggerConfiguration.class);
 
     public static final String DEFAULT_INCLUDE_PATTERN = "/api/.*";
-    public static final String APP_INCLUDE_PATTERN = "/apptest/.*";
+    public static final String APP_INCLUDE_PATTERN = "/app/.*";
 
     private RelaxedPropertyResolver propertyResolver;
 

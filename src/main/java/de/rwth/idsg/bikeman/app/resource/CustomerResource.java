@@ -63,7 +63,7 @@ public class CustomerResource {
     public void create(@Valid @RequestBody CreatePasswordResetDTO dto, HttpServletResponse response) throws AppException {
         log.debug("REST request to reset password");
 
-        if (! customerService.resetPassword(dto.getLogin())) {
+        if (!customerService.resetPassword(dto.getLogin())) {
             response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
         }
     }

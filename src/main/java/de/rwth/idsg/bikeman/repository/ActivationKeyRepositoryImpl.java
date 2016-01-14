@@ -3,7 +3,6 @@ package de.rwth.idsg.bikeman.repository;
 import de.rwth.idsg.bikeman.domain.ActivationKey;
 import de.rwth.idsg.bikeman.domain.ActivationKeyType;
 import de.rwth.idsg.bikeman.domain.Customer;
-import liquibase.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.RandomStringUtils;
 import org.joda.time.LocalDateTime;
@@ -25,7 +24,6 @@ public class ActivationKeyRepositoryImpl implements ActivationKeyRepository {
     public String create(Customer customer, ActivationKeyType type) {
         ActivationKey activationKey = new ActivationKey();
 
-        activationKey.setCreatedAt(LocalDateTime.now());
         activationKey.setCustomer(customer);
         activationKey.setType(type);
         activationKey.setKey(RandomStringUtils.randomAlphanumeric(20));
