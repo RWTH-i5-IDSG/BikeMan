@@ -10,7 +10,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import java.util.Optional;
 
 @Repository
 @Slf4j
@@ -37,5 +39,30 @@ public class ActivationKeyRepositoryImpl implements ActivationKeyRepository {
         }
 
         return activationKey.getKey();
+    }
+
+    @Override
+    public ActivationKey save(ActivationKey activationKey) {
+        em.persist(activationKey);
+        return activationKey;
+    }
+
+    @Override
+    public Optional<ActivationKey> findNotUsedAndNotExpired(String key, ActivationKeyType type) {
+        final String q = "SELECT k FROM ActivationKey k " +
+            "WHERE k.key = :key " +
+            "AND k.type = :type " +
+            "AND k.used = false " +
+            "AND k.validUntil > :now";
+
+        try {
+            return Optional.of(em.createQuery(q, ActivationKey.class)
+                .setParameter("key", key)
+                .setParameter("type", type)
+                .setParameter("now", new LocalDateTime())
+                .getSingleResult());
+        } catch (NoResultException ex) {
+            return Optional.empty();
+        }
     }
 }

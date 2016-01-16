@@ -157,4 +157,12 @@ public class CustomerRepositoryImpl implements CustomerRepository {
         return dto;
     }
 
+    @Override
+    @Transactional(readOnly = false)
+    public void setPassword(Customer customer, String password) throws AppException {
+        customer.setPassword(password);
+
+        em.persist(customer);
+    }
+
 }

@@ -6,7 +6,7 @@ import org.hibernate.validator.constraints.Email;
 
 @Getter
 @Setter
-public class CreatePasswordResetDTO {
+public class CreatePasswordResetRequestDTO {
 
     @Email
     private String login;

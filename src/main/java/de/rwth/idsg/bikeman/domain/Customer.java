@@ -20,7 +20,7 @@ import java.util.Set;
                 @Index(columnList="address_id", unique = true),
                 @Index(columnList="customer_id", unique = true)})
 @EqualsAndHashCode(callSuper = false, of = {"customerId"})
-@ToString(includeFieldNames = true, exclude = {"address", "cardAccount"})
+@ToString(includeFieldNames = true, exclude = {"address", "cardAccount", "activationKeys"})
 @XmlAccessorType(XmlAccessType.NONE)
 @Getter
 @Setter

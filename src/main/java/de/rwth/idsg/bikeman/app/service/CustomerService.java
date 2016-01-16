@@ -3,6 +3,8 @@ package de.rwth.idsg.bikeman.app.service;
 import de.rwth.idsg.bikeman.app.dto.CreateCustomerDTO;
 import de.rwth.idsg.bikeman.app.exception.AppException;
 import de.rwth.idsg.bikeman.app.repository.CustomerRepository;
+import de.rwth.idsg.bikeman.domain.ActivationKey;
+import de.rwth.idsg.bikeman.domain.ActivationKeyType;
 import de.rwth.idsg.bikeman.domain.Customer;
 import de.rwth.idsg.bikeman.service.ActivationKeyService;
 import de.rwth.idsg.bikeman.service.MailService;
@@ -35,22 +37,61 @@ public class CustomerService {
     }
 
     @Transactional
-    public Boolean resetPassword(String login) {
+    public Boolean requestPasswordReset(String login) {
         Optional<Customer> customer = customerRepository.findByLogin(login);
 
         if (!customer.isPresent()) {
             return false;
         }
 
-        return this.resetPassword(customer.get());
-    }
-
-    private Boolean resetPassword(Customer customer) {
-        String key = activationKeyService.createForPasswordReset(customer);
-
-        mailService.sendPasswortResetEmail(customer, key);
+        String key = activationKeyService.createForPasswordReset(customer.get());
+        mailService.sendPasswortResetEmail(customer.get(), key);
 
         return true;
+    }
+
+    @Transactional
+    public Boolean changePassword(String login, String key, String password, String passwordConfirm) {
+        Optional<Customer> customer = customerRepository.findByLogin(login);
+        Optional<ActivationKey> activationKey =
+            activationKeyService.getNotUsedAndValid(key, ActivationKeyType.PASSWORD_RESET);
+
+        if (!customer.isPresent()) {
+            log.debug("customer not present");
+            return false;
+        }
+
+        if (!activationKey.isPresent()) {
+            log.debug("activationkey not present");
+            return false;
+        }
+
+        if (!customer.get().equals(activationKey.get().getCustomer())) {
+            log.debug("customer hijacking");
+            return false;
+        }
+
+        if (password.compareTo(passwordConfirm) != 0) {
+            log.debug("passwords unequal");
+            return false;
+        }
+
+        if (!activationKeyService.markUsed(activationKey.get())) {
+            log.debug("activationkey double usage");
+            return false;
+        }
+
+        customerRepository.setPassword(customer.get(), password);
+
+
+        return true;
+    }
+
+    public Boolean validatePasswordResetKey(String key) {
+        Optional<ActivationKey> activationKey =
+                activationKeyService.getNotUsedAndValid(key, ActivationKeyType.PASSWORD_RESET);
+
+        return activationKey.isPresent();
     }
 
 }

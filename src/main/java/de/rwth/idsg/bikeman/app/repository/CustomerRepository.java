@@ -12,6 +12,9 @@ import java.util.Optional;
 public interface CustomerRepository {
 
     ViewCustomerDTO findOne(Long customerId) throws AppException;
-    Optional<Customer> findByLogin (String login) throws DatabaseException;
+    Optional<Customer> findByLogin(String login) throws DatabaseException;
     CreateCustomerDTO create(CreateCustomerDTO dto) throws AppException;
+
+    void setPassword(Customer customer, String password) throws AppException;
+
 }

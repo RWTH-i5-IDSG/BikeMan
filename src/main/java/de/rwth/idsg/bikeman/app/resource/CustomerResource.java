@@ -4,24 +4,16 @@ import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.annotation.JsonView;
 import de.rwth.idsg.bikeman.app.dto.*;
 import de.rwth.idsg.bikeman.app.exception.AppException;
-import de.rwth.idsg.bikeman.app.repository.CustomerRepository;
 import de.rwth.idsg.bikeman.app.service.CurrentCustomerService;
 import de.rwth.idsg.bikeman.app.service.CustomerService;
-import de.rwth.idsg.bikeman.domain.Customer;
 import de.rwth.idsg.bikeman.service.ActivationKeyService;
-import de.rwth.idsg.bikeman.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.util.Optional;
 
 
 @RestController("CustomerResourceApp")
@@ -40,6 +32,8 @@ public class CustomerResource {
     private static final String BASE_PATH = "/customer";
     private static final String ACTIVATION_PATH = "/customer/mailactivation/";
     private static final String PASSWORD_RESET_PATH = "/customer/passwordreset";
+    private static final String PASSWORD_RESET_INIT_PATH = "/customer/passwordreset-request";
+    private static final String PASSWORD_RESET_STATUS_PATH = "/customer/passwordreset/{key}/status";
     private static final String TARIFF_PATH = "/customer/tariff";
     private static final String TARIFF_AUTO_RENEWAL_PATH = "/customer/tariff/auto-renewal";
 
@@ -59,21 +53,40 @@ public class CustomerResource {
 
     @Timed
     @JsonView(CreateCustomerDTO.View.class)
-    @RequestMapping(value = PASSWORD_RESET_PATH, method = RequestMethod.POST)
-    public void create(@Valid @RequestBody CreatePasswordResetDTO dto, HttpServletResponse response) throws AppException {
+    @RequestMapping(value = BASE_PATH, method = RequestMethod.POST)
+    public CreateCustomerDTO create(@Valid @RequestBody CreateCustomerDTO dto) throws AppException {
+        log.debug("REST request to create customer");
+        return customerService.create(dto);
+    }
+
+    @Timed
+    @RequestMapping(value = PASSWORD_RESET_INIT_PATH, method = RequestMethod.POST)
+    public void initPasswordReset(@Valid @RequestBody CreatePasswordResetRequestDTO dto, HttpServletResponse response) throws AppException {
         log.debug("REST request to reset password");
 
-        if (!customerService.resetPassword(dto.getLogin())) {
+        if (!customerService.requestPasswordReset(dto.getLogin())) {
             response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
         }
     }
 
     @Timed
-    @JsonView(CreateCustomerDTO.View.class)
-    @RequestMapping(value = BASE_PATH, method = RequestMethod.POST)
-    public CreateCustomerDTO create(@Valid @RequestBody CreateCustomerDTO dto) throws AppException {
-        log.debug("REST request to create customer");
-        return customerService.create(dto);
+    @RequestMapping(value = PASSWORD_RESET_PATH, method = RequestMethod.POST)
+    public void resetPassword(@Valid @RequestBody ChangePasswordDTO dto, HttpServletResponse response) throws AppException {
+        log.debug("REST request to reset password");
+
+        if (!customerService.changePassword(dto.getLogin(), dto.getKey(), dto.getPassword(), dto.getPasswordConfirm())) {
+            response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
+        }
+    }
+
+    @Timed
+    @RequestMapping(value = PASSWORD_RESET_STATUS_PATH, method = RequestMethod.GET)
+    public void passwordResetStatus(@PathVariable String key, HttpServletResponse response) throws AppException {
+        log.debug("REST request to reset password");
+
+        if (!customerService.validatePasswordResetKey(key)) {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        }
     }
 
     @Timed
