@@ -9,13 +9,11 @@ import de.rwth.idsg.bikeman.domain.*;
 import de.rwth.idsg.bikeman.domain.Address_;
 import de.rwth.idsg.bikeman.domain.Customer_;
 import de.rwth.idsg.bikeman.security.AuthoritiesConstants;
-import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
@@ -155,14 +153,6 @@ public class CustomerRepositoryImpl implements CustomerRepository {
         dto.getBankAccount().setIBAN(dto.getBankAccount().getIBAN().substring(0, 5) + "*************");
 
         return dto;
-    }
-
-    @Override
-    @Transactional(readOnly = false)
-    public void setPassword(Customer customer, String password) throws AppException {
-        customer.setPassword(password);
-
-        em.persist(customer);
     }
 
 }

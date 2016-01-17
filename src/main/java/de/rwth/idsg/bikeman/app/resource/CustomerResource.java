@@ -62,7 +62,7 @@ public class CustomerResource {
     @Timed
     @RequestMapping(value = PASSWORD_RESET_INIT_PATH, method = RequestMethod.POST)
     public void initPasswordReset(@Valid @RequestBody CreatePasswordResetRequestDTO dto, HttpServletResponse response) throws AppException {
-        log.debug("REST request to reset password");
+        log.debug("REST request to initiate reset password");
 
         if (!customerService.requestPasswordReset(dto.getLogin())) {
             response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
@@ -82,7 +82,7 @@ public class CustomerResource {
     @Timed
     @RequestMapping(value = PASSWORD_RESET_STATUS_PATH, method = RequestMethod.GET)
     public void passwordResetStatus(@PathVariable String key, HttpServletResponse response) throws AppException {
-        log.debug("REST request to reset password");
+        log.debug("REST request to get status of password reset key");
 
         if (!customerService.validatePasswordResetKey(key)) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);

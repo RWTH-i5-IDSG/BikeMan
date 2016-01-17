@@ -15,6 +15,4 @@ public interface CustomerRepository {
     Optional<Customer> findByLogin(String login) throws DatabaseException;
     CreateCustomerDTO create(CreateCustomerDTO dto) throws AppException;
 
-    void setPassword(Customer customer, String password) throws AppException;
-
 }

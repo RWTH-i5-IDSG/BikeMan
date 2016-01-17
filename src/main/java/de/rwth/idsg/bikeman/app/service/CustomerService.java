@@ -6,10 +6,13 @@ import de.rwth.idsg.bikeman.app.repository.CustomerRepository;
 import de.rwth.idsg.bikeman.domain.ActivationKey;
 import de.rwth.idsg.bikeman.domain.ActivationKeyType;
 import de.rwth.idsg.bikeman.domain.Customer;
+import de.rwth.idsg.bikeman.domain.User;
+import de.rwth.idsg.bikeman.repository.UserRepository;
 import de.rwth.idsg.bikeman.service.ActivationKeyService;
 import de.rwth.idsg.bikeman.service.MailService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,10 +25,16 @@ public class CustomerService {
     private CustomerRepository customerRepository;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private ActivationKeyService activationKeyService;
 
     @Autowired
     private MailService mailService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public CreateCustomerDTO create(CreateCustomerDTO dto) throws AppException {
         CreateCustomerDTO obj = customerRepository.create(dto);
@@ -81,8 +90,11 @@ public class CustomerService {
             return false;
         }
 
-        customerRepository.setPassword(customer.get(), password);
+        User user = customer.get();
+        String encryptedPassword = passwordEncoder.encode(password);
 
+        user.setPassword(encryptedPassword);
+        userRepository.save(customer.get());
 
         return true;
     }
