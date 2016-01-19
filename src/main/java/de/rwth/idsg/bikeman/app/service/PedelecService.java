@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.NoResultException;
 import java.util.List;
+import java.util.Optional;
 
 @Service("PedelecServiceApp")
 @Slf4j
@@ -24,7 +25,7 @@ public class PedelecService {
     @Autowired
     private StationRepository stationRepository;
 
-    public ViewPedelecSlotDTO getRecommendedPedelec(Long stationId) {
+    public Optional<ViewPedelecSlotDTO> getRecommendedPedelec(Long stationId) {
         try {
             stationRepository.findOne(stationId);
         } catch (NoResultException e) {
@@ -34,17 +35,38 @@ public class PedelecService {
         List<Pedelec> pedelecs =  pedelecRepository.findAvailablePedelecs(stationId);
 
         if (pedelecs.isEmpty()) {
-            return null;
+            return Optional.empty();
         }
 
         // get Pedelec with max. SOC
         Pedelec pedelec = pedelecs.get(0);
 
-        return ViewPedelecSlotDTO.builder()
-                .stationSlotId(pedelec.getStationSlot().getStationSlotId())
-                .stationSlotPosition(pedelec.getStationSlot().getStationSlotPosition())
-                .build();
+        return Optional.of(
+                ViewPedelecSlotDTO.builder()
+                    .stationSlotId(pedelec.getStationSlot().getStationSlotId())
+                    .stationSlotPosition(pedelec.getStationSlot().getStationSlotPosition())
+                    .build()
+                );
 
+    }
+
+    public Optional<Long> getRecommendedPedelecSlotId(Long stationId) {
+        try {
+            stationRepository.findOne(stationId);
+        } catch (NoResultException e) {
+            throw new AppException("Station not found!", AppErrorCode.CONSTRAINT_FAILED);
+        }
+
+        List<Pedelec> pedelecs =  pedelecRepository.findAvailablePedelecs(stationId);
+
+        if (pedelecs.isEmpty()) {
+            return Optional.empty();
+        }
+
+        // get Pedelec with max. SOC
+        Pedelec pedelec = pedelecs.get(0);
+
+        return Optional.of(pedelec.getStationSlot().getStationSlotId());
     }
 
     public Pedelec getRecommendedPedelecForBooking(Long stationId) {

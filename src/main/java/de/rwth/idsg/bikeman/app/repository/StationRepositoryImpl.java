@@ -1,7 +1,7 @@
 package de.rwth.idsg.bikeman.app.repository;
 
+import de.rwth.idsg.bikeman.app.dto.StationSlotsDTO;
 import de.rwth.idsg.bikeman.app.dto.ViewStationDTO;
-import de.rwth.idsg.bikeman.app.dto.ViewStationSlotsDTO;
 import de.rwth.idsg.bikeman.app.exception.AppErrorCode;
 import de.rwth.idsg.bikeman.app.exception.AppException;
 import de.rwth.idsg.bikeman.domain.Pedelec;
@@ -68,10 +68,10 @@ public class StationRepositoryImpl implements StationRepository {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ViewStationSlotsDTO> findOneWithSlots(long stationId) throws AppException {
+    public List<StationSlotsDTO> findOneWithSlots(long stationId) throws AppException {
         CriteriaBuilder builder = em.getCriteriaBuilder();
 
-        CriteriaQuery<ViewStationSlotsDTO> criteria = builder.createQuery(ViewStationSlotsDTO.class);
+        CriteriaQuery<StationSlotsDTO> criteria = builder.createQuery(StationSlotsDTO.class);
 
         Root<StationSlot> stationSlot = criteria.from(StationSlot.class);
         Join<StationSlot, Pedelec> pedelec = stationSlot.join(StationSlot_.pedelec, JoinType.LEFT);
@@ -80,7 +80,7 @@ public class StationRepositoryImpl implements StationRepository {
 
         criteria.select(
                 builder.construct(
-                        ViewStationSlotsDTO.class,
+                        StationSlotsDTO.class,
                         stationSlot.get(StationSlot_.stationSlotId),
                         stationSlot.get(StationSlot_.stationSlotPosition),
                         stationSlot.get(StationSlot_.state),
@@ -94,7 +94,7 @@ public class StationRepositoryImpl implements StationRepository {
         );
 
         try {
-            List<ViewStationSlotsDTO> slots = em.createQuery(criteria).getResultList();
+            List<StationSlotsDTO> slots = em.createQuery(criteria).getResultList();
 
             if (slots.isEmpty()) {
                 throw new NoResultException();

@@ -1,25 +1,25 @@
 package de.rwth.idsg.bikeman.app.dto;
 
-import de.rwth.idsg.bikeman.domain.OperationState;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
+import java.util.List;
+import java.util.Optional;
+
+
 @Getter
+@Setter
+@Builder
 @ToString(includeFieldNames = true)
 public class ViewStationSlotsDTO {
 
-    private Long stationSlotId;
-    private Integer stationSlotPosition;
-    private OperationState state;
-    private Boolean isOccupied;
-    private Double stateOfCharge;
+    private List<StationSlotsDTO> stationSlots;
 
-    public ViewStationSlotsDTO(Long stationSlotId, Integer stationSlotPosition,
-                               OperationState state, Boolean isOccupied, Double stateOfCharge) {
-        this.stationSlotId = stationSlotId;
-        this.stationSlotPosition = stationSlotPosition;
-        this.state = state;
-        this.isOccupied = isOccupied;
-        this.stateOfCharge = stateOfCharge;
-    }
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Long recommendedSlot;
+
 }

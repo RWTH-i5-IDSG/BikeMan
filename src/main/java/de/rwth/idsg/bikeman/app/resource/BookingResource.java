@@ -2,8 +2,6 @@ package de.rwth.idsg.bikeman.app.resource;
 
 import com.codahale.metrics.annotation.Timed;
 import de.rwth.idsg.bikeman.app.dto.ViewBookingDTO;
-import de.rwth.idsg.bikeman.app.dto.ViewStationDTO;
-import de.rwth.idsg.bikeman.app.dto.ViewStationSlotsDTO;
 import de.rwth.idsg.bikeman.app.exception.AppException;
 import de.rwth.idsg.bikeman.app.service.BookingService;
 import de.rwth.idsg.bikeman.app.service.CurrentCustomerService;
@@ -17,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
+import java.util.Optional;
 
 
 @RestController("BookingResourceApp")
@@ -39,26 +37,26 @@ public class BookingResource {
     @RequestMapping(value = BOOKING_PATH, method = RequestMethod.POST)
     public ViewBookingDTO create(@PathVariable Long stationId, HttpServletResponse response) throws AppException {
         log.debug("REST request to create a booking at station " + stationId);
-        ViewBookingDTO result = bookingService.create(stationId, customerService.getCurrentCustomer());
+        Optional<ViewBookingDTO> optional = bookingService.create(stationId, customerService.getCurrentCustomer());
 
-        if (result == null) {
+        if (!optional.isPresent()) {
             response.setStatus(HttpServletResponse.SC_NO_CONTENT);
         }
 
-        return result;
+        return optional.get();
     }
 
     @Timed
     @RequestMapping(value = VIEW_DELETE_BOOKING_PATH, method = RequestMethod.GET)
     public ViewBookingDTO get(HttpServletResponse response) throws AppException {
         log.info("REST request to get current Booking.");
-        ViewBookingDTO result =  bookingService.getDTO(customerService.getCurrentCustomer());
+        Optional<ViewBookingDTO> optional = bookingService.getDTO(customerService.getCurrentCustomer());
 
-        if (result == null) {
+        if (!optional.isPresent()) {
             response.setStatus(HttpServletResponse.SC_NO_CONTENT);
         }
 
-        return result;
+        return optional.get();
     }
 
     @Timed

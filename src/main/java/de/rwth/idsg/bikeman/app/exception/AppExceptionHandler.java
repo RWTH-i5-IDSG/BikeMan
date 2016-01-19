@@ -43,18 +43,13 @@ public class AppExceptionHandler {
                 break;
 
             case NOT_REGISTERED:
-                status = HttpStatus.NOT_ACCEPTABLE;
-                break;
-
             case RENTAL_BLOCKED:
-                status = HttpStatus.NOT_ACCEPTABLE;
-                break;
-
             case BOOKING_BLOCKED:
                 status = HttpStatus.NOT_ACCEPTABLE;
                 break;
 
             case AUTH_ATTEMPTS_EXCEEDED:
+            case AUTH_FAILED:
                 status = HttpStatus.FORBIDDEN;
                 break;
 

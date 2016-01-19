@@ -3,6 +3,7 @@ package de.rwth.idsg.bikeman.app.exception;
 
 public enum AppErrorCode {
     NOT_REGISTERED,
+    AUTH_FAILED,
     CONSTRAINT_FAILED,
     RENTAL_BLOCKED,
     BOOKING_BLOCKED,

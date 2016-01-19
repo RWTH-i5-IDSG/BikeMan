@@ -1,7 +1,7 @@
 package de.rwth.idsg.bikeman.app.repository;
 
+import de.rwth.idsg.bikeman.app.dto.StationSlotsDTO;
 import de.rwth.idsg.bikeman.app.dto.ViewStationDTO;
-import de.rwth.idsg.bikeman.app.dto.ViewStationSlotsDTO;
 import de.rwth.idsg.bikeman.app.exception.AppException;
 
 import java.util.List;
@@ -10,7 +10,7 @@ public interface StationRepository {
 
     List<ViewStationDTO> findAll() throws AppException;
     ViewStationDTO findOne(long stationId) throws AppException;
-    List<ViewStationSlotsDTO> findOneWithSlots(long stationId) throws AppException;
+    List<StationSlotsDTO> findOneWithSlots(long stationId) throws AppException;
 
 //    @Query("SELECT bs FROM Station bs ORDER BY ((6371 * 2 * ASIN(SQRT(POWER(SIN((bs.locationLatitude - abs(:latitude)) * pi()/180 / 2),2) +" +
 //            "COS(bs.locationLatitude * pi()/180 ) * COS(abs(:latitude) * pi()/180) *" +

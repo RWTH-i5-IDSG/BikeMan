@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Service("BookingServiceApp")
@@ -30,18 +31,18 @@ public class BookingService {
     private ReservationRepository reservationRepository;
 
     @Transactional(readOnly=false, rollbackFor=Exception.class)
-    public ViewBookingDTO create(Long stationId, Customer customer) {
-        Reservation existingReservation = this.getReservation(customer);
+    public Optional<ViewBookingDTO> create(Long stationId, Customer customer) {
+        Optional<Reservation> optional = this.getReservation(customer);
 
         // allow only one reservation at the same time
-        if (existingReservation != null) {
+        if (!optional.isPresent()) {
             throw new AppException("Maximum number of concurrent reservations exceeded!", AppErrorCode.BOOKING_BLOCKED);
         }
 
         Pedelec pedelec = pedelecService.getRecommendedPedelecForBooking(stationId);
 
         if (pedelec == null) {
-            return null;
+            return Optional.empty();
         }
 
         LocalDateTime begin = LocalDateTime.now();
@@ -60,72 +61,89 @@ public class BookingService {
         booking.setReservation(savedReservation);
         try {
             bookingRepository.save(booking);
-            return ViewBookingDTO.builder()
+            return Optional.of(
+                    ViewBookingDTO.builder()
                         .expiryDateTime(end)
                         .stationSlotPosition(pedelec.getStationSlot().getStationSlotPosition())
                         .stationId(stationId)
-                        .build();
+                        .build()
+                    );
         } catch (Throwable e) {
             throw new AppException("Failed during database operation.", AppErrorCode.DATABASE_OPERATION_FAILED);
         }
     }
 
     @Transactional(readOnly=true)
-    public ViewBookingDTO getDTO(Customer customer) {
-        Reservation reservation = this.getReservation(customer);
+    public Optional<ViewBookingDTO> getDTO(Customer customer) {
+        Optional<Reservation> optional = this.getReservation(customer);
 
-        if (reservation == null) {
-            return null;
+        if (!optional.isPresent()) {
+            return Optional.empty();
         }
 
-        return ViewBookingDTO.builder()
-                .stationId(reservation.getPedelec().getStationSlot().getStation().getStationId())
-                .stationSlotPosition(reservation.getPedelec().getStationSlot().getStationSlotPosition())
-                .expiryDateTime(reservation.getEndDateTime())
-                .build();
+        return Optional.of(
+                ViewBookingDTO.builder()
+                    .stationId(optional.get().getPedelec().getStationSlot().getStation().getStationId())
+                    .stationSlotPosition(optional.get().getPedelec().getStationSlot().getStationSlotPosition())
+                    .expiryDateTime(optional.get().getEndDateTime())
+                    .build()
+                );
 
     }
 
     @Transactional(readOnly=true)
-    public ViewPedelecSlotDTO getSlot(Customer customer) {
-        Reservation reservation = this.getReservation(customer);
+    public Optional<ViewPedelecSlotDTO> getSlot(Customer customer) {
+        Optional<Reservation> optional = this.getReservation(customer);
 
-        if (reservation == null) {
-            return null;
+        if (!optional.isPresent()) {
+            return Optional.empty();
         }
 
-        return ViewPedelecSlotDTO.builder()
-            .stationSlotId(reservation.getPedelec().getStationSlot().getStationSlotId())
-            .stationSlotPosition(reservation.getPedelec().getStationSlot().getStationSlotPosition())
-            .build();
+        return Optional.of(
+                ViewPedelecSlotDTO.builder()
+                    .stationSlotId(optional.get().getPedelec().getStationSlot().getStationSlotId())
+                    .stationSlotPosition(optional.get().getPedelec().getStationSlot().getStationSlotPosition())
+                    .build()
+                );
+    }
+
+    @Transactional(readOnly=true)
+    public Optional<Long> getBookingSlotId(Customer customer) {
+        Optional<Reservation> optional = this.getReservation(customer);
+
+        if (!optional.isPresent()) {
+            return Optional.empty();
+        }
+
+        return Optional.of(optional.get().getPedelec().getStationSlot().getStationSlotId());
     }
 
     @Transactional(readOnly=false)
     public void delete(Customer customer) {
-        Reservation reservation = this.getReservation(customer);
+        Optional<Reservation> optional = this.getReservation(customer);
 
-        if (reservation == null) {
+        if (!optional.isPresent()) {
             throw new AppException("No valid Reservation found!", AppErrorCode.CONSTRAINT_FAILED);
         }
 
-        reservationRepository.updateEndDateTime(reservation.getReservationId(), LocalDateTime.now());
+        reservationRepository.updateEndDateTime(optional.get().getReservationId(), LocalDateTime.now());
     }
 
     @Transactional(readOnly=true)
-    private Reservation getReservation(Customer customer) {
+    private Optional<Reservation> getReservation(Customer customer) {
         List<Reservation> reservations = reservationRepository.findByCustomerIdAndTime(
             customer.getCardAccount().getCardAccountId(),
             LocalDateTime.now());
 
-        if (reservations == null || reservations.isEmpty()) {
-            return null;
+        if (reservations.isEmpty()) {
+            return Optional.empty();
         }
 
         if (reservations.size() > 1) {
             throw new AppException("More than one Reservations found!", AppErrorCode.CONSTRAINT_FAILED);
         }
 
-        return reservations.get(0);
+        return Optional.of(reservations.get(0));
     }
 
 }
