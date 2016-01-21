@@ -35,4 +35,13 @@
 
     </changeSet>
 
+    <changeSet id="1409564974612-03" author="goekay">
+        <addUniqueConstraint catalogName="" columnNames="manufacturer_id" constraintName="UC_T_PEDELEC_MANUFACTURER_ID"
+                             deferrable="false" disabled="false" initiallyDeferred="false" schemaName="public"
+                             tableName="T_PEDELEC"/>
+        <addUniqueConstraint catalogName="" columnNames="manufacturer_id" constraintName="UC_T_STATION_MANUFACTURER_ID"
+                             deferrable="false" disabled="false" initiallyDeferred="false" schemaName="public"
+                             tableName="T_STATION"/>
+    </changeSet>
+
 </databaseChangeLog>
