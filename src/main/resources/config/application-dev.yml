@@ -1,5 +1,8 @@
 server:
     port: 8080
+    cors:
+        allowedDomains:
+            - https://example.com
 
 spring:
     profiles:
