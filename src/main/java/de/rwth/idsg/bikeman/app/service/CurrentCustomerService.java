@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -48,8 +49,15 @@ public class CurrentCustomerService {
     }
 
     @Transactional(readOnly = true)
-    public ViewTransactionDTO getOpenTransaction() throws DatabaseException {
-        return transactionRepository.findOpenByCustomer(this.getCurrentCustomer());
+    public Optional<ViewTransactionDTO> getOpenTransaction() throws DatabaseException {
+        List<ViewTransactionDTO> transactions = transactionRepository.findOpenByCustomer(this.getCurrentCustomer());
+
+        if (transactions.isEmpty()) {
+            return Optional.empty();
+        }
+
+        // currently only the oldest open transaction is being returned
+        return Optional.of(transactions.get(0));
     }
 
     public ViewBookedTariffDTO getTariff() {

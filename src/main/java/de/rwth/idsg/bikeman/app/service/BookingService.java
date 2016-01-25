@@ -39,11 +39,13 @@ public class BookingService {
             throw new AppException("Maximum number of concurrent reservations exceeded!", AppErrorCode.BOOKING_BLOCKED);
         }
 
-        Pedelec pedelec = pedelecService.getRecommendedPedelecForBooking(stationId);
+        Optional<Pedelec> optionalPedelec = pedelecService.getRecommendedPedelecForBooking(stationId);
 
-        if (pedelec == null) {
+        if (!optionalPedelec.isPresent()) {
             return Optional.empty();
         }
+
+        Pedelec pedelec = optionalPedelec.get();
 
         LocalDateTime begin = LocalDateTime.now();
         LocalDateTime end = LocalDateTime.now().plusMinutes(15);

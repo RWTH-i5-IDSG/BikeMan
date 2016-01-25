@@ -5,7 +5,6 @@ import de.rwth.idsg.bikeman.app.exception.AppErrorCode;
 import de.rwth.idsg.bikeman.app.exception.AppException;
 import de.rwth.idsg.bikeman.domain.Pedelec;
 import de.rwth.idsg.bikeman.app.repository.PedelecRepository;
-import de.rwth.idsg.bikeman.domain.Station;
 import de.rwth.idsg.bikeman.repository.StationRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,7 +68,7 @@ public class PedelecService {
         return Optional.of(pedelec.getStationSlot().getStationSlotId());
     }
 
-    public Pedelec getRecommendedPedelecForBooking(Long stationId) {
+    public Optional<Pedelec> getRecommendedPedelecForBooking(Long stationId) {
         try {
             stationRepository.findOne(stationId);
         } catch (NoResultException e) {
@@ -79,12 +78,12 @@ public class PedelecService {
         List<Pedelec> pedelecs = pedelecRepository.findAvailablePedelecs(stationId);
 
         if (pedelecs.isEmpty()) {
-            return null;
+            return Optional.empty();
         }
 
         // TODO: currently the pedelec with max. SOC is selected --> switch to e.g. the third fullest, cause there is
         // still some time (15min) left to charge it
-        return pedelecs.get(0);
+        return Optional.of(pedelecs.get(0));
     }
 
 }

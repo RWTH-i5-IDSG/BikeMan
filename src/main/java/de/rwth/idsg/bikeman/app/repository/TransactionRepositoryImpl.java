@@ -71,7 +71,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
     }
 
 
-    public ViewTransactionDTO findOpenByCustomer(Customer customer) throws AppException {
+    public List<ViewTransactionDTO> findOpenByCustomer(Customer customer) throws AppException {
         CriteriaBuilder builder = em.getCriteriaBuilder();
 
         CriteriaQuery<ViewTransactionDTO> criteria = builder.createQuery(ViewTransactionDTO.class);
@@ -99,16 +99,11 @@ public class TransactionRepositoryImpl implements TransactionRepository {
                 builder.equal(cardAccount.get(CardAccount_.cardAccountId), customer.getCardAccount().getCardAccountId())
             )
         ).orderBy(
-            builder.desc(transaction.get(Transaction_.endDateTime))
+            builder.asc(transaction.get(Transaction_.startDateTime))
         );
 
         try {
-            List <ViewTransactionDTO> result =  em.createQuery(criteria).getResultList();
-            if (result.isEmpty()) {
-                return null;
-            } else {
-                return result.get(0);
-            }
+            return em.createQuery(criteria).getResultList();
         } catch (Exception e) {
             throw new AppException("Failed during database operation.", AppErrorCode.DATABASE_OPERATION_FAILED);
         }

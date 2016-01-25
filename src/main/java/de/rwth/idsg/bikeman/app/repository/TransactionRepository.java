@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface TransactionRepository {
     List<ViewTransactionDTO> findAllByCustomer(Customer customer);
-    ViewTransactionDTO findOpenByCustomer(Customer customer);
+    List<ViewTransactionDTO> findOpenByCustomer(Customer customer);
     Long numberOfOpenTransactionsByCustomer(Customer customer);
 }

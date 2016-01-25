@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.Optional;
 
 @RestController("TransactionResourceApp")
 @RequestMapping(value = "/app", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -37,11 +38,12 @@ public class TransactionResource {
     public ViewTransactionDTO getOpenTransaction(HttpServletResponse response) {
         log.debug("REST request to get open Transaction.");
 
-        ViewTransactionDTO result = customerService.getOpenTransaction();
-        if (result == null) {
-            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+        Optional<ViewTransactionDTO> optional = customerService.getOpenTransaction();
+        if (optional.isPresent()) {
+            return optional.get();
         }
 
-        return result;
+        response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+        return null;
     }
 }

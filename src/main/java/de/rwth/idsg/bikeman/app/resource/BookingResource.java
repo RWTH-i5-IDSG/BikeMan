@@ -39,11 +39,12 @@ public class BookingResource {
         log.debug("REST request to create a booking at station " + stationId);
         Optional<ViewBookingDTO> optional = bookingService.create(stationId, customerService.getCurrentCustomer());
 
-        if (!optional.isPresent()) {
-            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+        if (optional.isPresent()) {
+            return optional.get();
         }
 
-        return optional.get();
+        response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+        return null;
     }
 
     @Timed
@@ -52,11 +53,12 @@ public class BookingResource {
         log.info("REST request to get current Booking.");
         Optional<ViewBookingDTO> optional = bookingService.getDTO(customerService.getCurrentCustomer());
 
-        if (!optional.isPresent()) {
-            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+        if (optional.isPresent()) {
+            return optional.get();
         }
 
-        return optional.get();
+        response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+        return null;
     }
 
     @Timed

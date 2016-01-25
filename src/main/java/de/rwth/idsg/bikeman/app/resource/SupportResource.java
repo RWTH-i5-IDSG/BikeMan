@@ -21,7 +21,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping(value = "/app", produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
-public class SupportRessource {
+public class SupportResource {
     @Autowired
     private CurrentCustomerService customerService;
 

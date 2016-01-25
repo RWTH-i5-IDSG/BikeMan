@@ -83,11 +83,12 @@ public class StationResource {
 
         Optional<ViewPedelecSlotDTO> optionalPedelec = pedelecService.getRecommendedPedelec(id);
 
-        if (!optionalPedelec.isPresent()) {
-            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+        if (optionalPedelec.isPresent()) {
+            return optionalPedelec.get();
         }
 
-        return optionalPedelec.get();
+        response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+        return null;
     }
 
     @Timed
