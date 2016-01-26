@@ -25,7 +25,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
     private EntityManager em;
 
 
-    public List<ViewTransactionDTO> findAllByCustomer(Customer customer) throws AppException {
+    public List<ViewTransactionDTO> findByCustomerPaginated(Customer customer, Integer page) throws AppException {
         CriteriaBuilder builder = em.getCriteriaBuilder();
         CriteriaQuery<ViewTransactionDTO> criteria = builder.createQuery(ViewTransactionDTO.class);
 
@@ -63,7 +63,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         );
 
         try {
-            return em.createQuery(criteria).setMaxResults(10).getResultList();
+            return em.createQuery(criteria).setMaxResults(20).setFirstResult(20*page).getResultList();
         } catch (Exception e) {
             throw new AppException("Failed during database operation.", AppErrorCode.DATABASE_OPERATION_FAILED);
         }

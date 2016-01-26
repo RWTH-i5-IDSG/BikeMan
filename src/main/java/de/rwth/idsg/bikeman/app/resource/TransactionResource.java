@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
@@ -27,10 +28,10 @@ public class TransactionResource {
 
     @Timed
     @RequestMapping(value = BASE_PATH, method = RequestMethod.GET)
-    public List<ViewTransactionDTO> getTransactions() {
+    public List<ViewTransactionDTO> getTransactions(@RequestParam(defaultValue = "0") Integer page) {
         log.debug("REST request to get Transactions.");
 
-        return customerService.getClosedTransactions();
+        return customerService.getClosedTransactions(page);
     }
 
     @Timed

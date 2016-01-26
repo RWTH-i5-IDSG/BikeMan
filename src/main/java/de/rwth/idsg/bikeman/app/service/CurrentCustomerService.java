@@ -9,6 +9,7 @@ import de.rwth.idsg.bikeman.app.exception.AppException;
 import de.rwth.idsg.bikeman.app.repository.CustomerRepository;
 import de.rwth.idsg.bikeman.app.repository.TransactionRepository;
 import de.rwth.idsg.bikeman.domain.*;
+import de.rwth.idsg.bikeman.repository.CardAccountRepository;
 import de.rwth.idsg.bikeman.repository.TariffRepository;
 import de.rwth.idsg.bikeman.service.UserService;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
@@ -44,8 +45,8 @@ public class CurrentCustomerService {
     }
 
     @Transactional(readOnly = true)
-    public List<ViewTransactionDTO> getClosedTransactions() throws DatabaseException {
-        return transactionRepository.findAllByCustomer(this.getCurrentCustomer());
+    public List<ViewTransactionDTO> getClosedTransactions(Integer page) throws DatabaseException {
+        return transactionRepository.findByCustomerPaginated(this.getCurrentCustomer(), page);
     }
 
     @Transactional(readOnly = true)
