@@ -8,10 +8,13 @@ import de.rwth.idsg.bikeman.domain.Reservation;
 import de.rwth.idsg.bikeman.domain.Transaction;
 import de.rwth.idsg.bikeman.ixsi.IxsiCodeException;
 import de.rwth.idsg.bikeman.ixsi.IxsiProcessingException;
+import de.rwth.idsg.bikeman.psinterface.dto.request.CancelReservationDTO;
+import de.rwth.idsg.bikeman.psinterface.dto.request.ReserveNowDTO;
 import de.rwth.idsg.bikeman.repository.BookingRepository;
 import de.rwth.idsg.bikeman.repository.CardAccountRepository;
 import de.rwth.idsg.bikeman.repository.PedelecRepository;
 import de.rwth.idsg.bikeman.repository.ReservationRepository;
+import de.rwth.idsg.bikeman.service.StationService;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.Duration;
@@ -36,6 +39,8 @@ public class BookingService {
     @Autowired private ReservationRepository reservationRepository;
     @Autowired private CardAccountRepository cardAccountRepository;
     @Autowired private PedelecRepository pedelecRepository;
+
+    @Autowired private StationService stationService;
 
     private static final int BOOKING_MIN_TIME_WINDOW_IN_MIN = 15;
     private static final int BOOKING_MAX_TIME_WINDOW_IN_MIN = 60;
@@ -75,6 +80,11 @@ public class BookingService {
 
         Reservation savedReservation = reservationRepository.save(reservation);
 
+        // send reservation to station
+        String endpointAddress = pedelec.getStationSlot().getStation().getEndpointAddress();
+        ReserveNowDTO reserveNowDTO = new ReserveNowDTO(pedelec.getManufacturerId(), cardAccount.getCardId(), end.toDateTime().getMillis());
+        stationService.reserveNow(endpointAddress, reserveNowDTO);
+
         Booking booking = new Booking();
         booking.setReservation(savedReservation);
         try {
@@ -111,6 +121,12 @@ public class BookingService {
         }
 
         bookingRepository.cancel(booking);
+
+        // send 'cancelReservation' to station
+        String endpointAddress = reservation.getPedelec().getStationSlot().getStation().getEndpointAddress();
+        CancelReservationDTO cancelReservationDTO = new CancelReservationDTO(bookingId);
+        stationService.cancelReservation(endpointAddress, cancelReservationDTO);
+
         return booking;
     }
 
@@ -134,6 +150,14 @@ public class BookingService {
         reservation.setStartDateTime(begin);
         reservation.setEndDateTime(end);
         reservationRepository.save(reservation);
+
+        Pedelec pedelec = reservation.getPedelec();
+        CardAccount cardAccount = reservation.getCardAccount();
+
+        // send an updated reserve-now to station with new time
+        String endpointAddress = pedelec.getStationSlot().getStation().getEndpointAddress();
+        ReserveNowDTO reserveNowDTO = new ReserveNowDTO(pedelec.getManufacturerId(), cardAccount.getCardId(), end.toDateTime().getMillis());
+        stationService.reserveNow(endpointAddress, reserveNowDTO);
 
         return booking;
     }
@@ -171,7 +195,7 @@ public class BookingService {
     }
 
     /**
-     * TODO: What is a reasonable value for lowerLimit?
+     * TODO: What is a reasonable value for lowerLimit? Is SoC check a good solution?
      */
     private void check(Pedelec pedelec) {
         final double lowerLimit = 0.0;

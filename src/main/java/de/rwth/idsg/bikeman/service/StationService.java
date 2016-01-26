@@ -1,6 +1,9 @@
 package de.rwth.idsg.bikeman.service;
 
+import de.rwth.idsg.bikeman.domain.Station;
 import de.rwth.idsg.bikeman.domain.StationSlot;
+import de.rwth.idsg.bikeman.psinterface.dto.request.CancelReservationDTO;
+import de.rwth.idsg.bikeman.psinterface.dto.request.ReserveNowDTO;
 import de.rwth.idsg.bikeman.psinterface.rest.client.StationClient;
 import de.rwth.idsg.bikeman.repository.StationRepository;
 import de.rwth.idsg.bikeman.repository.StationSlotRepository;
@@ -12,6 +15,7 @@ import de.rwth.idsg.bikeman.web.rest.dto.view.ViewStationDTO;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -107,5 +111,17 @@ public class StationService {
         StationSlot stationSlot = stationSlotRepository.findByStationSlotPositionAndStationStationId(dto.getSlotPosition(), stationId);
 
         operationStateService.pushSlotChange(stationSlot);
+    }
+
+    @Async
+    public void reserveNow(String endpointAddress, ReserveNowDTO reserveNowDTO) throws DatabaseException {
+
+        stationClient.reserveNow(reserveNowDTO, endpointAddress);
+    }
+
+    @Async
+    public void cancelReservation(String endpointAddress, CancelReservationDTO cancelReservationDTO) throws DatabaseException {
+
+        stationClient.cancelReservation(cancelReservationDTO, endpointAddress);
     }
 }
