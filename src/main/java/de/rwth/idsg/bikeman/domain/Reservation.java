@@ -19,7 +19,7 @@ import javax.persistence.*;
 @Table(name="T_RESERVATION")
 @TableGenerator(name="reservation_gen", initialValue=0, allocationSize=1)
 @EqualsAndHashCode(of = {"reservationId"})
-@ToString(includeFieldNames = true)
+@ToString(includeFieldNames = true, exclude = {"booking"})
 @Getter
 @Setter
 @AllArgsConstructor
@@ -50,4 +50,7 @@ public class Reservation {
     @Column(name = "state")
     @Enumerated(EnumType.STRING)
     private ReservationState state = ReservationState.CREATED;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "reservation")
+    private Booking booking;
 }

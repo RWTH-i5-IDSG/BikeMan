@@ -124,7 +124,7 @@ public class BookingService {
 
         // send 'cancelReservation' to station
         String endpointAddress = reservation.getPedelec().getStationSlot().getStation().getEndpointAddress();
-        CancelReservationDTO cancelReservationDTO = new CancelReservationDTO(bookingId);
+        CancelReservationDTO cancelReservationDTO = new CancelReservationDTO(reservation.getPedelec().getManufacturerId());
         stationService.cancelReservation(endpointAddress, cancelReservationDTO);
 
         return booking;

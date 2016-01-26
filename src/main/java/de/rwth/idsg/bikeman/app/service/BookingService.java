@@ -5,6 +5,8 @@ import de.rwth.idsg.bikeman.app.dto.ViewPedelecSlotDTO;
 import de.rwth.idsg.bikeman.app.exception.AppErrorCode;
 import de.rwth.idsg.bikeman.app.exception.AppException;
 import de.rwth.idsg.bikeman.domain.*;
+import de.rwth.idsg.bikeman.psinterface.dto.request.CancelReservationDTO;
+import de.rwth.idsg.bikeman.psinterface.dto.request.ReserveNowDTO;
 import de.rwth.idsg.bikeman.repository.BookingRepository;
 import de.rwth.idsg.bikeman.repository.ReservationRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +30,9 @@ public class BookingService {
     private BookingRepository bookingRepository;
 
     @Autowired
+    private de.rwth.idsg.bikeman.service.StationService stationService;
+
+    @Autowired
     private ReservationRepository reservationRepository;
 
     @Transactional(readOnly=false, rollbackFor=Exception.class)
@@ -35,7 +40,7 @@ public class BookingService {
         Optional<Reservation> optional = this.getReservation(customer);
 
         // allow only one reservation at the same time
-        if (!optional.isPresent()) {
+        if (optional.isPresent()) {
             throw new AppException("Maximum number of concurrent reservations exceeded!", AppErrorCode.BOOKING_BLOCKED);
         }
 
@@ -50,14 +55,29 @@ public class BookingService {
         LocalDateTime begin = LocalDateTime.now();
         LocalDateTime end = LocalDateTime.now().plusMinutes(15);
 
+        CardAccount cardAccount = customer.getCardAccount();
+
+        if (cardAccount.getOperationState() != OperationState.OPERATIVE) {
+            throw new AppException("The user cannot initiate any booking action", AppErrorCode.BOOKING_BLOCKED);
+        }
+
+        if (cardAccount.getInTransaction()) {
+            throw new AppException("The user is already in a transaction", AppErrorCode.BOOKING_BLOCKED);
+        }
+
         Reservation reservation = new Reservation();
-        reservation.setCardAccount(customer.getCardAccount());
+        reservation.setCardAccount(cardAccount);
         reservation.setStartDateTime(begin);
         reservation.setEndDateTime(end);
         reservation.setState(ReservationState.CREATED);
         reservation.setPedelec(pedelec);
 
         Reservation savedReservation = reservationRepository.save(reservation);
+
+        // send reservation to station
+        String endpointAddress = pedelec.getStationSlot().getStation().getEndpointAddress();
+        ReserveNowDTO reserveNowDTO = new ReserveNowDTO(pedelec.getManufacturerId(), cardAccount.getCardId(), end.toDateTime().getMillis());
+        stationService.reserveNow(endpointAddress, reserveNowDTO);
 
         Booking booking = new Booking();
         booking.setReservation(savedReservation);
@@ -128,7 +148,13 @@ public class BookingService {
             throw new AppException("No valid Reservation found!", AppErrorCode.CONSTRAINT_FAILED);
         }
 
-        reservationRepository.updateEndDateTime(optional.get().getReservationId(), LocalDateTime.now());
+        Reservation reservation = optional.get();
+
+        String endpointAddress = reservation.getPedelec().getStationSlot().getStation().getEndpointAddress();
+        CancelReservationDTO cancelReservationDTO = new CancelReservationDTO(reservation.getPedelec().getManufacturerId());
+        stationService.cancelReservation(endpointAddress, cancelReservationDTO);
+
+        bookingRepository.cancel(reservation.getBooking());
     }
 
     @Transactional(readOnly=true)
@@ -142,7 +168,7 @@ public class BookingService {
         }
 
         if (reservations.size() > 1) {
-            throw new AppException("More than one Reservations found!", AppErrorCode.CONSTRAINT_FAILED);
+            throw new AppException("More than one reservation found!", AppErrorCode.CONSTRAINT_FAILED);
         }
 
         return Optional.of(reservations.get(0));
