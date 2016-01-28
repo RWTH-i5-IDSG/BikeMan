@@ -12,11 +12,12 @@ import javax.validation.constraints.Pattern;
 @ToString(includeFieldNames = true)
 public class BankAccountDTO {
     @NotBlank
-    @Pattern(regexp = "^([A-Z0-9]{22})$")
+    @Pattern(regexp = "^([A-Z]{2})([0-9]{2})([a-zA-Z0-9]{1,30})$")
     @JsonProperty("IBAN")
     @JsonView(CreateCustomerDTO.View.class)
     private String IBAN;
 
+    @Pattern(regexp = "^([A-Z]{6})([A-Z0-9]{2})([a-zA-Z0-9]{0,3})$")
     @JsonProperty("BIC")
     @JsonView(CreateCustomerDTO.View.class)
     private String BIC;

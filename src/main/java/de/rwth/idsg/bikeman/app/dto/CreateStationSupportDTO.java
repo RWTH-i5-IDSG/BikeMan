@@ -9,7 +9,10 @@ import javax.validation.Valid;
 @Getter
 public class CreateStationSupportDTO {
     public enum StationErrorCode {
+        TERMINAL,
+        SCREEN,
         SOILED,
+        SLOT,
         MISC;
     }
 

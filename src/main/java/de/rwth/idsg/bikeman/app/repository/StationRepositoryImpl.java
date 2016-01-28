@@ -85,7 +85,7 @@ public class StationRepositoryImpl implements StationRepository {
                         stationSlot.get(StationSlot_.stationSlotPosition),
                         stationSlot.get(StationSlot_.state),
                         stationSlot.get(StationSlot_.isOccupied),
-                        chargingStatus.get(PedelecChargingStatus_.batteryStateOfCharge)
+                        builder.quot(chargingStatus.get(PedelecChargingStatus_.batteryStateOfCharge), 100)
                 )
         ).where(
                 builder.equal(stationSlot.get(StationSlot_.station).get(Station_.stationId), stationId)

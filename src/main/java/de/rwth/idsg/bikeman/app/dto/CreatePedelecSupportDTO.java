@@ -9,7 +9,12 @@ import javax.validation.Valid;
 @Getter
 public class CreatePedelecSupportDTO {
     public enum PedelecErrorCode {
+        TIRE,
+        TRACTION,
         SOILED,
+        BELL,
+        BRAKE,
+        LIGHT,
         MISC;
     }
 
