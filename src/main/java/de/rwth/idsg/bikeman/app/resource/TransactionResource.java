@@ -28,10 +28,17 @@ public class TransactionResource {
 
     @Timed
     @RequestMapping(value = BASE_PATH, method = RequestMethod.GET)
-    public List<ViewTransactionDTO> getTransactions(@RequestParam(defaultValue = "0") Integer page) {
+    public List<ViewTransactionDTO> getTransactions(HttpServletResponse response,
+                                                    @RequestParam(defaultValue = "0") Integer page) {
         log.debug("REST request to get Transactions.");
 
-        return customerService.getClosedTransactions(page);
+        List<ViewTransactionDTO> viewTransactionDTOs = customerService.getClosedTransactions(page);
+
+        if (viewTransactionDTOs.isEmpty()) {
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+        }
+
+        return viewTransactionDTOs;
     }
 
     @Timed

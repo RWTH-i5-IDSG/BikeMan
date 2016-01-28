@@ -1,9 +1,6 @@
 package de.rwth.idsg.bikeman.app.service;
 
-import de.rwth.idsg.bikeman.app.dto.ChangeTariffDTO;
-import de.rwth.idsg.bikeman.app.dto.ViewBookedTariffDTO;
-import de.rwth.idsg.bikeman.app.dto.ViewCustomerDTO;
-import de.rwth.idsg.bikeman.app.dto.ViewTransactionDTO;
+import de.rwth.idsg.bikeman.app.dto.*;
 import de.rwth.idsg.bikeman.app.exception.AppErrorCode;
 import de.rwth.idsg.bikeman.app.exception.AppException;
 import de.rwth.idsg.bikeman.app.repository.CustomerRepository;
@@ -11,11 +8,13 @@ import de.rwth.idsg.bikeman.app.repository.TransactionRepository;
 import de.rwth.idsg.bikeman.domain.*;
 import de.rwth.idsg.bikeman.repository.CardAccountRepository;
 import de.rwth.idsg.bikeman.repository.TariffRepository;
+import de.rwth.idsg.bikeman.repository.UserRepository;
 import de.rwth.idsg.bikeman.service.UserService;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,7 +30,13 @@ public class CurrentCustomerService {
     private CustomerRepository customerRepository;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private UserService userService;
+
+    @Autowired
+    private CardAccountRepository cardAccountRepository;
 
     @Autowired
     private TariffRepository tariffRepository;
@@ -39,9 +44,61 @@ public class CurrentCustomerService {
     @Autowired
     private TransactionRepository transactionRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     public ViewCustomerDTO get() throws DatabaseException {
         return customerRepository.findOne(
                 userService.getUserWithAuthorities().getUserId());
+    }
+
+    @Transactional
+    public Boolean changePin(ChangePinDTO dto) {
+        Customer customer = this.getCurrentCustomer();
+        CardAccount cardAccount = customer.getCardAccount();
+
+        if (!passwordEncoder.matches(dto.getPassword(), customer.getPassword())) {
+            return false;
+        }
+
+        cardAccount.setCardPin(dto.getCardPin());
+        cardAccountRepository.save(cardAccount);
+
+        return true;
+    }
+
+    @Transactional
+    public Boolean changePassword(ChangePasswordDTO dto) {
+        Customer customer = this.getCurrentCustomer();
+
+        if (!passwordEncoder.matches(dto.getOldPassword(), customer.getPassword())) {
+            return false;
+        }
+
+        if (!dto.getPassword().equals(dto.getPasswordConfirm())) {
+            throw new AppException("Password and confirmation do not match", AppErrorCode.VALIDATION_FAILED);
+        }
+
+        userService.changePassword(dto.getPassword());
+
+        return true;
+    }
+
+    @Transactional
+    public Boolean changeAddress(ChangeAddressDTO dto) {
+        Customer customer = this.getCurrentCustomer();
+
+        // TODO: do not replace old address in the database but mark it as old and create a new object
+        Address address = customer.getAddress();
+
+        address.setStreetAndHousenumber(dto.getStreetAndHousenumber());
+        address.setZip(dto.getZip());
+        address.setCity(dto.getCity());
+        address.setCountry(dto.getCountry());
+
+        userRepository.save(customer);
+
+        return true;
     }
 
     @Transactional(readOnly = true)

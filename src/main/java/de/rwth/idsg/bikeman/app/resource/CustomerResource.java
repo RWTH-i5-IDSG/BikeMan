@@ -30,6 +30,9 @@ public class CustomerResource {
     private CustomerService customerService;
 
     private static final String BASE_PATH = "/customer";
+    private static final String CHANGE_PIN_PATH = "/customer/pin";
+    private static final String CHANGE_PASSWORD_PATH = "/customer/password";
+    private static final String CHANGE_ADDRESS_PATH = "/customer/address";
     private static final String ACTIVATION_PATH = "/customer/mailactivation/";
     private static final String PASSWORD_RESET_PATH = "/customer/passwordreset";
     private static final String PASSWORD_RESET_INIT_PATH = "/customer/passwordreset-request";
@@ -52,6 +55,31 @@ public class CustomerResource {
     }
 
     @Timed
+    @RequestMapping(value = CHANGE_PIN_PATH, method = RequestMethod.PUT)
+    public void changePin(HttpServletResponse response, @Valid @RequestBody ChangePinDTO dto) throws AppException {
+        log.debug("REST request to change PIN of customer");
+        if (!currentCustomerService.changePin(dto)) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        }
+    }
+
+    @Timed
+    @RequestMapping(value = CHANGE_PASSWORD_PATH, method = RequestMethod.PUT)
+    public void changePassword(HttpServletResponse response, @Valid @RequestBody ChangePasswordDTO dto) throws AppException {
+        log.debug("REST request to change Password of customer");
+        if (!currentCustomerService.changePassword(dto)) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        }
+    }
+
+    @Timed
+    @RequestMapping(value = CHANGE_ADDRESS_PATH, method = RequestMethod.PUT)
+    public void changeAddress(@Valid @RequestBody ChangeAddressDTO dto) throws AppException {
+        log.debug("REST request to change Address of customer");
+        currentCustomerService.changeAddress(dto);
+    }
+
+    @Timed
     @JsonView(CreateCustomerDTO.View.class)
     @RequestMapping(value = BASE_PATH, method = RequestMethod.POST)
     public CreateCustomerDTO create(@Valid @RequestBody CreateCustomerDTO dto) throws AppException {
@@ -71,7 +99,7 @@ public class CustomerResource {
 
     @Timed
     @RequestMapping(value = PASSWORD_RESET_PATH, method = RequestMethod.POST)
-    public void resetPassword(@Valid @RequestBody ChangePasswordDTO dto, HttpServletResponse response) throws AppException {
+    public void resetPassword(@Valid @RequestBody CreatePasswordDTO dto, HttpServletResponse response) throws AppException {
         log.debug("REST request to reset password");
 
         if (!customerService.changePassword(dto.getLogin(), dto.getKey(), dto.getPassword(), dto.getPasswordConfirm())) {

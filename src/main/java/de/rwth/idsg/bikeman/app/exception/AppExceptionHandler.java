@@ -42,6 +42,7 @@ public class AppExceptionHandler {
                 status = HttpStatus.BAD_REQUEST;
                 break;
 
+            case VALIDATION_FAILED:
             case NOT_REGISTERED:
             case RENTAL_BLOCKED:
             case BOOKING_BLOCKED:

@@ -1,19 +1,19 @@
 package de.rwth.idsg.bikeman.app.dto;
 
 import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.validation.constraints.Pattern;
 
+@Setter
 @Getter
-public class ChangePasswordDTO {
+@ToString(includeFieldNames = true)
+public class ChangePinDTO {
+    @Pattern(regexp = "^([0-9]{4})$")
+    private String cardPin;
 
     @NotBlank
-    private String oldPassword;
-
-    @Pattern(regexp = "^(?=.*[a-z]+.*)(?=.*[0-9A-Z\\p{Punct}]+.*)[0-9a-zA-Z\\p{Punct}]{8,20}$")
     private String password;
-
-    @NotBlank
-    private String passwordConfirm;
 }
