@@ -13,13 +13,14 @@ import de.rwth.idsg.bikeman.domain.Reservation;
 import de.rwth.idsg.bikeman.domain.ReservationState;
 import de.rwth.idsg.bikeman.psinterface.dto.request.CancelReservationDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.ReserveNowDTO;
+import de.rwth.idsg.bikeman.psinterface.rest.client.StationClient;
 import de.rwth.idsg.bikeman.repository.BookingRepository;
 import de.rwth.idsg.bikeman.repository.ReservationRepository;
-import de.rwth.idsg.bikeman.service.OperationStateService;
-import de.rwth.idsg.bikeman.service.StationService;
+import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,8 +42,9 @@ public class AppBookingService {
     private ReservationRepository reservationRepository;
 
     @Autowired
-    private StationService stationService;
+    private StationClient stationClient;
 
+    // TODO: It's not that easy, because you've to inform IXSI! There is still NO solution!
     @Transactional(rollbackFor = Exception.class)
     public Optional<ViewBookingDTO> create(Long stationId, Customer customer) {
         Optional<Reservation> optional = this.getReservation(customer);
@@ -85,7 +87,7 @@ public class AppBookingService {
         // send reservation to station
         String endpointAddress = pedelec.getStationSlot().getStation().getEndpointAddress();
         ReserveNowDTO reserveNowDTO = new ReserveNowDTO(pedelec.getManufacturerId(), cardAccount.getCardId(), end.toDateTime().getMillis());
-        stationService.reserveNow(endpointAddress, reserveNowDTO);
+        reserveNow(endpointAddress, reserveNowDTO);
 
         Booking booking = new Booking();
         booking.setReservation(savedReservation);
@@ -160,7 +162,7 @@ public class AppBookingService {
 
         String endpointAddress = reservation.getPedelec().getStationSlot().getStation().getEndpointAddress();
         CancelReservationDTO cancelReservationDTO = new CancelReservationDTO(reservation.getPedelec().getManufacturerId());
-        stationService.cancelReservation(endpointAddress, cancelReservationDTO);
+        cancelReservation(endpointAddress, cancelReservationDTO);
 
         bookingRepository.cancel(reservation.getBooking());
     }
@@ -180,6 +182,20 @@ public class AppBookingService {
         }
 
         return Optional.of(reservations.get(0));
+    }
+
+
+    @Async
+    public void reserveNow(String endpointAddress, ReserveNowDTO reserveNowDTO) throws DatabaseException {
+
+        stationClient.reserveNow(reserveNowDTO, endpointAddress);
+    }
+
+    @Async
+    public void cancelReservation(String endpointAddress, CancelReservationDTO cancelReservationDTO)
+            throws DatabaseException {
+
+        stationClient.cancelReservation(cancelReservationDTO, endpointAddress);
     }
 
 }
