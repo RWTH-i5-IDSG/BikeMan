@@ -3,8 +3,8 @@ package de.rwth.idsg.bikeman.app.service;
 import de.rwth.idsg.bikeman.app.dto.ViewPedelecSlotDTO;
 import de.rwth.idsg.bikeman.app.exception.AppErrorCode;
 import de.rwth.idsg.bikeman.app.exception.AppException;
+import de.rwth.idsg.bikeman.app.repository.AppPedelecRepository;
 import de.rwth.idsg.bikeman.domain.Pedelec;
-import de.rwth.idsg.bikeman.app.repository.PedelecRepository;
 import de.rwth.idsg.bikeman.repository.StationRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +14,12 @@ import javax.persistence.NoResultException;
 import java.util.List;
 import java.util.Optional;
 
-@Service("PedelecServiceApp")
+@Service
 @Slf4j
-public class PedelecService {
+public class AppPedelecService {
 
     @Autowired
-    private PedelecRepository pedelecRepository;
+    private AppPedelecRepository appPedelecRepository;
 
     @Autowired
     private StationRepository stationRepository;
@@ -31,7 +31,7 @@ public class PedelecService {
             throw new AppException("Station not found!", AppErrorCode.CONSTRAINT_FAILED);
         }
 
-        List<Pedelec> pedelecs =  pedelecRepository.findAvailablePedelecs(stationId);
+        List<Pedelec> pedelecs = appPedelecRepository.findAvailablePedelecs(stationId);
 
         if (pedelecs.isEmpty()) {
             return Optional.empty();
@@ -42,10 +42,10 @@ public class PedelecService {
 
         return Optional.of(
                 ViewPedelecSlotDTO.builder()
-                    .stationSlotId(pedelec.getStationSlot().getStationSlotId())
-                    .stationSlotPosition(pedelec.getStationSlot().getStationSlotPosition())
-                    .build()
-                );
+                                  .stationSlotId(pedelec.getStationSlot().getStationSlotId())
+                                  .stationSlotPosition(pedelec.getStationSlot().getStationSlotPosition())
+                                  .build()
+        );
 
     }
 
@@ -56,7 +56,7 @@ public class PedelecService {
             throw new AppException("Station not found!", AppErrorCode.CONSTRAINT_FAILED);
         }
 
-        List<Pedelec> pedelecs =  pedelecRepository.findAvailablePedelecs(stationId);
+        List<Pedelec> pedelecs = appPedelecRepository.findAvailablePedelecs(stationId);
 
         if (pedelecs.isEmpty()) {
             return Optional.empty();
@@ -75,7 +75,7 @@ public class PedelecService {
             throw new AppException("Station not found!", AppErrorCode.CONSTRAINT_FAILED);
         }
 
-        List<Pedelec> pedelecs = pedelecRepository.findAvailablePedelecs(stationId);
+        List<Pedelec> pedelecs = appPedelecRepository.findAvailablePedelecs(stationId);
 
         if (pedelecs.isEmpty()) {
             return Optional.empty();

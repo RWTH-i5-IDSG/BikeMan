@@ -3,23 +3,18 @@ package de.rwth.idsg.bikeman.app.repository;
 import de.rwth.idsg.bikeman.app.dto.ViewTariffDTO;
 import de.rwth.idsg.bikeman.app.exception.AppErrorCode;
 import de.rwth.idsg.bikeman.app.exception.AppException;
-import de.rwth.idsg.bikeman.domain.*;
-import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.*;
-import java.math.BigDecimal;
 import java.util.List;
 
-@Repository("TariffRepositoryImplApp")
+@Repository
 @Slf4j
-public class TariffRepositoryImpl implements TariffRepository {
+public class AppTariffRepositoryImpl implements AppTariffRepository {
 
     @PersistenceContext
     private EntityManager em;

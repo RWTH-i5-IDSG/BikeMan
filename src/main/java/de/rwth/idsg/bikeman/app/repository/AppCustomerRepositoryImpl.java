@@ -24,9 +24,9 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Random;
 
-@Repository("CustomerRepositoryImplApp")
+@Repository
 @Slf4j
-public class CustomerRepositoryImpl implements CustomerRepository {
+public class AppCustomerRepositoryImpl implements AppCustomerRepository {
 
     @PersistenceContext
     private EntityManager em;

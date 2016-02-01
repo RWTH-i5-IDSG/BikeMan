@@ -5,7 +5,7 @@ import de.rwth.idsg.bikeman.domain.Pedelec;
 
 import java.util.List;
 
-public interface PedelecRepository {
+public interface AppPedelecRepository {
 
     List<Pedelec> findAvailablePedelecs(Long stationId) throws AppException;
 

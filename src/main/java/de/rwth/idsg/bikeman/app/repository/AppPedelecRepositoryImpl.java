@@ -12,9 +12,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
-@Repository("PedelecRepositoryImplApp")
+@Repository
 @Slf4j
-public class PedelecRepositoryImpl implements PedelecRepository {
+public class AppPedelecRepositoryImpl implements AppPedelecRepository {
 
     @PersistenceContext
     private EntityManager em;

@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @RequestMapping(value = "/app", produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
-public class CorsResource {
+public class AppCorsResource {
 
     // this method is needed for CORS "preflight"
     @Timed

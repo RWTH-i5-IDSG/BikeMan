@@ -16,7 +16,7 @@ import java.util.Optional;
 
 @Service
 @Slf4j
-public class SupportService {
+public class AppSupportService {
 
     private String supportAddress;
 
@@ -33,21 +33,21 @@ public class SupportService {
     }
 
 
-    public void sendFeedbackMail (Customer customer, String customerSubject, String customerContent) {
+    public void sendFeedbackMail(Customer customer, String customerSubject, String customerContent) {
         String subject;
         String content;
 
         subject = "Feedback from " + customer.getFirstname() + " " + customer.getLastname();
         content = "CustomerID: " + customer.getCustomerId() + "\n" +
-                    "Firstname: " + customer.getFirstname() + "\n" +
-                    "Lastname: " + customer.getLastname() + "\n" +
-                    "E-Mail: " + customer.getLogin() + "\n" +
-                    "\n" +
-                    "Subject: " + customerSubject + "\n" +
-                    "Content: \n" +
-                    "----------------------------------------\n" +
-                    customerContent + "\n" +
-                    "----------------------------------------\n";
+                "Firstname: " + customer.getFirstname() + "\n" +
+                "Lastname: " + customer.getLastname() + "\n" +
+                "E-Mail: " + customer.getLogin() + "\n" +
+                "\n" +
+                "Subject: " + customerSubject + "\n" +
+                "Content: \n" +
+                "----------------------------------------\n" +
+                customerContent + "\n" +
+                "----------------------------------------\n";
 
         try {
             mailService.sendEmail(this.supportAddress, subject, content, false, false);
@@ -56,7 +56,8 @@ public class SupportService {
         }
     }
 
-    public void sendStationSupportMail (Customer customer, Long stationId, CreateStationSupportDTO.StationErrorCode error, Optional<String> comment) {
+    public void sendStationSupportMail(Customer customer, Long stationId,
+                                       CreateStationSupportDTO.StationErrorCode error, Optional<String> comment) {
         String subject;
         String content;
 
@@ -65,17 +66,17 @@ public class SupportService {
         subject = "Support needed on Station " + stationId.toString();
 
         content = "CustomerID: " + customer.getCustomerId() + "\n" +
-                    "Firstname: " + customer.getFirstname() + "\n" +
-                    "Lastname: " + customer.getLastname() + "\n" +
-                    "E-Mail: " + customer.getLogin() + "\n" +
-                    "\n" +
-                    "Error Code: " + error.toString() + "\n";
+                "Firstname: " + customer.getFirstname() + "\n" +
+                "Lastname: " + customer.getLastname() + "\n" +
+                "E-Mail: " + customer.getLogin() + "\n" +
+                "\n" +
+                "Error Code: " + error.toString() + "\n";
 
         if (comment.isPresent()) {
             content = content + "Comment: " + "\n" +
-                "----------------------------------------\n" +
-                comment.get() + "\n" +
-                "----------------------------------------\n";
+                    "----------------------------------------\n" +
+                    comment.get() + "\n" +
+                    "----------------------------------------\n";
         }
 
         try {
@@ -86,7 +87,8 @@ public class SupportService {
     }
 
 
-    public void sendPedelecSupportMail (Customer customer, Long pedelecId, CreatePedelecSupportDTO.PedelecErrorCode error, Optional<String> comment) {
+    public void sendPedelecSupportMail(Customer customer, Long pedelecId,
+                                       CreatePedelecSupportDTO.PedelecErrorCode error, Optional<String> comment) {
         String subject;
         String content;
 
@@ -95,17 +97,17 @@ public class SupportService {
         subject = "Support needed on Pedelec " + pedelecId.toString();
 
         content = "CustomerID: " + customer.getCustomerId() + "\n" +
-                    "Firstname: " + customer.getFirstname() + "\n" +
-                    "Lastname: " + customer.getLastname() + "\n" +
-                    "E-Mail: " + customer.getLogin() + "\n" +
-                    "\n" +
-                    "Error Code: " + error.toString() + "\n";
+                "Firstname: " + customer.getFirstname() + "\n" +
+                "Lastname: " + customer.getLastname() + "\n" +
+                "E-Mail: " + customer.getLogin() + "\n" +
+                "\n" +
+                "Error Code: " + error.toString() + "\n";
 
         if (comment.isPresent()) {
             content = content +
-                "----------------------------------------\n" +
-                comment.get() + "\n" +
-                "----------------------------------------\n";
+                    "----------------------------------------\n" +
+                    comment.get() + "\n" +
+                    "----------------------------------------\n";
         }
 
         try {

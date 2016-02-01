@@ -2,7 +2,7 @@ package de.rwth.idsg.bikeman.app.service;
 
 import de.rwth.idsg.bikeman.app.dto.CreateCustomerDTO;
 import de.rwth.idsg.bikeman.app.exception.AppException;
-import de.rwth.idsg.bikeman.app.repository.CustomerRepository;
+import de.rwth.idsg.bikeman.app.repository.AppCustomerRepository;
 import de.rwth.idsg.bikeman.domain.ActivationKey;
 import de.rwth.idsg.bikeman.domain.ActivationKeyType;
 import de.rwth.idsg.bikeman.domain.Customer;
@@ -18,11 +18,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-@Service("CustomerServiceApp")
+@Service
 @Slf4j
-public class CustomerService {
+public class AppCustomerService {
     @Autowired
-    private CustomerRepository customerRepository;
+    private AppCustomerRepository appCustomerRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -37,7 +37,7 @@ public class CustomerService {
     private PasswordEncoder passwordEncoder;
 
     public CreateCustomerDTO create(CreateCustomerDTO dto) throws AppException {
-        CreateCustomerDTO obj = customerRepository.create(dto);
+        CreateCustomerDTO obj = appCustomerRepository.create(dto);
 
         //TODO: createActivationKey
         //TODO: sendActivationEmail
@@ -47,7 +47,7 @@ public class CustomerService {
 
     @Transactional
     public Boolean requestPasswordReset(String login) {
-        Optional<Customer> customer = customerRepository.findByLogin(login);
+        Optional<Customer> customer = appCustomerRepository.findByLogin(login);
 
         if (!customer.isPresent()) {
             return false;
@@ -61,9 +61,9 @@ public class CustomerService {
 
     @Transactional
     public Boolean changePassword(String login, String key, String password, String passwordConfirm) {
-        Optional<Customer> customer = customerRepository.findByLogin(login);
+        Optional<Customer> customer = appCustomerRepository.findByLogin(login);
         Optional<ActivationKey> activationKey =
-            activationKeyService.getNotUsedAndValid(key, ActivationKeyType.PASSWORD_RESET);
+                activationKeyService.getNotUsedAndValid(key, ActivationKeyType.PASSWORD_RESET);
 
         if (!customer.isPresent()) {
             log.debug("customer not present");

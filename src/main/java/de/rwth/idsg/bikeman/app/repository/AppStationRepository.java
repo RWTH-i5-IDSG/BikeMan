@@ -6,7 +6,7 @@ import de.rwth.idsg.bikeman.app.exception.AppException;
 
 import java.util.List;
 
-public interface StationRepository {
+public interface AppStationRepository {
 
     List<ViewStationDTO> findAll() throws AppException;
     ViewStationDTO findOne(long stationId) throws AppException;

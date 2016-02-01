@@ -5,7 +5,6 @@ import de.rwth.idsg.bikeman.app.exception.AppErrorCode;
 import de.rwth.idsg.bikeman.app.exception.AppException;
 import de.rwth.idsg.bikeman.domain.*;
 import de.rwth.idsg.bikeman.domain.CardAccount_;
-import de.rwth.idsg.bikeman.domain.Customer_;
 import de.rwth.idsg.bikeman.domain.StationSlot_;
 import de.rwth.idsg.bikeman.domain.Station_;
 import de.rwth.idsg.bikeman.domain.Transaction_;
@@ -17,9 +16,9 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.*;
 import java.util.List;
 
-@Repository("TransactionRepositoryImplApp")
+@Repository
 @Slf4j
-public class TransactionRepositoryImpl implements TransactionRepository {
+public class AppTransactionRepositoryImpl implements AppTransactionRepository {
 
     @PersistenceContext
     private EntityManager em;

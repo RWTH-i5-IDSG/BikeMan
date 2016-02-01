@@ -4,11 +4,19 @@ import de.rwth.idsg.bikeman.app.dto.ViewBookingDTO;
 import de.rwth.idsg.bikeman.app.dto.ViewPedelecSlotDTO;
 import de.rwth.idsg.bikeman.app.exception.AppErrorCode;
 import de.rwth.idsg.bikeman.app.exception.AppException;
-import de.rwth.idsg.bikeman.domain.*;
+import de.rwth.idsg.bikeman.domain.Booking;
+import de.rwth.idsg.bikeman.domain.CardAccount;
+import de.rwth.idsg.bikeman.domain.Customer;
+import de.rwth.idsg.bikeman.domain.OperationState;
+import de.rwth.idsg.bikeman.domain.Pedelec;
+import de.rwth.idsg.bikeman.domain.Reservation;
+import de.rwth.idsg.bikeman.domain.ReservationState;
 import de.rwth.idsg.bikeman.psinterface.dto.request.CancelReservationDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.ReserveNowDTO;
 import de.rwth.idsg.bikeman.repository.BookingRepository;
 import de.rwth.idsg.bikeman.repository.ReservationRepository;
+import de.rwth.idsg.bikeman.service.OperationStateService;
+import de.rwth.idsg.bikeman.service.StationService;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,23 +27,23 @@ import java.util.List;
 import java.util.Optional;
 
 
-@Service("BookingServiceApp")
+@Service
 @Slf4j
-public class BookingService {
+public class AppBookingService {
 
     @Autowired
-    private PedelecService pedelecService;
+    private AppPedelecService appPedelecService;
 
     @Autowired
     private BookingRepository bookingRepository;
 
     @Autowired
-    private de.rwth.idsg.bikeman.service.StationService stationService;
-
-    @Autowired
     private ReservationRepository reservationRepository;
 
-    @Transactional(readOnly=false, rollbackFor=Exception.class)
+    @Autowired
+    private StationService stationService;
+
+    @Transactional(rollbackFor = Exception.class)
     public Optional<ViewBookingDTO> create(Long stationId, Customer customer) {
         Optional<Reservation> optional = this.getReservation(customer);
 
@@ -44,7 +52,7 @@ public class BookingService {
             throw new AppException("Maximum number of concurrent reservations exceeded!", AppErrorCode.BOOKING_BLOCKED);
         }
 
-        Optional<Pedelec> optionalPedelec = pedelecService.getRecommendedPedelecForBooking(stationId);
+        Optional<Pedelec> optionalPedelec = appPedelecService.getRecommendedPedelecForBooking(stationId);
 
         if (!optionalPedelec.isPresent()) {
             return Optional.empty();
@@ -85,17 +93,17 @@ public class BookingService {
             bookingRepository.save(booking);
             return Optional.of(
                     ViewBookingDTO.builder()
-                        .expiryDateTime(end)
-                        .stationSlotPosition(pedelec.getStationSlot().getStationSlotPosition())
-                        .stationId(stationId)
-                        .build()
-                    );
+                                  .expiryDateTime(end)
+                                  .stationSlotPosition(pedelec.getStationSlot().getStationSlotPosition())
+                                  .stationId(stationId)
+                                  .build()
+            );
         } catch (Throwable e) {
             throw new AppException("Failed during database operation.", AppErrorCode.DATABASE_OPERATION_FAILED);
         }
     }
 
-    @Transactional(readOnly=true)
+    @Transactional(readOnly = true)
     public Optional<ViewBookingDTO> getDTO(Customer customer) {
         Optional<Reservation> optional = this.getReservation(customer);
 
@@ -105,15 +113,15 @@ public class BookingService {
 
         return Optional.of(
                 ViewBookingDTO.builder()
-                    .stationId(optional.get().getPedelec().getStationSlot().getStation().getStationId())
-                    .stationSlotPosition(optional.get().getPedelec().getStationSlot().getStationSlotPosition())
-                    .expiryDateTime(optional.get().getEndDateTime())
-                    .build()
-                );
+                              .stationId(optional.get().getPedelec().getStationSlot().getStation().getStationId())
+                              .stationSlotPosition(optional.get().getPedelec().getStationSlot().getStationSlotPosition())
+                              .expiryDateTime(optional.get().getEndDateTime())
+                              .build()
+        );
 
     }
 
-    @Transactional(readOnly=true)
+    @Transactional(readOnly = true)
     public Optional<ViewPedelecSlotDTO> getSlot(Customer customer) {
         Optional<Reservation> optional = this.getReservation(customer);
 
@@ -123,13 +131,13 @@ public class BookingService {
 
         return Optional.of(
                 ViewPedelecSlotDTO.builder()
-                    .stationSlotId(optional.get().getPedelec().getStationSlot().getStationSlotId())
-                    .stationSlotPosition(optional.get().getPedelec().getStationSlot().getStationSlotPosition())
-                    .build()
-                );
+                                  .stationSlotId(optional.get().getPedelec().getStationSlot().getStationSlotId())
+                                  .stationSlotPosition(optional.get().getPedelec().getStationSlot().getStationSlotPosition())
+                                  .build()
+        );
     }
 
-    @Transactional(readOnly=true)
+    @Transactional(readOnly = true)
     public Optional<Long> getBookingSlotId(Customer customer) {
         Optional<Reservation> optional = this.getReservation(customer);
 
@@ -140,7 +148,7 @@ public class BookingService {
         return Optional.of(optional.get().getPedelec().getStationSlot().getStationSlotId());
     }
 
-    @Transactional(readOnly=false)
+    @Transactional
     public void delete(Customer customer) {
         Optional<Reservation> optional = this.getReservation(customer);
 
@@ -157,11 +165,11 @@ public class BookingService {
         bookingRepository.cancel(reservation.getBooking());
     }
 
-    @Transactional(readOnly=true)
+    @Transactional(readOnly = true)
     private Optional<Reservation> getReservation(Customer customer) {
         List<Reservation> reservations = reservationRepository.findByCustomerIdAndTime(
-            customer.getCardAccount().getCardAccountId(),
-            LocalDateTime.now());
+                customer.getCardAccount().getCardAccountId(),
+                LocalDateTime.now());
 
         if (reservations.isEmpty()) {
             return Optional.empty();

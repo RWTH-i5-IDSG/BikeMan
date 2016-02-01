@@ -9,7 +9,7 @@ import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import java.util.Optional;
 
 
-public interface CustomerRepository {
+public interface AppCustomerRepository {
 
     ViewCustomerDTO findOne(Long customerId) throws AppException;
     Optional<Customer> findByLogin(String login) throws DatabaseException;

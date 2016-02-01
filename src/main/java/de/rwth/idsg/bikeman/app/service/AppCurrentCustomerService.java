@@ -1,11 +1,22 @@
 package de.rwth.idsg.bikeman.app.service;
 
-import de.rwth.idsg.bikeman.app.dto.*;
+import de.rwth.idsg.bikeman.app.dto.ChangeAddressDTO;
+import de.rwth.idsg.bikeman.app.dto.ChangePasswordDTO;
+import de.rwth.idsg.bikeman.app.dto.ChangePinDTO;
+import de.rwth.idsg.bikeman.app.dto.ChangeTariffDTO;
+import de.rwth.idsg.bikeman.app.dto.ViewBookedTariffDTO;
+import de.rwth.idsg.bikeman.app.dto.ViewCustomerDTO;
+import de.rwth.idsg.bikeman.app.dto.ViewTransactionDTO;
 import de.rwth.idsg.bikeman.app.exception.AppErrorCode;
 import de.rwth.idsg.bikeman.app.exception.AppException;
-import de.rwth.idsg.bikeman.app.repository.CustomerRepository;
-import de.rwth.idsg.bikeman.app.repository.TransactionRepository;
-import de.rwth.idsg.bikeman.domain.*;
+import de.rwth.idsg.bikeman.app.repository.AppCustomerRepository;
+import de.rwth.idsg.bikeman.app.repository.AppTransactionRepository;
+import de.rwth.idsg.bikeman.domain.Address;
+import de.rwth.idsg.bikeman.domain.BookedTariff;
+import de.rwth.idsg.bikeman.domain.CardAccount;
+import de.rwth.idsg.bikeman.domain.Customer;
+import de.rwth.idsg.bikeman.domain.TariffCategory;
+import de.rwth.idsg.bikeman.domain.User;
 import de.rwth.idsg.bikeman.repository.CardAccountRepository;
 import de.rwth.idsg.bikeman.repository.TariffRepository;
 import de.rwth.idsg.bikeman.repository.UserRepository;
@@ -24,10 +35,10 @@ import java.util.Optional;
 
 @Service
 @Slf4j
-public class CurrentCustomerService {
+public class AppCurrentCustomerService {
 
     @Autowired
-    private CustomerRepository customerRepository;
+    private AppCustomerRepository appCustomerRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -42,13 +53,13 @@ public class CurrentCustomerService {
     private TariffRepository tariffRepository;
 
     @Autowired
-    private TransactionRepository transactionRepository;
+    private AppTransactionRepository appTransactionRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
     public ViewCustomerDTO get() throws DatabaseException {
-        return customerRepository.findOne(
+        return appCustomerRepository.findOne(
                 userService.getUserWithAuthorities().getUserId());
     }
 
@@ -103,12 +114,12 @@ public class CurrentCustomerService {
 
     @Transactional(readOnly = true)
     public List<ViewTransactionDTO> getClosedTransactions(Integer page) throws DatabaseException {
-        return transactionRepository.findByCustomerPaginated(this.getCurrentCustomer(), page);
+        return appTransactionRepository.findByCustomerPaginated(this.getCurrentCustomer(), page);
     }
 
     @Transactional(readOnly = true)
     public Optional<ViewTransactionDTO> getOpenTransaction() throws DatabaseException {
-        List<ViewTransactionDTO> transactions = transactionRepository.findOpenByCustomer(this.getCurrentCustomer());
+        List<ViewTransactionDTO> transactions = appTransactionRepository.findOpenByCustomer(this.getCurrentCustomer());
 
         if (transactions.isEmpty()) {
             return Optional.empty();
@@ -123,11 +134,11 @@ public class CurrentCustomerService {
         BookedTariff currentTariff = customer.getCardAccount().getCurrentTariff();
 
         ViewBookedTariffDTO dto = ViewBookedTariffDTO.builder()
-            .tariffId(currentTariff.getTariff().getTariffId())
-            .name(currentTariff.getName())
-            .automaticRenewal(customer.getCardAccount().getAutoRenewTariff())
-            .expiryDateTime(currentTariff.getBookedUntil())
-            .build();
+                                                     .tariffId(currentTariff.getTariff().getTariffId())
+                                                     .name(currentTariff.getName())
+                                                     .automaticRenewal(customer.getCardAccount().getAutoRenewTariff())
+                                                     .expiryDateTime(currentTariff.getBookedUntil())
+                                                     .build();
 
         return dto;
     }
@@ -137,11 +148,11 @@ public class CurrentCustomerService {
         Customer customer = this.getCurrentCustomer();
         BookedTariff currentTariff = customer.getCardAccount().getCurrentTariff();
 
-        if (currentTariff.getTariff().getTariffId().equals( dto.getTariffId() )) {
+        if (currentTariff.getTariff().getTariffId().equals(dto.getTariffId())) {
             throw new AppException("Old and new tariff are equal!", AppErrorCode.CONSTRAINT_FAILED);
         }
-        if ( (currentTariff.getBookedUntil() != null)
-            && (currentTariff.getBookedUntil().compareTo( LocalDateTime.now() ) == 1) ) {
+        if ((currentTariff.getBookedUntil() != null)
+                && (currentTariff.getBookedUntil().compareTo(LocalDateTime.now()) == 1)) {
 
             throw new AppException("Tariff change not possible due to active subscription!", AppErrorCode.CONSTRAINT_FAILED);
         }
@@ -154,7 +165,7 @@ public class CurrentCustomerService {
             updateBookedTariff.setBookedUntil(null);
         } else {
             updateBookedTariff.setBookedUntil(new LocalDateTime().plusDays(
-                tariffRepository.findByTariffId(dto.getTariffId()).getTerm()
+                    tariffRepository.findByTariffId(dto.getTariffId()).getTerm()
             ));
         }
 
@@ -162,7 +173,7 @@ public class CurrentCustomerService {
         customer.getCardAccount().setCurrentTariff(updateBookedTariff);
         this.enableAutomaticRenewal();
 
-	    return dto;
+        return dto;
     }
 
     @Transactional
@@ -175,7 +186,7 @@ public class CurrentCustomerService {
     public Boolean disableAutomaticRenewal() throws AppException {
         CardAccount cardAccount = this.getCurrentCustomer().getCardAccount();
 
-        if (cardAccount.getCurrentTariff().getTariff().getCategory().equals( TariffCategory.Default )) {
+        if (cardAccount.getCurrentTariff().getTariff().getCategory().equals(TariffCategory.Default)) {
             return false;
         }
 
@@ -184,7 +195,7 @@ public class CurrentCustomerService {
     }
 
 
-    public Customer getCurrentCustomer () {
+    public Customer getCurrentCustomer() {
         User user = userService.getUserWithAuthorities();
 
         if (user instanceof Customer) {

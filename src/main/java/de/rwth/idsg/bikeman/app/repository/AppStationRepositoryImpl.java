@@ -28,9 +28,9 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Root;
 import java.util.List;
 
-@Repository("StationRepositoryImplApp")
+@Repository
 @Slf4j
-public class StationRepositoryImpl implements StationRepository {
+public class AppStationRepositoryImpl implements AppStationRepository {
 
     @PersistenceContext
     private EntityManager em;

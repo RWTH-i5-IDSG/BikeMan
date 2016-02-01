@@ -6,10 +6,10 @@ import de.rwth.idsg.bikeman.app.dto.ViewPedelecSlotDTO;
 import de.rwth.idsg.bikeman.app.dto.ViewStationDTO;
 import de.rwth.idsg.bikeman.app.dto.ViewStationSlotsDTO;
 import de.rwth.idsg.bikeman.app.exception.AppException;
-import de.rwth.idsg.bikeman.app.service.BookingService;
-import de.rwth.idsg.bikeman.app.service.CurrentCustomerService;
-import de.rwth.idsg.bikeman.app.service.PedelecService;
-import de.rwth.idsg.bikeman.app.service.StationService;
+import de.rwth.idsg.bikeman.app.service.AppBookingService;
+import de.rwth.idsg.bikeman.app.service.AppCurrentCustomerService;
+import de.rwth.idsg.bikeman.app.service.AppPedelecService;
+import de.rwth.idsg.bikeman.app.service.AppStationService;
 import de.rwth.idsg.bikeman.security.SecurityUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,22 +22,22 @@ import java.util.List;
 import java.util.Optional;
 
 
-@RestController("StationResourceApp")
+@RestController
 @RequestMapping(value = "/app", produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
-public class StationResource {
+public class AppStationResource {
 
     @Autowired
-    private StationService stationService;
+    private AppStationService appStationService;
 
     @Autowired
-    private PedelecService pedelecService;
+    private AppPedelecService appPedelecService;
 
     @Autowired
-    private BookingService bookingService;
+    private AppBookingService appBookingService;
 
     @Autowired
-    private CurrentCustomerService currentCustomerService;
+    private AppCurrentCustomerService appCurrentCustomerService;
 
     private static final String BASE_PATH = "/stations";
     private static final String ID_PATH = "/stations/{id}";
@@ -49,14 +49,14 @@ public class StationResource {
     @RequestMapping(value = BASE_PATH, method = RequestMethod.GET)
     public List<ViewStationDTO> getAll() throws AppException {
         log.debug("REST request to get all Stations");
-        return stationService.getAll();
+        return appStationService.getAll();
     }
 
     @Timed
     @RequestMapping(value = ID_PATH, method = RequestMethod.GET)
     public ViewStationDTO get(@PathVariable Long id) throws AppException {
         log.info("REST request to get Station : {}", id);
-        return stationService.get(id);
+        return appStationService.get(id);
     }
 
     @Timed
@@ -64,10 +64,10 @@ public class StationResource {
     public ViewStationSlotsDTO getSlots(@PathVariable Long id) throws AppException {
         if (SecurityUtils.isAuthenticated()) {
             log.info("REST request to get Slots (for authenticated customer) of Station : {}", id);
-            return stationService.getSlotsWithPreferredSlotId(id, currentCustomerService.getCurrentCustomer());
+            return appStationService.getSlotsWithPreferredSlotId(id, appCurrentCustomerService.getCurrentCustomer());
         } else {
             log.info("REST request to get Slots of Station : {}", id);
-            return stationService.getSlots(id);
+            return appStationService.getSlots(id);
         }
     }
 
@@ -76,12 +76,12 @@ public class StationResource {
     public ViewPedelecSlotDTO getRecommendedPedelec(@PathVariable Long id, HttpServletResponse response) throws AppException {
         log.debug("REST request to get a suggestion for renting a pedelec");
 
-        Optional<ViewPedelecSlotDTO> optional = bookingService.getSlot(currentCustomerService.getCurrentCustomer());
+        Optional<ViewPedelecSlotDTO> optional = appBookingService.getSlot(appCurrentCustomerService.getCurrentCustomer());
         if (optional.isPresent()) {
             return optional.get();
         }
 
-        Optional<ViewPedelecSlotDTO> optionalPedelec = pedelecService.getRecommendedPedelec(id);
+        Optional<ViewPedelecSlotDTO> optionalPedelec = appPedelecService.getRecommendedPedelec(id);
 
         if (optionalPedelec.isPresent()) {
             return optionalPedelec.get();
@@ -99,10 +99,10 @@ public class StationResource {
                                           ) {
         log.debug("REST request to remotely rent a pedelec.");
 
-        return stationService.authorizeRemote(
+        return appStationService.authorizeRemote(
                 stationId,
                 dto.getStationSlotId(),
-                currentCustomerService.getCurrentCustomer(),
+                appCurrentCustomerService.getCurrentCustomer(),
                 dto.getCardPin()
             );
     }

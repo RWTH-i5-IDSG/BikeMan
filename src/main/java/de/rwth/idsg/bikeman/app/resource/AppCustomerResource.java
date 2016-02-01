@@ -4,9 +4,8 @@ import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.annotation.JsonView;
 import de.rwth.idsg.bikeman.app.dto.*;
 import de.rwth.idsg.bikeman.app.exception.AppException;
-import de.rwth.idsg.bikeman.app.service.CurrentCustomerService;
-import de.rwth.idsg.bikeman.app.service.CustomerService;
-import de.rwth.idsg.bikeman.service.ActivationKeyService;
+import de.rwth.idsg.bikeman.app.service.AppCurrentCustomerService;
+import de.rwth.idsg.bikeman.app.service.AppCustomerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -16,18 +15,16 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 
-@RestController("CustomerResourceApp")
+@RestController
 @RequestMapping(value = "/app", produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
-public class CustomerResource {
-    @Autowired
-    private ActivationKeyService activationKeyService;
+public class AppCustomerResource {
 
     @Autowired
-    private CurrentCustomerService currentCustomerService;
+    private AppCurrentCustomerService appCurrentCustomerService;
 
     @Autowired
-    private CustomerService customerService;
+    private AppCustomerService appCustomerService;
 
     private static final String BASE_PATH = "/customer";
     private static final String CHANGE_PIN_PATH = "/customer/pin";
@@ -44,7 +41,7 @@ public class CustomerResource {
     @RequestMapping(value = BASE_PATH, method = RequestMethod.GET)
     public ViewCustomerDTO get() throws AppException {
         log.debug("REST request to get logged in customer");
-        return currentCustomerService.get();
+        return appCurrentCustomerService.get();
     }
 
     @Timed
@@ -58,7 +55,7 @@ public class CustomerResource {
     @RequestMapping(value = CHANGE_PIN_PATH, method = RequestMethod.PUT)
     public void changePin(HttpServletResponse response, @Valid @RequestBody ChangePinDTO dto) throws AppException {
         log.debug("REST request to change PIN of customer");
-        if (!currentCustomerService.changePin(dto)) {
+        if (!appCurrentCustomerService.changePin(dto)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         }
     }
@@ -67,7 +64,7 @@ public class CustomerResource {
     @RequestMapping(value = CHANGE_PASSWORD_PATH, method = RequestMethod.PUT)
     public void changePassword(HttpServletResponse response, @Valid @RequestBody ChangePasswordDTO dto) throws AppException {
         log.debug("REST request to change Password of customer");
-        if (!currentCustomerService.changePassword(dto)) {
+        if (!appCurrentCustomerService.changePassword(dto)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         }
     }
@@ -76,7 +73,7 @@ public class CustomerResource {
     @RequestMapping(value = CHANGE_ADDRESS_PATH, method = RequestMethod.PUT)
     public void changeAddress(@Valid @RequestBody ChangeAddressDTO dto) throws AppException {
         log.debug("REST request to change Address of customer");
-        currentCustomerService.changeAddress(dto);
+        appCurrentCustomerService.changeAddress(dto);
     }
 
     @Timed
@@ -84,7 +81,7 @@ public class CustomerResource {
     @RequestMapping(value = BASE_PATH, method = RequestMethod.POST)
     public CreateCustomerDTO create(@Valid @RequestBody CreateCustomerDTO dto) throws AppException {
         log.debug("REST request to create customer");
-        return customerService.create(dto);
+        return appCustomerService.create(dto);
     }
 
     @Timed
@@ -92,7 +89,7 @@ public class CustomerResource {
     public void initPasswordReset(@Valid @RequestBody CreatePasswordResetRequestDTO dto, HttpServletResponse response) throws AppException {
         log.debug("REST request to initiate reset password");
 
-        if (!customerService.requestPasswordReset(dto.getLogin())) {
+        if (!appCustomerService.requestPasswordReset(dto.getLogin())) {
             response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
         }
     }
@@ -102,7 +99,7 @@ public class CustomerResource {
     public void resetPassword(@Valid @RequestBody CreatePasswordDTO dto, HttpServletResponse response) throws AppException {
         log.debug("REST request to reset password");
 
-        if (!customerService.changePassword(dto.getLogin(), dto.getKey(), dto.getPassword(), dto.getPasswordConfirm())) {
+        if (!appCustomerService.changePassword(dto.getLogin(), dto.getKey(), dto.getPassword(), dto.getPasswordConfirm())) {
             response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
         }
     }
@@ -112,7 +109,7 @@ public class CustomerResource {
     public void passwordResetStatus(@PathVariable String key, HttpServletResponse response) throws AppException {
         log.debug("REST request to get status of password reset key");
 
-        if (!customerService.validatePasswordResetKey(key)) {
+        if (!appCustomerService.validatePasswordResetKey(key)) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
         }
     }
@@ -120,20 +117,20 @@ public class CustomerResource {
     @Timed
     @RequestMapping(value = TARIFF_PATH, method = RequestMethod.GET)
     public ViewBookedTariffDTO getCurrentTariff() {
-        return currentCustomerService.getTariff();
+        return appCurrentCustomerService.getTariff();
     }
 
 
     @Timed
     @RequestMapping(value = TARIFF_PATH, method = RequestMethod.PUT)
     public ChangeTariffDTO setTariff(@Valid @RequestBody ChangeTariffDTO dto) throws AppException {
-        return currentCustomerService.setTariff(dto);
+        return appCurrentCustomerService.setTariff(dto);
     }
 
     @Timed
     @RequestMapping(value = TARIFF_AUTO_RENEWAL_PATH, method = RequestMethod.POST)
     public void enableAutomaticRenewal(HttpServletResponse response) {
-        Boolean success = currentCustomerService.enableAutomaticRenewal();
+        Boolean success = appCurrentCustomerService.enableAutomaticRenewal();
 
         if (!success) {
             response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
@@ -143,7 +140,7 @@ public class CustomerResource {
     @Timed
     @RequestMapping(value = TARIFF_AUTO_RENEWAL_PATH, method = RequestMethod.DELETE)
     public void disableAutomaticRenewal(HttpServletResponse response) {
-        Boolean success = currentCustomerService.disableAutomaticRenewal();
+        Boolean success = appCurrentCustomerService.disableAutomaticRenewal();
 
         if (!success) {
             response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
