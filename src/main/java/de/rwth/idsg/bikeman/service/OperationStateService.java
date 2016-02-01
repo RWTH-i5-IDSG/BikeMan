@@ -190,15 +190,13 @@ public class OperationStateService {
 
     private boolean shouldSendAvailability(Pedelec p) {
         return p.getStationSlot() != null
-                && isOperative(p.getState())
                 && isOperative(p.getStationSlot().getState())
                 && isOperative(p.getStationSlot().getStation().getState());
     }
 
     private boolean shouldSendAvailability(StationSlot slot, SlotDTO.StationStatus dto) {
         return slot.getPedelec() != null
-                && becameOperative(slot.getState(), dto.getSlotState())
-                && isOperative(slot.getPedelec().getState());
+                && becameOperative(slot.getState(), dto.getSlotState());
     }
 
     private boolean becameOperative(de.rwth.idsg.bikeman.domain.OperationState oldState, OperationState newState) {
