@@ -62,6 +62,7 @@ public class AppStationResource {
     @Timed
     @RequestMapping(value = SLOT_PATH, method = RequestMethod.GET)
     public ViewStationSlotsDTO getSlots(@PathVariable Long id) throws AppException {
+
         if (SecurityUtils.isAuthenticated()) {
             log.info("REST request to get Slots (for authenticated customer) of Station : {}", id);
             return appStationService.getSlotsWithPreferredSlotId(id, appCurrentCustomerService.getCurrentCustomer());
@@ -91,6 +92,7 @@ public class AppStationResource {
         return null;
     }
 
+    // TODO: please take a look at BookingRequestProcessor and ChangeBookingStateRequestProcessor!!!
     @Timed
     @RequestMapping(value = RENTAL_PATH, method = RequestMethod.POST)
     public ViewPedelecSlotDTO rentPedelec(HttpServletResponse response,

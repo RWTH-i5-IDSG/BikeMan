@@ -32,19 +32,16 @@ public class AvailabilityPushService {
     // Booking-related
     // -------------------------------------------------------------------------
 
-    @Async
     public void placedBooking(String bookeeID, String placeId, TimePeriodType timePeriod) {
         buildAndSend(bookeeID, placeId, timePeriod, false);
     }
 
-    @Async
     public void changedBooking(String bookeeID, String placeId,
                                TimePeriodType oldTimePeriod, TimePeriodType newTimePeriod) {
         cancelledBooking(bookeeID, placeId, oldTimePeriod);
         placedBooking(bookeeID, placeId, newTimePeriod);
     }
 
-    @Async
     public void cancelledBooking(String bookeeID, String placeId, TimePeriodType timePeriod) {
         buildAndSend(bookeeID, placeId, timePeriod, true);
     }
@@ -79,10 +76,11 @@ public class AvailabilityPushService {
     // Private helpers
     // -------------------------------------------------------------------------
 
+    @Async
     private void buildAndSend(String bookeeID, String placeID, TimePeriodType period, boolean isAvailable) {
         BookingTargetIDType bookingTargetID = new BookingTargetIDType()
-            .withBookeeID(bookeeID)
-            .withProviderID(IXSIConstants.Provider.id);
+                .withBookeeID(bookeeID)
+                .withProviderID(IXSIConstants.Provider.id);
 
         Set<String> systemIdSet = availabilityStore.getSubscribedSystems(bookingTargetID);
         if (systemIdSet.isEmpty()) {

@@ -35,7 +35,7 @@ public class AppBookingResource {
     @RequestMapping(value = BOOKING_PATH, method = RequestMethod.POST)
     public ViewBookingDTO create(@PathVariable Long stationId, HttpServletResponse response) throws AppException {
         log.debug("REST request to create a booking at station " + stationId);
-        Optional<ViewBookingDTO> optional = appBookingService.create(stationId, customerService.getCurrentCustomer());
+        Optional<ViewBookingDTO> optional = appBookingService.createBooking(stationId, customerService.getCurrentCustomer());
 
         if (optional.isPresent()) {
             return optional.get();

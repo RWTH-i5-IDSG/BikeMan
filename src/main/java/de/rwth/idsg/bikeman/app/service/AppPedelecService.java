@@ -24,6 +24,8 @@ public class AppPedelecService {
     @Autowired
     private StationRepository stationRepository;
 
+
+    // TODO: but why (copy&paste)?
     public Optional<ViewPedelecSlotDTO> getRecommendedPedelec(Long stationId) {
         try {
             stationRepository.findOne(stationId);
@@ -38,6 +40,7 @@ public class AppPedelecService {
         }
 
         // get Pedelec with max. SOC
+        // TODO: what if no pedelec is available?
         Pedelec pedelec = pedelecs.get(0);
 
         return Optional.of(
@@ -49,6 +52,7 @@ public class AppPedelecService {
 
     }
 
+    // TODO: but why (copy&paste)?
     public Optional<Long> getRecommendedPedelecSlotId(Long stationId) {
         try {
             stationRepository.findOne(stationId);
@@ -63,6 +67,7 @@ public class AppPedelecService {
         }
 
         // get Pedelec with max. SOC
+        // TODO: what if no pedelec is available?
         Pedelec pedelec = pedelecs.get(0);
 
         return Optional.of(pedelec.getStationSlot().getStationSlotId());
