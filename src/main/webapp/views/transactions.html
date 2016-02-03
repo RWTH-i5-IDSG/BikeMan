@@ -11,7 +11,9 @@
             <tr>
                 <th st-sort="customer.lastname" translate="transactions.table.header.customer">Customer</th>
                 <th st-sort="pedelec.manufacturerId" translate="transactions.table.header.pedelec">Pedelec</th>
-                <th st-sort="startDateTime" st-sort-default="reverse" translate="transactions.table.header.startTime">Start Time</th>
+                <th st-sort="startDateTime" st-sort-default="reverse" translate="transactions.table.header.startTime">
+                    Start Time
+                </th>
                 <th st-sort="endDateTime" translate="transactions.table.header.endTime">End Time</th>
                 <th st-sort="fromStation.name" translate="transactions.table.header.fromLocation">From Location</th>
                 <th st-sort="toStation.name" translate="transactions.table.header.toLocation">To Location</th>
@@ -19,10 +21,12 @@
             </tr>
             <tr>
                 <th>
-                    <input st-search="customer.lastname" placeholder="search for user's lastname" class="input-sm form-control" type="search"/>
+                    <input st-search="customer.lastname" placeholder="search for user's lastname"
+                           class="input-sm form-control" type="search"/>
                 </th>
                 <th>
-                    <input st-search="pedelec.manufacturerId" placeholder="search for pedelec manufacturer ID" class="input-sm form-control" type="search"/>
+                    <input st-search="pedelec.manufacturerId" placeholder="search for pedelec manufacturer ID"
+                           class="input-sm form-control" type="search"/>
                 </th>
                 <th>
 
@@ -31,7 +35,8 @@
 
                 </th>
                 <th>
-                    <input st-search="fromStation.name" placeholder="search for from location" class="input-sm form-control" type="search"/>
+                    <input st-search="fromStation.name" placeholder="search for from location"
+                           class="input-sm form-control" type="search"/>
                 </th>
                 <th>
 
@@ -39,10 +44,12 @@
             </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="transaction in transactions" ng-class="active: (transaction.toStation.name == null) class="active">
+            <tr ng-repeat="transaction in transactions" ng-class="active: (transaction.toStation.name == null)"
+                class="active">
                 <td><span class="h5">{{transaction.customer.lastname}}, {{transaction.customer.firstname}}</span></td>
                 <td>
-                    <a ui-sref="pedelecDetail({pedelecId: transaction.pedelec.pedelecId})"><span class="h5">{{transaction.pedelec.manufacturerId}}</span></a></td>
+                    <a ui-sref="pedelecDetail({pedelecId: transaction.pedelec.pedelecId})"><span class="h5">{{transaction.pedelec.manufacturerId}}</span></a>
+                </td>
                 <td>{{transaction.startDateTime | date:'short'}}</td>
                 <td>{{transaction.endDateTime | date:'short'}}</td>
 
@@ -57,10 +64,13 @@
                     <span ng-hide="transaction.toStation.name == null" class="label label-info">Slot {{transaction.toStation.slotPosition}}</span>
                 </td>
 
-                <td><button type="button" class="btn btn-danger pull-right btn-xs" ng-click="kill(transaction.transactionId)">
-                    <span class="glyphicon glyphicon-remove"></span>
-                    <span translate="transactions.table.body.kill">Kill</span>
-                </button></td>
+                <td>
+                    <button type="button" class="btn btn-danger pull-right btn-xs"
+                            ng-click="kill(transaction.transactionId)">
+                        <span class="glyphicon glyphicon-remove"></span>
+                        <span translate="transactions.table.body.kill">Kill</span>
+                    </button>
+                </td>
             </tr>
             </tbody>
         </table>
