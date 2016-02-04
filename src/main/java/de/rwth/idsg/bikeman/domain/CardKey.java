@@ -23,7 +23,7 @@ import java.io.Serializable;
 @Table(name = "T_CARD_KEY")
 @TableGenerator(name = "card_key_gen", initialValue = 0, allocationSize = 1)
 @EqualsAndHashCode(callSuper = false, of = {"cardKeyId", "name"})
-@ToString(includeFieldNames = true, exclude = {"readKey", "writeKey"})
+@ToString(includeFieldNames = true, exclude = {"readKey", "writeKey", "applicationKey"})
 @Getter
 @Setter
 public class CardKey extends AbstractTimestampClass implements Serializable {
