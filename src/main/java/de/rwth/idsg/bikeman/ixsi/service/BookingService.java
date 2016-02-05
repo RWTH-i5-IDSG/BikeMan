@@ -8,6 +8,7 @@ import de.rwth.idsg.bikeman.domain.Reservation;
 import de.rwth.idsg.bikeman.domain.Transaction;
 import de.rwth.idsg.bikeman.ixsi.IxsiCodeException;
 import de.rwth.idsg.bikeman.ixsi.IxsiProcessingException;
+import de.rwth.idsg.bikeman.psinterface.Utils;
 import de.rwth.idsg.bikeman.psinterface.dto.request.CancelReservationDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.ReserveNowDTO;
 import de.rwth.idsg.bikeman.repository.BookingRepository;
@@ -82,7 +83,8 @@ public class BookingService {
 
         // send reservation to station
         String endpointAddress = pedelec.getStationSlot().getStation().getEndpointAddress();
-        ReserveNowDTO reserveNowDTO = new ReserveNowDTO(pedelec.getManufacturerId(), cardAccount.getCardId(), end.toDateTime().getMillis());
+        long reservEndSeconds = Utils.toSeconds(end.toDateTime().getMillis());
+        ReserveNowDTO reserveNowDTO = new ReserveNowDTO(pedelec.getManufacturerId(), cardAccount.getCardId(), reservEndSeconds);
         stationService.reserveNow(endpointAddress, reserveNowDTO);
 
         Booking booking = new Booking();
