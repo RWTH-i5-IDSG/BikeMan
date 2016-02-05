@@ -5,7 +5,6 @@ import de.rwth.idsg.bikeman.domain.Pedelec;
 import de.rwth.idsg.bikeman.domain.StationSlot;
 import de.rwth.idsg.bikeman.domain.TransactionEvent;
 import de.rwth.idsg.bikeman.domain.TransactionType;
-import de.rwth.idsg.bikeman.psinterface.Utils;
 import de.rwth.idsg.bikeman.psinterface.dto.request.StartTransactionDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.StopTransactionDTO;
 import de.rwth.idsg.bikeman.repository.CardAccountRepository;
@@ -42,8 +41,7 @@ public class TransactionEventService {
                 startTransactionDTO.getSlotManufacturerId(),
                 startTransactionDTO.getStationManufacturerId());
 
-        Long timestampInMillis = Utils.toMillis(startTransactionDTO.getTimestamp());
-        LocalDateTime arrivedTimestamp = new LocalDateTime(timestampInMillis);
+        LocalDateTime arrivedTimestamp = startTransactionDTO.getTimestamp().toLocalDateTime();
 
         TransactionEvent transactionEvent = new TransactionEvent();
 
@@ -66,8 +64,7 @@ public class TransactionEventService {
                 stopTransactionDTO.getSlotManufacturerId(),
                 stopTransactionDTO.getStationManufacturerId());
 
-        Long timestampInMillis = Utils.toMillis(stopTransactionDTO.getTimestamp());
-        LocalDateTime arrivedTimestamp = new LocalDateTime(timestampInMillis);
+        LocalDateTime arrivedTimestamp = stopTransactionDTO.getTimestamp().toLocalDateTime();
 
         TransactionEvent transactionEvent = new TransactionEvent();
 

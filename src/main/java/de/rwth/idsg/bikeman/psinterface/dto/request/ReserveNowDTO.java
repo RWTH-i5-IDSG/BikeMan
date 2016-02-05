@@ -1,8 +1,11 @@
 package de.rwth.idsg.bikeman.psinterface.dto.request;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import de.rwth.idsg.bikeman.psinterface.UnixTimestampDeserializer;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.ToString;
+import org.joda.time.DateTime;
 
 /**
  * Created by Wolfgang Kluth on 06/05/15.
@@ -12,7 +15,9 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString(includeFieldNames = true)
 public class ReserveNowDTO {
-    String pedelecId;
-    String cardId;
-    Long expiryDate;
+    private String pedelecId;
+    private String cardId;
+
+    @JsonDeserialize(using = UnixTimestampDeserializer.class)
+    private DateTime expiryDate;
 }

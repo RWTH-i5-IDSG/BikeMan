@@ -29,10 +29,6 @@ public final class Utils {
         return TimeUnit.SECONDS.toMillis(seconds);
     }
 
-    public static long toMillis(LocalDateTime localDateTime) {
-        return localDateTime.toDateTime().getMillis();
-    }
-
     public static long nowInSeconds() {
         return toSeconds(new DateTime().getMillis());
     }

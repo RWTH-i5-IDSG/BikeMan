@@ -3,9 +3,11 @@ package de.rwth.idsg.bikeman.psinterface.dto.request;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import de.rwth.idsg.bikeman.domain.ChargingState;
 import de.rwth.idsg.bikeman.psinterface.CustomDoubleDeserializer;
+import de.rwth.idsg.bikeman.psinterface.UnixTimestampDeserializer;
 import lombok.Data;
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.Range;
+import org.joda.time.DateTime;
 
 /**
  * Created by swam on 31/07/14.
@@ -18,7 +20,8 @@ public class ChargingStatusDTO {
     private String pedelecManufacturerId;
 
     @NotBlank
-    private Long timestamp;
+    @JsonDeserialize(using = UnixTimestampDeserializer.class)
+    private DateTime timestamp;
 
     @NotBlank
     private ChargingState chargingState;

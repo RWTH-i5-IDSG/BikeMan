@@ -1,7 +1,6 @@
 package de.rwth.idsg.bikeman.psinterface.repository;
 
 import de.rwth.idsg.bikeman.domain.OperationState;
-import de.rwth.idsg.bikeman.psinterface.Utils;
 import de.rwth.idsg.bikeman.psinterface.dto.request.ChargingStatusDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.PedelecStatusDTO;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
@@ -113,7 +112,7 @@ public class PsiPedelecRepositoryImpl implements PsiPedelecRepository {
                 .setParameter("pedelecErrorCode", dto.getPedelecErrorCode())
                 .setParameter("pedelecErrorInfo", dto.getPedelecErrorInfo())
                 .setParameter("pedelecState", OperationState.valueOf(dto.getPedelecState().name()))
-                .setParameter("updated", new Date(Utils.toMillis(dto.getTimestamp())))
+                .setParameter("updated", new Date(dto.getTimestamp().getMillis()))
                 .setParameter("pedelecManufacturerId", dto.getPedelecManufacturerId())
                 .executeUpdate();
         } catch (Exception e) {
@@ -146,7 +145,7 @@ public class PsiPedelecRepositoryImpl implements PsiPedelecRepository {
                     .setParameter("temperature", dto.getBattery().getTemperature())
                     .setParameter("voltage", dto.getBattery().getVoltage())
                     .setParameter("current", dto.getBattery().getCurrent())
-                    .setParameter("timestamp", new LocalDateTime(Utils.toMillis(dto.getTimestamp())))
+                    .setParameter("timestamp", dto.getTimestamp().toLocalDateTime())
                     .setParameter("pedelecManufacturerId", dto.getPedelecManufacturerId())
                     .executeUpdate();
             }

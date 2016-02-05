@@ -4,7 +4,6 @@ import de.rwth.idsg.bikeman.domain.CardAccount;
 import de.rwth.idsg.bikeman.domain.Pedelec;
 import de.rwth.idsg.bikeman.domain.StationSlot;
 import de.rwth.idsg.bikeman.domain.Transaction;
-import de.rwth.idsg.bikeman.psinterface.Utils;
 import de.rwth.idsg.bikeman.psinterface.dto.request.StartTransactionDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.StopTransactionDTO;
 import de.rwth.idsg.bikeman.psinterface.exception.PsErrorCode;
@@ -89,9 +88,9 @@ public class PsiTransactionRepositoryImpl implements PsiTransactionRepository {
         Transaction transaction = new Transaction();
 
         // add one sec to timestamp, because of rounding error: UNIX timestamp kills millis
-        Long timestampInMillis = Utils.toMillis(dto.getTimestamp() + 1L);
+        LocalDateTime start = dto.getTimestamp().toLocalDateTime().plusSeconds(1);
 
-        transaction.setStartDateTime(new LocalDateTime(timestampInMillis));
+        transaction.setStartDateTime(start);
         transaction.setCardAccount(cardAccount);
         transaction.setPedelec(pedelec);
         transaction.setFromSlot(slot);
@@ -164,8 +163,7 @@ public class PsiTransactionRepositoryImpl implements PsiTransactionRepository {
             return null;
         }
 
-        Long timestampInMillis = Utils.toMillis(dto.getTimestamp());
-        transaction.setEndDateTime(new LocalDateTime(timestampInMillis));
+        transaction.setEndDateTime(dto.getTimestamp().toLocalDateTime());
         transaction.setToSlot(slot);
         transaction.setFees(tariffService.calculatePrice(transaction));
         Transaction mergedTransaction = em.merge(transaction);

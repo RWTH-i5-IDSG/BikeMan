@@ -77,7 +77,7 @@ public class PsiService {
         List<CardReadKeyDTO> cardKeys = stationRepository.getCardReadKeys();
 
         BootConfirmationDTO bootConfirmationDTO = new BootConfirmationDTO();
-        bootConfirmationDTO.setTimestamp(Utils.nowInSeconds());
+        bootConfirmationDTO.setTimestamp(DateTime.now());
         bootConfirmationDTO.setHeartbeatInterval(HEARTBEAT_INTERVAL_IN_SECONDS);
         bootConfirmationDTO.setCardKeys(cardKeys);
         return bootConfirmationDTO;
@@ -147,11 +147,9 @@ public class PsiService {
     private void performStartPush(StartTransactionDTO startTransactionDTO, Transaction t, Booking booking) {
 //        externalBookingPushService.report(booking, t);
 
-        Long timestampInMillis = Utils.toMillis(t.getStartDateTime());
-
         availabilityPushService.takenFromPlace(
                 startTransactionDTO.getPedelecManufacturerId(),
-                new DateTime(timestampInMillis));
+                startTransactionDTO.getTimestamp());
 
         placeAvailabilityPushService.reportChange(startTransactionDTO.getStationManufacturerId());
     }

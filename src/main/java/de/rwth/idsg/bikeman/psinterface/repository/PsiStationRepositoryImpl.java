@@ -5,7 +5,6 @@ import de.rwth.idsg.bikeman.domain.OperationState;
 import de.rwth.idsg.bikeman.domain.Pedelec;
 import de.rwth.idsg.bikeman.domain.Station;
 import de.rwth.idsg.bikeman.domain.StationSlot;
-import de.rwth.idsg.bikeman.psinterface.Utils;
 import de.rwth.idsg.bikeman.psinterface.dto.request.BootNotificationDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.SlotDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.StationStatusDTO;
@@ -196,7 +195,7 @@ public class PsiStationRepositoryImpl implements PsiStationRepository {
               .setParameter("stationErrorCode", dto.getStationErrorCode())
               .setParameter("stationErrorInfo", dto.getStationErrorInfo())
               .setParameter("stationState", OperationState.valueOf(dto.getStationState().name()))
-              .setParameter("updated", new Date(Utils.toMillis(dto.getTimestamp())))
+              .setParameter("updated", new Date(dto.getTimestamp().getMillis()))
               .setParameter("stationManufacturerId", dto.getStationManufacturerId())
               .executeUpdate();
         } catch (Exception e) {

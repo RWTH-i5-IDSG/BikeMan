@@ -22,6 +22,7 @@ import de.rwth.idsg.bikeman.psinterface.exception.PsException;
 import de.rwth.idsg.bikeman.service.CardAccountService;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
+import org.joda.time.DateTime;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -82,7 +83,7 @@ public class PsiResource {
         log.debug("[From: {}] Received heartbeat", Utils.getFrom(request));
 
         HeartbeatDTO heartbeatDTO = new HeartbeatDTO();
-        heartbeatDTO.setTimestamp(Utils.nowInSeconds());
+        heartbeatDTO.setTimestamp(DateTime.now());
         return heartbeatDTO;
     }
 
