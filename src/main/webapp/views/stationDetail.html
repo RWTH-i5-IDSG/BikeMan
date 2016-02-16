@@ -154,6 +154,7 @@
             <th translate="stationDetail.table.header.occupied">Occupied</th>
             <th translate="stationDetail.table.header.state">State</th>
             <th translate="stationDetail.table.header.pedelec">Pedelec (Manufacturer ID)</th>
+            <th></th>
         </tr>
         </thead>
         <tbody>
@@ -174,6 +175,9 @@
                 <a ng-switch-when="true" ui-sref="pedelecDetail({pedelecId: slot.pedelec.pedelecId})">{{slot.pedelec |
                     pedelecViewFilter}}</a>
                 <span ng-switch-when="false" ui-sref="pedelecDetail({pedelecId: slot.pedelec.pedelecId})">{{slot.pedelec | pedelecViewFilter}}</span>
+            </td>
+            <td>
+                <button class="btn btn-warning btn-sm" ng-click="unlockSlot(station, slot)">UNLOCK</button>
             </td>
         </tr>
         </tbody>

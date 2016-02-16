@@ -5,7 +5,8 @@ bikeManApp.factory('Station', ['$resource',
         return $resource('api/stations/:id', {}, {
             'query': { method: 'GET', isArray: true},
             'get': { method: 'GET'},
-            'update': { method: 'PUT' }
+            'update': { method: 'PUT' },
+            'unlockSlot': { method: 'POST', url: 'api/stations/:id/unlockSlot/:slotId', params: {"id": "@id", "slotId":"@slotId"}}
         });
     }]);
 

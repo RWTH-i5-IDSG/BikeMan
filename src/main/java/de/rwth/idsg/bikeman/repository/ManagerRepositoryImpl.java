@@ -35,8 +35,8 @@ public class ManagerRepositoryImpl implements ManagerRepository {
     public List<ViewManagerDTO> findAll() throws DatabaseException {
 
         final String q = "SELECT new de.rwth.idsg.bikeman.web.rest.dto.view." +
-                         "ViewManagerDTO(m.userId, m.login) " +
-                         "FROM Manager m";
+                         "ViewManagerDTO(m.userId, m.login, m.cardAccount.cardId, m.cardAccount.cardPin) " +
+                         "FROM Manager m left join m.cardAccount";
         try {
             return em.createQuery(q, ViewManagerDTO.class)
                      .getResultList();
@@ -47,14 +47,13 @@ public class ManagerRepositoryImpl implements ManagerRepository {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void create(CreateEditManagerDTO dto) throws DatabaseException {
+    public Manager create(CreateEditManagerDTO dto) throws DatabaseException {
         Manager manager = new Manager();
         setFields(manager, dto, Operation.CREATE);
 
         try {
-            em.persist(manager);
             log.debug("Created new manager {}", manager);
-
+            return em.merge(manager);
         } catch (EntityExistsException e) {
             throw new DatabaseException("This manager exists already.", e);
 
@@ -65,19 +64,18 @@ public class ManagerRepositoryImpl implements ManagerRepository {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void update(CreateEditManagerDTO dto) throws DatabaseException {
+    public Manager update(CreateEditManagerDTO dto) throws DatabaseException {
         final Long userId = dto.getUserId();
         if (userId == null) {
-            return;
+            return null;
         }
 
         Manager manager = getManagerEntity(userId);
         setFields(manager, dto, Operation.UPDATE);
 
         try {
-            em.merge(manager);
             log.debug("Updated manager {}", manager);
-
+            return em.merge(manager);
         } catch (Exception e) {
             throw new DatabaseException("Failed to update manager with userId " + userId, e);
         }

@@ -9,4 +9,6 @@ import lombok.Data;
 public class ViewManagerDTO {
     private final Long userId;
     private final String login;
+    private final String cardId;
+    private final String cardPin;
 }

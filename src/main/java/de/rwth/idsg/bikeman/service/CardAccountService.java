@@ -69,7 +69,7 @@ public class CardAccountService {
     }
 
     @Transactional(readOnly = true)
-    public List<ViewCardAccountDTO> getCardAccountsOfCurrentUser() {
+    public List<ViewCardAccountDTO> getCardAccountDTOsOfCurrentUser() {
 
         String userLogin = SecurityUtils.getCurrentLogin();
         List<CardAccount> cardAccountList = cardAccountRepository.findByUserLogin(userLogin);
@@ -81,6 +81,14 @@ public class CardAccountService {
         }
 
         return viewCardAccountDTOList;
+    }
+
+    @Transactional(readOnly = true)
+    public List<CardAccount> getCardAccountsOfCurrentUser() {
+
+        String userLogin = SecurityUtils.getCurrentLogin();
+
+        return cardAccountRepository.findByUserLogin(userLogin);
     }
 
     @Transactional
@@ -127,10 +135,10 @@ public class CardAccountService {
 
     private ViewCardAccountDTO convertCardAccount(CardAccount cardAccount) {
         return ViewCardAccountDTO.builder()
-            .cardId(cardAccount.getCardId())
-            .cardPin(cardAccount.getCardPin())
-            .inTransaction(cardAccount.getInTransaction())
-            .operationState(cardAccount.getOperationState())
-            .build();
+                                 .cardId(cardAccount.getCardId())
+                                 .cardPin(cardAccount.getCardPin())
+                                 .inTransaction(cardAccount.getInTransaction())
+                                 .operationState(cardAccount.getOperationState())
+                                 .build();
     }
 }

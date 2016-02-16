@@ -8,10 +8,7 @@ import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditCardAccountDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.view.ViewCardAccountDTO;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.MediaType;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
@@ -57,7 +54,7 @@ public class CardAccountResource {
     @RequestMapping(value = BASE_CARDACCOUNTS, method = RequestMethod.GET)
     public List<ViewCardAccountDTO> getCardAccountsOfCurrentLogin() throws DatabaseException {
         log.debug("REST request to get all cardaccounts related to current user");
-        return cardAccountService.getCardAccountsOfCurrentUser();
+        return cardAccountService.getCardAccountDTOsOfCurrentUser();
     }
 
     @Timed

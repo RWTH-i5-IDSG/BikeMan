@@ -95,6 +95,12 @@ public class StationResource {
     }
 
     @Timed
+    @RequestMapping(value = ID_PATH + "/unlockSlot/{slotId}", method = RequestMethod.POST)
+    public void unlockSlot(@PathVariable("id") Long stationId, @PathVariable("slotId") Long slotId) {
+        stationService.unlockSlot(stationId, slotId);
+    }
+
+    @Timed
     @RequestMapping(value = ERROR_PATH, method = RequestMethod.GET)
     public List<ViewErrorDTO> getErrors() {
         log.debug("REST request to get station and stationSlot errors.");

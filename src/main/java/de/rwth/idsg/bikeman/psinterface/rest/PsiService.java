@@ -134,7 +134,7 @@ public class PsiService {
             log.debug("Perform External Booking for booking: {} and Transaction: {}", booking, transaction);
         }
 
-        performStartPush(startTransactionDTO, transaction, booking);
+        performStartPush(startTransactionDTO);
         log.debug("Perform Start Push for Transaction: {} and Booking: {}", transaction, booking);
     }
 
@@ -144,8 +144,7 @@ public class PsiService {
     }
 
     @Async
-    private void performStartPush(StartTransactionDTO startTransactionDTO, Transaction t, Booking booking) {
-//        externalBookingPushService.report(booking, t);
+    public void performStartPush(StartTransactionDTO startTransactionDTO) {
 
         availabilityPushService.takenFromPlace(
                 startTransactionDTO.getPedelecManufacturerId(),
