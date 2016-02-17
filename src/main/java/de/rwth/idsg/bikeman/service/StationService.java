@@ -1,9 +1,11 @@
 package de.rwth.idsg.bikeman.service;
 
+import de.rwth.idsg.bikeman.domain.Booking;
 import de.rwth.idsg.bikeman.domain.CardAccount;
 import de.rwth.idsg.bikeman.domain.Pedelec;
 import de.rwth.idsg.bikeman.domain.Reservation;
 import de.rwth.idsg.bikeman.domain.StationSlot;
+import de.rwth.idsg.bikeman.domain.Transaction;
 import de.rwth.idsg.bikeman.ixsi.service.BookingService;
 import de.rwth.idsg.bikeman.psinterface.dto.request.CancelReservationDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.ReserveNowDTO;
@@ -12,6 +14,7 @@ import de.rwth.idsg.bikeman.psinterface.exception.PsException;
 import de.rwth.idsg.bikeman.psinterface.repository.PsiTransactionRepository;
 import de.rwth.idsg.bikeman.psinterface.rest.PsiService;
 import de.rwth.idsg.bikeman.psinterface.rest.client.StationClient;
+import de.rwth.idsg.bikeman.repository.BookingRepository;
 import de.rwth.idsg.bikeman.repository.ReservationRepository;
 import de.rwth.idsg.bikeman.repository.StationRepository;
 import de.rwth.idsg.bikeman.repository.StationSlotRepository;
@@ -49,6 +52,7 @@ public class StationService {
     @Autowired private PsiService psiService;
     @Autowired private PsiTransactionRepository transactionRepository;
     @Autowired private BookingService bookingService;
+    @Autowired private BookingRepository bookingRepository;
     @Autowired private ReservationRepository reservationRepository;
     @Autowired private CardAccountService cardAccountService;
 
@@ -173,7 +177,6 @@ public class StationService {
             log.error("Error occured while opening StationSlot with ID: {}", stationSlotId);
         }
 
-
         // Without pedelec it is not necessary to start a maintenance transaction
         if (pedelec == null) {
             return;
@@ -197,8 +200,12 @@ public class StationService {
                                                                      .build();
 
         transactionEventService.createAndSaveStartTransactionEvent(startTransactionDTO);
-        transactionRepository.start(startTransactionDTO);
-        psiService.performStartPush(startTransactionDTO);
+        Transaction transaction = transactionRepository.start(startTransactionDTO);
 
+        Booking booking = new Booking();
+        booking.setTransaction(transaction);
+        bookingRepository.save(booking);
+
+        psiService.performStartPush(startTransactionDTO);
     }
 }
