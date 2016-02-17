@@ -16,6 +16,9 @@ bikeManApp.factory('Transaction', ['$resource',
             'queryMajorCustomerTransactions': {method: 'GET', isArray: true, url: 'api/major-customer/transactions'},
             'queryOpenMajorCustomerTransactions': {method: 'GET', isArray: true, url: 'api/major-customer/transactions/open'},
             'queryClosedMajorCustomerTransactions': {method: 'GET', isArray: true, url: 'api/major-customer/transactions/closed'},
-            'queryMajorCustomerTransactionsOfLoginWithSize': {method: 'GET', isArray: true, url: 'api/major-customer/transactions/customer/:login'}
+            'queryMajorCustomerTransactionsOfLoginWithSize': {method: 'GET', isArray: true, url: 'api/major-customer/transactions/customer/:login'},
+
+            'queryFleetManagerTransactions': {method: 'GET', isArray: true, url: 'api/fleet-manager/transactions'},
+
         });
     }]);

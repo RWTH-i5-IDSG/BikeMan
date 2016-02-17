@@ -13,6 +13,7 @@ public interface TransactionRepository {
     */
     List<ViewTransactionDTO> findAllCustomerTransactions() throws DatabaseException;
     List<ViewTransactionDTO> findAllMajorCustomerTransactions() throws DatabaseException;
+    List<ViewTransactionDTO> findFleetManagerTransactions() throws DatabaseException;
 
     /*
     * Find OPEN (ONGOING) transactions.

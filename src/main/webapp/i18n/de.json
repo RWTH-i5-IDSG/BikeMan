@@ -47,6 +47,9 @@
             "majorcustomerlog" : {
                 "title": "Fahrtenbuch Großkunden"
             },
+            "fleetmanagerlog" : {
+                "title": "Fahrtenbuch Fuhrparkmanager"
+            },
             "error" : {
                 "errors" : "Errors",
                 "pedelecErrors" : "Pedelec Errors",
@@ -479,6 +482,7 @@
             "table": {
                 "header": {
                     "customer": "Kunde",
+                    "fleetManagerLogin": "Fuhrparkmanager Login",
                     "cardId": "KartenID",
                     "pedelec": "Pedelec",
                     "startTime": "Startzeit",
@@ -518,6 +522,7 @@
         "table": {
             "header": {
                 "customer": "Hersteller",
+                "fleetManagerLogin": "Fuhrparkmanager Login",
                 "cardId" : "KartenID",
                 "pedelec": "Pedelec",
                 "startTime": "Startzeit",

@@ -25,6 +25,7 @@ import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Selection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -68,6 +69,12 @@ public class TransactionRepositoryImpl implements TransactionRepository {
 
     @Override
     @Transactional(readOnly = true)
+    public List<ViewTransactionDTO> findFleetManagerTransactions() throws DatabaseException {
+        return internalFind(FindType.ALL, CustomerType.FLEET_MANAGER);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<ViewTransactionDTO> findClosedMajorCustomerTransactions() throws DatabaseException {
         return internalFind(FindType.CLOSED, CustomerType.MAJOR_CUSTOMER);
     }
@@ -93,6 +100,15 @@ public class TransactionRepositoryImpl implements TransactionRepository {
                 em.createQuery(getTransactionQuery(builder, FindType.BY_PEDELEC_ID, CustomerType.CUSTOMER, pedelecId, null)),
                 resultSize
             ));
+
+        returnList.addAll(
+            setResultSizeAndGet(
+                em.createQuery(getTransactionQuery(builder, FindType.BY_PEDELEC_ID, CustomerType.FLEET_MANAGER, pedelecId, null)),
+                resultSize
+            ));
+
+        // sort by date DESC
+        returnList.sort((t1, t2) -> t2.getStartDateTime().compareTo(t1.getStartDateTime()));
 
         return returnList;
     }
@@ -221,6 +237,25 @@ public class TransactionRepositoryImpl implements TransactionRepository {
                     user.get(MajorCustomer_.name),
                     pedelec.get(Pedelec_.pedelecId),
                     pedelec.get(Pedelec_.manufacturerId)
+                );
+                break;
+
+            case FLEET_MANAGER:
+                selection = builder.construct(
+                        ViewTransactionDTO.class,
+                        user.get(Manager_.login),
+                        transaction.get(Transaction_.transactionId),
+                        transaction.get(Transaction_.startDateTime),
+                        transaction.get(Transaction_.endDateTime),
+                        fromStation.get(Station_.stationId),
+                        fromStation.get(Station_.name),
+                        fromStationSlot.get(StationSlot_.stationSlotPosition),
+                        toStation.get(Station_.stationId),
+                        toStation.get(Station_.name),
+                        toStationSlot.get(StationSlot_.stationSlotPosition),
+                        cardAccount.get(CardAccount_.cardId),
+                        pedelec.get(Pedelec_.pedelecId),
+                        pedelec.get(Pedelec_.manufacturerId)
                 );
                 break;
 

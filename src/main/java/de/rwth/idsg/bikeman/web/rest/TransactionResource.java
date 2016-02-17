@@ -40,6 +40,9 @@ public class TransactionResource {
     private static final String PEDELEC_ID_PATH = "/transactions/pedelec/{pedelecId}";
     private static final String KILL_PATH = "/transactions/kill/{transactionId}";
 
+    // for fleetmanager
+    private static final String FLEET_MANAGER_PATH = "/fleet-manager/transactions";
+
     @RequestMapping(value = BASE_PATH)
     public List<ViewTransactionDTO> getAll() throws DatabaseException {
         log.debug("REST request to get all Customer Transactions");
@@ -89,6 +92,12 @@ public class TransactionResource {
     public List<ViewTransactionDTO> getOpenMajorCustomerTransactions() throws DatabaseException {
         log.debug("REST request to get open Major Customer Transactions");
         return transactionRepository.findOpenMajorCustomerTransactions();
+    }
+
+    @RequestMapping(value = FLEET_MANAGER_PATH)
+    public List<ViewTransactionDTO> getFleetManagerTransactions() throws DatabaseException {
+        log.debug("REST request to get FleetManager Transactions");
+        return transactionRepository.findFleetManagerTransactions();
     }
 
     @RequestMapping(value = BASE_PATH_CLOSED)

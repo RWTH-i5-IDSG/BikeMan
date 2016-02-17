@@ -105,6 +105,7 @@
         <tr ng-class='{warning:$first && pedelec.inTransaction}' ng-repeat="transaction in transactions">
             <td ng-show="transaction.customer">{{transaction.customer.lastname}}, {{transaction.customer.firstname}}</td>
             <td ng-show="transaction.majorCustomerName">{{transaction.majorCustomerName}} ({{transaction.cardId}})</td>
+            <td ng-show="transaction.fleetManagerLogin">{{transaction.fleetManagerLogin}} ({{transaction.cardId}})</td>
             <td>{{transaction.startDateTime | date:'medium'}}</td>
             <td><span ng-show="!pedelec.inTransaction || !$first">{{transaction.endDateTime | date:'medium'}}</span>
             </td>

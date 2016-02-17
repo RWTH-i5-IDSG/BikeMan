@@ -83,4 +83,17 @@ bikeManApp
                         authorizedRoles: [USER_ROLES.all]
                     }
                 })
+                .state('fleetmanager_transaction', {
+                    url: '/fleetmanager-transactions',
+                    templateUrl: 'views/transactions-fleetmanager.html',
+                    controller: 'TransactionController',
+                    resolve:{
+                        resolvedTransaction: ['Transaction', function (Transaction) {
+                            return Transaction.queryFleetManagerTransactions();
+                        }]
+                    },
+                    access: {
+                        authorizedRoles: [USER_ROLES.all]
+                    }
+                })
         }]);

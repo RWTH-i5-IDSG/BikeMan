@@ -280,6 +280,20 @@
                     </li>
 
                     <li ng-show="isAuthorized([userRoles.admin, userRoles.manager])">
+                        <a href="#"><i class="fa fa-book fa-fw"></i>
+                            <span translate="global.menu.fleetmanagerlog.title">Fleetmanager's Logbook</span>
+                            <span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                            <li ui-sref-active="selectedNavItem">
+                                <a ui-sref="fleetmanager_transaction">
+                                    <span translate="global.menu.driverlog.allTransactions">All Transactions</span>
+                                </a>
+                            </li>
+                        </ul>
+                        <!-- /.nav-second-level -->
+                    </li>
+
+                    <li ng-show="isAuthorized([userRoles.admin, userRoles.manager])">
                         <a href="#"><i class="fa fa-exclamation-circle"></i>
                             <span translate="global.menu.error.errors">Errors</span>
                             <span class="fa arrow"></span></a>

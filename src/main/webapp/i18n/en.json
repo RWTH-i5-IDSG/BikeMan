@@ -48,6 +48,9 @@
             "majorcustomerlog" : {
                 "title": "Majorcustomer's Logbook"
             },
+            "fleetmanagerlog" : {
+                "title": "Fleetmanager's Log"
+            },
             "error" : {
                 "errors" : "Errors",
                 "pedelecErrors" : "Pedelec Errors",
@@ -493,6 +496,7 @@
             "table": {
                 "header": {
                     "customer": "Customer",
+                    "fleetManagerLogin": "Fleetmanager Login",
                     "cardId": "CardID",
                     "pedelec": "Pedelec",
                     "startTime": "Start Time",
@@ -532,6 +536,7 @@
         "table": {
             "header": {
                 "customer": "Customer",
+                "fleetManagerLogin": "Fleetmanager Login",
                 "cardId": "CardID",
                 "pedelec": "Pedelec",
                 "startTime": "Start Time",

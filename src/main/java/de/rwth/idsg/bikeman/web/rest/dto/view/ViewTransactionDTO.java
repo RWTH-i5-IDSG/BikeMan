@@ -21,6 +21,7 @@ public class ViewTransactionDTO {
     private String majorCustomerName;
     private String cardId;
     private TransactionPedelecDTO pedelec;
+    private String fleetManagerLogin;
 
 
     @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
@@ -63,6 +64,29 @@ public class ViewTransactionDTO {
         this.endDateTime = endDateTime;
         this.cardId = cardId;
         this.majorCustomerName = majorCustomerName;
+
+        this.fromStation = new TransactionStationDTO(fromStationId, fromStationName, fromStationSlotPosition);
+
+        if (toStationId == null) {
+            this.toStation = null;
+        } else {
+            this.toStation = new TransactionStationDTO(toStationId, toStationName, toStationSlotPosition);
+        }
+
+        this.pedelec = new TransactionPedelecDTO(pedelecId, pedelecManufacturerId);
+    }
+
+    // Transactions related to a fleet manager
+    public ViewTransactionDTO(String fleetManagerLogin, Long transactionId, LocalDateTime startDateTime, LocalDateTime endDateTime,
+                              Long fromStationId, String fromStationName, Integer fromStationSlotPosition,
+                              Long toStationId, String toStationName, Integer toStationSlotPosition,
+                              String cardId,
+                              Long pedelecId, String pedelecManufacturerId) {
+        this.transactionId = transactionId;
+        this.startDateTime = startDateTime;
+        this.endDateTime = endDateTime;
+        this.cardId = cardId;
+        this.fleetManagerLogin = fleetManagerLogin;
 
         this.fromStation = new TransactionStationDTO(fromStationId, fromStationName, fromStationSlotPosition);
 
