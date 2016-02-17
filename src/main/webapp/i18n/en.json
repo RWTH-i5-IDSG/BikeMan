@@ -234,6 +234,14 @@
             },
             "enable": "Enable",
             "disable": "Disable"
+        },
+        "unlockModal": {
+            "title": "Unlock Slot",
+            "body": "Are you sure you want to unlock this slot?",
+            "buttons": {
+                "cancel": "Cancel",
+                "unlock": "Unlock"
+            }
         }
     },
     "customers": {

@@ -99,6 +99,12 @@ bikeManApp.controller('StationDetailController', ['$scope', 'resolvedStation', '
             $scope.slot.state = state;
         };
 
+        $scope.initUnlockSlot = function (station, slot) {
+            $scope.unlock = {};
+            $scope.unlock.station = station;
+            $scope.unlock.slot = slot;
+        };
+
         $scope.unlockSlot = function (station, slot) {
             Station.unlockSlot({id: station.stationId, slotId: slot.stationSlotId});
         };

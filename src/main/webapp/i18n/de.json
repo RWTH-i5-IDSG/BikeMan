@@ -224,6 +224,14 @@
             },
             "enable": "Aktivieren",
             "disable": "Deaktivieren"
+        },
+        "unlockModal": {
+            "title": "Slot Freischalten - Unlock Slot",
+            "body": "Bist du sicher, dass du den Slot freischalten möchtest?",
+            "buttons": {
+                "cancel": "Abbrechen",
+                "unlock": "Freischalten"
+            }
         }
     },
     "customers": {
