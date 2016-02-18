@@ -172,6 +172,8 @@ public class PsiTransactionRepositoryImpl implements PsiTransactionRepository {
         // 2. Update related entities
         // -------------------------------------------------------------------------
 
+        removePedelecFromOldSlot(pedelec.getStationSlot());
+
         CardAccount cardAccount = transaction.getCardAccount();
 //        Pedelec pedelec = transaction.getPedelec();
 
@@ -186,5 +188,13 @@ public class PsiTransactionRepositoryImpl implements PsiTransactionRepository {
         em.merge(slot);
 
         return mergedTransaction;
+    }
+
+    // remove only when necessary
+    private void removePedelecFromOldSlot(StationSlot stationSlot) {
+        if (stationSlot.getPedelec() != null) {
+            stationSlot.setPedelec(null);
+            em.merge(stationSlot);
+        }
     }
 }

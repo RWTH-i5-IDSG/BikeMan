@@ -9,6 +9,7 @@
         <table st-table="transactions" st-safe-src="sfTransactions" class="table table-hover">
             <thead>
             <tr>
+                <th st-sort="transactionId">ID</th>
                 <th st-sort="customer.lastname" translate="transactions.table.header.customer">Customer</th>
                 <th st-sort="pedelec.manufacturerId" translate="transactions.table.header.pedelec">Pedelec</th>
                 <th st-sort="startDateTime" st-sort-default="reverse" translate="transactions.table.header.startTime">
@@ -20,6 +21,10 @@
                 <th></th>
             </tr>
             <tr>
+                <th>
+                    <input st-search="transactionId" placeholder="search for ID"
+                           class="input-sm form-control" type="search"/>
+                </th>
                 <th>
                     <input st-search="customer.lastname" placeholder="search for user's lastname"
                            class="input-sm form-control" type="search"/>
@@ -46,6 +51,7 @@
             <tbody>
             <tr ng-repeat="transaction in transactions" ng-class="active: (transaction.toStation.name == null)"
                 class="active">
+                <td><span class="h5">{{transaction.transactionId}}</span></td>
                 <td><span class="h5">{{transaction.customer.lastname}}, {{transaction.customer.firstname}}</span></td>
                 <td>
                     <a ui-sref="pedelecDetail({pedelecId: transaction.pedelec.pedelecId})"><span class="h5">{{transaction.pedelec.manufacturerId}}</span></a>

@@ -36,7 +36,7 @@ public class StationClient {
     public void changeOperationState(String endpointAddress, ChangeStationOperationStateDTO dto) {
         String uri = endpointAddress + STATE_PATH;
         try {
-//            restTemplate.postForEntity(uri, dto, String.class);
+            restTemplate.postForEntity(uri, dto, String.class);
 
         } catch (HttpStatusCodeException e) {
             throw psExceptionBuilder.build(e.getResponseBodyAsString());
