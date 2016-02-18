@@ -13,6 +13,7 @@ import de.rwth.idsg.ixsi.jaxb.StaticDataResponseGroup;
 import de.rwth.idsg.ixsi.jaxb.UserTriggeredRequestChoice;
 import de.rwth.idsg.ixsi.jaxb.UserTriggeredResponseChoice;
 import lombok.extern.slf4j.Slf4j;
+import org.joda.time.Period;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import xjc.schema.ixsi.AuthType;
@@ -23,7 +24,6 @@ import xjc.schema.ixsi.QueryResponseType;
 import xjc.schema.ixsi.UserInfoType;
 
 import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.Duration;
 import java.util.List;
 
 /**
@@ -61,7 +61,9 @@ public class QueryRequestTypeDispatcher implements Dispatcher {
         QueryResponseType response = delegate(request);
         long stopTime = System.currentTimeMillis();
 
-        Duration calcTime = factory.newDuration(stopTime - startTime);
+        int duration = (int) (stopTime - startTime);
+        Period calcTime = Period.millis(duration);
+
         response.setCalcTime(calcTime);
         response.setTransaction(request.getTransaction());
         return response;

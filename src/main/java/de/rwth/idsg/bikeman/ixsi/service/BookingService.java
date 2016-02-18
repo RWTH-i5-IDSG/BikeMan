@@ -19,6 +19,7 @@ import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.Duration;
 import org.joda.time.LocalDateTime;
+import org.joda.time.Period;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,7 +58,7 @@ public class BookingService {
         if (timePeriodProposal.isSetMaxWait()) {
             // TODO Incorporate maxWait into processing.
             // Not sure about the approach: range search between begin and begin + maxWait for existing reservations?
-            javax.xml.datatype.Duration maxWait = timePeriodProposal.getMaxWait();
+            Period maxWait = timePeriodProposal.getMaxWait();
         }
 
         Pedelec pedelec = pedelecRepository.findByManufacturerId(bookeeId);

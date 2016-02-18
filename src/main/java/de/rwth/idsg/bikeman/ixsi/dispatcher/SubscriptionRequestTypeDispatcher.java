@@ -11,6 +11,7 @@ import de.rwth.idsg.ixsi.jaxb.ResponseMessageGroup;
 import de.rwth.idsg.ixsi.jaxb.SubscriptionRequestGroup;
 import de.rwth.idsg.ixsi.jaxb.SubscriptionResponseGroup;
 import lombok.extern.slf4j.Slf4j;
+import org.joda.time.Period;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import xjc.schema.ixsi.HeartBeatResponseType;
@@ -18,7 +19,6 @@ import xjc.schema.ixsi.SubscriptionRequestType;
 import xjc.schema.ixsi.SubscriptionResponseType;
 
 import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.Duration;
 
 /**
  * @author Sevket Goekay <goekay@dbis.rwth-aachen.de>
@@ -50,7 +50,9 @@ public class SubscriptionRequestTypeDispatcher implements Dispatcher {
         SubscriptionResponseType response = delegate(request);
         long stopTime = System.currentTimeMillis();
 
-        Duration calcTime = factory.newDuration(stopTime - startTime);
+        int duration = (int) (stopTime - startTime);
+        Period calcTime = Period.millis(duration);
+
         response.setCalcTime(calcTime);
         response.setTransaction(request.getTransaction());
         return response;
