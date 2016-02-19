@@ -57,7 +57,7 @@
         <repository>
             <id>TreibhausNexus</id>
             <name>RWTH IDSG Nexus Repository</name>
-            <url>https://treibhaus.informatik.rwth-aachen.de/nexus/repository/internal/</url>
+            <url>https://treibhaus.informatik.rwth-aachen.de/nexus/repository/maven-releases/</url>
         </repository>
     </repositories>
 
