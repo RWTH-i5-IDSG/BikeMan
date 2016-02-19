@@ -53,7 +53,8 @@
             "error" : {
                 "errors" : "Errors",
                 "pedelecErrors" : "Pedelec Errors",
-                "stationErrors" : "Station Errors"
+                "stationErrors" : "Station Errors",
+                "errorHistory" : "Error Verlauf"
             },
             "admin": "Administration",
             "language": "Sprache"

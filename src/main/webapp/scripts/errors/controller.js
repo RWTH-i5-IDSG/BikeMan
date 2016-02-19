@@ -18,3 +18,12 @@ bikeManApp.controller('PedelecErrorsController', ['$scope', 'resolvedPedelecErro
         $scope.pedelecErrors = [];
 
     }]);
+
+bikeManApp.controller('ErrorHistoryController', ['$scope', 'resolvedErrorHistory',
+    function ($scope, resolvedErrorHistory) {
+
+        $scope.sfErrorHistory = resolvedErrorHistory;
+
+        $scope.errorHistory = [];
+
+    }]);

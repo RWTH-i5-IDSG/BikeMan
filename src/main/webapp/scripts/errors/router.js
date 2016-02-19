@@ -30,5 +30,18 @@ bikeManApp
                         authorizedRoles: [USER_ROLES.all]
                     }
                 })
+                .state('errorHistory', {
+                    url: '/errorHistory',
+                    templateUrl: 'views/errorHistory.html',
+                    controller: 'ErrorHistoryController',
+                    resolve: {
+                        resolvedErrorHistory: ['ErrorHistory', function(ErrorHistory) {
+                            return ErrorHistory.query();
+                        }]
+                    },
+                    access: {
+                        authorizedRoles: [USER_ROLES.all]
+                    }
+                })
 
         }]);

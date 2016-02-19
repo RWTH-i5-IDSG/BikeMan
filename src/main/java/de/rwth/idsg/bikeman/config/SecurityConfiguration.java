@@ -114,6 +114,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/authenticate").permitAll()
                 .antMatchers("/psi*").hasIpAddress("10.10.0.0/16")  // Restricted psi access!!
                 .antMatchers("/api/logs/**").hasAnyAuthority(AuthoritiesConstants.ADMIN)
+                .antMatchers("/api/errorHistory").hasAuthority(AuthoritiesConstants.MANAGER)
                 .antMatchers("/api/audits*").hasAuthority(AuthoritiesConstants.MANAGER)
                 .antMatchers("/api/audits/**").hasAuthority(AuthoritiesConstants.MANAGER)
                 .antMatchers("/api/customers*").hasAuthority(AuthoritiesConstants.MANAGER)

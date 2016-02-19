@@ -13,3 +13,10 @@ bikeManApp.factory('PedelecErrors', ['$resource',
             'query': { method: 'GET', isArray: true}
         });
     }]);
+
+bikeManApp.factory('ErrorHistory', ['$resource',
+    function ($resource) {
+        return $resource('api/errorHistory', {}, {
+            'query': { method: 'GET', isArray: true}
+        });
+    }]);

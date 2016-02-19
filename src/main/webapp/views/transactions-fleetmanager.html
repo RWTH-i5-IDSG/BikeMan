@@ -10,7 +10,8 @@
             <thead>
             <tr>
                 <th st-sort="transactionId">ID</th>
-                <th st-sort="fleetManagerLogin" translate="transactions.table.header.fleetManagerLogin">Manager Login</th>
+                <th st-sort="fleetManagerLogin" translate="transactions.table.header.fleetManagerLogin">Manager Login
+                </th>
                 <th st-sort="cardId" translate="transactions.table.header.cardId">Card ID</th>
                 <th st-sort="pedelec.manufacturerId" translate="transactions.table.header.pedelec">Pedelec</th>
                 <th st-sort="startDateTime" st-sort-default="reverse" translate="transactions.table.header.startTime">
@@ -22,36 +23,37 @@
                 <th st-sort="toStation.name" translate="transactions.table.header.toLocation">To Location</th>
                 <th></th>
             </tr>
-            <th>
-                <input st-search="transactionId" placeholder="search for ID"
-                       class="input-sm form-control" type="search"/>
-            </th>
-            <th>
-                <input st-search="fleetManagerLogin" placeholder="search for fleetManagerLogin"
-                       class="input-sm form-control" type="search"/>
-            </th>
-            <th>
-                <input st-search="cardId" placeholder="search for card ID" class="input-sm form-control"
-                       type="search"/>
-            </th>
-            <th>
-                <input st-search="pedelec.manufacturerId" placeholder="search for pedelec manufacturer ID"
-                       class="input-sm form-control" type="search"/>
-            </th>
-            <th>
+            <tr>
+                <th>
+                    <input st-search="transactionId" placeholder="search for ID"
+                           class="input-sm form-control" type="search"/>
+                </th>
+                <th>
+                    <input st-search="fleetManagerLogin" placeholder="search for fleetManagerLogin"
+                           class="input-sm form-control" type="search"/>
+                </th>
+                <th>
+                    <input st-search="cardId" placeholder="search for card ID" class="input-sm form-control"
+                           type="search"/>
+                </th>
+                <th>
+                    <input st-search="pedelec.manufacturerId" placeholder="search for pedelec manufacturer ID"
+                           class="input-sm form-control" type="search"/>
+                </th>
+                <th>
 
-            </th>
-            <th>
+                </th>
+                <th>
 
-            </th>
-            <th>
-                <input st-search="fromStation.name" placeholder="search for from location"
-                       class="input-sm form-control" type="search"/>
-            </th>
-            <th>
+                </th>
+                <th>
+                    <input st-search="fromStation.name" placeholder="search for from location"
+                           class="input-sm form-control" type="search"/>
+                </th>
+                <th>
 
-            </th>
-            <th></th>
+                </th>
+                <th></th>
             </tr>
             </thead>
             <tbody>

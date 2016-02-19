@@ -2,6 +2,7 @@ package de.rwth.idsg.bikeman.web.rest.dto.view;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import de.rwth.idsg.bikeman.domain.ErrorType;
 import de.rwth.idsg.bikeman.domain.util.CustomLocalDateTimeSerializer;
 import lombok.Getter;
 import lombok.ToString;

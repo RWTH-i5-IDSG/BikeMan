@@ -44,4 +44,19 @@
                              tableName="T_STATION"/>
     </changeSet>
 
+    <changeSet id="1409564974612-04" author="wkluth">
+        <createTable tableName="T_ERROR_HISTORY" schemaName="public">
+            <column name="error_history_id" type="INT8"/>
+            <column name="error_type" type="VARCHAR(50)" />
+            <column name="created_at" type="TIMESTAMP" />
+            <column name="error_code" type="VARCHAR(255)" />
+            <column name="error_info" type="VARCHAR(255)" />
+            <column name="manufacturer_id" type="VARCHAR(255)" />
+        </createTable>
+
+        <addPrimaryKey tableName="T_ERROR_HISTORY" columnNames="error_history_id" constraintName="PK_T_ERROR_HISTORY"
+                       schemaName="public" />
+
+    </changeSet>
+
 </databaseChangeLog>

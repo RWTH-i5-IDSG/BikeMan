@@ -1,4 +1,4 @@
-package de.rwth.idsg.bikeman.web.rest.dto.view;
+package de.rwth.idsg.bikeman.domain;
 
 /**
  * Created by Wolfgang Kluth on 15/12/15.

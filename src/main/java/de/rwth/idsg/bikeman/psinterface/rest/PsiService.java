@@ -3,6 +3,7 @@ package de.rwth.idsg.bikeman.psinterface.rest;
 import com.google.common.base.Strings;
 import de.rwth.idsg.bikeman.domain.Booking;
 import de.rwth.idsg.bikeman.domain.CardAccount;
+import de.rwth.idsg.bikeman.domain.ErrorType;
 import de.rwth.idsg.bikeman.domain.OperationState;
 import de.rwth.idsg.bikeman.domain.Reservation;
 import de.rwth.idsg.bikeman.domain.ReservationState;
@@ -11,11 +12,11 @@ import de.rwth.idsg.bikeman.ixsi.service.AvailabilityPushService;
 import de.rwth.idsg.bikeman.ixsi.service.ConsumptionPushService;
 import de.rwth.idsg.bikeman.ixsi.service.ExternalBookingPushService;
 import de.rwth.idsg.bikeman.ixsi.service.PlaceAvailabilityPushService;
-import de.rwth.idsg.bikeman.psinterface.Utils;
 import de.rwth.idsg.bikeman.psinterface.dto.request.BootNotificationDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.ChargingStatusDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.CustomerAuthorizeDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.PedelecStatusDTO;
+import de.rwth.idsg.bikeman.psinterface.dto.request.SlotDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.StartTransactionDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.StationStatusDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.StopTransactionDTO;
@@ -29,6 +30,7 @@ import de.rwth.idsg.bikeman.psinterface.repository.PsiPedelecRepository;
 import de.rwth.idsg.bikeman.psinterface.repository.PsiReservationRepository;
 import de.rwth.idsg.bikeman.psinterface.repository.PsiStationRepository;
 import de.rwth.idsg.bikeman.psinterface.repository.PsiTransactionRepository;
+import de.rwth.idsg.bikeman.service.ErrorHistoryService;
 import de.rwth.idsg.bikeman.service.OperationStateService;
 import de.rwth.idsg.bikeman.service.TransactionEventService;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
@@ -66,6 +68,8 @@ public class PsiService {
     @Inject private ExternalBookingPushService externalBookingPushService;
     @Inject private TransactionEventService transactionEventService;
     @Inject private OperationStateService operationStateService;
+
+    @Inject private ErrorHistoryService errorHistoryService;
 
     private static final Integer HEARTBEAT_INTERVAL_IN_SECONDS = 60;
     private static final int MAX_AUTH_RETRIES = 3;
@@ -200,6 +204,8 @@ public class PsiService {
         operationStateService.pushInavailability(stationStatusDTO);
 
         stationRepository.updateStationStatus(stationStatusDTO);
+
+        checkForStationErrors(stationStatusDTO);
     }
 
     public void handlePedelecStatusNotification(PedelecStatusDTO pedelecStatusDTO) {
@@ -207,6 +213,8 @@ public class PsiService {
         operationStateService.pushInavailability(pedelecStatusDTO);
 
         pedelecRepository.updatePedelecStatus(pedelecStatusDTO);
+
+        checkForPedelecErrors(pedelecStatusDTO);
     }
 
     public void handleChargingStatusNotification(List<ChargingStatusDTO> chargingStatusDTO) {
@@ -255,6 +263,43 @@ public class PsiService {
 
             log.warn("Card with CardId {} authorization failed (3x wrong pin) with {}", ca.getCardId(), AUTH_ATTEMPTS_EXCEEDED);
             throw new PsException("No trials remaining and account gets disabled", AUTH_ATTEMPTS_EXCEEDED);
+        }
+    }
+
+    private void checkForStationErrors(StationStatusDTO stationStatusDTO) {
+        if (stationStatusDTO.getStationErrorCode() != null) {
+            errorHistoryService.createAndSaveErrorHistoryEntry(
+                    ErrorType.STATION_ERROR,
+                    stationStatusDTO.getStationErrorCode(),
+                    stationStatusDTO.getStationErrorInfo(),
+                    stationStatusDTO.getStationManufacturerId()
+            );
+        }
+
+        for (SlotDTO.StationStatus slotDTO : stationStatusDTO.getSlots()) {
+            checkForSlotErrors(slotDTO);
+        }
+    }
+
+    private void checkForSlotErrors(SlotDTO.StationStatus slotDTO) {
+        if (slotDTO.getSlotErrorCode() != null) {
+            errorHistoryService.createAndSaveErrorHistoryEntry(
+                    ErrorType.SLOT_ERROR,
+                    slotDTO.getSlotErrorCode(),
+                    slotDTO.getSlotErrorInfo(),
+                    slotDTO.getSlotManufacturerId()
+            );
+        }
+    }
+
+    private void checkForPedelecErrors(PedelecStatusDTO pedelecStatusDTO) {
+        if (pedelecStatusDTO.getPedelecErrorCode() != null) {
+            errorHistoryService.createAndSaveErrorHistoryEntry(
+                    ErrorType.PEDELEC_ERROR,
+                    pedelecStatusDTO.getPedelecErrorCode(),
+                    pedelecStatusDTO.getPedelecErrorInfo(),
+                    pedelecStatusDTO.getPedelecManufacturerId()
+            );
         }
     }
 }
