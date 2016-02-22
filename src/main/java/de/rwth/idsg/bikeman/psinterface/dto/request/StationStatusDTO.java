@@ -1,7 +1,9 @@
 package de.rwth.idsg.bikeman.psinterface.dto.request;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import de.rwth.idsg.bikeman.psinterface.UnixTimestampDeserializer;
+import de.rwth.idsg.bikeman.psinterface.UnixTimestampSerializer;
 import de.rwth.idsg.bikeman.psinterface.dto.OperationState;
 import lombok.Data;
 import org.joda.time.DateTime;
@@ -19,6 +21,7 @@ public class StationStatusDTO {
     private OperationState stationState;
 
     @JsonDeserialize(using = UnixTimestampDeserializer.class)
+    @JsonSerialize(using = UnixTimestampSerializer.class)
     private DateTime timestamp;
 
     private List<SlotDTO.StationStatus> slots;

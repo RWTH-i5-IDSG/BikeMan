@@ -1,7 +1,9 @@
 package de.rwth.idsg.bikeman.psinterface.dto.request;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import de.rwth.idsg.bikeman.psinterface.UnixTimestampDeserializer;
+import de.rwth.idsg.bikeman.psinterface.UnixTimestampSerializer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,5 +25,6 @@ public class StartTransactionDTO {
     private String slotManufacturerId;
 
     @JsonDeserialize(using = UnixTimestampDeserializer.class)
+    @JsonSerialize(using = UnixTimestampSerializer.class)
     private DateTime timestamp;
 }
