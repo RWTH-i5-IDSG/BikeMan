@@ -79,11 +79,13 @@
         "title": "Kartenkonten",
         "addModal": {
             "title": "Kartenkonto hinzufügen",
+            "titleBatch": "Gruppe von Kartenkonten hinzufügen",
             "cardId": "Karten-ID",
             "cardPin": "Karten-PIN",
             "buttons": {
                 "cancel": "Abbrechen",
-                "add": "Hinzufügen"
+                "add": "Hinzufügen",
+                "addBatch": "Füge mehrere Karten hinzu"
             }
         },
         "deleteModal": {
@@ -104,7 +106,8 @@
             }
         },
         "buttons": {
-            "add": "Kartenkonto hinzufügen"
+            "add": "Kartenkonto hinzufügen",
+            "addBatch": "Füge mehrere Karten hinzu"
         }
     },
     "stations": {

@@ -22,6 +22,11 @@
             <span class="glyphicon glyphicon-flash"></span>
             <span translate="cardaccounts.buttons.add">Add Card Account</span>
         </button>
+
+        <button class="btn btn-primary" data-toggle="modal" data-target="#addBatchModal">
+            <span class="glyphicon glyphicon-flash"></span>
+            <span translate="cardaccounts.buttons.addBatch">Add Batch Card Accounts</span>
+        </button>
     </div>
 
     <form name="form" role="form" novalidate
@@ -127,6 +132,53 @@
                         <div class="form-group">
                             <label class="control-label" translate="customerCreate.table.header.tariff">Tariff</label>
                             <select class="form-control" ng-model="newCardaccount.tariff"
+                                    ng-options="tariff as tariff for tariff in tariffs" required>
+                                <option value=''>- Please Choose -</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clear()"
+                                translate="cardaccounts.addModal.buttons.cancel">
+                            Cancel
+                        </button>
+                        <button type="submit" class="btn btn-primary"
+                                translate="cardaccounts.addModal.buttons.add">
+                            Add
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+
+    <div class="modal fade" id="addBatchModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form name="form" role="form" novalidate
+                      class="form-horizontal ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength"
+                      ng-submit="addBatchCardAccounts()">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" translate="cardaccounts.addModal.titleBatch">Add Card Accounts</h4>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label class="control-label">CardID and CardPin (e.g., '001234,4321')</label>
+                            <textarea type="text" placeholder="'card_id','card_pin'
+mb-00034243,5432
+mb-00054243,9793
+mb-00042456,1234" class="form-control" rows="4" ng-model="batchCardAccounts.batch"
+                                      ng-minlength="1"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label" translate="customerCreate.table.header.tariff">Tariff</label>
+                            <select class="form-control" ng-model="batchCardAccounts.tariff"
                                     ng-options="tariff as tariff for tariff in tariffs" required>
                                 <option value=''>- Please Choose -</option>
                             </select>

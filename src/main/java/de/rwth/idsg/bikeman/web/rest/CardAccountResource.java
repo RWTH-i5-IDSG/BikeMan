@@ -4,6 +4,7 @@ import com.codahale.metrics.annotation.Timed;
 import de.rwth.idsg.bikeman.domain.OperationState;
 import de.rwth.idsg.bikeman.repository.CardAccountRepository;
 import de.rwth.idsg.bikeman.service.CardAccountService;
+import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateCardAccountBatchDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditCardAccountDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.view.ViewCardAccountDTO;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
@@ -33,6 +34,7 @@ public class CardAccountResource {
     private static final String ENABLE_CARDACCOUNT = "/cardaccounts/{cardId}/enable";
     private static final String DISABLE_CARDACCOUNT = "/cardaccounts/{cardId}/disable";
     private static final String BASE_CARDACCOUNTS = "/cardaccounts";
+    private static final String ADD_BATCH_CARTACCOUNTS = "/cardaccounts/batch";
 
 
     @Timed
@@ -62,6 +64,13 @@ public class CardAccountResource {
     public void createCardAccount(@Valid @RequestBody CreateEditCardAccountDTO createEditCardAccountDTO) throws DatabaseException {
         log.debug("REST request to create new cardAccount: {}", createEditCardAccountDTO);
         cardAccountService.createCardAccount(createEditCardAccountDTO);
+    }
+
+    @Timed
+    @RequestMapping(value = ADD_BATCH_CARTACCOUNTS, method = RequestMethod.POST)
+    public void createCardAccounts(@Valid @RequestBody CreateCardAccountBatchDTO createCardAccountBatchDTO) throws DatabaseException {
+        log.debug("REST request to create new cardAccounts: {}", createCardAccountBatchDTO);
+        cardAccountService.createCardAccountWithBatch(createCardAccountBatchDTO);
     }
 
 

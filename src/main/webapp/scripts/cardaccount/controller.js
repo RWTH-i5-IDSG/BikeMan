@@ -22,7 +22,7 @@ bikeManApp.controller('CardaccountController', ['$scope', 'resolvedCardAccounts'
                     $scope.cardaccounts = CardAccount.query();
                 });
             }
-        }
+        };
 
         $scope.create = function () {
             CardAccount.save($scope.newCardaccount, function () {

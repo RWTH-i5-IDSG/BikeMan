@@ -5,6 +5,7 @@ import de.rwth.idsg.bikeman.domain.BookedTariff;
 import de.rwth.idsg.bikeman.domain.CardAccount;
 import de.rwth.idsg.bikeman.domain.CustomerType;
 import de.rwth.idsg.bikeman.domain.OperationState;
+import de.rwth.idsg.bikeman.domain.TariffType;
 import de.rwth.idsg.bikeman.domain.User;
 import de.rwth.idsg.bikeman.psinterface.dto.request.CardActivationDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.response.CardActivationResponseDTO;
@@ -14,6 +15,7 @@ import de.rwth.idsg.bikeman.repository.CardAccountRepository;
 import de.rwth.idsg.bikeman.repository.TariffRepository;
 import de.rwth.idsg.bikeman.repository.UserRepository;
 import de.rwth.idsg.bikeman.security.SecurityUtils;
+import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateCardAccountBatchDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditCardAccountDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.view.ViewCardAccountDTO;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
@@ -94,31 +96,31 @@ public class CardAccountService {
     @Transactional
     public void createCardAccount(CreateEditCardAccountDTO createEditCardAccountDTO) throws DatabaseException {
 
-        User user;
+        createCardAccount(createEditCardAccountDTO.getLogin(), createEditCardAccountDTO.getTariff(), createEditCardAccountDTO.getCardId(), createEditCardAccountDTO.getCardPin());
 
+    }
 
-        // when no login exists, add to current user
-        if (createEditCardAccountDTO.getLogin() == null) {
-            user = userRepository.findByLoginIgnoreCase(SecurityUtils.getCurrentLogin());
-        } else {
-            user = userRepository.findByLoginIgnoreCase(createEditCardAccountDTO.getLogin());
+    @Transactional
+    public void createCardAccountWithBatch(CreateCardAccountBatchDTO createCardAccountBatchDTO) {
+
+        // convert string into hashmap
+        String lines[] = createCardAccountBatchDTO.getBatch().split("\\r?\\n");
+
+        for (String line : lines) {
+            String idAndKey[] = line.split(",");
+
+            createCardAccount(createCardAccountBatchDTO.getLogin(), createCardAccountBatchDTO.getTariff(), idAndKey[0], idAndKey[1]);
         }
+    }
 
-        BookedTariff bookedTariff = new BookedTariff();
-        bookedTariff.setTariff(tariffRepository.findByName(createEditCardAccountDTO.getTariff()));
-        bookedTariff.setBookedFrom(LocalDateTime.now());
-        // set the bookedUntil date to null, if no subscription term is declared
-        if (tariffRepository.findByName(createEditCardAccountDTO.getTariff()).getTerm() == null) {
-            bookedTariff.setBookedUntil(null);
-        } else {
-            bookedTariff.setBookedUntil(new LocalDateTime().plusDays(
-                    tariffRepository.findByName(createEditCardAccountDTO.getTariff()).getTerm()
-            ));
-        }
+    private void createCardAccount(String login, TariffType tariffType, String cardId, String cardPin) {
+
+        User user = checkAndGetUser(login);
+        BookedTariff bookedTariff = getBookedTariff(tariffType);
 
         CardAccount cardAccount = new CardAccount();
-        cardAccount.setCardId(createEditCardAccountDTO.getCardId());
-        cardAccount.setCardPin(createEditCardAccountDTO.getCardPin());
+        cardAccount.setCardId(cardId);
+        cardAccount.setCardPin(cardPin);
         cardAccount.setActivationKey(RandomStringUtils.randomNumeric(12));
         cardAccount.setOperationState(OperationState.OPERATIVE);
         cardAccount.setOwnerType(CustomerType.MAJOR_CUSTOMER);
@@ -130,7 +132,31 @@ public class CardAccountService {
         } catch (Throwable e) {
             throw new DatabaseException("CardId already exists.");
         }
+    }
 
+    private BookedTariff getBookedTariff(TariffType tariffType) {
+        BookedTariff bookedTariff = new BookedTariff();
+        bookedTariff.setTariff(tariffRepository.findByName(tariffType));
+        bookedTariff.setBookedFrom(LocalDateTime.now());
+        // set the bookedUntil date to null, if no subscription term is declared
+        if (tariffRepository.findByName(tariffType).getTerm() == null) {
+            bookedTariff.setBookedUntil(null);
+        } else {
+            bookedTariff.setBookedUntil(new LocalDateTime().plusDays(
+                    tariffRepository.findByName(tariffType).getTerm()
+            ));
+        }
+        return bookedTariff;
+    }
+
+    private User checkAndGetUser(String login) {
+        User user;// when no login exists, add to current user
+        if (login == null) {
+            user = userRepository.findByLoginIgnoreCase(SecurityUtils.getCurrentLogin());
+        } else {
+            user = userRepository.findByLoginIgnoreCase(login);
+        }
+        return user;
     }
 
     private ViewCardAccountDTO convertCardAccount(CardAccount cardAccount) {

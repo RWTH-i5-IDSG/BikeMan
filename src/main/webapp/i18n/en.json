@@ -89,11 +89,13 @@
         "title": "Card Accounts",
         "addModal": {
             "title": "Add Card Account",
+            "titleBatch": "Add Batch of Card Accounts",
             "cardId": "Card ID",
             "cardPin": "Card PIN",
             "buttons": {
                 "cancel": "Cancel",
-                "add": "Add"
+                "add": "Add",
+                "addBatch": "Add Batch Of Card Accounts"
             }
         },
         "deleteModal": {
@@ -114,7 +116,8 @@
             }
         },
         "buttons": {
-            "add": "Add Card Account"
+            "add": "Add Card Account",
+            "addBatch": "Add Batch Of Card Accounts"
         }
     },
     "stations": {
