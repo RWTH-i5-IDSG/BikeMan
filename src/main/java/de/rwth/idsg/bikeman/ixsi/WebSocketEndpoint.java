@@ -15,7 +15,10 @@ import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
+import javax.annotation.PreDestroy;
 import java.io.IOException;
+import java.util.Deque;
+import java.util.Map;
 
 /**
  * Created by max on 08/09/14.
@@ -35,6 +38,20 @@ public class WebSocketEndpoint extends ConcurrentTextWebSocketHandler {
     @Autowired private PlaceAvailabilityStore placeAvailabilityStore;
     @Autowired private BookingAlertStore bookingAlertStore;
 
+    /**
+     * Close the sessions for a graceful shutdown
+     */
+    @PreDestroy
+    public void destroy() {
+        Map<String, Deque<WebSocketSession>> sessionMap = webSocketSessionStore.getLookupTable();
+
+        for (Deque<WebSocketSession> sessionsForOneSystem : sessionMap.values()) {
+            for (WebSocketSession session : sessionsForOneSystem) {
+                closeSession(session);
+            }
+        }
+    }
+
     @Override
     public void onMessage(WebSocketSession session, TextMessage webSocketMessage) throws Exception {
         log.info("[id={}] Received message: {}", session.getId(), webSocketMessage.getPayload());
@@ -46,21 +63,6 @@ public class WebSocketEndpoint extends ConcurrentTextWebSocketHandler {
         } catch (IxsiProcessingException e) {
             handleError(session, payload, e);
         }
-    }
-
-    /**
-     * If there's something fundamentally wrong with the incoming message or its processing
-     * (like receiving non-Ixsi strings or parsing the request) from which the system cannot recover
-     * and send the appropriate IXSI error message, we cannot do anything but send a simple error string
-     * for debugging purposes and close the session.
-     *
-     */
-    private void handleError(WebSocketSession session, String payload, IxsiProcessingException e) throws IOException {
-        log.error("Error occurred", e);
-        String errorMsg = "IxsiProcessingException: " + e.getLocalizedMessage();
-
-        session.sendMessage(new TextMessage(errorMsg + "\nMessage that caused the exception: " + payload));
-        session.close(CloseStatus.NOT_ACCEPTABLE.withReason(errorMsg));
     }
 
     @Override
@@ -83,17 +85,6 @@ public class WebSocketEndpoint extends ConcurrentTextWebSocketHandler {
         }
     }
 
-    private void unSubscribeStores(String systemId) {
-        log.debug("There are no open connections left to system '{}'. "
-                + "Removing it from all the subscription stores", systemId);
-
-        availabilityStore.unsubscribeAll(systemId);
-        consumptionStore.unsubscribeAll(systemId);
-        externalBookingStore.unsubscribeAll(systemId);
-        placeAvailabilityStore.unsubscribeAll(systemId);
-        bookingAlertStore.unsubscribeAll(systemId);
-    }
-
     @Override
     public void onError(WebSocketSession session, Throwable throwable) throws Exception {
         log.error("Oops", throwable);
@@ -103,5 +94,45 @@ public class WebSocketEndpoint extends ConcurrentTextWebSocketHandler {
     @Override
     public boolean supportsPartialMessages() {
         return false;
+    }
+
+    // -------------------------------------------------------------------------
+    // Private helpers
+    // -------------------------------------------------------------------------
+
+    /**
+     * If there's something fundamentally wrong with the incoming message or its processing
+     * (like receiving non-Ixsi strings or parsing the request) from which the system cannot recover
+     * and send the appropriate IXSI error message, we cannot do anything but send a simple error string
+     * for debugging purposes and close the session.
+     *
+     */
+    private void handleError(WebSocketSession session, String payload, IxsiProcessingException e) throws IOException {
+        log.error("Error occurred", e);
+        String errorMsg = "IxsiProcessingException: " + e.getLocalizedMessage();
+
+        session.sendMessage(new TextMessage(errorMsg + "\nMessage that caused the exception: " + payload));
+        session.close(CloseStatus.NOT_ACCEPTABLE.withReason(errorMsg));
+    }
+
+    private void closeSession(WebSocketSession session) {
+        if (session.isOpen()) {
+            try {
+                session.close(new CloseStatus(1001, "BikeMan is shutting down"));
+            } catch (IOException e) {
+                log.error("Failed to close the session", e);
+            }
+        }
+    }
+
+    private void unSubscribeStores(String systemId) {
+        log.debug("There are no open connections left to system '{}'. "
+                + "Removing it from all the subscription stores", systemId);
+
+        availabilityStore.unsubscribeAll(systemId);
+        consumptionStore.unsubscribeAll(systemId);
+        externalBookingStore.unsubscribeAll(systemId);
+        placeAvailabilityStore.unsubscribeAll(systemId);
+        bookingAlertStore.unsubscribeAll(systemId);
     }
 }
