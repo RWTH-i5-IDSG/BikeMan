@@ -15,6 +15,7 @@ import de.rwth.idsg.bikeman.repository.CardAccountRepository;
 import de.rwth.idsg.bikeman.repository.TariffRepository;
 import de.rwth.idsg.bikeman.repository.UserRepository;
 import de.rwth.idsg.bikeman.security.SecurityUtils;
+import de.rwth.idsg.bikeman.web.rest.dto.modify.CardAccountBaseDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateCardAccountBatchDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditCardAccountDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.view.ViewCardAccountDTO;
@@ -103,13 +104,8 @@ public class CardAccountService {
     @Transactional
     public void createCardAccountWithBatch(CreateCardAccountBatchDTO createCardAccountBatchDTO) {
 
-        // convert string into hashmap
-        String lines[] = createCardAccountBatchDTO.getBatch().split("\\r?\\n");
-
-        for (String line : lines) {
-            String idAndKey[] = line.split(",");
-
-            createCardAccount(createCardAccountBatchDTO.getLogin(), createCardAccountBatchDTO.getTariff(), idAndKey[0], idAndKey[1]);
+        for (CardAccountBaseDTO cardAccount : createCardAccountBatchDTO.getCardAccountBatch()) {
+            createCardAccount(createCardAccountBatchDTO.getLogin(), createCardAccountBatchDTO.getTariff(), cardAccount.getCardId(), cardAccount.getCardPin());
         }
     }
 
