@@ -191,10 +191,12 @@ public class PsiTransactionRepositoryImpl implements PsiTransactionRepository {
     }
 
     // remove only when necessary
-    private void removePedelecFromOldSlot(StationSlot stationSlot) {
-        if (stationSlot.getPedelec() != null) {
-            stationSlot.setPedelec(null);
-            em.merge(stationSlot);
+    private void removePedelecFromOldSlot(StationSlot oldSlot) {
+        if (oldSlot == null || oldSlot.getPedelec() == null) {
+            return;
         }
+
+        oldSlot.setPedelec(null);
+        em.merge(oldSlot);
     }
 }
