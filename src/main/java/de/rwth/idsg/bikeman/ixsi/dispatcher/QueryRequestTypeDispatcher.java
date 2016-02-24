@@ -34,9 +34,7 @@ import java.util.List;
 @Component
 public class QueryRequestTypeDispatcher implements Dispatcher {
 
-    @Autowired private QueryUserRequestMap userRequestMap;
-    @Autowired private QueryStaticRequestMap staticRequestMap;
-    @Autowired private DatatypeFactory factory;
+    @Autowired private ProcessorProvider processorProvider;
     @Autowired private SystemValidator systemValidator;
     @Autowired private UserValidator userValidator;
 
@@ -91,7 +89,7 @@ public class QueryRequestTypeDispatcher implements Dispatcher {
         log.trace("Entered buildStaticResponse...");
 
         StaticDataRequestGroup req = request.getStaticDataRequestGroup();
-        StaticRequestProcessor p = staticRequestMap.find(req);
+        StaticRequestProcessor p = processorProvider.find(req);
 
         // System validation
         //
@@ -119,7 +117,7 @@ public class QueryRequestTypeDispatcher implements Dispatcher {
         log.trace("Entered buildUserResponse...");
 
         UserTriggeredRequestChoice c = request.getUserTriggeredRequestChoice();
-        UserRequestProcessor p = userRequestMap.find(c);
+        UserRequestProcessor p = processorProvider.find(c);
 
         // System validation
         //

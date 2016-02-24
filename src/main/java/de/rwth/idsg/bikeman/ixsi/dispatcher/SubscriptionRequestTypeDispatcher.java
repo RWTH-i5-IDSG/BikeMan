@@ -18,8 +18,6 @@ import xjc.schema.ixsi.HeartBeatResponseType;
 import xjc.schema.ixsi.SubscriptionRequestType;
 import xjc.schema.ixsi.SubscriptionResponseType;
 
-import javax.xml.datatype.DatatypeFactory;
-
 /**
  * @author Sevket Goekay <goekay@dbis.rwth-aachen.de>
  * @since 24.09.2014
@@ -28,9 +26,7 @@ import javax.xml.datatype.DatatypeFactory;
 @Component
 public class SubscriptionRequestTypeDispatcher implements Dispatcher {
 
-    @Autowired private SubscriptionRequestMap requestMap;
-    @Autowired private SubscriptionRequestMessageMap requestMessageMap;
-    @Autowired private DatatypeFactory factory;
+    @Autowired private ProcessorProvider processorProvider;
     @Autowired private SystemValidator systemValidator;
 
     @Override
@@ -90,7 +86,7 @@ public class SubscriptionRequestTypeDispatcher implements Dispatcher {
         log.trace("Entered buildResponse...");
 
         SubscriptionRequestGroup req = request.getSubscriptionRequestGroup();
-        SubscriptionRequestProcessor p = requestMap.find(req);
+        SubscriptionRequestProcessor p = processorProvider.find(req);
 
         // System validation
         //
@@ -111,7 +107,7 @@ public class SubscriptionRequestTypeDispatcher implements Dispatcher {
         log.trace("Entered buildResponseMessage...");
 
         RequestMessageGroup req = request.getRequestMessageGroup();
-        SubscriptionRequestMessageProcessor p = requestMessageMap.find(req);
+        SubscriptionRequestMessageProcessor p = processorProvider.find(req);
 
         // System validation
         //
