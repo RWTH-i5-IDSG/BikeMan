@@ -10,5 +10,5 @@ import lombok.Getter;
 @Getter
 @Data
 public class CardWriteKeyDTO {
-    private final String name, readKey, writeKey, applicationKey;
+    private final String name, readKey, writeKey, applicationKey, initialApplicationKey;
 }

@@ -53,8 +53,8 @@ public class PsiStationRepositoryImpl implements PsiStationRepository {
         // TODO: the decision with "is not null" is dirty. ideally,
         // we should know beforehand what kind of card this is and get keys by the name
         final String q = "SELECT new de.rwth.idsg.bikeman.psinterface.dto.response." +
-                         "CardWriteKeyDTO(c.name, c.readKey, c.writeKey, c.applicationKey) " +
-                         "FROM CardKey c WHERE c.applicationKey is not null";
+                         "CardWriteKeyDTO(c.name, c.readKey, c.writeKey, c.applicationKey, c.initialApplicationKey) " +
+                         "FROM CardKey c WHERE c.initialApplicationKey is not null";
 
         return em.createQuery(q, CardWriteKeyDTO.class).getSingleResult();
     }

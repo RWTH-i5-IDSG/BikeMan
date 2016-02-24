@@ -62,6 +62,7 @@ public class CardAccountService {
                                                                  .readKey(keys.getReadKey())
                                                                  .writeKey(keys.getWriteKey())
                                                                  .applicationKey(keys.getApplicationKey())
+                                                                 .initialApplicationKey(keys.getInitialApplicationKey())
                                                                  .build();
 
         return Optional.of(dto);

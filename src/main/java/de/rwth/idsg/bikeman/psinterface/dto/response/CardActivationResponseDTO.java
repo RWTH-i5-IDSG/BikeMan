@@ -18,4 +18,5 @@ public class CardActivationResponseDTO {
     private final String readKey;
     private final String writeKey;
     private final String applicationKey;
+    private final String initialApplicationKey;
 }

@@ -23,12 +23,12 @@ import java.io.Serializable;
 @Table(name = "T_CARD_KEY")
 @TableGenerator(name = "card_key_gen", initialValue = 0, allocationSize = 1)
 @EqualsAndHashCode(callSuper = false, of = {"cardKeyId", "name"})
-@ToString(includeFieldNames = true, exclude = {"readKey", "writeKey", "applicationKey"})
+@ToString(includeFieldNames = true, exclude = {"readKey", "writeKey", "applicationKey", "initialApplicationKey"})
 @Getter
 @Setter
 public class CardKey extends AbstractTimestampClass implements Serializable {
     private static final long serialVersionUID = -2101600110715023189L;
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE, generator = "card_key_gen")
     @Column(name = "card_key_id")
@@ -45,6 +45,9 @@ public class CardKey extends AbstractTimestampClass implements Serializable {
 
     @Column(name = "application_key")
     private String applicationKey;
+
+    @Column(name = "initial_application_key")
+    private String initialApplicationKey;
 
     @PrePersist
     public void prePersist() {
