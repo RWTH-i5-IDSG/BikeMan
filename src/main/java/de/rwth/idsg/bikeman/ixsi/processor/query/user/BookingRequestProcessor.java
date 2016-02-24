@@ -32,6 +32,11 @@ public class BookingRequestProcessor implements
     @Autowired private BookingCheckService bookingCheckService;
 
     @Override
+    public Class<BookingRequestType> getProcessingClass() {
+        return BookingRequestType.class;
+    }
+
+    @Override
     public BookingResponseType processAnonymously(BookingRequestType request, Optional<Language> lan) {
         return buildError(ErrorFactory.Auth.notAnonym("Anonymous booking makes no sense", null));
     }

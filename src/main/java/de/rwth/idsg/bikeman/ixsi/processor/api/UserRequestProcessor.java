@@ -11,7 +11,8 @@ import xjc.schema.ixsi.UserInfoType;
  * @author Sevket Goekay <goekay@dbis.rwth-aachen.de>
  * @since 16.10.2014
  */
-public interface UserRequestProcessor<T1 extends UserTriggeredRequestChoice, T2 extends UserTriggeredResponseChoice> {
+public interface UserRequestProcessor<T1 extends UserTriggeredRequestChoice,
+                                      T2 extends UserTriggeredResponseChoice> extends ClassAwareProcessor<T1> {
 
     T2 processAnonymously(T1 request, Optional<Language> lan);
 

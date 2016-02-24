@@ -28,6 +28,11 @@ public class CompletePlaceAvailabilityRequestProcessor implements
     @Autowired private PlaceAvailabilityRequestProcessor placeAvailabilityRequestProcessor;
 
     @Override
+    public Class<CompletePlaceAvailabilityRequestType> getProcessingClass() {
+        return CompletePlaceAvailabilityRequestType.class;
+    }
+
+    @Override
     public CompletePlaceAvailabilityResponseType process(CompletePlaceAvailabilityRequestType request, String systemId) {
         try {
             List<String> ids = placeAvailabilityStore.getSubscriptions(systemId);

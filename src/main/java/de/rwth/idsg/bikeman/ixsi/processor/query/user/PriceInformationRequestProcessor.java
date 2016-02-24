@@ -19,6 +19,11 @@ public class PriceInformationRequestProcessor implements
         UserRequestProcessor<PriceInformationRequestType, PriceInformationResponseType> {
 
     @Override
+    public Class<PriceInformationRequestType> getProcessingClass() {
+        return PriceInformationRequestType.class;
+    }
+
+    @Override
     public PriceInformationResponseType processAnonymously(PriceInformationRequestType request, Optional<Language> lan) {
         // TODO FUTURE
         return buildError(ErrorFactory.Sys.notImplemented(null, null));

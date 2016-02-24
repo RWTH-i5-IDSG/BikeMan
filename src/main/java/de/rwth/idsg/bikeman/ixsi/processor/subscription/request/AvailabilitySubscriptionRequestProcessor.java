@@ -19,8 +19,12 @@ import java.util.List;
 public class AvailabilitySubscriptionRequestProcessor implements
         SubscriptionRequestProcessor<AvailabilitySubscriptionRequestType, AvailabilitySubscriptionResponseType> {
 
-    @Autowired
-    private AvailabilityStore availabilityStore;
+    @Autowired private AvailabilityStore availabilityStore;
+
+    @Override
+    public Class<AvailabilitySubscriptionRequestType> getProcessingClass() {
+        return AvailabilitySubscriptionRequestType.class;
+    }
 
     @Override
     public AvailabilitySubscriptionResponseType process(AvailabilitySubscriptionRequestType request, String systemId) {

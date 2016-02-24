@@ -26,6 +26,11 @@ public class TokenGenerationRequestProcessor implements
     @Autowired private IxsiUserRepository ixsiUserRepository;
 
     @Override
+    public Class<TokenGenerationRequestType> getProcessingClass() {
+        return TokenGenerationRequestType.class;
+    }
+
+    @Override
     public TokenGenerationResponseType processAnonymously(TokenGenerationRequestType request, Optional<Language> lan) {
         return buildError(ErrorFactory.Auth.notAnonym("Anonymous token generation makes no sense", null));
     }

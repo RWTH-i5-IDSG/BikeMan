@@ -31,6 +31,11 @@ public class BookingTargetsInfoRequestProcessor implements
     private static final String BIKE_SHARING_ATTR_ID = "VmVsb2NpdHlCaWtlU2hhcmluZw==";
 
     @Override
+    public Class<BookingTargetsInfoRequestType> getProcessingClass() {
+        return BookingTargetsInfoRequestType.class;
+    }
+
+    @Override
     public BookingTargetsInfoResponseType process(BookingTargetsInfoRequestType request) {
         BookingTargetsInfoResponseDTO dto = queryIXSIRepository.bookingTargetInfos();
 

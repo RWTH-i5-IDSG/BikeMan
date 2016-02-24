@@ -19,6 +19,11 @@ public class CloseSessionRequestProcessor implements
         UserRequestProcessor<CloseSessionRequestType, CloseSessionResponseType> {
 
     @Override
+    public Class<CloseSessionRequestType> getProcessingClass() {
+        return CloseSessionRequestType.class;
+    }
+
+    @Override
     public CloseSessionResponseType processAnonymously(CloseSessionRequestType request, Optional<Language> lan) {
         return buildError(ErrorFactory.Sys.notImplemented("We don't support sessions", null));
     }

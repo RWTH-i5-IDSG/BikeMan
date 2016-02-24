@@ -32,6 +32,11 @@ public class ChangeBookingStateRequestProcessor implements
     @Autowired private StationClient stationClient;
 
     @Override
+    public Class<ChangeBookingStateRequestType> getProcessingClass() {
+        return ChangeBookingStateRequestType.class;
+    }
+
+    @Override
     public ChangeBookingStateResponseType processAnonymously(ChangeBookingStateRequestType request, Optional<Language> lan) {
         return buildError(ErrorFactory.Auth.notAnonym("Anonymous change booking state request not allowed", null));
     }

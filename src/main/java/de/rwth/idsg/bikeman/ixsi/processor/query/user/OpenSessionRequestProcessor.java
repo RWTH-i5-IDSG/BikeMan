@@ -19,6 +19,11 @@ public class OpenSessionRequestProcessor implements
         UserRequestProcessor<OpenSessionRequestType, OpenSessionResponseType> {
 
     @Override
+    public Class<OpenSessionRequestType> getProcessingClass() {
+        return OpenSessionRequestType.class;
+    }
+
+    @Override
     public OpenSessionResponseType processAnonymously(OpenSessionRequestType request, Optional<Language> lan) {
         return buildError(ErrorFactory.Sys.notImplemented("We don't support sessions", null));
     }

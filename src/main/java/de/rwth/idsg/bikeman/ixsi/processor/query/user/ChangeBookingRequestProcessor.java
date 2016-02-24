@@ -32,6 +32,11 @@ public class ChangeBookingRequestProcessor implements
     @Autowired private BookingCheckService bookingCheckService;
 
     @Override
+    public Class<ChangeBookingRequestType> getProcessingClass() {
+        return ChangeBookingRequestType.class;
+    }
+
+    @Override
     public ChangeBookingResponseType processAnonymously(ChangeBookingRequestType request, Optional<Language> lan) {
         return buildError(ErrorFactory.Auth.notAnonym("Anonymous change booking request not allowed", null));
     }

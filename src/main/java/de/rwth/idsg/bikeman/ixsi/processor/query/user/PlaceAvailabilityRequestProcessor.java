@@ -30,6 +30,11 @@ public class PlaceAvailabilityRequestProcessor implements
     @Autowired private QueryIXSIRepository queryIXSIRepository;
 
     @Override
+    public Class<PlaceAvailabilityRequestType> getProcessingClass() {
+        return PlaceAvailabilityRequestType.class;
+    }
+
+    @Override
     public PlaceAvailabilityResponseType processAnonymously(PlaceAvailabilityRequestType request, Optional<Language> lan) {
 
         List<PlaceAvailabilityResponseDTO> dtos = new ArrayList<>();

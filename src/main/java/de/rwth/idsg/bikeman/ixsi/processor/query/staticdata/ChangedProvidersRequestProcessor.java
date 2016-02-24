@@ -22,6 +22,11 @@ public class ChangedProvidersRequestProcessor implements
     @Inject private QueryIXSIRepository queryIXSIRepository;
 
     @Override
+    public Class<ChangedProvidersRequestType> getProcessingClass() {
+        return ChangedProvidersRequestType.class;
+    }
+
+    @Override
     public ChangedProvidersResponseType process(ChangedProvidersRequestType request) {
         long timestamp = request.getTimestamp().getMillis();
         ChangedProvidersResponseDTO responseDTO = queryIXSIRepository.changedProviders(timestamp);

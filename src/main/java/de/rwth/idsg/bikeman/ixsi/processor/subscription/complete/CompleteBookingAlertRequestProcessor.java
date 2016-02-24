@@ -16,6 +16,11 @@ public class CompleteBookingAlertRequestProcessor implements
         SubscriptionRequestMessageProcessor<CompleteBookingAlertRequestType, CompleteBookingAlertResponseType> {
 
     @Override
+    public Class<CompleteBookingAlertRequestType> getProcessingClass() {
+        return CompleteBookingAlertRequestType.class;
+    }
+
+    @Override
     public CompleteBookingAlertResponseType process(CompleteBookingAlertRequestType request, String systemId) {
         // TODO FUTURE
         return buildError(ErrorFactory.Sys.notImplemented(null, null));

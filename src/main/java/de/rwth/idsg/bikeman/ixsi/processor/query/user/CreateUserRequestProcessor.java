@@ -28,6 +28,11 @@ public class CreateUserRequestProcessor implements
     @Autowired private IxsiUserService ixsiUserService;
 
     @Override
+    public Class<CreateUserRequestType> getProcessingClass() {
+        return CreateUserRequestType.class;
+    }
+
+    @Override
     public CreateUserResponseType processAnonymously(CreateUserRequestType request, Optional<Language> lan) {
         if (!request.isSetUser()) {
             return buildError(ErrorFactory.Sys.invalidRequest("User list may not be empty.", null));

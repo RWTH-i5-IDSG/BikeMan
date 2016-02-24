@@ -26,6 +26,11 @@ public class AvailabilityRequestProcessor implements
     @Autowired private QueryIXSIRepository queryIXSIRepository;
 
     @Override
+    public Class<AvailabilityRequestType> getProcessingClass() {
+        return AvailabilityRequestType.class;
+    }
+
+    @Override
     public AvailabilityResponseType processAnonymously(AvailabilityRequestType request, Optional<Language> lan) {
 
         if (request.isSetBookingTarget()) {

@@ -19,8 +19,12 @@ import java.util.List;
 public class ExternalBookingSubscriptionRequestProcessor implements
         SubscriptionRequestProcessor<ExternalBookingSubscriptionRequestType, ExternalBookingSubscriptionResponseType> {
 
-    @Autowired
-    private ExternalBookingStore externalBookingStore;
+    @Autowired private ExternalBookingStore externalBookingStore;
+
+    @Override
+    public Class<ExternalBookingSubscriptionRequestType> getProcessingClass() {
+        return ExternalBookingSubscriptionRequestType.class;
+    }
 
     @Override
     public ExternalBookingSubscriptionResponseType process(ExternalBookingSubscriptionRequestType request, String systemId) {

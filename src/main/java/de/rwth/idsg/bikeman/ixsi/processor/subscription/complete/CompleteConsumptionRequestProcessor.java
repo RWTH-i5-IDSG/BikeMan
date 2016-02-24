@@ -31,6 +31,11 @@ public class CompleteConsumptionRequestProcessor implements
     @Autowired private ConsumptionPushService consumptionPushService;
 
     @Override
+    public Class<CompleteConsumptionRequestType> getProcessingClass() {
+        return CompleteConsumptionRequestType.class;
+    }
+
+    @Override
     public CompleteConsumptionResponseType process(CompleteConsumptionRequestType request, String systemId) {
         try {
             List<String> bookingIdListString = consumptionStore.getSubscriptions(systemId);

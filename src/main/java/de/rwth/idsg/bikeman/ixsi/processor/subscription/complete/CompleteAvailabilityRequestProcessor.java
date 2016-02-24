@@ -29,6 +29,11 @@ public class CompleteAvailabilityRequestProcessor implements
     @Autowired private AvailabilityRequestProcessor availabilityRequestProcessor;
 
     @Override
+    public Class<CompleteAvailabilityRequestType> getProcessingClass() {
+        return CompleteAvailabilityRequestType.class;
+    }
+
+    @Override
     public CompleteAvailabilityResponseType process(CompleteAvailabilityRequestType request, String systemId) {
         try {
             List<BookingTargetIDType> targetIds = availabilityStore.getSubscriptions(systemId);

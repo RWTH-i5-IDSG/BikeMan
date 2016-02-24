@@ -16,6 +16,11 @@ public class CompleteExternalBookingRequestProcessor implements
         SubscriptionRequestMessageProcessor<CompleteExternalBookingRequestType, CompleteExternalBookingResponseType> {
 
     @Override
+    public Class<CompleteExternalBookingRequestType> getProcessingClass() {
+        return CompleteExternalBookingRequestType.class;
+    }
+
+    @Override
     public CompleteExternalBookingResponseType process(CompleteExternalBookingRequestType request, String systemId) {
         // TODO FUTURE
         return buildError(ErrorFactory.Sys.notImplemented(null, null));

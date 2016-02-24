@@ -28,6 +28,11 @@ public class ChangeUserRequestProcessor implements
     @Autowired private IxsiUserService ixsiUserService;
 
     @Override
+    public Class<ChangeUserRequestType> getProcessingClass() {
+        return ChangeUserRequestType.class;
+    }
+
+    @Override
     public ChangeUserResponseType processAnonymously(ChangeUserRequestType request, Optional<Language> lan) {
         if (!request.isSetUser()) {
             return buildError(ErrorFactory.Sys.invalidRequest("User list may not be empty.", null));

@@ -21,6 +21,11 @@ public class BookingAlertSubscriptionStatusRequestProcessor implements
     @Autowired private BookingAlertStore bookingAlertStore;
 
     @Override
+    public Class<BookingAlertSubscriptionStatusRequestType> getProcessingClass() {
+        return BookingAlertSubscriptionStatusRequestType.class;
+    }
+
+    @Override
     public BookingAlertSubscriptionStatusResponseType process(BookingAlertSubscriptionStatusRequestType request, String systemId) {
         List<String> bookingIds = bookingAlertStore.getSubscriptions(systemId);
 

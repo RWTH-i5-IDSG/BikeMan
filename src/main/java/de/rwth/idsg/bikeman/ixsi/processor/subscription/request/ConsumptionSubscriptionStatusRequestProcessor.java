@@ -18,8 +18,12 @@ import java.util.List;
 public class ConsumptionSubscriptionStatusRequestProcessor implements
         SubscriptionRequestProcessor<ConsumptionSubscriptionStatusRequestType, ConsumptionSubscriptionStatusResponseType> {
 
-    @Autowired
-    private ConsumptionStore consumptionStore;
+    @Autowired private ConsumptionStore consumptionStore;
+
+    @Override
+    public Class<ConsumptionSubscriptionStatusRequestType> getProcessingClass() {
+        return ConsumptionSubscriptionStatusRequestType.class;
+    }
 
     @Override
     public ConsumptionSubscriptionStatusResponseType process(ConsumptionSubscriptionStatusRequestType request, String systemId) {
