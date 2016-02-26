@@ -1,9 +1,11 @@
 'use strict';
 
-bikeManApp.controller('TransactionController', ['$scope', 'resolvedTransaction', 'Transaction',
-    function ($scope, resolvedTransaction, Transaction) {
+bikeManApp.controller('TransactionController', ['$scope', 'resolvedTransaction', 'Transaction', '$state',
+    function ($scope, resolvedTransaction, Transaction, $state) {
 
-        $scope.transactions = resolvedTransaction;
+        $scope.sfTransactions = resolvedTransaction;
+
+        $scope.transactions = [];
 
         $scope.create = function () {
             Transaction.save($scope.transaction,
@@ -22,8 +24,15 @@ bikeManApp.controller('TransactionController', ['$scope', 'resolvedTransaction',
         $scope.delete = function (id) {
             Transaction.delete({id: id},
                 function () {
-                    $scope.transactions = Transaction.query();
+                    // $scope.transactions = Transaction.query();
+                    $state.go($state.$current, null, { reload: true });
                 });
+        };
+
+        $scope.kill = function(id) {
+            Transaction.kill({transactionId: id}).$promise.then(function () {
+                $state.go($state.$current, null, { reload: true });
+            });
         };
 
         $scope.clear = function () {

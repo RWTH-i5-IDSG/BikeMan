@@ -6,19 +6,17 @@ import de.rwth.idsg.bikeman.ixsi.IxsiProcessingException;
 import de.rwth.idsg.bikeman.ixsi.processor.api.SubscriptionRequestMessageProcessor;
 import de.rwth.idsg.bikeman.ixsi.processor.api.SubscriptionRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.repository.SystemValidator;
-import de.rwth.idsg.bikeman.ixsi.schema.HeartBeatResponseType;
-import de.rwth.idsg.bikeman.ixsi.schema.SubscriptionRequestType;
-import de.rwth.idsg.bikeman.ixsi.schema.SubscriptionResponseType;
 import de.rwth.idsg.ixsi.jaxb.RequestMessageGroup;
 import de.rwth.idsg.ixsi.jaxb.ResponseMessageGroup;
 import de.rwth.idsg.ixsi.jaxb.SubscriptionRequestGroup;
 import de.rwth.idsg.ixsi.jaxb.SubscriptionResponseGroup;
 import lombok.extern.slf4j.Slf4j;
+import org.joda.time.Period;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.Duration;
+import xjc.schema.ixsi.HeartBeatResponseType;
+import xjc.schema.ixsi.SubscriptionRequestType;
+import xjc.schema.ixsi.SubscriptionResponseType;
 
 /**
  * @author Sevket Goekay <goekay@dbis.rwth-aachen.de>
@@ -28,9 +26,7 @@ import javax.xml.datatype.Duration;
 @Component
 public class SubscriptionRequestTypeDispatcher implements Dispatcher {
 
-    @Autowired private SubscriptionRequestMap requestMap;
-    @Autowired private SubscriptionRequestMessageMap requestMessageMap;
-    @Autowired private DatatypeFactory factory;
+    @Autowired private ProcessorProvider processorProvider;
     @Autowired private SystemValidator systemValidator;
 
     @Override
@@ -50,7 +46,9 @@ public class SubscriptionRequestTypeDispatcher implements Dispatcher {
         SubscriptionResponseType response = delegate(request);
         long stopTime = System.currentTimeMillis();
 
-        Duration calcTime = factory.newDuration(stopTime - startTime);
+        int duration = (int) (stopTime - startTime);
+        Period calcTime = Period.millis(duration);
+
         response.setCalcTime(calcTime);
         response.setTransaction(request.getTransaction());
         return response;
@@ -88,7 +86,7 @@ public class SubscriptionRequestTypeDispatcher implements Dispatcher {
         log.trace("Entered buildResponse...");
 
         SubscriptionRequestGroup req = request.getSubscriptionRequestGroup();
-        SubscriptionRequestProcessor p = requestMap.find(req);
+        SubscriptionRequestProcessor p = processorProvider.find(req);
 
         // System validation
         //
@@ -97,7 +95,7 @@ public class SubscriptionRequestTypeDispatcher implements Dispatcher {
         if (systemValidator.validate(systemID)) {
             res = p.process(req, systemID);
         } else {
-            res = p.buildError(ErrorFactory.invalidSystem());
+            res = p.buildError(ErrorFactory.Sys.idUknown());
         }
 
         return new SubscriptionResponseType()
@@ -109,7 +107,7 @@ public class SubscriptionRequestTypeDispatcher implements Dispatcher {
         log.trace("Entered buildResponseMessage...");
 
         RequestMessageGroup req = request.getRequestMessageGroup();
-        SubscriptionRequestMessageProcessor p = requestMessageMap.find(req);
+        SubscriptionRequestMessageProcessor p = processorProvider.find(req);
 
         // System validation
         //
@@ -118,7 +116,7 @@ public class SubscriptionRequestTypeDispatcher implements Dispatcher {
         if (systemValidator.validate(systemID)) {
             res = p.process(req, systemID);
         } else {
-            res = p.buildError(ErrorFactory.invalidSystem());
+            res = p.buildError(ErrorFactory.Sys.idUknown());
         }
 
         return new SubscriptionResponseType()

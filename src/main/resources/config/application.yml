@@ -6,7 +6,7 @@ security.basic.enabled: false
 endpoints.jolokia.enabled: false
 
 # security configuration (this key should be unique for your application, and kept secret)
-jhipster.security.rememberme.key: bikeman
+jhipster.security.rememberme.key: 432e1ba620b452a4bcbea5783d0883ab80ac7ba7
 
 async:
     corePoolSize: 2
@@ -22,21 +22,14 @@ spring:
         protocol: smtp
         tls: false
         auth: false
+        from: BikeMan@localhost
 
     messageSource:
         cacheSeconds: 1
 
-
-authentication:
-    oauth:
-        clientid: bikeManApp
-        secret: mySecretOAuthSecret
-        # Token is valid 3000 minutes
-        tokenValidityInSeconds: 180000
-
 swagger:
-    title: bikeman API
-    description: bikeman applications and beyond!
+    title: BikeMan API
+    description: BikeMan applications and beyond!
     termsOfServiceUrl: http://jhipster.github.io/
     contact:
     license: Apache 2.0

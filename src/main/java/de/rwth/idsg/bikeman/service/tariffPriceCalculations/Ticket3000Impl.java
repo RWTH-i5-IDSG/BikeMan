@@ -1,34 +1,50 @@
 package de.rwth.idsg.bikeman.service.tariffPriceCalculations;
 
+import de.rwth.idsg.bikeman.app.dto.ViewTariffPriceDTO;
 import de.rwth.idsg.bikeman.domain.Transaction;
 import de.rwth.idsg.bikeman.service.TariffPriceCalculation;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Created by Wolfgang Kluth on 20/01/15.
  */
 
-// 50cent per minute and first 30min are free
 public class Ticket3000Impl implements TariffPriceCalculation {
 
-    @Override
-    public double calculate(Transaction transaction) {
+    final BigDecimal pricePerTimeUnit = new BigDecimal("12.34");
+    final BigDecimal timeUnitInMin = new BigDecimal("30");
+    final BigDecimal freeTimeInMin = new BigDecimal("30");
 
+    @Override
+    public BigDecimal calculate(Transaction transaction) {
         Duration duration = new Duration(
                 transaction.getStartDateTime().toDateTime(DateTimeZone.UTC),
                 transaction.getEndDateTime().toDateTime(DateTimeZone.UTC)
         );
 
-        long durationInMin = duration.getStandardMinutes();
+        BigDecimal durationInMin = new BigDecimal(duration.getStandardMinutes());
 
-        if (durationInMin <= 30) {
-            return 0;
+        if (durationInMin.compareTo(freeTimeInMin) != 1) {
+            return BigDecimal.ZERO;
         }
-        
-        // 50cent per minute after free 30min
-        double price = (durationInMin-30) * 0.50;
 
-        return price;
+        return durationInMin.subtract(freeTimeInMin)
+                            .divide(timeUnitInMin, 0, RoundingMode.CEILING)
+                            .multiply(pricePerTimeUnit);
     }
+
+    @Override
+    public List<ViewTariffPriceDTO> listPrice() {
+        return Arrays.asList(
+                new ViewTariffPriceDTO(-1, 0, new BigDecimal("0")),
+                new ViewTariffPriceDTO(0, 30, new BigDecimal("12.34"))
+        );
+    }
+
 }

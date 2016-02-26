@@ -5,5 +5,6 @@ package de.rwth.idsg.bikeman.domain;
  */
 public enum CustomerType {
     CUSTOMER,
-    MAJOR_CUSTOMER
+    MAJOR_CUSTOMER,
+    FLEET_MANAGER
 }

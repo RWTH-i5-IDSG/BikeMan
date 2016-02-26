@@ -5,5 +5,6 @@ package de.rwth.idsg.bikeman.domain;
  */
 public enum TariffType {
     Ticket2000,
-    Ticket3000
+    Ticket3000,
+    TestSystemTariff
 }

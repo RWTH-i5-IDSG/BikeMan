@@ -1,10 +1,13 @@
 package de.rwth.idsg.bikeman.web.rest.exception;
 
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -29,13 +32,7 @@ public class GeneralExceptionHandler {
     private MessageSource messageSource;
 
     @ExceptionHandler(Exception.class)
-    public void processException(HttpServletResponse response, Exception e) {
-        log.error("Exception happened", e);
-        response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-    }
-
-    @ExceptionHandler(RestClientException.class)
-    public ResponseEntity<ErrorMessage> processDatabaseException(RestClientException e) {
+    public ResponseEntity<ErrorMessage> processException(Exception e) {
         log.error("Exception happened", e);
 
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
@@ -47,15 +44,28 @@ public class GeneralExceptionHandler {
         return new ResponseEntity<>(msg, status);
     }
 
-    @ExceptionHandler(DatabaseException.class)
-    public ResponseEntity<ErrorMessage> processDatabaseException(DatabaseException e) {
+    @ExceptionHandler(DataAccessException.class)
+    public ResponseEntity<ErrorMessage> processDataAccessException(DataAccessException e) {
         log.error("Exception happened", e);
+
+        // Fallback to most general message, when we have no cause
+        String errorMsg = e.getMessage();
+
+        // Inception level 1
+        if (e.getCause() != null) {
+            errorMsg = e.getCause().getMessage();
+
+            // Inception level 2
+            if (e.getCause().getCause() != null) {
+                errorMsg = e.getCause().getCause().getMessage();
+            }
+        }
 
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
         ErrorMessage msg = new ErrorMessage(
                 status.value(),
                 status.getReasonPhrase(),
-                e.getMessage()
+                errorMsg
         );
         return new ResponseEntity<>(msg, status);
     }

@@ -4,14 +4,14 @@ import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
 import de.rwth.idsg.bikeman.ixsi.api.Producer;
 import de.rwth.idsg.bikeman.ixsi.impl.PlaceAvailabilityStore;
 import de.rwth.idsg.bikeman.ixsi.repository.QueryIXSIRepository;
-import de.rwth.idsg.bikeman.ixsi.schema.IxsiMessageType;
-import de.rwth.idsg.bikeman.ixsi.schema.PlaceAvailabilityPushMessageType;
-import de.rwth.idsg.bikeman.ixsi.schema.PlaceAvailabilityType;
-import de.rwth.idsg.bikeman.ixsi.schema.ProviderPlaceIDType;
-import de.rwth.idsg.bikeman.ixsi.schema.SubscriptionMessageType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import xjc.schema.ixsi.IxsiMessageType;
+import xjc.schema.ixsi.PlaceAvailabilityPushMessageType;
+import xjc.schema.ixsi.PlaceAvailabilityType;
+import xjc.schema.ixsi.ProviderPlaceIDType;
+import xjc.schema.ixsi.SubscriptionMessageType;
 
 import java.util.Arrays;
 import java.util.Set;
@@ -24,9 +24,12 @@ import java.util.Set;
 @Service
 public class PlaceAvailabilityPushService {
 
-    @Autowired private Producer producer;
-    @Autowired private PlaceAvailabilityStore placeAvailabilityStore;
-    @Autowired private QueryIXSIRepository queryIXSIRepository;
+    @Autowired
+    private Producer producer;
+    @Autowired
+    private PlaceAvailabilityStore placeAvailabilityStore;
+    @Autowired
+    private QueryIXSIRepository queryIXSIRepository;
 
     public void reportChange(String placeID) {
         Set<String> systemIdSet = placeAvailabilityStore.getSubscribedSystems(placeID);

@@ -1,17 +1,10 @@
 package de.rwth.idsg.bikeman.repository;
 
+import com.google.common.base.Optional;
 import de.rwth.idsg.bikeman.domain.*;
-import de.rwth.idsg.bikeman.domain.CardAccount_;
-import de.rwth.idsg.bikeman.domain.Customer_;
-import de.rwth.idsg.bikeman.domain.MajorCustomer_;
-import de.rwth.idsg.bikeman.domain.Pedelec_;
-import de.rwth.idsg.bikeman.domain.StationSlot_;
-import de.rwth.idsg.bikeman.domain.Station_;
-import de.rwth.idsg.bikeman.domain.Transaction_;
-import de.rwth.idsg.bikeman.psinterface.Utils;
-import de.rwth.idsg.bikeman.psinterface.dto.request.PedelecStatusDTO;
-import de.rwth.idsg.bikeman.psinterface.dto.response.AvailablePedelecDTO;
+import de.rwth.idsg.bikeman.domain.CustomerType;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditPedelecDTO;
+import de.rwth.idsg.bikeman.web.rest.dto.view.ViewErrorDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.view.ViewPedelecDTO;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
@@ -20,13 +13,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Root;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -43,103 +36,74 @@ public class PedelecRepositoryImpl implements PedelecRepository {
     public List<ViewPedelecDTO> findAll() throws DatabaseException {
         CriteriaBuilder builder = em.getCriteriaBuilder();
 
-        List<ViewPedelecDTO> list = findPedelecsInTransactionWithCustomer(builder);
-        list.addAll(findPedelecsInTransactionWithMajorCustomer(builder));
+        List<ViewPedelecDTO> list = findPedelecsInTransaction(builder, CustomerType.CUSTOMER);
+        list.addAll(findPedelecsInTransaction(builder, CustomerType.MAJOR_CUSTOMER));
         list.addAll(findStationaryPedelecs(builder));
         return list;
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<AvailablePedelecDTO> findAvailablePedelecs(String endpointAddress) throws DatabaseException {
-        final String q = "SELECT new de.rwth.idsg.bikeman.psinterface.dto.response." +
-                         "AvailablePedelecDTO(p.manufacturerId) " +
-                         "from Pedelec p " +
-                         "where p.stationSlot.station.endpointAddress = :endpointAddress " +
-                         "and p.state = de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE " +
-                         "order by p.stateOfCharge desc";
+    @SuppressWarnings("unchecked")
+    private List<ViewPedelecDTO> findPedelecsInTransaction(CriteriaBuilder builder, CustomerType customerType) {
+        CriteriaQuery<ViewPedelecDTO> criteria = builder.createQuery(ViewPedelecDTO.class);
 
-        try {
-            return em.createQuery(q, AvailablePedelecDTO.class)
-                    .setParameter("endpointAddress", endpointAddress)
-                    .setMaxResults(5)
-                    .getResultList();
-        } catch (Exception e) {
-            throw new DatabaseException("Failed to find pedelecs in station with endpoint address" + endpointAddress, e);
+        Root<Pedelec> pedelec = criteria.from(Pedelec.class);
+        Join<Pedelec, Transaction> transaction = pedelec.join(Pedelec_.transactions, JoinType.LEFT);
+
+        Join<Transaction, CardAccount> cardAccount = transaction.join(Transaction_.cardAccount, JoinType.LEFT);
+        Join user = cardAccount.join(CardAccount_.user, JoinType.LEFT);
+
+        Join<Transaction, StationSlot> fromStationSlot = transaction.join(Transaction_.fromSlot, JoinType.LEFT);
+        Join<StationSlot, Station> fromStation = fromStationSlot.join(StationSlot_.station, JoinType.LEFT);
+
+        Join<Pedelec, PedelecChargingStatus> chargingStatus = pedelec.join(Pedelec_.chargingStatus, JoinType.LEFT);
+
+        switch (customerType) {
+            case CUSTOMER:
+                criteria.select(
+                        builder.construct(
+                                ViewPedelecDTO.class,
+                                pedelec.get(Pedelec_.pedelecId),
+                                pedelec.get(Pedelec_.manufacturerId),
+                                chargingStatus.get(PedelecChargingStatus_.batteryStateOfCharge),
+                                pedelec.get(Pedelec_.state),
+                                pedelec.get(Pedelec_.inTransaction),
+                                cardAccount.get(CardAccount_.cardId),
+                                user.get(Customer_.customerId),
+                                user.get(Customer_.firstname),
+                                user.get(Customer_.lastname),
+                                fromStation.get(Station_.stationId),
+                                fromStationSlot.get(StationSlot_.stationSlotPosition),
+                                transaction.get(Transaction_.startDateTime)
+                        )
+                );
+                break;
+
+            case MAJOR_CUSTOMER:
+                criteria.select(
+                        builder.construct(
+                                ViewPedelecDTO.class,
+                                pedelec.get(Pedelec_.pedelecId),
+                                pedelec.get(Pedelec_.manufacturerId),
+                                chargingStatus.get(PedelecChargingStatus_.batteryStateOfCharge),
+                                pedelec.get(Pedelec_.state),
+                                pedelec.get(Pedelec_.inTransaction),
+                                cardAccount.get(CardAccount_.cardId),
+                                user.get(MajorCustomer_.name),
+                                fromStation.get(Station_.stationId),
+                                fromStationSlot.get(StationSlot_.stationSlotPosition),
+                                transaction.get(Transaction_.startDateTime)
+                        )
+                );
+                break;
         }
-    }
 
-    @SuppressWarnings("unchecked")
-    private List<ViewPedelecDTO> findPedelecsInTransactionWithCustomer(CriteriaBuilder builder) {
-        CriteriaQuery<ViewPedelecDTO> criteria = builder.createQuery(ViewPedelecDTO.class);
-
-        Root<Pedelec> pedelec = criteria.from(Pedelec.class);
-        Join<Pedelec, Transaction> transaction = pedelec.join(Pedelec_.transactions, JoinType.LEFT);
-
-        Join<Transaction, CardAccount> cardAccount = transaction.join(Transaction_.cardAccount, JoinType.LEFT);
-        Join customer = cardAccount.join(CardAccount_.user, JoinType.LEFT);
-
-        Join<Transaction, StationSlot> fromStationSlot = transaction.join(Transaction_.fromSlot, JoinType.LEFT);
-        Join<StationSlot, Station> fromStation = fromStationSlot.join(StationSlot_.station, JoinType.LEFT);
-
-        criteria.select(
-                builder.construct(
-                        ViewPedelecDTO.class,
-                        pedelec.get(Pedelec_.pedelecId),
-                        pedelec.get(Pedelec_.manufacturerId),
-                        pedelec.get(Pedelec_.stateOfCharge),
-                        pedelec.get(Pedelec_.state),
-                        pedelec.get(Pedelec_.inTransaction),
-                        cardAccount.get(CardAccount_.cardId),
-                        customer.get(Customer_.customerId),
-                        customer.get(Customer_.firstname),
-                        customer.get(Customer_.lastname),
-                        fromStation.get(Station_.stationId),
-                        fromStationSlot.get(StationSlot_.stationSlotPosition),
-                        transaction.get(Transaction_.startDateTime)
-                )
-        ).where(builder.and(
-                builder.equal(cardAccount.get(CardAccount_.ownerType), CustomerType.CUSTOMER),
-                builder.equal(pedelec.get(Pedelec_.inTransaction), true),
-                builder.isNull(transaction.get(Transaction_.endDateTime)),
-                builder.isNull(transaction.get(Transaction_.toSlot))
-        ));
-
-        return em.createQuery(criteria).getResultList();
-    }
-
-    @SuppressWarnings("unchecked")
-    private List<ViewPedelecDTO> findPedelecsInTransactionWithMajorCustomer(CriteriaBuilder builder) {
-        CriteriaQuery<ViewPedelecDTO> criteria = builder.createQuery(ViewPedelecDTO.class);
-
-        Root<Pedelec> pedelec = criteria.from(Pedelec.class);
-        Join<Pedelec, Transaction> transaction = pedelec.join(Pedelec_.transactions, JoinType.LEFT);
-        Join<Transaction, CardAccount> cardAccount = transaction.join(Transaction_.cardAccount, JoinType.LEFT);
-        Join majorCustomer = cardAccount.join(CardAccount_.user, JoinType.LEFT);
-
-        Join<Transaction, StationSlot> fromStationSlot = transaction.join(Transaction_.fromSlot, JoinType.LEFT);
-        Join<StationSlot, Station> fromStation = fromStationSlot.join(StationSlot_.station, JoinType.LEFT);
-
-        criteria.select(
-                builder.construct(
-                        ViewPedelecDTO.class,
-                        pedelec.get(Pedelec_.pedelecId),
-                        pedelec.get(Pedelec_.manufacturerId),
-                        pedelec.get(Pedelec_.stateOfCharge),
-                        pedelec.get(Pedelec_.state),
-                        pedelec.get(Pedelec_.inTransaction),
-                        cardAccount.get(CardAccount_.cardId),
-                        majorCustomer.get(MajorCustomer_.name),
-                        fromStation.get(Station_.stationId),
-                        fromStationSlot.get(StationSlot_.stationSlotPosition),
-                        transaction.get(Transaction_.startDateTime)
-                )
-        ).where(builder.and(
-                builder.equal(cardAccount.get(CardAccount_.ownerType), CustomerType.MAJOR_CUSTOMER),
-                builder.equal(pedelec.get(Pedelec_.inTransaction), true),
-                builder.isNull(transaction.get(Transaction_.endDateTime)),
-                builder.isNull(transaction.get(Transaction_.toSlot))
-        ));
+        criteria.where(
+                builder.and(
+                        builder.equal(cardAccount.get(CardAccount_.ownerType), customerType),
+                        builder.equal(pedelec.get(Pedelec_.inTransaction), true),
+                        builder.isNull(transaction.get(Transaction_.endDateTime)),
+                        builder.isNull(transaction.get(Transaction_.toSlot))
+                ));
 
         return em.createQuery(criteria).getResultList();
     }
@@ -151,17 +115,21 @@ public class PedelecRepositoryImpl implements PedelecRepository {
         Join<Pedelec, StationSlot> stationSlot = pedelec.join(Pedelec_.stationSlot, JoinType.LEFT);
         Join<StationSlot, Station> station = stationSlot.join(StationSlot_.station, JoinType.LEFT);
 
+        Join<Pedelec, PedelecChargingStatus> chargingStatus = pedelec.join(Pedelec_.chargingStatus, JoinType.LEFT);
+
         criteria.select(
                 builder.construct(
                         ViewPedelecDTO.class,
                         pedelec.get(Pedelec_.pedelecId),
                         pedelec.get(Pedelec_.manufacturerId),
-                        pedelec.get(Pedelec_.stateOfCharge),
+                        chargingStatus.get(PedelecChargingStatus_.batteryStateOfCharge),
                         pedelec.get(Pedelec_.state),
                         pedelec.get(Pedelec_.inTransaction),
                         station.get(Station_.stationId),
-                        station.get(Station_.manufacturerId),
-                        stationSlot.get(StationSlot_.stationSlotPosition)
+                        station.get(Station_.name),
+                        stationSlot.get(StationSlot_.stationSlotPosition),
+                        chargingStatus.get(PedelecChargingStatus_.timestamp),
+                        chargingStatus.get(PedelecChargingStatus_.state)
                 )
         ).where(builder.equal(pedelec.get(Pedelec_.inTransaction), false));
 
@@ -173,14 +141,15 @@ public class PedelecRepositoryImpl implements PedelecRepository {
     public ViewPedelecDTO findOneDTO(Long pedelecId) throws DatabaseException {
 
         final String q = "SELECT new de.rwth.idsg.bikeman.web.rest.dto.view." +
-                         "ViewPedelecDTO(p.pedelecId, p.manufacturerId, p.stateOfCharge, p.state, p.inTransaction) " +
-                         "FROM Pedelec p " +
-                         "WHERE p.pedelecId = :pedelecId";
+                "ViewPedelecDTO(p.pedelecId, p.manufacturerId, cs.batteryStateOfCharge, p.state, p.inTransaction) " +
+                "FROM Pedelec p " +
+                "JOIN p.chargingStatus cs " +
+                "WHERE p.pedelecId = :pedelecId";
 
         try {
             return em.createQuery(q, ViewPedelecDTO.class)
-                    .setParameter("pedelecId", pedelecId)
-                    .getSingleResult();
+                     .setParameter("pedelecId", pedelecId)
+                     .getSingleResult();
         } catch (Exception e) {
             throw new DatabaseException("Failed to find pedelec with pedelecId " + pedelecId, e);
         }
@@ -198,10 +167,97 @@ public class PedelecRepositoryImpl implements PedelecRepository {
 
         try {
             return em.createQuery(q, Pedelec.class)
-                    .setParameter("manufacturerId", manufacturerId)
-                    .getSingleResult();
+                     .setParameter("manufacturerId", manufacturerId)
+                     .getSingleResult();
         } catch (Exception e) {
             throw new DatabaseException("Failed to find pedelec with manufacturerId " + manufacturerId, e);
+        }
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public List<Pedelec> findByStation(String stationManufacturerId) throws DatabaseException {
+
+        final String q = "select p from Pedelec p where p.stationSlot.station.manufacturerId = :stationManufacturerId";
+
+        try {
+            return em.createQuery(q, Pedelec.class)
+                     .setParameter("stationManufacturerId", stationManufacturerId)
+                     .getResultList();
+        } catch (Exception e) {
+            throw new DatabaseException("Failed to find pedelecs by stationManufacturerId " + stationManufacturerId, e);
+        }
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public List<String> findManufacturerIdsByStation(String stationManufacturerId) throws DatabaseException {
+
+        final String q = "select p.manufacturerId from Pedelec p where p.stationSlot.station.manufacturerId = :stationManufacturerId";
+
+        try {
+            return em.createQuery(q, String.class)
+                     .setParameter("stationManufacturerId", stationManufacturerId)
+                     .getResultList();
+        } catch (Exception e) {
+            throw new DatabaseException("Failed to find pedelecs by stationManufacturerId " + stationManufacturerId, e);
+        }
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Pedelec findByStationSlot(String stationSlotManufacturerId) throws DatabaseException {
+
+        final String q = "SELECT p FROM Pedelec p WHERE p.stationSlot.manufacturerId = :manufacturerId";
+
+        try {
+            return em.createQuery(q, Pedelec.class)
+                     .setParameter("manufacturerId", stationSlotManufacturerId)
+                     .getSingleResult();
+        } catch (Exception e) {
+            throw new DatabaseException("Failed to find pedelec with stationSlotManufacturerId " + stationSlotManufacturerId, e);
+        }
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Optional<Pedelec> findPedelecsByStationSlot(String stationManufacturerId, String stationSlotManufacturerId)
+            throws DatabaseException {
+
+        final String q = "SELECT p FROM Pedelec p " +
+                         "WHERE p.stationSlot.manufacturerId = :stationSlotManufacturerId " +
+                         "AND p.stationSlot.station.manufacturerId = :stationManufacturerId";
+
+        try {
+            Pedelec p = em.createQuery(q, Pedelec.class)
+                          .setParameter("stationSlotManufacturerId", stationSlotManufacturerId)
+                          .setParameter("stationManufacturerId", stationManufacturerId)
+                          .getSingleResult();
+
+            return Optional.of(p);
+
+        } catch (NoResultException e) {
+            // Do nothing, this is a valid outcome
+        } catch (Exception e) {
+            log.error("Error occurred", e);
+        }
+
+        return Optional.absent();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ViewErrorDTO> findErrors() throws DatabaseException {
+        String q = "SELECT new de.rwth.idsg.bikeman.web.rest.dto.view.ViewErrorDTO" +
+                "(p.pedelecId, p.manufacturerId, p.errorCode, p.errorInfo, p.updated) " +
+                "FROM Pedelec p where not (p.errorCode = '') and p.errorCode is not null";
+
+        try {
+            return em.createQuery(q, ViewErrorDTO.class)
+                    .getResultList();
+        } catch (Exception e) {
+            log.error("Error occurred", e);
+            throw new DatabaseException("PedelecRepository exception while looking for errors");
         }
     }
 
@@ -256,32 +312,9 @@ public class PedelecRepositoryImpl implements PedelecRepository {
         }
     }
 
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void updatePedelecStatus(PedelecStatusDTO dto) {
-        final String s = "UPDATE Pedelec p SET " +
-                         "p.errorCode = :pedelecErrorCode, " +
-                         "p.errorInfo = :pedelecErrorInfo, " +
-                         "p.state = :pedelecState, " +
-                         "p.updated = :updated " +
-                         "WHERE p.manufacturerId = :pedelecManufacturerId";
-
-        try {
-            em.createQuery(s)
-              .setParameter("pedelecErrorCode", dto.getPedelecErrorCode())
-              .setParameter("pedelecErrorInfo", dto.getPedelecErrorInfo())
-              .setParameter("pedelecState", OperationState.valueOf(dto.getPedelecState().name()))
-              .setParameter("updated", new Date(Utils.toMillis(dto.getTimestamp())))
-              .setParameter("pedelecManufacturerId", dto.getPedelecManufacturerId())
-              .executeUpdate();
-        } catch (Exception e) {
-            throw new DatabaseException("Failed to update the pedelec status with manufacturerId " + dto.getPedelecManufacturerId(), e);
-        }
-    }
 
     /**
      * Returns a pedelec, or throws exception when no pedelec exists.
-     *
      */
     @Transactional(readOnly = true)
     private Pedelec getPedelecEntity(long pedelecId) throws DatabaseException {
@@ -295,11 +328,15 @@ public class PedelecRepositoryImpl implements PedelecRepository {
 
     /**
      * This method sets the fields of the pedelec to the values in DTO.
-     *
+     * <p>
      * Important: The ID is not set!
      */
     private void setFields(Pedelec pedelec, CreateEditPedelecDTO dto) {
         pedelec.setState(dto.getState());
         pedelec.setManufacturerId(dto.getManufacturerId());
+
+        PedelecChargingStatus status = new PedelecChargingStatus();
+        status.setPedelec(pedelec);
+        pedelec.setChargingStatus(status);
     }
 }

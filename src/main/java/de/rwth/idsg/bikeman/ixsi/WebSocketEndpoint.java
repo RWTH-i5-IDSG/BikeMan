@@ -1,30 +1,60 @@
 package de.rwth.idsg.bikeman.ixsi;
 
+import de.rwth.idsg.bikeman.config.IxsiConfiguration;
 import de.rwth.idsg.bikeman.ixsi.api.Consumer;
 import de.rwth.idsg.bikeman.ixsi.api.WebSocketSessionStore;
+import de.rwth.idsg.bikeman.ixsi.impl.AvailabilityStore;
+import de.rwth.idsg.bikeman.ixsi.impl.BookingAlertStore;
+import de.rwth.idsg.bikeman.ixsi.impl.ConsumptionStore;
+import de.rwth.idsg.bikeman.ixsi.impl.ExternalBookingStore;
+import de.rwth.idsg.bikeman.ixsi.impl.PlaceAvailabilityStore;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
-import org.springframework.web.socket.handler.TextWebSocketHandler;
 
+import javax.annotation.PreDestroy;
 import java.io.IOException;
+import java.util.Deque;
+import java.util.Map;
 
 /**
  * Created by max on 08/09/14.
  */
 @Slf4j
 @Component
-public class WebSocketEndpoint extends TextWebSocketHandler {
+public class WebSocketEndpoint extends ConcurrentTextWebSocketHandler {
+
+    private static final Object LOCK = new Object();
 
     @Autowired private WebSocketSessionStore webSocketSessionStore;
     @Autowired private Consumer consumer;
 
+    @Autowired private AvailabilityStore availabilityStore;
+    @Autowired private ConsumptionStore consumptionStore;
+    @Autowired private ExternalBookingStore externalBookingStore;
+    @Autowired private PlaceAvailabilityStore placeAvailabilityStore;
+    @Autowired private BookingAlertStore bookingAlertStore;
+
+    /**
+     * Close the sessions for a graceful shutdown
+     */
+    @PreDestroy
+    public void destroy() {
+        Map<String, Deque<WebSocketSession>> sessionMap = webSocketSessionStore.getLookupTable();
+
+        for (Deque<WebSocketSession> sessionsForOneSystem : sessionMap.values()) {
+            for (WebSocketSession session : sessionsForOneSystem) {
+                closeSession(session);
+            }
+        }
+    }
+
     @Override
-    public void handleTextMessage(WebSocketSession session, TextMessage webSocketMessage) throws Exception {
-        log.info("[id={}] Received text message: {}", session.getId(), webSocketMessage);
+    public void onMessage(WebSocketSession session, TextMessage webSocketMessage) throws Exception {
+        log.info("[id={}] Received message: {}", session.getId(), webSocketMessage.getPayload());
 
         String payload = webSocketMessage.getPayload();
         CommunicationContext context = new CommunicationContext(session, payload);
@@ -34,6 +64,41 @@ public class WebSocketEndpoint extends TextWebSocketHandler {
             handleError(session, payload, e);
         }
     }
+
+    @Override
+    public void onOpen(WebSocketSession session) throws Exception {
+        log.info("New connection established: {}", session);
+        String systemId = (String) session.getAttributes().get(IxsiConfiguration.SYSTEM_ID_KEY);
+        webSocketSessionStore.add(systemId, session);
+    }
+
+    @Override
+    public void onClose(WebSocketSession session, CloseStatus closeStatus) throws Exception {
+        log.info("[id={}] Connection was closed, status: {}", session.getId(), closeStatus);
+        String systemId = (String) session.getAttributes().get(IxsiConfiguration.SYSTEM_ID_KEY);
+        synchronized (LOCK) {
+            webSocketSessionStore.remove(systemId, session);
+
+            if (webSocketSessionStore.size(systemId) == 0) {
+                unSubscribeStores(systemId);
+            }
+        }
+    }
+
+    @Override
+    public void onError(WebSocketSession session, Throwable throwable) throws Exception {
+        log.error("Oops", throwable);
+        // TODO catch transportexceptions!
+    }
+
+    @Override
+    public boolean supportsPartialMessages() {
+        return false;
+    }
+
+    // -------------------------------------------------------------------------
+    // Private helpers
+    // -------------------------------------------------------------------------
 
     /**
      * If there's something fundamentally wrong with the incoming message or its processing
@@ -50,28 +115,24 @@ public class WebSocketEndpoint extends TextWebSocketHandler {
         session.close(CloseStatus.NOT_ACCEPTABLE.withReason(errorMsg));
     }
 
-    @Override
-    public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        log.info("New connection established: {}", session);
-        String systemId = (String) session.getAttributes().get(HandshakeInterceptor.SYSTEM_ID_KEY);
-        webSocketSessionStore.add(systemId, session);
+    private void closeSession(WebSocketSession session) {
+        if (session.isOpen()) {
+            try {
+                session.close(new CloseStatus(1001, "BikeMan is shutting down"));
+            } catch (IOException e) {
+                log.error("Failed to close the session", e);
+            }
+        }
     }
 
-    @Override
-    public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception {
-        log.info("[id={}] Connection was closed, status: {}", session.getId(), closeStatus);
-        String systemId = (String) session.getAttributes().get(HandshakeInterceptor.SYSTEM_ID_KEY);
-        webSocketSessionStore.remove(systemId, session);
-    }
+    private void unSubscribeStores(String systemId) {
+        log.debug("There are no open connections left to system '{}'. "
+                + "Removing it from all the subscription stores", systemId);
 
-    @Override
-    public void handleTransportError(WebSocketSession session, Throwable throwable) throws Exception {
-        log.error("Oops", throwable);
-        // TODO catch transportexceptions!
-    }
-
-    @Override
-    public boolean supportsPartialMessages() {
-        return true;
+        availabilityStore.unsubscribeAll(systemId);
+        consumptionStore.unsubscribeAll(systemId);
+        externalBookingStore.unsubscribeAll(systemId);
+        placeAvailabilityStore.unsubscribeAll(systemId);
+        bookingAlertStore.unsubscribeAll(systemId);
     }
 }

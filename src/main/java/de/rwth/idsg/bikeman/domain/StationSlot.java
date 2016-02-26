@@ -38,10 +38,10 @@ public class StationSlot implements Serializable {
 
     @Column(name = "state")
     @Enumerated(EnumType.STRING)
-    private OperationState state;
+    private OperationState state = OperationState.INOPERATIVE;
 
     @Column(name = "is_occupied")
-    private Boolean isOccupied;
+    private Boolean isOccupied = false;
 
     @OneToOne
     @JoinColumn(name = "pedelec_id")

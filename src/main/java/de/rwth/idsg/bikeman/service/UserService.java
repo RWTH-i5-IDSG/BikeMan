@@ -1,7 +1,7 @@
 package de.rwth.idsg.bikeman.service;
 
-import de.rwth.idsg.bikeman.domain.login.PersistentToken;
-import de.rwth.idsg.bikeman.domain.login.User;
+import de.rwth.idsg.bikeman.domain.PersistentToken;
+import de.rwth.idsg.bikeman.domain.User;
 import de.rwth.idsg.bikeman.repository.PersistentTokenRepository;
 import de.rwth.idsg.bikeman.repository.UserRepository;
 import de.rwth.idsg.bikeman.security.SecurityUtils;

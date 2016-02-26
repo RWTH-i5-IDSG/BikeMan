@@ -13,13 +13,14 @@
     <title>BikeMan</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
-    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-    <!-- build:css(.tmp) styles/main.css -->
+
+    <!-- build:css styles/main.css -->
     <link rel="stylesheet" href="styles/bootstrap.css">
     <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="styles/famfamfam-flags.css">
     <link href="styles/font-awesome.css" rel="stylesheet">
     <link href="styles/sb-admin.css" rel="stylesheet">
+    <link href="bower_components/angular-loading-bar/build/loading-bar.css">
     <!-- endbuild -->
 </head>
 
@@ -49,8 +50,8 @@
 
         <ul class="nav navbar-top-links navbar-right">
 
-            <li class="dropdown pointer" on-toggle="toggled(open)">
-                <a href class="dropdown-toggle">
+            <li ui-sref-active="active" class="dropdown pointer">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="">
                             <span>
                                 <span class="glyphicon glyphicon-user"></span>
                                 <span class="hidden-tablet" translate="global.menu.account.main" translate-values="{username: '{{account.login | usernameFilter}}'}">
@@ -72,9 +73,9 @@
             </li>
 
 
-            <li ng-switch-when="true" ng-show="isAuthorized(userRoles.admin)" class="dropdown pointer" on-toggle="toggled(open)"
+            <li ng-switch-when="true" ng-show="isAuthorized(userRoles.admin)" class="dropdown pointer"
                 ng-controller="AdminController">
-                <a class="dropdown-toggle" href>
+                <a class="dropdown-toggle" data-toggle="dropdown" href="">
                             <span>
                                 <span class="glyphicon glyphicon-tower"></span>
                                 <span class="hidden-tablet" translate="global.menu.admin">Admin</span>
@@ -92,12 +93,17 @@
                         &nbsp;<span translate="global.menu.account.apidocs">API Docs</span></a></li>
                     <li><a ui-sref="sessions"><span class="glyphicon glyphicon-cloud"></span>
                         &nbsp;<span translate="global.menu.account.sessions">Sessions</span></a></li>
+                    <li class="divider"></li>
+                    <li><a href="api/logs/bikeman"><span class="glyphicon glyphicon-tasks"></span>
+                        &nbsp;<span translate="global.menu.account.applicationLogs">Application Logs</span></a></li>
+                    <li><a ui-sref="monitor"><span class="glyphicon glyphicon-camera"></span>
+                        &nbsp;<span translate="global.menu.account.monitor">IXSI Monitor</span></a></li>
                 </ul>
             </li>
 
             <!-- /.dropdown -->
-            <li class="dropdown pointer" on-toggle="toggled(open)" ng-controller="LanguageController">
-                <a class="dropdown-toggle" href>
+            <li class="dropdown pointer" ng-controller="LanguageController">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="">
                             <span>
                                 <span class="glyphicon glyphicon-flag"></span>
                                 <span class="hidden-tablet" translate="global.menu.language">Language</span>
@@ -206,7 +212,7 @@
                     </li>
 
                     <li ng-show="isAuthorized([userRoles.admin, userRoles.manager])">
-                        <a href="#"><i class="glyphicon glyphicon-send fa-fw"></i>
+                        <a href="#"><i class="fa fa-bicycle"></i>
                             <span translate="global.menu.pedelec.title">Pedelec Control</span>
                             <span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
@@ -273,6 +279,44 @@
                         <!-- /.nav-second-level -->
                     </li>
 
+                    <li ng-show="isAuthorized([userRoles.admin, userRoles.manager])">
+                        <a href="#"><i class="fa fa-book fa-fw"></i>
+                            <span translate="global.menu.fleetmanagerlog.title">Fleetmanager's Logbook</span>
+                            <span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                            <li ui-sref-active="selectedNavItem">
+                                <a ui-sref="fleetmanager_transaction">
+                                    <span translate="global.menu.driverlog.allTransactions">All Transactions</span>
+                                </a>
+                            </li>
+                        </ul>
+                        <!-- /.nav-second-level -->
+                    </li>
+
+                    <li ng-show="isAuthorized([userRoles.admin, userRoles.manager])">
+                        <a href="#"><i class="fa fa-exclamation-circle"></i>
+                            <span translate="global.menu.error.errors">Errors</span>
+                            <span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                            <li ui-sref-active="selectedNavItem">
+                                <a ui-sref="errorHistory">
+                                    <span translate="global.menu.error.errorHistory">Error History</span>
+                                </a>
+                            </li>
+                            <li ui-sref-active="selectedNavItem">
+                                <a ui-sref="stationErrors">
+                                    <span translate="global.menu.error.stationErrors">Station Errors</span>
+                                </a>
+                            </li>
+                            <li ui-sref-active="selectedNavItem">
+                                <a ui-sref="pedelecErrors">
+                                    <span translate="global.menu.error.pedelecErrors">Pedelec Errors</span>
+                                </a>
+                            </li>
+                        </ul>
+                        <!-- /.nav-second-level -->
+                    </li>
+
                 </ul>
                 <!-- /#side-menu -->
             </div>
@@ -304,7 +348,7 @@
 
 <!-- build:js scripts/scripts.js -->
 <script src="bower_components/modernizr/modernizr.js"></script>
-<script src="bower_components/jquery/jquery.js"></script>
+<script src="bower_components/jquery/dist/jquery.js"></script>
 <script src="bower_components/angular/angular.js"></script>
 <script src="bower_components/angular-resource/angular-resource.js"></script>
 <script src="bower_components/angular-cookies/angular-cookies.js"></script>
@@ -312,11 +356,13 @@
 <script src="bower_components/angular-translate/angular-translate.js"></script>
 <script src="bower_components/angular-translate-storage-cookie/angular-translate-storage-cookie.js"></script>
 <script src="bower_components/angular-translate-loader-static-files/angular-translate-loader-static-files.js"></script>
-<script src="bower_components/angular-dynamic-locale/src/tmhDinamicLocale.js"></script>
+<script src="bower_components/angular-dynamic-locale/src/tmhDynamicLocale.js"></script>
 
 <script src="scripts/truncate.js"></script>
 <script src="scripts/utils.js"></script>
 
+<script src="bower_components/angular-smart-table/dist/smart-table.js"></script>
+<script src="bower_components/angular-loading-bar/build/loading-bar.js"></script>
 <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
 <script src="bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/affix.js"></script>
 <script src="bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/alert.js"></script>
@@ -330,8 +376,9 @@
 <script src="bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/scrollspy.js"></script>
 <script src="bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/collapse.js"></script>
 <script src="bower_components/bootstrap-sass/vendor/assets/javascripts/bootstrap/tab.js"></script>
+<script src="bower_components/angular-bootstrap/ui-bootstrap.js"></script>
+<script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
 <script src="bower_components/angular-bootstrap-show-errors/src/showErrors.js"></script>
-<script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
 <script src="bower_components/metisMenu/dist/jquery.metisMenu.js"></script>
 <script src="scripts/http-auth-interceptor.js"></script>
 <script src="scripts/sb-admin.js"></script>
@@ -367,6 +414,12 @@
 <script src="scripts/cardaccount/service.js"></script>
 <script src="scripts/cardaccount/router.js"></script>
 <script src="scripts/cardaccount/controller.js"></script>
+<script src="scripts/monitor/controller.js"></script>
+<script src="scripts/monitor/router.js"></script>
+<script src="scripts/monitor/service.js"></script>
+<script src="scripts/errors/controller.js"></script>
+<script src="scripts/errors/router.js"></script>
+<script src="scripts/errors/service.js"></script>
 
 <!-- endbuild -->
 </body>

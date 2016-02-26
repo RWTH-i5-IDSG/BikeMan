@@ -1,16 +1,16 @@
 package de.rwth.idsg.bikeman.ixsi.processor.query.staticdata;
 
 import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
-import de.rwth.idsg.bikeman.ixsi.dto.query.BookingTargetsInfoResponseDTO;
-import de.rwth.idsg.bikeman.ixsi.dto.query.PedelecDTO;
-import de.rwth.idsg.bikeman.ixsi.dto.query.StationDTO;
+import de.rwth.idsg.bikeman.ixsi.dto.BookingTargetsInfoResponseDTO;
+import de.rwth.idsg.bikeman.ixsi.dto.PedelecDTO;
+import de.rwth.idsg.bikeman.ixsi.dto.StationDTO;
 import de.rwth.idsg.bikeman.ixsi.processor.api.StaticRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.repository.QueryIXSIRepository;
-import de.rwth.idsg.bikeman.ixsi.schema.*;
 import de.rwth.idsg.bikeman.web.rest.dto.view.ViewAddressDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Component;
+import xjc.schema.ixsi.*;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -27,9 +27,22 @@ public class BookingTargetsInfoRequestProcessor implements
 
     @Inject private QueryIXSIRepository queryIXSIRepository;
 
+    // "VelocityBikeSharing" encoded to Base64
+    private static final String BIKE_SHARING_ATTR_ID = "VmVsb2NpdHlCaWtlU2hhcmluZw==";
+
+    @Override
+    public Class<BookingTargetsInfoRequestType> getProcessingClass() {
+        return BookingTargetsInfoRequestType.class;
+    }
+
     @Override
     public BookingTargetsInfoResponseType process(BookingTargetsInfoRequestType request) {
         BookingTargetsInfoResponseDTO dto = queryIXSIRepository.bookingTargetInfos();
+
+        AttributeType placeTypeAttr = new AttributeType()
+                .withID(BIKE_SHARING_ATTR_ID)
+                .withClazz(AttributeClassType.BIKE_SHARING)
+                .withWithText(false);
 
         // response timestamp
         long timestamp = dto.getTimestamp();
@@ -53,6 +66,7 @@ public class BookingTargetsInfoRequestProcessor implements
                 .withProbability(new PercentType().withValue(100)); // TODO: set probability (Why do we even need this?)
 
         return new BookingTargetsInfoResponseType()
+                .withAttributes(placeTypeAttr)
                 .withTimestamp(new DateTime(timestamp))
                 .withBookee(bookingTargets)
                 .withPlace(places)
@@ -75,7 +89,6 @@ public class BookingTargetsInfoRequestProcessor implements
             bookingTargets.add(new BookingTargetType()
                     .withID(id)
                     .withName(name)
-                    .withMaxDistance(ped.getMaxDistance())
                     .withPlaceGroupID(IXSIConstants.PlaceGroup.id)
                     .withClazz(IXSIConstants.bookeeClassType)
                     .withEngine(IXSIConstants.engineType));
@@ -112,12 +125,14 @@ public class BookingTargetsInfoRequestProcessor implements
                     .withCoord(coords);
 
             TextType name = new TextType()
-                    .withText(stat.getName());
+                    .withText(stat.getName())
+                    .withLanguage(IXSIConstants.DEFAULT_LANGUAGE);
 
             places.add(new PlaceType()
+                    .withAttributeID(BIKE_SHARING_ATTR_ID)
                     .withGeoPosition(geoPosition)
                     .withID(stat.getManufacturerId())
-                    .withCapacity(stat.getSlotCount())
+                    .withCapacity((int) stat.getSlotCount())
                     .withName(name)
                     .withProviderID(IXSIConstants.Provider.id));
         }

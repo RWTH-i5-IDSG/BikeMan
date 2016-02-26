@@ -1,0 +1,19 @@
+
+<h2>{{targetStore.name}}</h2>
+
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>{{targetStore.itemDescription}}</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="i in targetStore.items">
+            <td>{{i.systemId}}</td>
+            <td>{{i.item}}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>

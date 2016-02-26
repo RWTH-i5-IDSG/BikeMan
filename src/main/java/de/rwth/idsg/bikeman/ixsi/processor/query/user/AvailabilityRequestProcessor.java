@@ -3,14 +3,13 @@ package de.rwth.idsg.bikeman.ixsi.processor.query.user;
 import com.google.common.base.Optional;
 import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
 import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
-import de.rwth.idsg.bikeman.ixsi.dto.query.AvailabilityResponseDTO;
-import de.rwth.idsg.bikeman.ixsi.processor.TokenValidator;
+import de.rwth.idsg.bikeman.ixsi.dto.AvailabilityResponseDTO;
 import de.rwth.idsg.bikeman.ixsi.processor.api.UserRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.repository.QueryIXSIRepository;
-import de.rwth.idsg.bikeman.ixsi.schema.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import xjc.schema.ixsi.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,14 +24,18 @@ public class AvailabilityRequestProcessor implements
         UserRequestProcessor<AvailabilityRequestType, AvailabilityResponseType> {
 
     @Autowired private QueryIXSIRepository queryIXSIRepository;
-    @Autowired private TokenValidator tokenValidator;
+
+    @Override
+    public Class<AvailabilityRequestType> getProcessingClass() {
+        return AvailabilityRequestType.class;
+    }
 
     @Override
     public AvailabilityResponseType processAnonymously(AvailabilityRequestType request, Optional<Language> lan) {
 
         if (request.isSetBookingTarget()) {
             // we don't want to use booking targets in this request
-            return buildError(ErrorFactory.invalidRequest("Cannot use booking targets", null));
+            return buildError(ErrorFactory.Sys.invalidRequest("Cannot use booking targets", null));
         }
 
         List<AvailabilityResponseDTO> dtos = new ArrayList<>();
@@ -49,48 +52,28 @@ public class AvailabilityRequestProcessor implements
         return new AvailabilityResponseType().withBookingTarget(availabilityList);
     }
 
-    /**
-     * This method has to validate the user infos !!!!
-     */
     @Override
     public AvailabilityResponseType processForUser(AvailabilityRequestType request, Optional<Language> lan,
-                                                   List<UserInfoType> userInfoList) {
-
-        AvailabilityResponseType availabilityResponse = new AvailabilityResponseType();
-        TokenValidator.Results results = tokenValidator.validate(userInfoList);
-
-        List<ErrorType> errors = results.getErrors();
-        if (!errors.isEmpty()) {
-            availabilityResponse.getError().addAll(errors);
-        }
-
-        List<UserInfoType> validUsers = results.getValidUsers();
-        // TODO process with validUsers
-
-        return null;
+                                                   UserInfoType userInfo) {
+        // TODO
+        return buildError(ErrorFactory.Sys.notImplemented(null, null));
     }
 
     public List<BookingTargetAvailabilityType> getBookingTargetAvailabilities(List<AvailabilityResponseDTO> dtoList) {
         List<BookingTargetAvailabilityType> availabilityList = new ArrayList<>();
         for (AvailabilityResponseDTO dto : dtoList) {
-
-            // BookingTargetId
-            String bookeeId = String.valueOf(dto.getManufacturerId());
             BookingTargetIDType bookingTargetIDType = new BookingTargetIDType()
-                    .withBookeeID(bookeeId)
+                    .withBookeeID(dto.getManufacturerId())
                     .withProviderID(IXSIConstants.Provider.id);
-
-            // PlaceID
-            String placeId = String.valueOf(dto.getStationManufacturerId());
 
             PercentType percentType = new PercentType()
                     .withValue(roundPercent(dto.getStateOfCharge()));
 
             BookingTargetAvailabilityType b = new BookingTargetAvailabilityType()
                     .withID(bookingTargetIDType)
-                    .withPlaceID(placeId)
-                    .withCurrentStateOfCharge(percentType)
-                    .withCurrentDrivingRange(0); // TODO get the actual driving range from pedelec!
+                    .withPlaceID(dto.getStationManufacturerId())
+                    .withInavailability(dto.getInavailabilities())
+                    .withCurrentStateOfCharge(percentType);
 
             // For geo-location queries
             if (dto.getLocationLatitude() != null && dto.getLocationLongitude() != null ) {
@@ -105,8 +88,8 @@ public class AvailabilityRequestProcessor implements
         return availabilityList;
     }
 
-    private int roundPercent(Float decimal) {
-        return Math.round(decimal * 100);
+    private int roundPercent(Double decimal) {
+        return (int) Math.round(decimal);
     }
 
     // -------------------------------------------------------------------------

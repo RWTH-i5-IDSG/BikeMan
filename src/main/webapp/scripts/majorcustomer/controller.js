@@ -43,7 +43,7 @@ bikeManApp.controller('MajorcustomerDetailController', ['$scope', 'resolvedMajor
         // set initial resultSize to 10
         $scope.resultSize = 10;
 
-        $http.get('app/rest/tariffs').success(function(data) {
+        $http.get('api/tariffs').success(function(data) {
             $scope.tariffs = data;
         });
 
@@ -81,7 +81,7 @@ bikeManApp.controller('MajorcustomerDetailController', ['$scope', 'resolvedMajor
                     $scope.majorcustomer = Majorcustomer.searchByLogin({login: $scope.majorcustomer.login});
                 });
             }
-        }
+        };
 
         $scope.addCardAccount = function () {
             $scope.newCardaccount.login = $scope.majorcustomer.login;
@@ -90,6 +90,15 @@ bikeManApp.controller('MajorcustomerDetailController', ['$scope', 'resolvedMajor
                 $('#addModal').modal('hide');
                 $scope.newCardaccount = null;
             });
+        };
+
+        $scope.addBatchCardAccounts = function () {
+            $scope.batchCardAccounts.login = $scope.majorcustomer.login;
+            CardAccount.addBatch($scope.batchCardAccounts, function() {
+                $scope.majorcustomer = Majorcustomer.searchByLogin({login: $scope.majorcustomer.login});
+                $('#addBatchModal').modal('hide');
+                $scope.batchCardAccounts = null;
+            })
         };
 
     }]);

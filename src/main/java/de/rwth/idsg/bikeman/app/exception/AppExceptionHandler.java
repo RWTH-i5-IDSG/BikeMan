@@ -2,16 +2,23 @@ package de.rwth.idsg.bikeman.app.exception;
 
 import de.rwth.idsg.bikeman.psinterface.Utils;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
-import de.rwth.idsg.bikeman.web.rest.exception.GeneralExceptionHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.HibernateException;
 import org.springframework.beans.TypeMismatchException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import javax.persistence.PersistenceException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * @author Sevket Goekay <goekay@dbis.rwth-aachen.de>
@@ -21,9 +28,12 @@ import javax.persistence.PersistenceException;
 @Slf4j
 public class AppExceptionHandler {
 
+    @Autowired
+    private MessageSource messageSource;
+
     @ExceptionHandler(AppException.class)
     public ResponseEntity<AppExceptionMessage> processAppException(AppException e) {
-        log.error("Exception happened", e);
+        log.debug("Exception happened", e);
 
         HttpStatus status;
         AppErrorCode errorCode = e.getErrorCode();
@@ -32,11 +42,15 @@ public class AppExceptionHandler {
                 status = HttpStatus.BAD_REQUEST;
                 break;
 
+            case VALIDATION_FAILED:
             case NOT_REGISTERED:
+            case RENTAL_BLOCKED:
+            case BOOKING_BLOCKED:
                 status = HttpStatus.NOT_ACCEPTABLE;
                 break;
 
             case AUTH_ATTEMPTS_EXCEEDED:
+            case AUTH_FAILED:
                 status = HttpStatus.FORBIDDEN;
                 break;
 
@@ -81,6 +95,29 @@ public class AppExceptionHandler {
                 status.getReasonPhrase(),
                 e.getMessage()
         );
+        return new ResponseEntity<>(msg, status);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<AppExceptionMessage> processValidationException(MethodArgumentNotValidException e) {
+        log.error("Exception happened", e);
+
+        Locale currentLocale =  LocaleContextHolder.getLocale();
+
+        List<FieldError> errors = e.getBindingResult().getFieldErrors();
+        List<String> errorMessages = new ArrayList<>();
+        for (FieldError fieldError : errors) {
+            String localizedError = fieldError.getField() + ": " + messageSource.getMessage(fieldError, currentLocale);
+            errorMessages.add(localizedError);
+        }
+
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        AppExceptionMessage msg = new AppExceptionMessage(
+            status.value(),
+            status.getReasonPhrase(),
+            "Validation failed for the submitted form"
+        );
+        msg.setFieldErrors(errorMessages);
         return new ResponseEntity<>(msg, status);
     }
 

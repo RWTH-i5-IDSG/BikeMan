@@ -18,11 +18,23 @@ Copy the `src/showErrors.js` or `src/showErrors.min.js` file into your project.
 Quick Start
 ---
 1. Include the `ui.bootstrap.showErrors` module in your Angular app
-2. Add the `show-errors` attribute on the form div element that contains the `form-group` class
+```javascript
+angular.module('yourApp', ['ui.bootstrap.showErrors']);
+```
 
+2. Add the `show-errors` attribute on the div element that contains the `form-group` class
 ```html
 <form name="userForm">
   <div class="form-group" show-errors>
+    <input type="text" name="firstName" ng-model="firstName" ng-required />
+  </div>
+</form>
+```
+
+3. If you want to avoid the extra bottom margin of `form-group`, you can use `input-group`.
+```html
+<form name="userForm">
+  <div class="input-group" show-errors>
     <input type="text" name="firstName" ng-model="firstName" ng-required />
   </div>
 </form>
@@ -76,4 +88,83 @@ $scope.reset = function() {
   $scope.$broadcast('show-errors-reset');
 }
 ```
+
+Show Valid Entries
+---
+It's also possible to let the user know when they have entered valid values by applying the 'show-success' class that Bootstrap provides. 
+You can either apply this globally or on an element by element basis.
+
+##### Globally
+The following example shows how to show valid values on every input that uses the showErrors directive.
+
+```javascript
+app = angular.module('yourApp', ['ui.bootstrap.showErrors']);
+app.config(['showErrorsConfigProvider', function(showErrorsConfigProvider) {
+  showErrorsConfigProvider.showSuccess(true);
+}]);
+```
+
+##### By Input Element
+If you only want to show valid values on specific inputs, then you can pass in the `{ showSuccess: true }` option like the example below shows.
+
+```html
+<form name="userForm">
+  <div class="form-group" show-errors="{ showSuccess: true }">
+    <input type="text" name="firstName" ng-model="firstName" ng-required />
+  </div>
+</form>
+```
+
+Skip Form Group Check
+---
+If your HTML code doesn't have a form-group class, the form group check can be skipped:
+
+```html
+<form name="userForm">
+<div show-errors="{ skipFormGroupCheck: true }">
+<input type="text" name="firstName" ng-model="firstName" ng-required />
+</div>
+</form>
+```
+
+Custom Trigger
+---
+By default, the validation is not performed until the `blur` event is trigger on the input 
+element. However, there are some scenarios where this is not desirable, so it's possible to 
+override this with the `trigger` option.
+
+##### By Input Element
+```html
+<form name="userForm">
+  <div class="form-group" show-errors="{ trigger: 'keypress' }">
+    <input ng-model="firstName" ng-pattern="/^foo$/" ng-required name="firstName" class="form-control" type="text" />
+  </div>
+</form>
+```
+
+##### Globally
+```javascript
+app = angular.module('yourApp', ['ui.bootstrap.showErrors']);
+app.config(['showErrorsConfigProvider', function(showErrorsConfigProvider) {
+  showErrorsConfigProvider.trigger('keypress');
+}]);
+```
     
+## Development
+
+### Install Development Dependencies
+Before you begin development, you will need to install the required node modules and bower components. To do
+so, open a terminal window in the project directory and run the following commands.
+```
+npm install
+bower install
+```
+
+### Compile and Run the Unit Tests
+Just type `grunt` in the command line to compile and run the karma unit tests once.
+
+If you want to have grunt watch for any file changes and automatically compile and run the karma 
+unit tests, then run the following command:
+```
+grunt karma:continuous:start watch
+```

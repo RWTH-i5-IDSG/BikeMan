@@ -3,14 +3,12 @@ package de.rwth.idsg.bikeman.ixsi.processor.query.user;
 import com.google.common.base.Optional;
 import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
 import de.rwth.idsg.bikeman.ixsi.processor.api.UserRequestProcessor;
-import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
-import de.rwth.idsg.bikeman.ixsi.schema.Language;
-import de.rwth.idsg.bikeman.ixsi.schema.OpenSessionRequestType;
-import de.rwth.idsg.bikeman.ixsi.schema.OpenSessionResponseType;
-import de.rwth.idsg.bikeman.ixsi.schema.UserInfoType;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
+import xjc.schema.ixsi.ErrorType;
+import xjc.schema.ixsi.Language;
+import xjc.schema.ixsi.OpenSessionRequestType;
+import xjc.schema.ixsi.OpenSessionResponseType;
+import xjc.schema.ixsi.UserInfoType;
 
 /**
  * @author Sevket Goekay <goekay@dbis.rwth-aachen.de>
@@ -21,17 +19,19 @@ public class OpenSessionRequestProcessor implements
         UserRequestProcessor<OpenSessionRequestType, OpenSessionResponseType> {
 
     @Override
-    public OpenSessionResponseType processAnonymously(OpenSessionRequestType request, Optional<Language> lan) {
-        return buildError(ErrorFactory.notImplemented("We don't support sessions", null));
+    public Class<OpenSessionRequestType> getProcessingClass() {
+        return OpenSessionRequestType.class;
     }
 
-    /**
-     * This method has to validate the user infos !!!!
-     */
+    @Override
+    public OpenSessionResponseType processAnonymously(OpenSessionRequestType request, Optional<Language> lan) {
+        return buildError(ErrorFactory.Sys.notImplemented("We don't support sessions", null));
+    }
+
     @Override
     public OpenSessionResponseType processForUser(OpenSessionRequestType request, Optional<Language> lan,
-                                                  List<UserInfoType> userInfoList) {
-        return buildError(ErrorFactory.notImplemented("We don't support sessions", null));
+                                                  UserInfoType userInfo) {
+        return buildError(ErrorFactory.Sys.notImplemented("We don't support sessions", null));
     }
 
     // -------------------------------------------------------------------------

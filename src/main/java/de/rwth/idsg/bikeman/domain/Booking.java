@@ -5,15 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.persistence.TableGenerator;
+import javax.persistence.*;
 
 /**
  * @author Sevket Goekay <goekay@dbis.rwth-aachen.de>
@@ -33,7 +25,10 @@ public class Booking {
     @Column(name = "booking_id")
     private long bookingId;
 
-    @OneToOne
+    @Column(name = "ixsi_booking_id")
+    private String ixsiBookingId;
+
+    @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "reservation_id")
     private Reservation reservation;
 

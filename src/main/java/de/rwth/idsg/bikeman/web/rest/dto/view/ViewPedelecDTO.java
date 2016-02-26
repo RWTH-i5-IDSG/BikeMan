@@ -1,8 +1,9 @@
 package de.rwth.idsg.bikeman.web.rest.dto.view;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import de.rwth.idsg.bikeman.domain.ChargingState;
 import de.rwth.idsg.bikeman.domain.OperationState;
-import de.rwth.idsg.bikeman.web.rest.dto.util.CustomLocalDateTimeSerializer;
+import de.rwth.idsg.bikeman.domain.util.CustomLocalDateTimeSerializer;
 import lombok.Data;
 import lombok.Getter;
 import lombok.ToString;
@@ -17,15 +18,20 @@ public class ViewPedelecDTO {
 
     private Long pedelecId;
     private String manufacturerId;
-    private Float stateOfCharge;
+    private Double stateOfCharge;
     private OperationState state;
     private Boolean inTransaction;
     private ViewStationDTO station;
     private ViewTransactionDTO transaction;
 
+    @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+    private LocalDateTime lastChargingUpdate;
+
+    private ChargingState chargingState;
+
 
     // Basic
-    public ViewPedelecDTO(Long pedelecId, String manufacturerId, Float stateOfCharge,
+    public ViewPedelecDTO(Long pedelecId, String manufacturerId, Double stateOfCharge,
                           OperationState state, Boolean inTransaction) {
         this.pedelecId = pedelecId;
         this.manufacturerId = manufacturerId;
@@ -35,20 +41,24 @@ public class ViewPedelecDTO {
     }
 
     // Constructor for stationary pedelecs
-    public ViewPedelecDTO(Long pedelecId, String manufacturerId, Float stateOfCharge,
+    public ViewPedelecDTO(Long pedelecId, String manufacturerId, Double stateOfCharge,
                           OperationState state, Boolean inTransaction,
-                          Long stationId, String stationManufacturerId, Integer stationSlotPosition) {
+                          Long stationId, String stationName,
+                          Integer stationSlotPosition, LocalDateTime lastChargingUpdate,
+                          ChargingState chargingState) {
         this.pedelecId = pedelecId;
         this.manufacturerId = manufacturerId;
         this.stateOfCharge = stateOfCharge;
         this.state = state;
         this.inTransaction = inTransaction;
+        this.lastChargingUpdate = lastChargingUpdate;
+        this.chargingState = chargingState;
 
-        this.station = new ViewStationDTO(stationId, stationManufacturerId, stationSlotPosition);
+        this.station = new ViewStationDTO(stationId, stationName, stationSlotPosition);
     }
 
     // Constructor for pedelecs in transaction with customer
-    public ViewPedelecDTO(Long pedelecId, String manufacturerId, Float stateOfCharge,
+    public ViewPedelecDTO(Long pedelecId, String manufacturerId, Double stateOfCharge,
                           OperationState state, Boolean inTransaction, String cardId,
                           String customerId, String customerFirstname, String customerLastname,
                           Long stationId, Integer stationSlotPosition, LocalDateTime startDateTime) {
@@ -64,7 +74,7 @@ public class ViewPedelecDTO {
     }
 
     // Constructor for pedelecs in transaction with major customer
-    public ViewPedelecDTO(Long pedelecId, String manufacturerId, Float stateOfCharge,
+    public ViewPedelecDTO(Long pedelecId, String manufacturerId, Double stateOfCharge,
                           OperationState state, Boolean inTransaction, String cardId,
                           String name,
                           Long stationId, Integer stationSlotPosition, LocalDateTime startDateTime) {
@@ -82,7 +92,7 @@ public class ViewPedelecDTO {
     @Data
     private class ViewStationDTO {
         private final Long id;
-        private final String stationManufacturerId;
+        private final String stationName;
         private final Integer stationSlotPosition;
     }
 

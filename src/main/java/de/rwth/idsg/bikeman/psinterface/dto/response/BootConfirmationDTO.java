@@ -1,15 +1,25 @@
 package de.rwth.idsg.bikeman.psinterface.dto.response;
 
-import lombok.*;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import de.rwth.idsg.bikeman.psinterface.UnixTimestampDeserializer;
+import de.rwth.idsg.bikeman.psinterface.UnixTimestampSerializer;
+import lombok.Data;
+import org.joda.time.DateTime;
 
-import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by swam on 31/07/14.
  */
 
 @Data
-public class BootConfirmationDTO implements Serializable {
-    private Long timestamp;
+public class BootConfirmationDTO {
+
+    @JsonDeserialize(using = UnixTimestampDeserializer.class)
+    @JsonSerialize(using = UnixTimestampSerializer.class)
+    private DateTime timestamp;
+
     private Integer heartbeatInterval;
+    private List<CardReadKeyDTO> cardKeys;
 }

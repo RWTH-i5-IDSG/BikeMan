@@ -1,8 +1,7 @@
 package de.rwth.idsg.bikeman.repository;
 
-import com.google.common.base.Optional;
 import de.rwth.idsg.bikeman.domain.Booking;
-import de.rwth.idsg.bikeman.domain.Transaction;
+import de.rwth.idsg.bikeman.ixsi.dto.BookingDTO;
 
 import java.util.List;
 
@@ -10,7 +9,10 @@ import java.util.List;
  * Created by max on 24/11/14.
  */
 public interface BookingRepository {
-    long saveAndGetId(Booking booking);
-    Long findIdByTransaction(Transaction transaction);
-    List<Booking> findClosedBookings(List<Long> bookingIdList);
+    Booking save(Booking booking);
+    void cancel(Booking booking);
+    boolean isNotUsedAndExpired(String ixsiBookingId);
+    List<BookingDTO> findNotUsedAndExpiredBookings(List<String> ixsiBookingIdList);
+    List<Booking> findClosedBookings(List<String> ixsiBookingIdList);
+    Booking findByIxsiBookingIdForUser(String ixsiBookingId, String userId);
 }

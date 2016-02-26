@@ -1,7 +1,7 @@
 package de.rwth.idsg.bikeman.web.rest.dto.view;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import de.rwth.idsg.bikeman.web.rest.dto.util.CustomLocalDateTimeSerializer;
+import de.rwth.idsg.bikeman.domain.util.CustomLocalDateTimeSerializer;
 import lombok.Data;
 import lombok.Getter;
 import lombok.ToString;
@@ -21,6 +21,7 @@ public class ViewTransactionDTO {
     private String majorCustomerName;
     private String cardId;
     private TransactionPedelecDTO pedelec;
+    private String fleetManagerLogin;
 
 
     @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
@@ -29,7 +30,7 @@ public class ViewTransactionDTO {
     @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
     private LocalDateTime endDateTime;
 
-    // All and closed transactions related to a customer
+    // Transactions related to a customer
     public ViewTransactionDTO(Long transactionId, LocalDateTime startDateTime, LocalDateTime endDateTime,
                               Long fromStationId, String fromStationName, Integer fromStationSlotPosition,
                               Long toStationId, String toStationName, Integer toStationSlotPosition,
@@ -42,12 +43,17 @@ public class ViewTransactionDTO {
         this.customer = new CustomerDTO(customerId, customerFirstname, customerLastname);
 
         this.fromStation = new TransactionStationDTO(fromStationId, fromStationName, fromStationSlotPosition);
-        this.toStation = new TransactionStationDTO(toStationId, toStationName, toStationSlotPosition);
+
+        if (toStationId == null) {
+            this.toStation = null;
+        } else {
+            this.toStation = new TransactionStationDTO(toStationId, toStationName, toStationSlotPosition);
+        }
 
         this.pedelec = new TransactionPedelecDTO(pedelecId, pedelecManufacturerId);
     }
 
-    // All and closed transactions related to a major customer
+    // Transactions related to a major customer
     public ViewTransactionDTO(Long transactionId, LocalDateTime startDateTime, LocalDateTime endDateTime,
                               Long fromStationId, String fromStationName, Integer fromStationSlotPosition,
                               Long toStationId, String toStationName, Integer toStationSlotPosition,
@@ -60,37 +66,35 @@ public class ViewTransactionDTO {
         this.majorCustomerName = majorCustomerName;
 
         this.fromStation = new TransactionStationDTO(fromStationId, fromStationName, fromStationSlotPosition);
-        this.toStation = new TransactionStationDTO(toStationId, toStationName, toStationSlotPosition);
+
+        if (toStationId == null) {
+            this.toStation = null;
+        } else {
+            this.toStation = new TransactionStationDTO(toStationId, toStationName, toStationSlotPosition);
+        }
 
         this.pedelec = new TransactionPedelecDTO(pedelecId, pedelecManufacturerId);
     }
 
-    // Open transactions related to customer
-    public ViewTransactionDTO(Long transactionId, LocalDateTime startDateTime,
-                              Long fromStationId, String fromStationName, Integer fromStationSlotPosition, String cardId,
-                              String customerId, String customerFirstname, String customerLastname,
+    // Transactions related to a fleet manager
+    public ViewTransactionDTO(String fleetManagerLogin, Long transactionId, LocalDateTime startDateTime, LocalDateTime endDateTime,
+                              Long fromStationId, String fromStationName, Integer fromStationSlotPosition,
+                              Long toStationId, String toStationName, Integer toStationSlotPosition,
+                              String cardId,
                               Long pedelecId, String pedelecManufacturerId) {
         this.transactionId = transactionId;
         this.startDateTime = startDateTime;
+        this.endDateTime = endDateTime;
         this.cardId = cardId;
-        this.customer = new CustomerDTO(customerId, customerFirstname, customerLastname);
+        this.fleetManagerLogin = fleetManagerLogin;
 
         this.fromStation = new TransactionStationDTO(fromStationId, fromStationName, fromStationSlotPosition);
 
-        this.pedelec = new TransactionPedelecDTO(pedelecId, pedelecManufacturerId);
-    }
-
-    // Open transactions related to major customer
-    public ViewTransactionDTO(Long transactionId, LocalDateTime startDateTime,
-                              Long fromStationId, String fromStationName, Integer fromStationSlotPosition, String cardId,
-                              String majorCustomerName,
-                              Long pedelecId, String pedelecManufacturerId) {
-        this.transactionId = transactionId;
-        this.startDateTime = startDateTime;
-        this.cardId = cardId;
-        this.majorCustomerName = majorCustomerName;
-
-        this.fromStation = new TransactionStationDTO(fromStationId, fromStationName, fromStationSlotPosition);
+        if (toStationId == null) {
+            this.toStation = null;
+        } else {
+            this.toStation = new TransactionStationDTO(toStationId, toStationName, toStationSlotPosition);
+        }
 
         this.pedelec = new TransactionPedelecDTO(pedelecId, pedelecManufacturerId);
     }

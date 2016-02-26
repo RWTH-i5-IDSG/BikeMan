@@ -2,12 +2,12 @@ package de.rwth.idsg.bikeman.ixsi.processor.subscription.request;
 
 import de.rwth.idsg.bikeman.ixsi.impl.ExternalBookingStore;
 import de.rwth.idsg.bikeman.ixsi.processor.api.SubscriptionRequestProcessor;
-import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
-import de.rwth.idsg.bikeman.ixsi.schema.ExternalBookingSubscriptionStatusRequestType;
-import de.rwth.idsg.bikeman.ixsi.schema.ExternalBookingSubscriptionStatusResponseType;
-import de.rwth.idsg.bikeman.ixsi.schema.UserInfoType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import xjc.schema.ixsi.ErrorType;
+import xjc.schema.ixsi.ExternalBookingSubscriptionStatusRequestType;
+import xjc.schema.ixsi.ExternalBookingSubscriptionStatusResponseType;
+import xjc.schema.ixsi.UserInfoType;
 
 import java.util.List;
 
@@ -20,6 +20,11 @@ public class ExternalBookingSubscriptionStatusRequestProcessor implements
         SubscriptionRequestProcessor<ExternalBookingSubscriptionStatusRequestType, ExternalBookingSubscriptionStatusResponseType> {
 
     @Autowired private ExternalBookingStore externalBookingStore;
+
+    @Override
+    public Class<ExternalBookingSubscriptionStatusRequestType> getProcessingClass() {
+        return ExternalBookingSubscriptionStatusRequestType.class;
+    }
 
     @Override
     public ExternalBookingSubscriptionStatusResponseType process(ExternalBookingSubscriptionStatusRequestType request, String systemId) {

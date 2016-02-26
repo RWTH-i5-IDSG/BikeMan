@@ -1,6 +1,6 @@
 {
   "name": "angular-bootstrap-show-errors",
-  "version": "1.0.4",
+  "version": "2.3.0",
   "authors": [
     "Paul Yoder <paulyoder@gmail.com>"
   ],
@@ -24,6 +24,7 @@
     "angular": "*"
   },
   "devDependencies": {
-    "angular-mocks": "~1.x"
+    "angular": "1.2.0",
+    "angular-mocks": "1.2.0"
   }
 }

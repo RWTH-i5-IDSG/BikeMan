@@ -33,12 +33,16 @@
             <thead>
             <tr>
                 <th translate="fleetmanagers.table.header.login">Login</th>
+                <th translate="majorcustomerDetail.cardaccounts.table.header.cardId">Card ID</th>
+                <th translate="majorcustomerDetail.cardaccounts.table.header.cardPin">Card PIN</th>
                 <th></th>
             </tr>
             </thead>
             <tbody>
             <tr ng-repeat="fleetmanager in fleetmanagers">
                 <td>{{fleetmanager.login}}</td>
+                <td>{{fleetmanager.cardId}}</td>
+                <td>{{fleetmanager.cardPin}}</td>
                 <td>
                     <button class="btn btn-danger btn-sm pull-right" type="button" ng-click="deleteModal(fleetmanager)"
                             data-toggle="modal" data-target="#deleteModal"><span class="glyphicon glyphicon-remove"></span>

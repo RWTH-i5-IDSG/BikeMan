@@ -1,44 +1,51 @@
 package de.rwth.idsg.bikeman.psinterface.rest;
 
-import com.google.common.base.Optional;
+import com.google.common.base.Strings;
+import de.rwth.idsg.bikeman.domain.Booking;
 import de.rwth.idsg.bikeman.domain.CardAccount;
-import de.rwth.idsg.bikeman.domain.MajorCustomer;
+import de.rwth.idsg.bikeman.domain.ErrorType;
 import de.rwth.idsg.bikeman.domain.OperationState;
+import de.rwth.idsg.bikeman.domain.Reservation;
+import de.rwth.idsg.bikeman.domain.ReservationState;
 import de.rwth.idsg.bikeman.domain.Transaction;
-import de.rwth.idsg.bikeman.domain.login.User;
-import de.rwth.idsg.bikeman.ixsi.impl.ExternalBookingStore;
-import de.rwth.idsg.bikeman.ixsi.schema.UserInfoType;
 import de.rwth.idsg.bikeman.ixsi.service.AvailabilityPushService;
 import de.rwth.idsg.bikeman.ixsi.service.ConsumptionPushService;
 import de.rwth.idsg.bikeman.ixsi.service.ExternalBookingPushService;
-import de.rwth.idsg.bikeman.psinterface.Utils;
+import de.rwth.idsg.bikeman.ixsi.service.PlaceAvailabilityPushService;
 import de.rwth.idsg.bikeman.psinterface.dto.request.BootNotificationDTO;
+import de.rwth.idsg.bikeman.psinterface.dto.request.ChargingStatusDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.CustomerAuthorizeDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.PedelecStatusDTO;
+import de.rwth.idsg.bikeman.psinterface.dto.request.SlotDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.StartTransactionDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.StationStatusDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.StopTransactionDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.response.AuthorizeConfirmationDTO;
-import de.rwth.idsg.bikeman.psinterface.dto.response.AvailablePedelecDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.response.BootConfirmationDTO;
-import de.rwth.idsg.bikeman.psinterface.exception.PsErrorCode;
+import de.rwth.idsg.bikeman.psinterface.dto.response.CardReadKeyDTO;
 import de.rwth.idsg.bikeman.psinterface.exception.PsException;
-import de.rwth.idsg.bikeman.repository.BookingRepository;
-import de.rwth.idsg.bikeman.repository.CardAccountRepository;
-import de.rwth.idsg.bikeman.repository.CustomerRepository;
-import de.rwth.idsg.bikeman.repository.MajorCustomerRepository;
-import de.rwth.idsg.bikeman.repository.PedelecRepository;
-import de.rwth.idsg.bikeman.repository.StationRepository;
-import de.rwth.idsg.bikeman.repository.TransactionRepository;
-import de.rwth.idsg.bikeman.web.rest.dto.view.ViewMajorCustomerDTO;
+import de.rwth.idsg.bikeman.psinterface.repository.PsiBookingRepository;
+import de.rwth.idsg.bikeman.psinterface.repository.PsiCustomerRepository;
+import de.rwth.idsg.bikeman.psinterface.repository.PsiPedelecRepository;
+import de.rwth.idsg.bikeman.psinterface.repository.PsiReservationRepository;
+import de.rwth.idsg.bikeman.psinterface.repository.PsiStationRepository;
+import de.rwth.idsg.bikeman.psinterface.repository.PsiTransactionRepository;
+import de.rwth.idsg.bikeman.service.ErrorHistoryService;
+import de.rwth.idsg.bikeman.service.OperationStateService;
+import de.rwth.idsg.bikeman.service.TransactionEventService;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDateTime;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import java.util.List;
-import java.util.Set;
+
+import static de.rwth.idsg.bikeman.psinterface.exception.PsErrorCode.AUTH_ATTEMPTS_EXCEEDED;
+import static de.rwth.idsg.bikeman.psinterface.exception.PsErrorCode.CONSTRAINT_FAILED;
 
 /**
  * Created by swam on 04/08/14.
@@ -48,77 +55,251 @@ import java.util.Set;
 @Slf4j
 public class PsiService {
 
-    @Inject private CustomerRepository customerRepository;
-    @Inject private TransactionRepository transactionRepository;
-    @Inject private StationRepository stationRepository;
-    @Inject private BookingRepository bookingRepository;
-    @Inject private PedelecRepository pedelecRepository;
-    @Inject private CardAccountRepository cardAccountRepository;
-    @Inject private MajorCustomerRepository majorCustomerRepository;
+    @Inject private PsiCustomerRepository customerRepository;
+    @Inject private PsiTransactionRepository transactionRepository;
+    @Inject private PsiStationRepository stationRepository;
+    @Inject private PsiBookingRepository bookingRepository;
+    @Inject private PsiPedelecRepository pedelecRepository;
+    @Inject private PsiReservationRepository reservationRepository;
 
     @Inject private ConsumptionPushService consumptionPushService;
     @Inject private AvailabilityPushService availabilityPushService;
+    @Inject private PlaceAvailabilityPushService placeAvailabilityPushService;
     @Inject private ExternalBookingPushService externalBookingPushService;
+    @Inject private TransactionEventService transactionEventService;
+    @Inject private OperationStateService operationStateService;
 
-    @Inject private ExternalBookingStore externalBookingStore;
+    @Inject private ErrorHistoryService errorHistoryService;
 
     private static final Integer HEARTBEAT_INTERVAL_IN_SECONDS = 60;
+    private static final int MAX_AUTH_RETRIES = 3;
 
-    public BootConfirmationDTO handleBootNotification(BootNotificationDTO bootNotificationDTO,
-                                                      String endpointAddress) throws DatabaseException {
+    public BootConfirmationDTO handleBootNotification(BootNotificationDTO bootNotificationDTO)
+            throws DatabaseException {
 
-        stationRepository.updateAfterBoot(bootNotificationDTO, endpointAddress);
+        stationRepository.updateAfterBoot(bootNotificationDTO);
+        List<CardReadKeyDTO> cardKeys = stationRepository.getCardReadKeys();
 
         BootConfirmationDTO bootConfirmationDTO = new BootConfirmationDTO();
-        bootConfirmationDTO.setTimestamp(Utils.nowInSeconds());
+        bootConfirmationDTO.setTimestamp(DateTime.now());
         bootConfirmationDTO.setHeartbeatInterval(HEARTBEAT_INTERVAL_IN_SECONDS);
+        bootConfirmationDTO.setCardKeys(cardKeys);
         return bootConfirmationDTO;
     }
 
-    public AuthorizeConfirmationDTO handleAuthorize(CustomerAuthorizeDTO customerAuthorizeDTO) throws DatabaseException {
-        CardAccount cardAccount = customerRepository.findByCardIdAndCardPin(customerAuthorizeDTO.getCardId(), customerAuthorizeDTO.getCardPin());
+    @Transactional
+    public AuthorizeConfirmationDTO handleAuthorize(CustomerAuthorizeDTO customerAuthorizeDTO)
+            throws DatabaseException {
 
-        if (OperationState.INOPERATIVE.equals(cardAccount.getOperationState())) {
-            throw new PsException("Card is not operational!", PsErrorCode.CONSTRAINT_FAILED);
-        }
+        log.info("Card with CardId {} start authorization from Station", customerAuthorizeDTO.getCardId());
 
-        return new AuthorizeConfirmationDTO(cardAccount.getCardId());
+        CardAccount cardAccount = customerRepository.findByCardId(customerAuthorizeDTO.getCardId());
+
+        checkOperationState(cardAccount, customerAuthorizeDTO);
+        checkPin(cardAccount, customerAuthorizeDTO);
+
+        int actualRentedPedelecs = transactionRepository.countOpenTransactions(cardAccount.getCardId());
+        int canRentCount = cardAccount.getCurrentTariff().getTariff().getMaxNumberPedelecs();
+
+        return new AuthorizeConfirmationDTO(cardAccount.getCardId(), actualRentedPedelecs, canRentCount);
     }
 
+    @Transactional
     public void handleStartTransaction(StartTransactionDTO startTransactionDTO) throws DatabaseException {
-        Transaction t = transactionRepository.start(startTransactionDTO);
+        transactionEventService.createAndSaveStartTransactionEvent(startTransactionDTO);
 
-        Long bookingId = bookingRepository.findIdByTransaction(t);
-        externalBookingPushService.report(bookingId, t);
+        Transaction transaction = transactionRepository.start(startTransactionDTO);
+
+        List<Reservation> reservationList = reservationRepository.find(transaction.getCardAccount().getCardAccountId(),
+                transaction.getPedelec().getPedelecId(),
+                LocalDateTime.now());
+
+        Booking booking;
+
+        if (reservationList == null || reservationList.isEmpty()) {
+            log.debug("No reservation found for startTransaction.");
+            booking = new Booking();
+
+        } else if (reservationList.size() == 1) {
+            Reservation res = reservationList.get(0);
+            reservationRepository.updateState(res, ReservationState.USED);
+            booking = bookingRepository.findByReservation(res);
+            log.debug("Found Reservation: {}", res);
+
+        } else {
+            throw new PsException("More than one reservation found", CONSTRAINT_FAILED);
+        }
+
+        booking.setTransaction(transaction);
+        bookingRepository.save(booking);
+
+        if (reservationList == null || reservationList.isEmpty()) {
+            performExternalBookingPush(booking, transaction);
+            log.debug("Perform External Booking for booking: {} and Transaction: {}", booking, transaction);
+        }
+
+        performStartPush(startTransactionDTO);
+        log.debug("Perform Start Push for Transaction: {} and Booking: {}", transaction, booking);
+    }
+
+    @Async
+    private void performExternalBookingPush(Booking booking, Transaction transaction) {
+        externalBookingPushService.report(booking, transaction);
+    }
+
+    @Async
+    public void performStartPush(StartTransactionDTO startTransactionDTO) {
 
         availabilityPushService.takenFromPlace(
                 startTransactionDTO.getPedelecManufacturerId(),
-                startTransactionDTO.getStationManufacturerId(),
-                new DateTime(startTransactionDTO.getTimestamp()));
+                startTransactionDTO.getTimestamp());
+
+        placeAvailabilityPushService.reportChange(startTransactionDTO.getStationManufacturerId());
     }
 
+    @Transactional
     public void handleStopTransaction(StopTransactionDTO stopTransactionDTO) throws DatabaseException {
+        transactionEventService.createAndSaveStopTransactionEvent(stopTransactionDTO);
+
         Transaction t = transactionRepository.stop(stopTransactionDTO);
 
-        Long bookingId = bookingRepository.findIdByTransaction(t);
-        consumptionPushService.report(bookingId, t);
+        if (t != null) {
+            performStopPush(stopTransactionDTO, t);
+        }
+    }
+
+    @Async
+    private void performStopPush(StopTransactionDTO stopTransactionDTO, Transaction t) {
+        Booking booking = bookingRepository.findByTransaction(t);
+        consumptionPushService.report(booking);
 
         DateTime startDateTime = t.getStartDateTime().toDateTime();
         availabilityPushService.arrivedAtPlace(
                 stopTransactionDTO.getPedelecManufacturerId(),
                 stopTransactionDTO.getStationManufacturerId(),
                 startDateTime);
+
+        placeAvailabilityPushService.reportChange(stopTransactionDTO.getStationManufacturerId());
     }
 
-    public List<AvailablePedelecDTO> getAvailablePedelecs(String endpointAddress) throws DatabaseException {
-        return pedelecRepository.findAvailablePedelecs(endpointAddress);
+    public List<String> getAvailablePedelecs(String stationManufacturerId, String cardId) throws DatabaseException {
+        if (Strings.isNullOrEmpty(cardId)) {
+            log.debug("cardId is not set. Returning available pedelecs");
+            return pedelecRepository.findAvailablePedelecs(stationManufacturerId);
+        }
+
+        log.debug("Querying reserved pedelecs for cardId '{}'", cardId);
+        List<String> pedelecs = pedelecRepository.findReservedPedelecs(stationManufacturerId, cardId);
+
+        if (pedelecs.isEmpty()) {
+            log.debug("cardId '{}' has no reservations. Returning available pedelecs", cardId);
+            pedelecs = pedelecRepository.findAvailablePedelecs(stationManufacturerId);
+        }
+
+        return pedelecs;
     }
 
     public void handleStationStatusNotification(StationStatusDTO stationStatusDTO) {
+        operationStateService.pushAvailability(stationStatusDTO);
+        operationStateService.pushInavailability(stationStatusDTO);
+
         stationRepository.updateStationStatus(stationStatusDTO);
+
+        checkForStationErrors(stationStatusDTO);
     }
 
     public void handlePedelecStatusNotification(PedelecStatusDTO pedelecStatusDTO) {
+        operationStateService.pushAvailability(pedelecStatusDTO);
+        operationStateService.pushInavailability(pedelecStatusDTO);
+
         pedelecRepository.updatePedelecStatus(pedelecStatusDTO);
+
+        checkForPedelecErrors(pedelecStatusDTO);
+    }
+
+    public void handleChargingStatusNotification(List<ChargingStatusDTO> chargingStatusDTO) {
+        pedelecRepository.updatePedelecChargingStatus(chargingStatusDTO);
+    }
+
+    // -------------------------------------------------------------------------
+    // Private helpers
+    // -------------------------------------------------------------------------
+
+    private void checkOperationState(CardAccount ca, CustomerAuthorizeDTO dto) {
+        if (OperationState.OPERATIVE.equals(ca.getOperationState())) {
+            return;
+        }
+
+        log.info("Card with CardId {} authorization failed with {}", dto.getCardId(), CONSTRAINT_FAILED);
+        throw new PsException("Card account is disabled", CONSTRAINT_FAILED);
+    }
+
+    private void checkPin(CardAccount ca, CustomerAuthorizeDTO dto) {
+        if (ca.getCardPin().equals(dto.getCardPin())) {
+            // PIN is correct, reset auth trial count
+            customerRepository.resetAuthenticationTrialCount(ca);
+            return;
+        }
+
+        // increase auth fail count by one
+        ca.setAuthenticationTrialCount(ca.getAuthenticationTrialCount() + 1);
+
+        try {
+            checkPinRetryLimit(ca);
+        } finally {
+            customerRepository.saveCardAccount(ca);
+        }
+
+        log.info("Card with CardId {} authorization failed (wrong pin) with {}", dto.getCardId(), CONSTRAINT_FAILED);
+        throw new PsException("Wrong PIN", CONSTRAINT_FAILED);
+    }
+
+    private void checkPinRetryLimit(CardAccount ca) {
+        boolean exceeded = ca.getAuthenticationTrialCount() >= MAX_AUTH_RETRIES;
+
+        // auth attempts exceeded
+        if (exceeded) {
+            ca.setOperationState(OperationState.INOPERATIVE);
+
+            log.warn("Card with CardId {} authorization failed (3x wrong pin) with {}", ca.getCardId(), AUTH_ATTEMPTS_EXCEEDED);
+            throw new PsException("No trials remaining and account gets disabled", AUTH_ATTEMPTS_EXCEEDED);
+        }
+    }
+
+    private void checkForStationErrors(StationStatusDTO stationStatusDTO) {
+        if (stationStatusDTO.getStationErrorCode() != null) {
+            errorHistoryService.createAndSaveErrorHistoryEntry(
+                    ErrorType.STATION_ERROR,
+                    stationStatusDTO.getStationErrorCode(),
+                    stationStatusDTO.getStationErrorInfo(),
+                    stationStatusDTO.getStationManufacturerId()
+            );
+        }
+
+        for (SlotDTO.StationStatus slotDTO : stationStatusDTO.getSlots()) {
+            checkForSlotErrors(slotDTO);
+        }
+    }
+
+    private void checkForSlotErrors(SlotDTO.StationStatus slotDTO) {
+        if (slotDTO.getSlotErrorCode() != null) {
+            errorHistoryService.createAndSaveErrorHistoryEntry(
+                    ErrorType.SLOT_ERROR,
+                    slotDTO.getSlotErrorCode(),
+                    slotDTO.getSlotErrorInfo(),
+                    slotDTO.getSlotManufacturerId()
+            );
+        }
+    }
+
+    private void checkForPedelecErrors(PedelecStatusDTO pedelecStatusDTO) {
+        if (pedelecStatusDTO.getPedelecErrorCode() != null) {
+            errorHistoryService.createAndSaveErrorHistoryEntry(
+                    ErrorType.PEDELEC_ERROR,
+                    pedelecStatusDTO.getPedelecErrorCode(),
+                    pedelecStatusDTO.getPedelecErrorInfo(),
+                    pedelecStatusDTO.getPedelecManufacturerId()
+            );
+        }
     }
 }

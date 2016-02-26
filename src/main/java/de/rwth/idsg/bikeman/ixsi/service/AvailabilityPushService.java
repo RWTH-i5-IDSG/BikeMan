@@ -3,16 +3,17 @@ package de.rwth.idsg.bikeman.ixsi.service;
 import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
 import de.rwth.idsg.bikeman.ixsi.api.Producer;
 import de.rwth.idsg.bikeman.ixsi.impl.AvailabilityStore;
-import de.rwth.idsg.bikeman.ixsi.schema.AvailabilityPushMessageType;
-import de.rwth.idsg.bikeman.ixsi.schema.BookingTargetChangeAvailabilityType;
-import de.rwth.idsg.bikeman.ixsi.schema.BookingTargetIDType;
-import de.rwth.idsg.bikeman.ixsi.schema.IxsiMessageType;
-import de.rwth.idsg.bikeman.ixsi.schema.SubscriptionMessageType;
-import de.rwth.idsg.bikeman.ixsi.schema.TimePeriodType;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import xjc.schema.ixsi.AvailabilityPushMessageType;
+import xjc.schema.ixsi.BookingTargetChangeAvailabilityType;
+import xjc.schema.ixsi.BookingTargetIDType;
+import xjc.schema.ixsi.IxsiMessageType;
+import xjc.schema.ixsi.SubscriptionMessageType;
+import xjc.schema.ixsi.TimePeriodType;
 
 import java.util.Set;
 
@@ -27,28 +28,56 @@ public class AvailabilityPushService {
     @Autowired private Producer producer;
     @Autowired private AvailabilityStore availabilityStore;
 
+    // -------------------------------------------------------------------------
+    // Booking-related
+    // -------------------------------------------------------------------------
+
+    public void placedBooking(String bookeeID, String placeId, TimePeriodType timePeriod) {
+        buildAndSend(bookeeID, placeId, timePeriod, false);
+    }
+
+    public void changedBooking(String bookeeID, String placeId,
+                               TimePeriodType oldTimePeriod, TimePeriodType newTimePeriod) {
+        cancelledBooking(bookeeID, placeId, oldTimePeriod);
+        placedBooking(bookeeID, placeId, newTimePeriod);
+    }
+
+    public void cancelledBooking(String bookeeID, String placeId, TimePeriodType timePeriod) {
+        buildAndSend(bookeeID, placeId, timePeriod, true);
+    }
+
+    // -------------------------------------------------------------------------
+    // Transaction-related
+    // -------------------------------------------------------------------------
+
     /**
-     * @param bookeeID      Manufacturer ID of the pedelec.
-     * @param placeID       Manufacturer ID of the station.
-     * @param departure     Date/time of the start of the transaction.
+     * @param bookeeID  Manufacturer ID of the pedelec.
+     * @param departure Date/time of the start of the transaction.
      */
-    public void takenFromPlace(String bookeeID, String placeID, DateTime departure) {
-        buildAndSend(bookeeID, placeID, departure, false);
+    public void takenFromPlace(String bookeeID, DateTime departure) {
+        TimePeriodType tp = buildTimePeriodForTransaction(departure);
+        buildAndSend(bookeeID, null, tp, false);
     }
 
     /**
-     * @param bookeeID      Manufacturer ID of the pedelec.
-     * @param placeID       Manufacturer ID of the station.
-     * @param departure     Date/time of the start of the transaction. This is rightfully so and not the date/time
-     *                      of the arrival, because in client system we want to invalidate the time period that
-     *                      was sent earlier with {@link #takenFromPlace(String, String, org.joda.time.DateTime)}.
-     *                      Therefore, the two values have to match.
+     * @param bookeeID  Manufacturer ID of the pedelec.
+     * @param placeID   Manufacturer ID of the station.
+     * @param departure Date/time of the start of the transaction. This is rightfully so and not the date/time
+     *                  of the arrival, because in client system we want to invalidate the time period that
+     *                  was sent earlier with {@link #takenFromPlace(String, org.joda.time.DateTime)}.
+     *                  Therefore, the two values have to match.
      */
     public void arrivedAtPlace(String bookeeID, String placeID, DateTime departure) {
-        buildAndSend(bookeeID, placeID, departure, true);
+        TimePeriodType tp = buildTimePeriodForTransaction(departure);
+        buildAndSend(bookeeID, placeID, tp, true);
     }
 
-    private void buildAndSend(String bookeeID, String placeID, DateTime dt, boolean isAvailable) {
+    // -------------------------------------------------------------------------
+    // Private helpers
+    // -------------------------------------------------------------------------
+
+    @Async
+    private void buildAndSend(String bookeeID, String placeID, TimePeriodType period, boolean isAvailable) {
         BookingTargetIDType bookingTargetID = new BookingTargetIDType()
                 .withBookeeID(bookeeID)
                 .withProviderID(IXSIConstants.Provider.id);
@@ -59,13 +88,9 @@ public class AvailabilityPushService {
             return;
         }
 
-        TimePeriodType period = new TimePeriodType()
-                .withBegin(dt)
-                .withEnd(dt.plusHours(6)); // TODO: Does not make sense at all. Find a solution!
-
         BookingTargetChangeAvailabilityType targetChange = new BookingTargetChangeAvailabilityType()
-                .withID(bookingTargetID)
-                .withPlaceID(placeID);
+            .withID(bookingTargetID)
+            .withPlaceID(placeID);
 
         if (isAvailable) {
             targetChange.setAvailability(period);
@@ -78,6 +103,12 @@ public class AvailabilityPushService {
         IxsiMessageType ixsi = new IxsiMessageType().withSubscriptionMessage(sub);
 
         producer.send(ixsi, systemIdSet);
+    }
+
+    private TimePeriodType buildTimePeriodForTransaction(DateTime departure) {
+        return new TimePeriodType()
+            .withBegin(departure)
+            .withEnd(departure.plusHours(IXSIConstants.HOUR_OFFSET_FOR_OPEN_TRANSACTIONS));
     }
 
 }

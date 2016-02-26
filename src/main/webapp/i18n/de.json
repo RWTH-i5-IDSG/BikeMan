@@ -12,10 +12,12 @@
                 "tracker": "User tracker",
                 "metrics": "Metriken",
                 "logs": "Logs",
+                "applicationLogs": "Application Logs",
                 "audits": "Audits",
                 "login": "Anmelden",
                 "logout": "Abmelden",
-                "apidocs": "API"
+                "apidocs": "API",
+                "monitor": "IXSI Monitor"
             },
             "management": {
                 "title": "Verwaltung",
@@ -45,6 +47,15 @@
             "majorcustomerlog" : {
                 "title": "Fahrtenbuch Großkunden"
             },
+            "fleetmanagerlog" : {
+                "title": "Fahrtenbuch Fuhrparkmanager"
+            },
+            "error" : {
+                "errors" : "Errors",
+                "pedelecErrors" : "Pedelec Errors",
+                "stationErrors" : "Station Errors",
+                "errorHistory" : "Error Verlauf"
+            },
             "admin": "Administration",
             "language": "Sprache"
         },
@@ -68,11 +79,13 @@
         "title": "Kartenkonten",
         "addModal": {
             "title": "Kartenkonto hinzufügen",
+            "titleBatch": "Gruppe von Kartenkonten hinzufügen",
             "cardId": "Karten-ID",
             "cardPin": "Karten-PIN",
             "buttons": {
                 "cancel": "Abbrechen",
-                "add": "Hinzufügen"
+                "add": "Hinzufügen",
+                "addBatch": "Füge mehrere Karten hinzu"
             }
         },
         "deleteModal": {
@@ -93,7 +106,8 @@
             }
         },
         "buttons": {
-            "add": "Kartenkonto hinzufügen"
+            "add": "Kartenkonto hinzufügen",
+            "addBatch": "Füge mehrere Karten hinzu"
         }
     },
     "stations": {
@@ -164,8 +178,9 @@
         "table": {
             "title": "Stationsstellplätze",
             "header": {
+                "slotPosition": "Position",
                 "manufacturerId": "Hersteller ID",
-                "available": "Verfügbar",
+                "occupied": "Besetzt",
                 "state": "Status",
                 "pedelec": "Pedelec (Hersteller ID)"
             }
@@ -213,6 +228,14 @@
             },
             "enable": "Aktivieren",
             "disable": "Deaktivieren"
+        },
+        "unlockModal": {
+            "title": "Slot Freischalten - Unlock Slot",
+            "body": "Bist du sicher, dass du den Slot freischalten möchtest?",
+            "buttons": {
+                "cancel": "Abbrechen",
+                "unlock": "Freischalten"
+            }
         }
     },
     "customers": {
@@ -287,6 +310,7 @@
                 "password": "Passwort",
                 "cardId": "Karten-ID",
                 "cardPin": "Karten-PIN",
+                "cardOperationState": "Karten-Zustand",
                 "tariff": "Tarif",
                 "name": "Name",
                 "address": {
@@ -437,8 +461,10 @@
                 "manufacturerId": "Hersteller-ID",
                 "stateOfCharge": "Ladezustand",
                 "state": "Status",
-                "station": "Station (Stellplatz)",
-                "customer": "Kunde"
+                "station": "Aktueller Standort",
+                "customer": "Kunde",
+                "lastChargingUpdate": "letztes Ladeupdate",
+                "chargingState": "Ladezustand"
             },
             "body": {
                 "details": "Details"
@@ -468,6 +494,8 @@
             "table": {
                 "header": {
                     "customer": "Kunde",
+                    "fleetManagerLogin": "Fuhrparkmanager Login",
+                    "cardId": "KartenID",
                     "pedelec": "Pedelec",
                     "startTime": "Startzeit",
                     "endTime": "Endzeit",
@@ -506,11 +534,16 @@
         "table": {
             "header": {
                 "customer": "Hersteller",
+                "fleetManagerLogin": "Fuhrparkmanager Login",
+                "cardId" : "KartenID",
                 "pedelec": "Pedelec",
                 "startTime": "Startzeit",
                 "endTime": "Endzeit",
                 "fromLocation": "Von Ort",
                 "toLocation": "Nach Ort"
+            },
+            "body": {
+                "kill": "Kill"
             }
         }
     },

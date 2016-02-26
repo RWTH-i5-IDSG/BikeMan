@@ -1,370 +1,44 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" logicalFilePath="none"
-                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
-    <changeSet author="jhipster" id="1409564974607-8" logicalFilePath="none">
-        <addColumn tableName="T_STATION">
-            <column name="firmware_version" type="varchar(255)"/>
-        </addColumn>
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1409564974610-01" author="goekay">
+        <dropColumn tableName="T_CUSTOMER" columnName="in_transaction"/>
     </changeSet>
 
-    <changeSet author="jhipster" id="1409564974607-9" logicalFilePath="none">
-        <addColumn tableName="T_STATION">
-            <column name="error_code" type="varchar(255)"/>
-        </addColumn>
-    </changeSet>
-    <changeSet author="jhipster" id="1409564974607-10" logicalFilePath="none">
-        <addColumn tableName="T_STATION">
-            <column name="error_info" type="varchar(255)"/>
-        </addColumn>
-    </changeSet>
-
-    <changeSet author="jhipster" id="1409564974607-11" logicalFilePath="none">
-        <addColumn tableName="T_PEDELEC">
-            <column name="error_code" type="varchar(255)"/>
-        </addColumn>
-    </changeSet>
-    <changeSet author="jhipster" id="1409564974607-12" logicalFilePath="none">
-        <addColumn tableName="T_PEDELEC">
-            <column name="error_info" type="varchar(255)"/>
-        </addColumn>
-    </changeSet>
-
-    <changeSet author="jhipster" id="1409564974607-13" logicalFilePath="none">
-        <addColumn tableName="T_STATION_SLOT">
-            <column name="error_code" type="varchar(255)"/>
-        </addColumn>
-    </changeSet>
-    <changeSet author="jhipster" id="1409564974607-14" logicalFilePath="none">
-        <addColumn tableName="T_STATION_SLOT">
-            <column name="error_info" type="varchar(255)"/>
-        </addColumn>
-    </changeSet>
-
-    <changeSet id="1409564974607-15" author="wkluth" logicalFilePath="none">
-        <createTable tableName="T_CARD_ACCOUNT">
-            <column name="card_account_id" type="INT8">
-                <constraints nullable="false"/>
-            </column>
-            <column name="card_id" type="varchar(255)"/>
-            <column name="card_pin" type="INT"/>
-            <column name="in_transaction" type="BOOLEAN"/>
-            <column name="user_id" type="INT8"/>
-
-        </createTable>
-
-        <addColumn tableName="T_TRANSACTION">
+    <changeSet id="1409564974610-02" author="mwiederhold">
+        <createTable tableName="T_TRANSACTION_EVENT" schemaName="public">
+            <column name="transaction_event_id" type="INT8"/>
+            <column name="arrived_timestamp" type="timestamp"/>
+            <column name="type" type="VARCHAR(255)"/>
+            <column name="status" type="VARCHAR(255)"/>
+            <column name="timestamp" type="timestamp"/>
             <column name="card_account_id" type="INT8"/>
-        </addColumn>
-
-        <addPrimaryKey columnNames="card_account_id" constraintName="T_CARDACCPK" schemaName="public"
-                       tableName="T_CARD_ACCOUNT"/>
-
-        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="T_CARD_ACCOUNT" baseTableSchemaName="public"
-                                 constraintName="FK_USER_CARDACC" deferrable="false" initiallyDeferred="false"
-                                 referencedColumnNames="user_id" referencedTableCatalogName=""
-                                 referencedTableName="T_USER" referencedTableSchemaName="public"/>
-
-        <addForeignKeyConstraint baseColumnNames="card_account_id" baseTableName="T_TRANSACTION"
-                                 baseTableSchemaName="public" constraintName="FK_CARDACC_TRANSACTION" deferrable="false"
-                                 initiallyDeferred="false" referencedColumnNames="card_account_id"
-                                 referencedTableCatalogName="" referencedTableName="T_CARD_ACCOUNT"
-                                 referencedTableSchemaName="public"/>
-
-    </changeSet>
-
-    <changeSet id="1409564974607-16" author="wkluth">
-        <addColumn tableName="T_STATION">
-            <column name="endpoint_address" type="varchar(255)"/>
-        </addColumn>
-
-        <createTable tableName="T_MAJOR_CUSTOMER">
-            <column name="user_id" type="INT8"/>
-        </createTable>
-
-        <addPrimaryKey tableName="T_MAJOR_CUSTOMER" columnNames="user_id"/>
-        <addForeignKeyConstraint baseTableName="T_MAJOR_CUSTOMER" baseColumnNames="user_id"
-                                 constraintName="FK_MAJORCUSTOMER_MANAGER"
-                                 referencedTableName="T_MANAGER"
-                                 referencedColumnNames="user_id"/>
-    </changeSet>
-
-    <changeSet author="jhipster" id="1409564974607-17" logicalFilePath="none">
-        <addColumn tableName="T_USER">
-            <column name="created" type="timestamp"/>
-        </addColumn>
-        <addColumn tableName="T_USER">
-            <column name="updated" type="timestamp"/>
-        </addColumn>
-    </changeSet>
-
-    <changeSet author="jhipster" id="1409564974607-18" logicalFilePath="none">
-        <addColumn tableName="T_PEDELEC">
-            <column name="created" type="timestamp"/>
-        </addColumn>
-        <addColumn tableName="T_PEDELEC">
-            <column name="updated" type="timestamp"/>
-        </addColumn>
-    </changeSet>
-
-    <changeSet author="jhipster" id="1409564974607-19" logicalFilePath="none">
-        <addColumn tableName="T_STATION">
-            <column name="created" type="timestamp"/>
-        </addColumn>
-        <addColumn tableName="T_STATION">
-            <column name="updated" type="timestamp"/>
-        </addColumn>
-    </changeSet>
-
-    <changeSet id="1409564974607-20" author="wkluth">
-        <addColumn tableName="T_CARD_ACCOUNT">
-            <column name="owner_type" type="VARCHAR(255)"></column>
-        </addColumn>
-
-        <dropTable tableName="T_MAJOR_CUSTOMER"></dropTable>
-
-        <createTable tableName="T_MAJOR_CUSTOMER">
-            <column name="user_id" type="INT8">
-                <constraints nullable="false"/>
-            </column>
-            <column name="name" type="VARCHAR(255)"></column>
-        </createTable>
-
-        <addPrimaryKey columnNames="user_id" constraintName="T_MAJORCUSTOMERPK" schemaName="public"
-                       tableName="T_MAJOR_CUSTOMER"/>
-        <addForeignKeyConstraint baseTableName="T_MAJOR_CUSTOMER" baseColumnNames="user_id"
-                                 constraintName="FK_MAJORCUSTOMER_USER"
-                                 referencedTableName="T_USER"
-                                 referencedColumnNames="user_id"/>
-    </changeSet>
-
-    <changeSet id="1409564974607-21" author="wkluth">
-        <addColumn tableName="T_CARD_ACCOUNT">
-            <column name="operation_state" type="VARCHAR(255)"></column>
-        </addColumn>
-    </changeSet>
-
-
-    <changeSet id="1409564974607-22" author="wkluth">
-        <modifyDataType tableName="T_CARD_ACCOUNT" columnName="card_pin" newDataType="VARCHAR(255)"/>
-    </changeSet>
-
-    <changeSet id="1409564974607-23" author="wkluth">
-        <addUniqueConstraint tableName="T_CARD_ACCOUNT" columnNames="card_id"/>
-    </changeSet>
-
-    <changeSet id="1409564974607-25" author="wkluth">
-        <addColumn tableName="T_CARD_ACCOUNT">
-            <column name="created" type="timestamp"/>
-        </addColumn>
-        <addColumn tableName="T_CARD_ACCOUNT">
-            <column name="updated" type="timestamp"/>
-        </addColumn>
-    </changeSet>
-
-    <changeSet id="1409564974607-26" author="wkluth">
-        <createIndex tableName="T_USER" indexName="idx_user_login">
-            <column name="login"></column>
-        </createIndex>
-    </changeSet>
-
-    <changeSet id="1409564974607-27" author="sgoekay">
-        <createTable tableName="IXSI_TOKEN">
-            <column name="token_id" type="INT8">
-                <constraints primaryKey="true" nullable="false"></constraints>
-            </column>
-            <column name="token_value" type="VARCHAR(255)"/>
-            <column name="customer_id" type="VARCHAR(255)"/>
-            <column name="created" type="timestamp"/>
-            <column name="last_used" type="timestamp"/>
-        </createTable>
-
-        <addForeignKeyConstraint baseTableName="IXSI_TOKEN" baseColumnNames="customer_id"
-                                 constraintName="fk_ixsi_token_customer"
-                                 referencedTableName="T_CUSTOMER"
-                                 referencedColumnNames="customer_id"/>
-    </changeSet>
-
-    <changeSet id="1409564974607-28" author="wkluth">
-        <dropColumn tableName="T_CUSTOMER" columnName="card_id"/>
-        <dropColumn tableName="T_CUSTOMER" columnName="card_pin"/>
-    </changeSet>
-
-    <changeSet id="1409564974607-29" author="sgoekay">
-        <dropColumn tableName="IXSI_TOKEN" columnName="customer_id"/>
-        <addColumn tableName="IXSI_TOKEN">
-            <column name="user_id" type="INT8"/>
-        </addColumn>
-        <addForeignKeyConstraint baseTableName="IXSI_TOKEN" baseColumnNames="user_id"
-                                 constraintName="fk_ixsi_token_user_id"
-                                 referencedTableName="T_USER"
-                                 referencedColumnNames="user_id"/>
-
-    </changeSet>
-
-    <changeSet id="1409564974607-30" author="sgoekay">
-        <createTable tableName="IXSI_CLIENT_SYSTEM">
-            <column name="system_id" type="VARCHAR(255)">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="ip_address" type="VARCHAR(255)">
-                <constraints nullable="false" unique="true"/>
-            </column>
-        </createTable>
-    </changeSet>
-
-    <changeSet id="1409564974607-31" author="wkluth">
-        <dropForeignKeyConstraint baseTableName="T_TRANSACTION" constraintName="FK_eknl11x7ke9v1lbonnw3dnx5h"/>
-        <dropIndex tableName="T_TRANSACTION" indexName="idx_t_transaction_user_id"/>
-        <dropColumn tableName="T_TRANSACTION" columnName="user_id"/>
-    </changeSet>
-
-    <changeSet id="1409564974607-32" author="mwiederhold">
-        <createTable tableName="T_RESERVATION" schemaName="public">
-            <column name="reservation_id" type="INT8">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="card_account_id" type="INT8"/>
-            <column name="start_datetime" type="timestamp"/>
-            <column name="end_datetime" type="timestamp"/>
+            <column name="station_slot_id" type="INT8"/>
             <column name="pedelec_id" type="INT8"/>
         </createTable>
 
-        <addForeignKeyConstraint baseColumnNames="card_account_id" baseTableName="T_RESERVATION"
-                                 baseTableSchemaName="public"
-                                 constraintName="FK_CARDACC_RESERVATION" deferrable="false" initiallyDeferred="false"
-                                 referencedColumnNames="card_account_id" referencedTableName="T_CARD_ACCOUNT"
+        <addPrimaryKey catalogName="" columnNames="transaction_event_id" constraintName="PK_T_TRANSACTION_EVENT"
+                       schemaName="public" tableName="T_TRANSACTION_EVENT"/>
+
+        <addForeignKeyConstraint baseColumnNames="card_account_id" baseTableCatalogName="" baseTableName="T_TRANSACTION_EVENT"
+                                 baseTableSchemaName="public" constraintName="FK_T_TRANSACTION_EVENT_card_account_id"
+                                 deferrable="false" initiallyDeferred="false" referencedColumnNames="card_account_id"
+                                 referencedTableCatalogName="" referencedTableName="T_CARD_ACCOUNT"
+                                 referencedTableSchemaName="public"/>
+        <addForeignKeyConstraint baseColumnNames="station_slot_id" baseTableCatalogName="" baseTableName="T_TRANSACTION_EVENT"
+                                 baseTableSchemaName="public" constraintName="FK_T_TRANSACTION_EVENT_station_slot_id"
+                                 deferrable="false" initiallyDeferred="false" referencedColumnNames="station_slot_id"
+                                 referencedTableCatalogName="" referencedTableName="T_STATION_SLOT"
+                                 referencedTableSchemaName="public"/>
+        <addForeignKeyConstraint baseColumnNames="pedelec_id" baseTableCatalogName="" baseTableName="T_TRANSACTION_EVENT"
+                                 baseTableSchemaName="public" constraintName="FK_T_TRANSACTION_EVENT_pedelec_id"
+                                 deferrable="false" initiallyDeferred="false" referencedColumnNames="pedelec_id"
+                                 referencedTableCatalogName="" referencedTableName="T_PEDELEC"
                                  referencedTableSchemaName="public"/>
 
-        <addForeignKeyConstraint baseColumnNames="pedelec_id" baseTableName="T_RESERVATION" baseTableSchemaName="public"
-                                 constraintName="FK_PEDELEC_RESERVATION" deferrable="false" initiallyDeferred="false"
-                                 referencedColumnNames="pedelec_id" referencedTableName="T_PEDELEC"
-                                 referencedTableSchemaName="public"/>
-    </changeSet>
-
-    <changeSet id="1409564974607-33" author="mwiederhold">
-        <createTable tableName="T_BOOKING" schemaName="public">
-            <column name="booking_id" type="INT8">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="reservation_id" type="INT8"/>
-            <column name="transaction_id" type="INT8"/>
-        </createTable>
-
-        <addForeignKeyConstraint baseColumnNames="reservation_id" baseTableName="T_BOOKING" baseTableSchemaName="public"
-                                 constraintName="FK_RESERVATION_BOOKING" deferrable="false" initiallyDeferred="false"
-                                 referencedColumnNames="reservation_id" referencedTableName="T_RESERVATION"
-                                 referencedTableSchemaName="public"/>
-
-        <addForeignKeyConstraint baseColumnNames="transaction_id" baseTableName="T_BOOKING" baseTableSchemaName="public"
-                                 constraintName="FK_TRANSACTION_BOOKING" deferrable="false" initiallyDeferred="false"
-                                 referencedColumnNames="transaction_id" referencedTableName="T_TRANSACTION"
-                                 referencedTableSchemaName="public"/>
-    </changeSet>
-
-    <changeSet id="1409564974607-34" author="goekay">
-        <dropColumn tableName="IXSI_TOKEN" columnName="user_id"/>
-        <addColumn tableName="IXSI_TOKEN">
-            <column name="card_id" type="varchar(255)"/>
-        </addColumn>
-        <addForeignKeyConstraint baseTableName="IXSI_TOKEN" baseColumnNames="card_id"
-                                 constraintName="FK_IXSI_TOKEN_CARD_ID"
-                                 referencedTableName="T_CARD_ACCOUNT"
-                                 referencedColumnNames="card_id"/>
-
-        <createIndex tableName="T_CARD_ACCOUNT" indexName="idx_card_account_ca_id">
-            <column name="card_id"/>
-        </createIndex>
-    </changeSet>
-
-    <changeSet id="1409564974607-35" author="goekay">
-        <dropColumn tableName="IXSI_TOKEN" columnName="card_id"/>
-        <addColumn tableName="IXSI_TOKEN">
-            <column name="card_account_id" type="INT8"/>
-        </addColumn>
-        <addForeignKeyConstraint baseTableName="IXSI_TOKEN" baseColumnNames="card_account_id"
-                                 constraintName="FK_IXSI_TOKEN_CARD_ACC_ID"
-                                 referencedTableName="T_CARD_ACCOUNT"
-                                 referencedColumnNames="card_account_id"/>
-
-        <dropIndex indexName="idx_card_account_ca_id" tableName="T_CARD_ACCOUNT"/>
-
-    </changeSet>
-
-    <changeSet id="1409564974607-36" author="wkluth">
-        <addColumn tableName="T_CARD_ACCOUNT">
-            <column name="authentication_trial_count" type="INT4"/>
-        </addColumn>
-
-        <createTable tableName="T_TARIFF">
-            <column name="tariff_id" type="INT8">
-                <constraints primaryKey="true" nullable="false"></constraints>
-            </column>
-            <column name="tariff_type" type="VARCHAR(255)"/>
-            <column name="active" type="BOOLEAN"/>
-            <column name="mounthly_rate" type="FLOAT4"/>
-        </createTable>
-    </changeSet>
-
-    <changeSet id="1409564974607-37" author="wkluth">
-        <createTable tableName="T_BOOKED_TARIFF">
-            <column name="booked_tariff_id" type="INT8">
-                <constraints primaryKey="true" nullable="false"></constraints>
-            </column>
-            <column name="tariff_id" type="INT8"/>
-            <column name="booked_from" type="timestamp"/>
-            <column name="booked_until" type="timestamp"/>
-            <column name="created" type="timestamp"/>
-            <column name="updated" type="timestamp"/>
-        </createTable>
-
-        <addForeignKeyConstraint baseTableName="T_BOOKED_TARIFF"
-                                 baseColumnNames="tariff_id"
-                                 constraintName="FK_BOOKED_TARIFF_TARIFF"
-                                 referencedTableName="T_TARIFF"
-                                 referencedColumnNames="tariff_id"/>
-    </changeSet>
-
-    <changeSet id="1409564974607-38" author="wkluth">
-        <addColumn tableName="T_BOOKED_TARIFF">
-            <column name="card_account_id" type="INT8"/>
-        </addColumn>
-
-        <addForeignKeyConstraint baseTableName="T_BOOKED_TARIFF"
-                                 baseColumnNames="card_account_id"
-                                 constraintName="FK_BOOKED_TARIFF_CARD_ACCOUNT"
-                                 referencedTableName="T_CARD_ACCOUNT"
-                                 referencedColumnNames="card_account_id"/>
-    </changeSet>
-
-    <changeSet id="1409564974607-39" author="wkluth">
-        <addColumn tableName="T_BOOKED_TARIFF">
-            <column name="used_card_account_id" type="INT8"/>
-        </addColumn>
-
-        <addForeignKeyConstraint baseTableName="T_BOOKED_TARIFF"
-                                 baseColumnNames="used_card_account_id"
-                                 constraintName="FK_BOOKED_TARIFF_USED_CARD_ACCOUNT"
-                                 referencedTableName="T_CARD_ACCOUNT"
-                                 referencedColumnNames="card_account_id"/>
-    </changeSet>
-
-    <changeSet id="1409564974607-40" author="wkluth">
-        <addColumn tableName="T_TRANSACTION">
-            <column name="booked_tariff_id" type="INT8"/>
-        </addColumn>
-
-        <addForeignKeyConstraint baseTableName="T_TRANSACTION"
-                                 baseColumnNames="booked_tariff_id"
-                                 constraintName="FK_TRANSACTION_BOOKED_TARIFF"
-                                 referencedTableName="T_BOOKED_TARIFF"
-                                 referencedColumnNames="booked_tariff_id"/>
-    </changeSet>
-    
-    <changeSet id="1409564974607-41" author="wkluth">
-        <addColumn tableName="T_CARD_ACCOUNT">
-            <column name="activation_key" type="VARCHAR(255)"/>
-        </addColumn>
     </changeSet>
 
 </databaseChangeLog>

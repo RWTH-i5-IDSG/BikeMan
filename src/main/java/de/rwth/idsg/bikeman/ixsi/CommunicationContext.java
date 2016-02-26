@@ -1,9 +1,9 @@
 package de.rwth.idsg.bikeman.ixsi;
 
-import de.rwth.idsg.bikeman.ixsi.schema.IxsiMessageType;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.web.socket.WebSocketSession;
+import xjc.schema.ixsi.IxsiMessageType;
 
 /**
  * @author Sevket Goekay <goekay@dbis.rwth-aachen.de>

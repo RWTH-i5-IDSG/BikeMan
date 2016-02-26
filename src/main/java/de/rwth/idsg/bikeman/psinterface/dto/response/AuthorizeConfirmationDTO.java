@@ -9,4 +9,6 @@ import lombok.Data;
 @Data
 public class AuthorizeConfirmationDTO {
     private final String cardId;
+    private final Integer actualRentedCount;
+    private final Integer canRentCount;
 }

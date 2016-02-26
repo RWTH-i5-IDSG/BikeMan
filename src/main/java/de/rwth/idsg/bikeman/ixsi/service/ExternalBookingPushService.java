@@ -1,28 +1,24 @@
 package de.rwth.idsg.bikeman.ixsi.service;
 
 import com.google.common.base.Optional;
-import de.rwth.idsg.bikeman.domain.CardAccount;
+import de.rwth.idsg.bikeman.domain.Booking;
 import de.rwth.idsg.bikeman.domain.Transaction;
 import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
 import de.rwth.idsg.bikeman.ixsi.api.Producer;
 import de.rwth.idsg.bikeman.ixsi.impl.ExternalBookingStore;
 import de.rwth.idsg.bikeman.ixsi.repository.IxsiUserRepository;
-import de.rwth.idsg.bikeman.ixsi.schema.BookingTargetIDType;
-import de.rwth.idsg.bikeman.ixsi.schema.ExternalBookingPushMessageType;
-import de.rwth.idsg.bikeman.ixsi.schema.ExternalBookingType;
-import de.rwth.idsg.bikeman.ixsi.schema.IxsiMessageType;
-import de.rwth.idsg.bikeman.ixsi.schema.SubscriptionMessageType;
-import de.rwth.idsg.bikeman.ixsi.schema.TimePeriodType;
-import de.rwth.idsg.bikeman.ixsi.schema.UserInfoType;
-import de.rwth.idsg.bikeman.repository.CardAccountRepository;
-import de.rwth.idsg.bikeman.repository.MajorCustomerRepository;
-import de.rwth.idsg.bikeman.web.rest.dto.view.ViewMajorCustomerDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import xjc.schema.ixsi.BookingTargetIDType;
+import xjc.schema.ixsi.ExternalBookingPushMessageType;
+import xjc.schema.ixsi.ExternalBookingType;
+import xjc.schema.ixsi.IxsiMessageType;
+import xjc.schema.ixsi.SubscriptionMessageType;
+import xjc.schema.ixsi.TimePeriodType;
+import xjc.schema.ixsi.UserInfoType;
 
-import javax.inject.Inject;
 import java.util.Set;
 
 /**
@@ -37,14 +33,14 @@ public class ExternalBookingPushService {
     @Autowired private ExternalBookingStore externalBookingStore;
     @Autowired private IxsiUserRepository ixsiUserRepository;
 
-    public void report(Long bookingId, Transaction transaction) {
+    public void report(Booking booking, Transaction transaction) {
         String cardId = transaction.getCardAccount().getCardId();
         Optional<String> optionalMJ = ixsiUserRepository.getMajorCustomerName(cardId);
 
         if (optionalMJ.isPresent()) {
             UserInfoType userInfo = new UserInfoType()
-                    .withUserID(cardId)
-                    .withProviderID(optionalMJ.get());
+                .withUserID(cardId)
+                .withProviderID(IXSIConstants.Provider.id);
 
             Set<String> subscribed = externalBookingStore.getSubscribedSystems(userInfo);
             if (subscribed.isEmpty()) {
@@ -55,18 +51,18 @@ public class ExternalBookingPushService {
             // TODO improve timeperiodtype creation: default end time
             DateTime dt = transaction.getStartDateTime().toDateTime();
             TimePeriodType time = new TimePeriodType()
-                    .withBegin(dt)
-                    .withEnd(dt.plusHours(6));
+                .withBegin(dt)
+                .withEnd(dt.plusHours(6));
 
             BookingTargetIDType bookingTarget = new BookingTargetIDType()
-                    .withBookeeID(String.valueOf(transaction.getPedelec().getManufacturerId()))
-                    .withProviderID(IXSIConstants.Provider.id);
+                .withBookeeID(String.valueOf(transaction.getPedelec().getManufacturerId()))
+                .withProviderID(IXSIConstants.Provider.id);
 
             ExternalBookingType extBooking = new ExternalBookingType()
-                    .withBookingID(String.valueOf(bookingId))
-                    .withBookingTargetID(bookingTarget)
-                    .withUserInfo(userInfo)
-                    .withTimePeriod(time);
+                .withBookingID(booking.getIxsiBookingId())
+                .withBookingTargetID(bookingTarget)
+                .withUserInfo(userInfo)
+                .withTimePeriod(time);
 
             ExternalBookingPushMessageType bookingPush = new ExternalBookingPushMessageType().withExternalBooking(extBooking);
             SubscriptionMessageType subscriptionMessageType = new SubscriptionMessageType().withPushMessageGroup(bookingPush);

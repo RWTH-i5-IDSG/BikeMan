@@ -1,10 +1,11 @@
 package de.rwth.idsg.bikeman.ixsi.processor.subscription.complete;
 
+import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
 import de.rwth.idsg.bikeman.ixsi.processor.api.SubscriptionRequestMessageProcessor;
-import de.rwth.idsg.bikeman.ixsi.schema.CompleteBookingAlertRequestType;
-import de.rwth.idsg.bikeman.ixsi.schema.CompleteBookingAlertResponseType;
-import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
 import org.springframework.stereotype.Component;
+import xjc.schema.ixsi.CompleteBookingAlertRequestType;
+import xjc.schema.ixsi.CompleteBookingAlertResponseType;
+import xjc.schema.ixsi.ErrorType;
 
 /**
  * @author Sevket Goekay <goekay@dbis.rwth-aachen.de>
@@ -15,9 +16,14 @@ public class CompleteBookingAlertRequestProcessor implements
         SubscriptionRequestMessageProcessor<CompleteBookingAlertRequestType, CompleteBookingAlertResponseType> {
 
     @Override
+    public Class<CompleteBookingAlertRequestType> getProcessingClass() {
+        return CompleteBookingAlertRequestType.class;
+    }
+
+    @Override
     public CompleteBookingAlertResponseType process(CompleteBookingAlertRequestType request, String systemId) {
         // TODO FUTURE
-        return null;
+        return buildError(ErrorFactory.Sys.notImplemented(null, null));
     }
 
     // -------------------------------------------------------------------------
@@ -26,6 +32,8 @@ public class CompleteBookingAlertRequestProcessor implements
 
     @Override
     public CompleteBookingAlertResponseType buildError(ErrorType e) {
-        return new CompleteBookingAlertResponseType().withError(e);
+        return new CompleteBookingAlertResponseType()
+            .withError(e)
+            .withMessageBlockID("none");
     }
 }

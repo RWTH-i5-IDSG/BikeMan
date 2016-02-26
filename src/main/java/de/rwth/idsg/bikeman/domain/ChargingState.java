@@ -5,5 +5,6 @@ package de.rwth.idsg.bikeman.domain;
  */
 public enum ChargingState {
     CHARGING,
-    COMPLETED
+    COMPLETED,
+    NOT_CHARGING
 }

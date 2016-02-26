@@ -1,9 +1,14 @@
 package de.rwth.idsg.bikeman.psinterface.dto.request;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import de.rwth.idsg.bikeman.psinterface.UnixTimestampDeserializer;
+import de.rwth.idsg.bikeman.psinterface.UnixTimestampSerializer;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Builder;
+import org.joda.time.DateTime;
 
 /**
  * Created by swam on 31/07/14.
@@ -17,5 +22,8 @@ public class StopTransactionDTO {
     private String pedelecManufacturerId;
     private String stationManufacturerId;
     private String slotManufacturerId;
-    private Long timestamp;
+
+    @JsonDeserialize(using = UnixTimestampDeserializer.class)
+    @JsonSerialize(using = UnixTimestampSerializer.class)
+    private DateTime timestamp;
 }

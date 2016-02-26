@@ -1,7 +1,7 @@
 package de.rwth.idsg.bikeman.ixsi.impl;
 
-import de.rwth.idsg.bikeman.ixsi.schema.BookingTargetIDType;
 import org.springframework.stereotype.Service;
+import xjc.schema.ixsi.BookingTargetIDType;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;

@@ -1,19 +1,20 @@
 package de.rwth.idsg.bikeman.ixsi.processor.query.user;
 
 import com.google.common.base.Optional;
+import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
 import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
-import de.rwth.idsg.bikeman.ixsi.dto.query.PlaceAvailabilityResponseDTO;
+import de.rwth.idsg.bikeman.ixsi.dto.PlaceAvailabilityResponseDTO;
 import de.rwth.idsg.bikeman.ixsi.processor.api.UserRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.repository.QueryIXSIRepository;
-import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
-import de.rwth.idsg.bikeman.ixsi.schema.Language;
-import de.rwth.idsg.bikeman.ixsi.schema.PlaceAvailabilityRequestType;
-import de.rwth.idsg.bikeman.ixsi.schema.PlaceAvailabilityResponseType;
-import de.rwth.idsg.bikeman.ixsi.schema.PlaceAvailabilityType;
-import de.rwth.idsg.bikeman.ixsi.schema.ProviderPlaceIDType;
-import de.rwth.idsg.bikeman.ixsi.schema.UserInfoType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import xjc.schema.ixsi.ErrorType;
+import xjc.schema.ixsi.Language;
+import xjc.schema.ixsi.PlaceAvailabilityRequestType;
+import xjc.schema.ixsi.PlaceAvailabilityResponseType;
+import xjc.schema.ixsi.PlaceAvailabilityType;
+import xjc.schema.ixsi.ProviderPlaceIDType;
+import xjc.schema.ixsi.UserInfoType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +28,11 @@ public class PlaceAvailabilityRequestProcessor implements
         UserRequestProcessor<PlaceAvailabilityRequestType, PlaceAvailabilityResponseType> {
 
     @Autowired private QueryIXSIRepository queryIXSIRepository;
+
+    @Override
+    public Class<PlaceAvailabilityRequestType> getProcessingClass() {
+        return PlaceAvailabilityRequestType.class;
+    }
 
     @Override
     public PlaceAvailabilityResponseType processAnonymously(PlaceAvailabilityRequestType request, Optional<Language> lan) {
@@ -50,13 +56,11 @@ public class PlaceAvailabilityRequestProcessor implements
         return new PlaceAvailabilityResponseType().withPlace(getPlaceAvailabilities(dtos));
     }
 
-    /**
-     * This method has to validate the user infos !!!!
-     */
     @Override
     public PlaceAvailabilityResponseType processForUser(PlaceAvailabilityRequestType request, Optional<Language> lan,
-                                                        List<UserInfoType> userInfoList) {
-        return null;
+                                                        UserInfoType userInfo) {
+        // TODO
+        return buildError(ErrorFactory.Sys.notImplemented(null, null));
     }
 
     public List<PlaceAvailabilityType> getPlaceAvailabilities(List<PlaceAvailabilityResponseDTO> dtoList) {

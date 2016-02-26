@@ -4,30 +4,42 @@
 module.exports = function (config) {
     config.set({
         // base path, that will be used to resolve files and exclude
-        basePath: '../../..',
+        basePath: '../../',
 
         // testing framework to use (jasmine/mocha/qunit/...)
         frameworks: ['jasmine'],
 
         // list of files / patterns to load in the browser
         files: [
-            'src/main/webapp/bower_components/modernizr/modernizr.js',
-            'src/main/webapp/bower_components/jquery/jquery.js',
-            'src/main/webapp/bower_components/angular/angular.js',
-            'src/main/webapp/bower_components/angular-mocks/angular-mocks.js',
-            'src/main/webapp/bower_components/angular-route/angular-route.js',
-            'src/main/webapp/bower_components/angular-resource/angular-resource.js',
-            'src/main/webapp/bower_components/angular-cookies/angular-cookies.js',
-            'src/main/webapp/bower_components/angular-sanitize/angular-sanitize.js',
-            'src/main/webapp/bower_components/angular-translate/angular-translate.js',
-            'src/main/webapp/bower_components/angular-translate-storage-cookie/angular-translate-storage-cookie.js',
-            'src/main/webapp/bower_components/angular-translate-loader-static-files/angular-translate-loader-static-files.js',
-            'src/main/webapp/bower_components/angular-dynamic-locale/src/tmhDinamicLocale.js',
-            'src/main/webapp/bower_components/angular-ui-router/release/angular-ui-router.js',
-            'src/main/webapp/scripts/*.js',
-            'src/main/webapp/scripts/**/*.js',
-            'src/test/javascript/**/!(karma.conf).js'
+            // bower:js
+            'main/webapp/bower_components/modernizr/modernizr.js',
+            'main/webapp/bower_components/jquery/dist/jquery.js',
+            'main/webapp/bower_components/bootstrap/dist/js/bootstrap.js',
+            'main/webapp/bower_components/json3/lib/json3.js',
+            'main/webapp/bower_components/angular/angular.js',
+            'main/webapp/bower_components/angular-ui-router/release/angular-ui-router.js',
+            'main/webapp/bower_components/angular-resource/angular-resource.js',
+            'main/webapp/bower_components/angular-cookies/angular-cookies.js',
+            'main/webapp/bower_components/angular-sanitize/angular-sanitize.js',
+            'main/webapp/bower_components/angular-translate/angular-translate.js',
+            'main/webapp/bower_components/angular-translate-storage-cookie/angular-translate-storage-cookie.js',
+            'main/webapp/bower_components/angular-translate-loader-partial/angular-translate-loader-partial.js',
+            'main/webapp/bower_components/angular-dynamic-locale/src/tmhDynamicLocale.js',
+            'main/webapp/bower_components/angular-local-storage/dist/angular-local-storage.js',
+            'main/webapp/bower_components/angular-cache-buster/angular-cache-buster.js',
+            'main/webapp/bower_components/ngInfiniteScroll/build/ng-infinite-scroll.js',
+            'main/webapp/bower_components/angular-bootstrap-show-errors/src/showErrors.js',
+            'main/webapp/bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
+            'main/webapp/bower_components/angular-loading-bar/build/loading-bar.js',
+            'main/webapp/bower_components/angular-smart-table/dist/smart-table.js',
+            'main/webapp/bower_components/angular-mocks/angular-mocks.js',
+            // endbower
+            'main/webapp/scripts/app/app.js',
+            'main/webapp/scripts/app/**/*.js',
+            'main/webapp/scripts/components/**/*.js',
+            'test/javascript/**/!(karma.conf).js'
         ],
+
 
         // list of files / patterns to exclude
         exclude: [],

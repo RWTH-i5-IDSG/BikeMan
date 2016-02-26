@@ -1,9 +1,9 @@
 package de.rwth.idsg.bikeman.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import de.rwth.idsg.bikeman.domain.login.Authority;
-import de.rwth.idsg.bikeman.domain.login.PersistentToken;
-import de.rwth.idsg.bikeman.domain.login.User;
+import de.rwth.idsg.bikeman.domain.Authority;
+import de.rwth.idsg.bikeman.domain.PersistentToken;
+import de.rwth.idsg.bikeman.domain.User;
 import de.rwth.idsg.bikeman.repository.PersistentTokenRepository;
 import de.rwth.idsg.bikeman.repository.UserRepository;
 import de.rwth.idsg.bikeman.security.AuthoritiesConstants;
@@ -28,7 +28,7 @@ import java.util.List;
  * REST controller for managing the current user's account.
  */
 @RestController
-@RequestMapping("/app")
+@RequestMapping("/api")
 @Slf4j
 public class AccountResource {
 
@@ -42,11 +42,11 @@ public class AccountResource {
     private PersistentTokenRepository persistentTokenRepository;
 
     /**
-     * GET  /rest/authenticate -> check if the user is authenticated, and return its login.
+     * GET  /authenticate -> check if the user is authenticated, and return its login.
      */
-    @RequestMapping(value = "/rest/authenticate",
-            method = RequestMethod.GET,
-            produces = "application/json")
+    @RequestMapping(value = "/authenticate",
+        method = RequestMethod.GET,
+        produces = "application/json")
     @Timed
     public String isAuthenticated(HttpServletRequest request) {
         log.debug("REST request to check if the current user is authenticated");
@@ -54,11 +54,11 @@ public class AccountResource {
     }
 
     /**
-     * GET  /rest/account -> get the current user.
+     * GET  /account -> get the current user.
      */
-    @RequestMapping(value = "/rest/account",
-            method = RequestMethod.GET,
-            produces = "application/json")
+    @RequestMapping(value = "/account",
+        method = RequestMethod.GET,
+        produces = "application/json")
     @Timed
     public UserDTO getAccount(HttpServletResponse response) {
         User user = userService.getUserWithAuthorities();
@@ -66,31 +66,31 @@ public class AccountResource {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             return null;
         }
-		List<String> roles = new ArrayList<>();
-		for (Authority authority : user.getAuthorities()) {
-		    roles.add(authority.getName());
-		}
+        List<String> roles = new ArrayList<>();
+        for (Authority authority : user.getAuthorities()) {
+            roles.add(authority.getName());
+        }
 
         return new UserDTO(user.getLogin(), roles);
     }
 
     /**
-     * POST  /rest/account -> update the current user information.
+     * POST  /account -> update the current user information.
      */
-    @RequestMapping(value = "/rest/account",
-            method = RequestMethod.POST,
-            produces = "application/json")
+    @RequestMapping(value = "/account",
+        method = RequestMethod.POST,
+        produces = "application/json")
     @Timed
     public void saveAccount(@RequestBody UserDTO userDTO) throws IOException {
         userService.updateUserInformation(userDTO.getLogin());
     }
 
     /**
-     * POST  /rest/change_password -> changes the current user's password
+     * POST  /change_password -> changes the current user's password
      */
-    @RequestMapping(value = "/rest/account/change_password",
-            method = RequestMethod.POST,
-            produces = "application/json")
+    @RequestMapping(value = "/account/change_password",
+        method = RequestMethod.POST,
+        produces = "application/json")
     @Timed
     public void changePassword(@RequestBody String password, HttpServletResponse response) throws IOException {
         if (password == null || password.equals("")) {
@@ -101,12 +101,12 @@ public class AccountResource {
     }
 
     /**
-     * GET  /rest/account/sessions -> get the current open sessions.
+     * GET  /account/sessions -> get the current open sessions.
      */
     @RolesAllowed(AuthoritiesConstants.ADMIN)
-    @RequestMapping(value = "/rest/account/sessions",
-            method = RequestMethod.GET,
-            produces = "application/json")
+    @RequestMapping(value = "/account/sessions",
+        method = RequestMethod.GET,
+        produces = "application/json")
     @Timed
     public List<PersistentToken> getCurrentSessions(HttpServletResponse response) {
 //        User user = userRepository.findByLogin(SecurityUtils.getCurrentLogin());
@@ -119,7 +119,7 @@ public class AccountResource {
     }
 
     /**
-     * DELETE  /rest/account/sessions?series={series} -> invalidate an existing session.
+     * DELETE  /account/sessions?series={series} -> invalidate an existing session.
      *
      * - You can only delete your own sessions, not any other user's session
      * - If you delete one of your existing sessions, and that you are currently logged in on that session, you will
@@ -131,8 +131,8 @@ public class AccountResource {
      *   There is an API to invalidate the current session, but there is no API to check which session uses which
      *   cookie.
      */
-    @RequestMapping(value = "/rest/account/sessions/{series}",
-            method = RequestMethod.DELETE)
+    @RequestMapping(value = "/account/sessions/{series}",
+        method = RequestMethod.DELETE)
     @Timed
     public void invalidateSession(@PathVariable String series, HttpServletRequest request) throws UnsupportedEncodingException {
         String decodedSeries = URLDecoder.decode(series, "UTF-8");
@@ -140,9 +140,9 @@ public class AccountResource {
         User user = userRepository.findByLoginIgnoreCase(SecurityUtils.getCurrentLogin());
         List<PersistentToken> persistentTokens = persistentTokenRepository.findByUser(user);
         for (PersistentToken persistentToken : persistentTokens) {
-		    if (StringUtils.equals(persistentToken.getSeries(), decodedSeries)) {
+            if (StringUtils.equals(persistentToken.getSeries(), decodedSeries)) {
                 persistentTokenRepository.delete(decodedSeries);
-			}
+            }
         }
     }
 }

@@ -1,18 +1,18 @@
 package de.rwth.idsg.bikeman.config;
 
-import de.rwth.idsg.bikeman.ApplicationConfig;
 import de.rwth.idsg.bikeman.ixsi.HandshakeInterceptor;
+import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
 import de.rwth.idsg.bikeman.ixsi.WebSocketEndpoint;
 import de.rwth.idsg.bikeman.ixsi.repository.SystemValidator;
-import de.rwth.idsg.bikeman.ixsi.schema.IxsiMessageType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
+import org.springframework.web.socket.server.standard.ServletServerContainerFactoryBean;
+import xjc.schema.ixsi.IxsiMessageType;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -24,17 +24,26 @@ import javax.xml.datatype.DatatypeFactory;
  */
 @EnableWebSocket
 @Configuration
-@ComponentScan("de.rwth.idsg.bikeman.ixsi")
 @Slf4j
 public class IxsiConfiguration implements WebSocketConfigurer {
 
+    public static final String WS_ENDPOINT  = "/ws";
+    public static final String SYSTEM_ID_KEY = "systemId";
+    
     @Autowired private WebSocketEndpoint webSocketEndpoint;
     @Autowired private SystemValidator systemValidator;
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(webSocketEndpoint, ApplicationConfig.IXSI.WS_ENDPOINT)
+        registry.addHandler(webSocketEndpoint, WS_ENDPOINT).setAllowedOrigins("*")
                 .addInterceptors(new HandshakeInterceptor(systemValidator));
+    }
+
+    @Bean
+    public ServletServerContainerFactoryBean createWebSocketContainer() {
+        ServletServerContainerFactoryBean container = new ServletServerContainerFactoryBean();
+        container.setMaxTextMessageBufferSize(IXSIConstants.MAX_TEXT_MSG_SIZE);
+        return container;
     }
 
     @Bean

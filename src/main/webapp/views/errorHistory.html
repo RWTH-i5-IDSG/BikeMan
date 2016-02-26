@@ -1,0 +1,49 @@
+<div>
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">Error History</h1>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table st-table="errorHistory" st-safe-src="sfErrorHistory" class="table table-striped">
+            <thead>
+            <tr>
+                <th>Timestamp</th>
+                <th>Error Type</th>
+                <th>ManufacturerId</th>
+                <th>Error Code</th>
+                <th>Error Info</th>
+            </tr>
+            <tr>
+                <th></th>
+                <th>
+                    <select class="form-control input-sm" st-search="errorType">
+                        <option value="">All</option>
+                        <option value="pedelec">PEDELEC</option>
+                        <option value="station">STATION</option>
+                        <option value="slot">SLOT</option>
+                    </select>
+                </th>
+                <th>
+                    <input st-search="manufacturerId" placeholder="search for ID"
+                           class="input-sm form-control" type="search"/>
+                </th>
+                <th></th>
+                <th></th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr ng-repeat="error in errorHistory">
+                <td>{{error.createdAt | date:'d.M.yy - HH:mm:ss'}}</td>
+                <td>{{error.errorType}}</td>
+                <td>{{error.manufacturerId}}</td>
+                <td>{{error.errorCode}}</td>
+                <td>{{error.errorInfo}}</td>
+            </tr>
+
+            </tbody>
+        </table>
+    </div>
+</div>

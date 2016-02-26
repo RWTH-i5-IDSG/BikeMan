@@ -1,9 +1,9 @@
 package de.rwth.idsg.bikeman.psinterface.exception;
 
-import de.rwth.idsg.bikeman.psinterface.Utils;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.HibernateException;
+import org.joda.time.DateTime;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -39,8 +39,8 @@ public class PsExceptionHandler {
         }
 
         PsExceptionMessage msg = new PsExceptionMessage(
-                Utils.nowInSeconds(),
-                errorCode.name(),
+                DateTime.now(),
+                errorCode,
                 e.getMessage()
         );
         return new ResponseEntity<>(msg, status);
@@ -52,8 +52,8 @@ public class PsExceptionHandler {
 
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
         PsExceptionMessage msg = new PsExceptionMessage(
-                Utils.nowInSeconds(),
-                PsErrorCode.DATABASE_OPERATION_FAILED.name(),
+                DateTime.now(),
+                PsErrorCode.DATABASE_OPERATION_FAILED,
                 e.getMessage()
         );
         return new ResponseEntity<>(msg, status);
@@ -69,8 +69,8 @@ public class PsExceptionHandler {
 
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
         PsExceptionMessage msg = new PsExceptionMessage(
-                Utils.nowInSeconds(),
-                PsErrorCode.UNKNOWN_SERVER_ERROR.name(),
+                DateTime.now(),
+                PsErrorCode.UNKNOWN_SERVER_ERROR,
                 e.getMessage()
         );
         return new ResponseEntity<>(msg, status);

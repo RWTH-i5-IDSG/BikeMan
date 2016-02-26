@@ -1,12 +1,14 @@
 package de.rwth.idsg.bikeman.repository;
 
 import de.rwth.idsg.bikeman.config.audit.AuditEventConverter;
-import de.rwth.idsg.bikeman.domain.login.PersistentAuditEvent;
+import de.rwth.idsg.bikeman.domain.PersistentAuditEvent;
 import org.joda.time.LocalDateTime;
 import org.springframework.boot.actuate.audit.AuditEvent;
 import org.springframework.boot.actuate.audit.AuditEventRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import java.util.Date;
@@ -30,20 +32,20 @@ public class CustomAuditEventRepository {
 
             @Override
             public List<AuditEvent> find(String principal, Date after) {
-                final Iterable<PersistentAuditEvent> persistentAuditEvents;
+                Iterable<PersistentAuditEvent> persistentAuditEvents;
                 if (principal == null && after == null) {
                     persistentAuditEvents = persistenceAuditEventRepository.findAll();
                 } else if (after == null) {
                     persistentAuditEvents = persistenceAuditEventRepository.findByPrincipal(principal);
                 } else {
                     persistentAuditEvents =
-                            persistenceAuditEventRepository.findByPrincipalAndAuditEventDateGreaterThan(principal, new LocalDateTime(after));
+                            persistenceAuditEventRepository.findByPrincipalAndAuditEventDateAfter(principal, new LocalDateTime(after));
                 }
-
                 return auditEventConverter.convertToAuditEvent(persistentAuditEvents);
             }
 
             @Override
+            @Transactional(propagation = Propagation.REQUIRES_NEW)
             public void add(AuditEvent event) {
                 PersistentAuditEvent persistentAuditEvent = new PersistentAuditEvent();
                 persistentAuditEvent.setPrincipal(event.getPrincipal());

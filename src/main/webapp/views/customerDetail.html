@@ -1,16 +1,22 @@
 <div>
 
-    <h2 translate="customerDetail.title" translate-values="{firstname: '{{customer.firstname}}', lastname: '{{customer.lastname}}'}">Customer: {{customer.firstname}} {{customer.lastname}}</h2>
+    <h2 translate="customerDetail.title"
+        translate-values="{firstname: '{{customer.firstname}}', lastname: '{{customer.lastname}}'}">Customer:
+        {{customer.firstname}} {{customer.lastname}}</h2>
 
     <div ng-switch="isEditing">
         <button type="button" ui-sref="customers" class="btn btn-default" ng-disabled="isEditing">
-            <span class="glyphicon glyphicon-arrow-left"></span> <span translate="customerDetail.buttons.back"> Back</span></button>
+            <span class="glyphicon glyphicon-arrow-left"></span> <span
+            translate="customerDetail.buttons.back"> Back</span></button>
         <button type="button" ng-switch-when="false" ng-click="toggleEdit()" class="btn btn-default">
-            <span class="glyphicon glyphicon-pencil"></span> <span translate="customerDetail.buttons.edit"> Edit Customer</span></button>
+            <span class="glyphicon glyphicon-pencil"></span> <span translate="customerDetail.buttons.edit"> Edit Customer</span>
+        </button>
         <button type="button" ng-switch-when="true" ng-click="toggleEdit()" class="btn btn-warning">
-            <span class="glyphicon glyphicon-pencil"></span> <span translate="customerDetail.buttons.cancel"> Cancel</span></button>
+            <span class="glyphicon glyphicon-pencil"></span> <span
+            translate="customerDetail.buttons.cancel"> Cancel</span></button>
         <button type="button" ng-click="saveCustomer()" class="btn btn-primary" ng-show="isEditing">
-            <span class="glyphicon glyphicon-pencil"></span> <span translate="customerDetail.buttons.save"> Save Customer</span></button>
+            <span class="glyphicon glyphicon-pencil"></span> <span translate="customerDetail.buttons.save"> Save Customer</span>
+        </button>
     </div>
 
     <form name="form" role="form" novalidate
@@ -18,9 +24,13 @@
           ng-submit="create()" ng-switch="isEditing">
         <div class="panel-body">
             <div class="form-group" show-errors>
-                <label class="control-label col-md-2" translate="customerCreate.table.header.customerId">Customer ID</label>
+                <label class="control-label col-md-2" translate="customerCreate.table.header.customerId">Customer
+                    ID</label>
+
                 <div class="col-md-10">
-                    <div class="well well-sm remove-margin" ng-switch-when="false" name="customerIdValue">{{customer.customerId}}</div>
+                    <div class="well well-sm remove-margin" ng-switch-when="false" name="customerIdValue">
+                        {{customer.customerId}}
+                    </div>
                     <input type="text" class="form-control" name="customerId" ng-disabled="true"
                            placeholder="{{'customerCreate.table.placeholders.customerId' | translate}}"
                            ng-model="customer.customerId" ng-minlength=1 ng-maxlength=50 required ng-switch-when="true">
@@ -28,16 +38,20 @@
             </div>
             <div class="form-group" show-errors>
                 <label class="control-label col-md-2" translate="customerCreate.table.header.login">Login</label>
+
                 <div class="col-md-10">
-                    <div class="well well-sm remove-margin" ng-switch-when="false"  name="loginValue">{{customer.login}}</div>
+                    <div class="well well-sm remove-margin" ng-switch-when="false" name="loginValue">
+                        {{customer.login}}
+                    </div>
                     <input type="text" class="form-control" name="login"
                            placeholder="{{'customerCreate.table.placeholders.login' | translate}}"
                            ng-model="customer.login" ng-minlength=1 ng-maxlength=50 required
-                            ng-switch-when="true">
+                           ng-switch-when="true">
                 </div>
             </div>
             <div class="form-group" ng-switch-when="true">
                 <label class="control-label col-md-2" translate="customerCreate.table.header.password">Password</label>
+
                 <div class="col-md-10">
                     <input type="password" class="form-control" name="password"
                            placeholder="{{'customerCreate.table.placeholders.password' | translate}}"
@@ -47,8 +61,10 @@
 
             <div class="form-group">
                 <label class="control-label col-md-2" translate="customerCreate.table.header.tariff">Tariff</label>
+
                 <div class="col-md-10">
-                    <div class="well well-sm remove-margin" ng-switch-when="false" name="tariff">{{customer.tariff}}</div>
+                    <div class="well well-sm remove-margin" ng-switch-when="false" name="tariff">{{customer.tariff}}
+                    </div>
                     <select class="form-control" ng-model="customer.tariff"
                             ng-options="tariff as tariff for tariff in tariffs" required ng-switch-when="true">
                     </select>
@@ -57,8 +73,11 @@
 
             <div class="form-group" show-errors>
                 <label class="control-label col-md-2" translate="customerCreate.table.header.cardId">Card ID</label>
+
                 <div class="col-md-10">
-                    <div class="well well-sm remove-margin" ng-switch-when="false" name="cardIdValue">{{customer.cardId}}</div>
+                    <div class="well well-sm remove-margin" ng-switch-when="false" name="cardIdValue">
+                        {{customer.cardId}}
+                    </div>
                     <input type="text" class="form-control" name="cardId"
                            placeholder="{{'customerCreate.table.placeholders.cardId' | translate}}"
                            ng-model="customer.cardId" ng-minlength=1 ng-maxlength=50 required ng-switch-when="true">
@@ -66,44 +85,78 @@
             </div>
             <div class="form-group" show-errors>
                 <label class="control-label col-md-2" translate="customerCreate.table.header.cardPin">Card PIN</label>
+
                 <div class="col-md-10">
-                    <div class="well well-sm remove-margin" ng-switch-when="false" name="cardPinValue">{{customer.cardPin}}</div>
+                    <div class="well well-sm remove-margin" ng-switch-when="false" name="cardPinValue">
+                        {{customer.cardPin}}
+                    </div>
                     <input type="text" class="form-control" name="cardPin"
                            placeholder="{{'customerCreate.table.placeholders.cardPin' | translate}}"
                            ng-model="customer.cardPin" ng-minlength=4 ng-maxlength=4 required ng-switch-when="true">
                 </div>
             </div>
             <div class="form-group" show-errors>
-                <label class="control-label col-md-2" translate="customerCreate.table.header.name">Name</label>
+                <label class="control-label col-md-2" translate="customerCreate.table.header.cardOperationState">Card
+                    State</label>
+
                 <div class="col-md-10">
-                    <div class="well well-sm remove-margin" ng-switch-when="false" name="firstnameValue">{{customer.firstname}}</div>
+                    <div class="well well-sm remove-margin" ng-switch-when="false" name="cardOperationState">
+                        {{customer.cardOperationState}}
+                    </div>
+                    <select ng-switch-when="true"
+                        type="text"
+                            ng-model="customer.cardOperationState"
+                            ng-options="value for value in ['OPERATIVE','INOPERATIVE']"
+                            class="form-control">
+                    </select>
+                </div>
+            </div>
+            <div class="form-group" show-errors>
+                <label class="control-label col-md-2" translate="customerCreate.table.header.name">Name</label>
+
+                <div class="col-md-10">
+                    <div class="well well-sm remove-margin" ng-switch-when="false" name="firstnameValue">
+                        {{customer.firstname}}
+                    </div>
                     <input type="text" class="form-control" name="firstname"
                            placeholder="{{'customerCreate.table.placeholders.firstname' | translate}}"
                            ng-model="customer.firstname" ng-minlength=1 ng-maxlength=50 required ng-switch-when="true">
-                    <div class="well well-sm remove-margin" ng-switch-when="false" name="lastnameValue">{{customer.lastname}}</div>
+
+                    <div class="well well-sm remove-margin" ng-switch-when="false" name="lastnameValue">
+                        {{customer.lastname}}
+                    </div>
                     <input type="text" class="form-control voffset1" name="lastname"
                            placeholder="{{'customerCreate.table.placeholders.lastname' | translate}}"
                            ng-model="customer.lastname" ng-minlength=1 ng-maxlength=50 required ng-switch-when="true">
                 </div>
             </div>
-            <div class="form-group" >
-                <label class="control-label col-md-2" translate="customerCreate.table.header.address.title">Address</label>
+            <div class="form-group">
+                <label class="control-label col-md-2"
+                       translate="customerCreate.table.header.address.title">Address</label>
+
                 <div class="col-md-10">
 
-                    <div class="well well-sm remove-margin" ng-switch-when="false" name="addressValue">{{customer.address.streetAndHousenumber + ', '
-                        + customer.address.zip + ', ' + customer.address.city + ', ' + customer.address.country}}</div>
-                    <div  ng-switch-when="true">
+                    <div class="well well-sm remove-margin" ng-switch-when="false" name="addressValue">
+                        {{customer.address.streetAndHousenumber + ', '
+                        + customer.address.zip + ', ' + customer.address.city + ', ' + customer.address.country}}
+                    </div>
+                    <div ng-switch-when="true">
                         <div class="form-group" show-errors>
-                            <label class="control-label col-md-2" translate="customerCreate.table.header.address.streetAndHousenumber">Street and Housenumber</label>
+                            <label class="control-label col-md-2"
+                                   translate="customerCreate.table.header.address.streetAndHousenumber">Street and
+                                Housenumber</label>
+
                             <div class="col-md-10">
                                 <input type="text" class="form-control" name="streetAndHousenumber"
                                        placeholder="{{'customerCreate.table.placeholders.streetAndHousenumber' | translate}}"
-                                       ng-model="customer.address.streetAndHousenumber" ng-minlength=1 ng-maxlength=50 required>
+                                       ng-model="customer.address.streetAndHousenumber" ng-minlength=1 ng-maxlength=50
+                                       required>
                             </div>
                         </div>
 
                         <div class="form-group" show-errors>
                             <label class="control-label col-md-2" translate="customerCreate.table.header.address.zip">ZIP</label>
+
                             <div class="col-md-10">
                                 <input type="text" class="form-control" name="zip"
                                        placeholder="{{'customerCreate.table.placeholders.zip' | translate}}"
@@ -113,6 +166,7 @@
 
                         <div class="form-group" show-errors>
                             <label class="control-label col-md-2" translate="customerCreate.table.header.address.city">City</label>
+
                             <div class="col-md-10">
                                 <input type="text" class="form-control" name="city"
                                        placeholder="{{'customerCreate.table.placeholders.city' | translate}}"
@@ -121,7 +175,9 @@
                         </div>
 
                         <div class="form-group" show-errors>
-                            <label class="control-label col-md-2" translate="customerCreate.table.header.address.country">Country</label>
+                            <label class="control-label col-md-2"
+                                   translate="customerCreate.table.header.address.country">Country</label>
+
                             <div class="col-md-10">
                                 <input type="text" class="form-control" name="country"
                                        placeholder="{{'customerCreate.table.placeholders.country' | translate}}"
@@ -134,9 +190,13 @@
             </div>
             <div class="form-group">
                 <label class="control-label col-md-2" translate="customerCreate.table.header.birthday">Birthday</label>
+
                 <div class="col-md-10">
-                    <div class="well well-sm remove-margin" ng-switch-when="false" name="birthdayValue">{{customer.birthday | date: 'mediumDate'}}</div>
-                    <input class="dateSelector col-md-8" date-select name="birthday" model="customer.birthday" required ng-switch-when="true">
+                    <div class="well well-sm remove-margin" ng-switch-when="false" name="birthdayValue">
+                        {{customer.birthday | date: 'mediumDate'}}
+                    </div>
+                    <input class="dateSelector col-md-8" date-select name="birthday" model="customer.birthday" required
+                           ng-switch-when="true">
                 </div>
                 <!--<input type="text" class="form-control" datepicker-popup="dd-MMMM-yyyy" ng-model="customer.birthday" is-open="opened"-->
                 <!--max-date="{{maxDate}}" datepicker-options="dateOptions" ng-required="true" show-button-bar="false" datepicker-mode="year"/>-->
@@ -149,6 +209,7 @@
                 <label class="control-label col-md-2" translate="customerCreate.table.header.isActivated">
                     Is Activated?
                 </label>
+
                 <div class="col-md-10">
                     <input type="checkbox" name="isActivated" ng-model="customer.isActivated" ng-disabled="!isEditing">
                 </div>
@@ -183,13 +244,17 @@
             </tr>
             </thead>
             <tbody>
-            <tr ng-class='{warning:transaction.toStation.stationId == null}'  ng-repeat="transaction in transactions">
+            <tr ng-class='{warning:transaction.toStation.stationId == null}' ng-repeat="transaction in transactions">
                 <td>{{transaction.pedelec.manufacturerId}}</td>
                 <td>{{transaction.startDateTime | date:'medium'}}</td>
-                <td><span ng-hide="transaction.toStation.stationId == null">{{transaction.endDateTime | date:'medium'}}</span></td>
-                <td>{{transaction.fromStation.name}} <span class="badge">{{transaction.fromStation.slotPosition}}</span></td>
+                <td><span
+                    ng-hide="transaction.toStation.stationId == null">{{transaction.endDateTime | date:'medium'}}</span>
+                </td>
+                <td>{{transaction.fromStation.name}} <span class="badge">{{transaction.fromStation.slotPosition}}</span>
+                </td>
                 <td>
-                    <span ng-hide="transaction.toStation.stationId == null">{{transaction.toStation.name}} <span class="badge">{{transaction.toStation.slotPosition}}</span>
+                    <span ng-hide="transaction.toStation.stationId == null">{{transaction.toStation.name}} <span
+                        class="badge">{{transaction.toStation.slotPosition}}</span>
                     </span>
                 </td>
             </tr>

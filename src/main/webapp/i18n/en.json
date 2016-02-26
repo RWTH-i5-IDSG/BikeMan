@@ -12,10 +12,12 @@
                 "tracker": "User tracker",
                 "metrics": "Metrics",
                 "logs": "Logs",
+                "applicationLogs": "Application Logs",
                 "audits": "Audits",
                 "login": "Authenticate",
                 "logout": "Log out",
-                "apidocs": "API"
+                "apidocs": "API",
+                "monitor": "IXSI Monitor"
             },
             "management": {
                 "title": "Management",
@@ -45,6 +47,15 @@
             },
             "majorcustomerlog" : {
                 "title": "Majorcustomer's Logbook"
+            },
+            "fleetmanagerlog" : {
+                "title": "Fleetmanager's Log"
+            },
+            "error" : {
+                "errors" : "Errors",
+                "pedelecErrors" : "Pedelec Errors",
+                "stationErrors" : "Station Errors",
+                "errorHistory" : "Error History"
             },
             "admin": "Administration",
             "language": "Language"
@@ -78,11 +89,13 @@
         "title": "Card Accounts",
         "addModal": {
             "title": "Add Card Account",
+            "titleBatch": "Add Batch of Card Accounts",
             "cardId": "Card ID",
             "cardPin": "Card PIN",
             "buttons": {
                 "cancel": "Cancel",
-                "add": "Add"
+                "add": "Add",
+                "addBatch": "Add Batch Of Card Accounts"
             }
         },
         "deleteModal": {
@@ -103,7 +116,8 @@
             }
         },
         "buttons": {
-            "add": "Add Card Account"
+            "add": "Add Card Account",
+            "addBatch": "Add Batch Of Card Accounts"
         }
     },
     "stations": {
@@ -174,8 +188,9 @@
         "table": {
             "title": "Station Slots",
             "header": {
+                "slotPosition": "Position",
                 "manufacturerId": "Manufacturer ID",
-                "available": "Available",
+                "occupied": "Occupied",
                 "state": "State",
                 "pedelec": "Pedelec (Manufacturer ID)"
             }
@@ -223,6 +238,14 @@
             },
             "enable": "Enable",
             "disable": "Disable"
+        },
+        "unlockModal": {
+            "title": "Unlock Slot",
+            "body": "Are you sure you want to unlock this slot?",
+            "buttons": {
+                "cancel": "Cancel",
+                "unlock": "Unlock"
+            }
         }
     },
     "customers": {
@@ -285,6 +308,9 @@
                     "endTime": "End Time",
                     "fromLocation": "From Location",
                     "toLocation": "To Location"
+                },
+                "body": {
+                    "kill": "Kill"
                 }
             }
         }
@@ -298,6 +324,7 @@
                 "password": "Password",
                 "cardId": "Card ID",
                 "cardPin": "Card PIN",
+                "cardOperationState":"Card State",
                 "tariff": "Tariff",
                 "name": "Name",
                 "address": {
@@ -448,8 +475,10 @@
                 "manufacturerId": "Manufacturer ID",
                 "stateOfCharge": "State of Charge",
                 "state": "State",
-                "station": "Station (Slot)",
-                "customer": "Customer"
+                "station": "Location",
+                "customer": "Customer",
+                "lastChargingUpdate": "Last Charging Update",
+                "chargingState": "Charging State"
             },
             "body": {
                 "details": "Details"
@@ -479,6 +508,8 @@
             "table": {
                 "header": {
                     "customer": "Customer",
+                    "fleetManagerLogin": "Fleetmanager Login",
+                    "cardId": "CardID",
                     "pedelec": "Pedelec",
                     "startTime": "Start Time",
                     "endTime": "End Time",
@@ -517,11 +548,16 @@
         "table": {
             "header": {
                 "customer": "Customer",
+                "fleetManagerLogin": "Fleetmanager Login",
+                "cardId": "CardID",
                 "pedelec": "Pedelec",
                 "startTime": "Start Time",
                 "endTime": "End Time",
                 "fromLocation": "From Location",
                 "toLocation": "To Location"
+            },
+            "body": {
+                "kill": "Kill"
             }
         }
     },

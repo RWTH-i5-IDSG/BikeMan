@@ -1,175 +1,50 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <databaseChangeLog
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <!-- JHipster core -->
-    <changeSet id="1" author="jhipster">
-        <createTable tableName="T_USER">
-            <column name="user_id" type="INT8">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="login" type="varchar(100)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="password" type="varchar(100)"/>
-        </createTable>
 
-        <createTable tableName="T_AUTHORITY">
-            <column name="name" type="varchar(255)">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-        </createTable>
+    <changeSet id="1409564974607-43" author="michael712">
+        <modifyDataType tableName="T_TARIFF" columnName="mounthly_rate" newDataType="NUMERIC"/>
+        <renameColumn tableName="T_TARIFF" oldColumnName="mounthly_rate" newColumnName="periodic_rate"/>
 
-        <createTable tableName="T_USER_AUTHORITY">
-            <column name="user_id" type="INT8">
-                <constraints nullable="false"/>
-            </column>
-            <column name="name" type="varchar(255)">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
+        <addColumn tableName="T_TARIFF">
+            <column name="tariff_category" type="VARCHAR(255)"/>
+            <column name="description" type="CLOB"/>
+            <column name="term" type="INT4"/>
+        </addColumn>
+    </changeSet>
 
-        <addPrimaryKey columnNames="user_id, name" tableName="T_USER_AUTHORITY"/>
+    <changeSet id="1409564974607-44" author="michael712">
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/tariffs.csv"
+                  separator=","
+                  tableName="T_TARIFF"/>
+    </changeSet>
 
-        <createTable tableName="T_PERSISTENT_TOKEN">
-            <column name="series" type="varchar(255)">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="user_id" type="INT8"/>
-            <column name="token_value" type="varchar(255)"/>
-            <column name="token_date" type="date"/>
-            <column name="ip_address" type="varchar(39)"/>
-            <column name="user_agent" type="varchar(255)"/>
-        </createTable>
+    <changeSet id="1409564974607-45" author="michael712">
+        <addColumn tableName="T_CARD_ACCOUNT">
+            <column name="auto_renew_tariff" type="BOOLEAN" />
+        </addColumn>
+    </changeSet>
 
-        <createTable tableName="hibernate_sequences">
-            <column name="sequence_name" type="varchar(255)"/>
-            <column name="sequence_next_hi_value" type="integer"/>
-        </createTable>
+    <changeSet id="1409564974607-46" author="wkluth">
+        <addColumn tableName="T_BOOKING">
+            <column name="ixsi_booking_id" type="VARCHAR(255)"/>
+        </addColumn>
 
-        <createIndex indexName="idx_user_authority"
-                     tableName="T_USER_AUTHORITY"
+        <createIndex indexName="idx_ixsi_booking"
+                     tableName="T_BOOKING"
                      unique="true">
-            <column name="user_id" type="INT8"/>
-            <column name="name" type="varchar(255)"/>
+            <column name="ixsi_booking_id" type="varchar(255)"/>
         </createIndex>
-
-        <addForeignKeyConstraint baseColumnNames="name"
-                                 baseTableName="T_USER_AUTHORITY"
-                                 constraintName="fk_authority_name"
-                                 referencedColumnNames="name"
-                                 referencedTableName="T_AUTHORITY"/>
-
-        <addForeignKeyConstraint baseColumnNames="user_id"
-                                 baseTableName="T_USER_AUTHORITY"
-                                 constraintName="fk_user_user_id"
-                                 referencedColumnNames="user_id"
-                                 referencedTableName="T_USER"/>
-
-        <addForeignKeyConstraint baseColumnNames="user_id"
-                                 baseTableName="T_PERSISTENT_TOKEN"
-                                 constraintName="fk_user_persistent_token"
-                                 referencedColumnNames="user_id"
-                                 referencedTableName="T_USER"/>
     </changeSet>
 
-    <!-- Manage the new Springboot actuator Audit event -->
-    <changeSet id="2" author="jhipster">
-        <createTable tableName="T_PERSISTENT_AUDIT_EVENT">
-            <column name="event_id" type="bigint" >
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="principal" type="varchar(50)"/>
-            <column name="event_date" type="date"/>
-            <column name="event_type" type="varchar(50)"/>
-        </createTable>
-
-        <createTable tableName="T_PERSISTENT_AUDIT_EVENT_DATA">
-            <column name="event_id" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-            <column name="name" type="varchar(50)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="value" type="varchar(255)"/>
-        </createTable>
-        <addPrimaryKey columnNames="event_id, name" tableName="T_PERSISTENT_AUDIT_EVENT_DATA"/>
-
-        <createIndex indexName="idx_persistent_audit_event"
-                     tableName="T_PERSISTENT_AUDIT_EVENT"
-                     unique="false">
-            <column name="principal" type="varchar(50)"/>
-            <column name="event_date" type="timestamp"/>
-        </createIndex>
-
-        <createIndex indexName="idx_persistent_audit_event_data"
-                     tableName="T_PERSISTENT_AUDIT_EVENT_DATA"
-                     unique="false">
-            <column name="event_id" type="bigint"/>
-        </createIndex>
-
-        <addForeignKeyConstraint baseColumnNames="event_id"
-                                 baseTableName="T_PERSISTENT_AUDIT_EVENT_DATA"
-                                 constraintName="FK_event_persistent_audit_event_data"
-                                 referencedColumnNames="event_id"
-                                 referencedTableName="T_PERSISTENT_AUDIT_EVENT"/>
+    <changeSet id="1409564974607-47" author="michael712">
+        <addColumn tableName="T_TRANSACTION">
+            <column name="fees" type="NUMERIC" />
+        </addColumn>
     </changeSet>
 
-    <!-- Manage the OAuth authentication -->
-    <changeSet id="3" author="jhipster">
-        <createTable tableName="oauth_client_details">
-            <column name="client_id" type="VARCHAR(256)">
-                <constraints nullable="false" primaryKey="true"/>
-            </column>
-            <column name="resource_ids" type="VARCHAR(256)"/>
-            <column name="client_secret" type="VARCHAR(256)"/>
-            <column name="scope" type="VARCHAR(256)"/>
-            <column name="authorized_grant_types" type="VARCHAR(256)"/>
-            <column name="web_server_redirect_uri" type="VARCHAR(256)"/>
-            <column name="authorities" type="VARCHAR(256)"/>
-            <column name="access_token_validity" type="INT"/>
-            <column name="refresh_token_validity" type="INT"/>
-            <column name="additional_information" type="VARCHAR(4096)"/>
-            <column name="autoapprove" type="VARCHAR(4096)"/>
-        </createTable>
-
-        <createTable tableName="oauth_client_token">
-            <column name="token_id" type="VARCHAR(256)"/>
-            <column name="token" type="BLOB"/>
-            <column name="authentication_id" type="VARCHAR(256)"/>
-            <column name="user_name" type="VARCHAR(256)"/>
-            <column name="client_id" type="VARCHAR(256)"/>
-        </createTable>
-
-        <createTable tableName="oauth_access_token">
-            <column name="token_id" type="VARCHAR(256)"/>
-            <column name="token" type="BLOB"/>
-            <column name="authentication_id" type="VARCHAR(256)"/>
-            <column name="user_name" type="VARCHAR(256)"/>
-            <column name="client_id" type="VARCHAR(256)"/>
-            <column name="authentication" type="BLOB"/>
-            <column name="refresh_token" type="VARCHAR(256)"/>
-        </createTable>
-
-        <createTable tableName="oauth_refresh_token">
-            <column name="token_id" type="VARCHAR(256)"/>
-            <column name="token" type="BLOB"/>
-            <column name="authentication" type="BLOB"/>
-        </createTable>
-
-        <createTable tableName="oauth_code">
-            <column name="code" type="VARCHAR(256)"/>
-        </createTable>
-
-        <createTable tableName="oauth_approvals">
-            <column name="userId" type="VARCHAR(256)"/>
-            <column name="clientId" type="VARCHAR(256)"/>
-            <column name="scope" type="VARCHAR(256)"/>
-            <column name="status" type="VARCHAR(256)"/>
-            <column name="expiresAt" type="timestamp"/>
-            <column name="lastModifiedAt" type="timestamp"/>
-        </createTable>
-    </changeSet>
 </databaseChangeLog>

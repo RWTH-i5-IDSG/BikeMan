@@ -4,23 +4,26 @@ import com.google.common.base.Optional;
 import de.rwth.idsg.bikeman.ixsi.CommunicationContext;
 import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
 import de.rwth.idsg.bikeman.ixsi.IxsiProcessingException;
+import de.rwth.idsg.bikeman.ixsi.processor.UserValidator;
 import de.rwth.idsg.bikeman.ixsi.processor.api.StaticRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.processor.api.UserRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.repository.SystemValidator;
-import de.rwth.idsg.bikeman.ixsi.schema.AuthType;
-import de.rwth.idsg.bikeman.ixsi.schema.Language;
-import de.rwth.idsg.bikeman.ixsi.schema.QueryRequestType;
-import de.rwth.idsg.bikeman.ixsi.schema.QueryResponseType;
 import de.rwth.idsg.ixsi.jaxb.StaticDataRequestGroup;
 import de.rwth.idsg.ixsi.jaxb.StaticDataResponseGroup;
 import de.rwth.idsg.ixsi.jaxb.UserTriggeredRequestChoice;
 import de.rwth.idsg.ixsi.jaxb.UserTriggeredResponseChoice;
 import lombok.extern.slf4j.Slf4j;
+import org.joda.time.Period;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import xjc.schema.ixsi.AuthType;
+import xjc.schema.ixsi.ErrorType;
+import xjc.schema.ixsi.Language;
+import xjc.schema.ixsi.QueryRequestType;
+import xjc.schema.ixsi.QueryResponseType;
+import xjc.schema.ixsi.UserInfoType;
 
 import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.Duration;
 import java.util.List;
 
 /**
@@ -31,10 +34,9 @@ import java.util.List;
 @Component
 public class QueryRequestTypeDispatcher implements Dispatcher {
 
-    @Autowired private QueryUserRequestMap userRequestMap;
-    @Autowired private QueryStaticRequestMap staticRequestMap;
-    @Autowired private DatatypeFactory factory;
+    @Autowired private ProcessorProvider processorProvider;
     @Autowired private SystemValidator systemValidator;
+    @Autowired private UserValidator userValidator;
 
     @Override
     public void handle(CommunicationContext context) {
@@ -57,7 +59,9 @@ public class QueryRequestTypeDispatcher implements Dispatcher {
         QueryResponseType response = delegate(request);
         long stopTime = System.currentTimeMillis();
 
-        Duration calcTime = factory.newDuration(stopTime - startTime);
+        int duration = (int) (stopTime - startTime);
+        Period calcTime = Period.millis(duration);
+
         response.setCalcTime(calcTime);
         response.setTransaction(request.getTransaction());
         return response;
@@ -85,15 +89,23 @@ public class QueryRequestTypeDispatcher implements Dispatcher {
         log.trace("Entered buildStaticResponse...");
 
         StaticDataRequestGroup req = request.getStaticDataRequestGroup();
-        StaticRequestProcessor p = staticRequestMap.find(req);
+        StaticRequestProcessor p = processorProvider.find(req);
 
         // System validation
         //
+        boolean isValid = systemValidator.validate(request.getSystemID());
+        if (!isValid) {
+            return new QueryResponseType()
+                    .withStaticDataResponseGroup(p.buildError(ErrorFactory.Sys.idUknown()));
+        }
+
+        // Catch all exceptions down the pipeline caused by processors and do not let the communication fail!
+        // Otherwise, the connection will break
         StaticDataResponseGroup res;
-        if (systemValidator.validate(request.getSystemID())) {
+        try {
             res = p.process(req);
-        } else {
-            res = p.buildError(ErrorFactory.invalidSystem());
+        } catch (Exception e) {
+            res = p.buildError(ErrorFactory.Sys.backendFailed(e.getMessage(), null));
         }
 
         return new QueryResponseType()
@@ -105,37 +117,65 @@ public class QueryRequestTypeDispatcher implements Dispatcher {
         log.trace("Entered buildUserResponse...");
 
         UserTriggeredRequestChoice c = request.getUserTriggeredRequestChoice();
-        UserRequestProcessor p = userRequestMap.find(c);
+        UserRequestProcessor p = processorProvider.find(c);
 
         // System validation
         //
-        UserTriggeredResponseChoice responseChoice;
-        if (systemValidator.validate(request.getSystemID())) {
-            responseChoice = delegateUserRequest(c, p, request.getAuth(), Optional.fromNullable(request.getLanguage()));
-        } else {
-            responseChoice = p.buildError(ErrorFactory.invalidSystem());
+        boolean isValid = systemValidator.validate(request.getSystemID());
+        if (!isValid) {
+            return new QueryResponseType()
+                    .withUserTriggeredResponseGroup(p.buildError(ErrorFactory.Sys.idUknown()));
+        }
+
+        // Catch all exceptions down the pipeline caused by processors and do not let the communication fail!
+        // Otherwise, the connection will break
+        UserTriggeredResponseChoice res;
+        try {
+            res = delegateUserRequest(c, p, Optional.fromNullable(request.getLanguage()), request.getAuth());
+        } catch (Exception e) {
+            res = p.buildError(ErrorFactory.Sys.backendFailed(e.getMessage(), null));
         }
 
         return new QueryResponseType()
-                .withUserTriggeredResponseGroup(responseChoice);
+                .withUserTriggeredResponseGroup(res);
     }
 
     @SuppressWarnings("unchecked")
     private UserTriggeredResponseChoice delegateUserRequest(UserTriggeredRequestChoice c, UserRequestProcessor p,
-                                                            AuthType auth, Optional<Language> lan) {
+                                                            Optional<Language> lan, AuthType auth) {
         log.trace("Processing the authentication information...");
 
         if (auth.isSetAnonymous() && auth.isAnonymous()) {
             return p.processAnonymously(c, lan);
 
         } else if (auth.isSetUserInfo()) {
-            return p.processForUser(c, lan, auth.getUserInfo());
+            return validateUserAndProceed(c, p, lan, auth.getUserInfo());
 
         } else if (auth.isSetSessionID()) {
-            return p.buildError(ErrorFactory.notImplemented("Session-based authentication is not supported", null));
+            return p.buildError(ErrorFactory.Sys.notImplemented("Session-based authentication is not supported", null));
 
         } else {
-            return p.buildError(ErrorFactory.invalidRequest("Authentication requirements are not met", null));
+            return p.buildError(ErrorFactory.Sys.notImplemented("Authentication requirements are not met", null));
+        }
+    }
+
+    /**
+     * User validation !!
+     */
+    @SuppressWarnings("unchecked")
+    private UserTriggeredResponseChoice validateUserAndProceed(UserTriggeredRequestChoice c, UserRequestProcessor p,
+                                                               Optional<Language> lan, List<UserInfoType> userInfoList) {
+        if (userInfoList.size() != 1) {
+            String msg = "More than one user per request is not allowed";
+            return p.buildError(ErrorFactory.Sys.invalidRequest(msg, msg));
+        }
+
+        UserInfoType userInfo = userInfoList.get(0);
+        Optional<ErrorType> error = userValidator.validate(userInfo);
+        if (error.isPresent()) {
+            return p.buildError(error.get());
+        } else {
+            return p.processForUser(c, lan, userInfo);
         }
     }
 }

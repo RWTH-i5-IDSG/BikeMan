@@ -2,7 +2,7 @@
 
 bikeManApp.factory('Fleetmanager', ['$resource',
     function ($resource) {
-        return $resource('app/rest/managers/:id', {}, {
+        return $resource('api/managers/:id', {}, {
             'query': { method: 'GET', isArray: true},
             'get': { method: 'GET'}
         });

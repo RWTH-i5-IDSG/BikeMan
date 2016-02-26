@@ -2,6 +2,7 @@ package de.rwth.idsg.bikeman.ixsi.impl;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import de.rwth.idsg.bikeman.ixsi.api.SubscriptionStore;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +31,7 @@ public abstract class AbstractSubscriptionStore<T> implements SubscriptionStore<
      * Key   (T)           = ID of the item
      * Value (Set<String>) = IDs of the subscribed systems
      */
+    @Getter
     private final ConcurrentHashMap<T, Set<String>> lookupTable = new ConcurrentHashMap<>();
 
     /**
@@ -82,6 +84,13 @@ public abstract class AbstractSubscriptionStore<T> implements SubscriptionStore<
             }
         }
         log.debug("System '{}' unsubscribed from '{}'", systemID, itemIDs);
+    }
+
+    @Override
+    public void unsubscribeAll(String systemID) {
+        for (Set<String> systemList : lookupTable.values()) {
+            systemList.remove(systemID);
+        }
     }
 
     @Override

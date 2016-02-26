@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1409564974611-01" author="goekay">
+        <createTable tableName="T_CARD_KEY" schemaName="public">
+            <column name="card_key_id" type="INT8"/>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="read_key" type="VARCHAR(255)"/>
+            <column name="write_key" type="VARCHAR(255)"/>
+            <column name="created" type="timestamp"/>
+            <column name="updated" type="timestamp"/>
+
+        </createTable>
+
+        <addPrimaryKey catalogName="" columnNames="card_key_id" constraintName="PK_T_CARD_KEY"
+                       schemaName="public" tableName="T_CARD_KEY"/>
+
+    </changeSet>
+
+    <changeSet id="1409564974611-02" author="goekay">
+        <addColumn tableName="T_RESERVATION">
+            <column name="state" type="VARCHAR(255)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="1409564974611-03" author="wkluth">
+        <addColumn tableName="T_TARIFF">
+            <column name="max_num_pedelecs" type="INT"/>
+        </addColumn>
+    </changeSet>
+    
+    <changeSet id="1409564974611-04" author="wkluth">
+        <update tableName="T_TARIFF">
+            <column name="max_num_pedelecs" value="1"></column>
+        </update>
+    </changeSet>
+
+</databaseChangeLog>

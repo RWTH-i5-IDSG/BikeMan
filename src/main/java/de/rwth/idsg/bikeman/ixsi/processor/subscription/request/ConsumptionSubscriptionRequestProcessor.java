@@ -2,11 +2,11 @@ package de.rwth.idsg.bikeman.ixsi.processor.subscription.request;
 
 import de.rwth.idsg.bikeman.ixsi.impl.ConsumptionStore;
 import de.rwth.idsg.bikeman.ixsi.processor.api.SubscriptionRequestProcessor;
-import de.rwth.idsg.bikeman.ixsi.schema.ConsumptionSubscriptionRequestType;
-import de.rwth.idsg.bikeman.ixsi.schema.ConsumptionSubscriptionResponseType;
-import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import xjc.schema.ixsi.ConsumptionSubscriptionRequestType;
+import xjc.schema.ixsi.ConsumptionSubscriptionResponseType;
+import xjc.schema.ixsi.ErrorType;
 
 import java.util.List;
 
@@ -19,6 +19,11 @@ public class ConsumptionSubscriptionRequestProcessor implements
         SubscriptionRequestProcessor<ConsumptionSubscriptionRequestType, ConsumptionSubscriptionResponseType> {
 
     @Autowired private ConsumptionStore consumptionStore;
+
+    @Override
+    public Class<ConsumptionSubscriptionRequestType> getProcessingClass() {
+        return ConsumptionSubscriptionRequestType.class;
+    }
 
     @Override
     public ConsumptionSubscriptionResponseType process(ConsumptionSubscriptionRequestType request, String systemId) {

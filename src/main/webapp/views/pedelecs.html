@@ -6,38 +6,96 @@
     </div>
 
     <div class="table-responsive">
-        <table class="table table-hover">
+        <table st-table="pedelecs" st-safe-src="sfPedelecs" st-set-filter="myFilter" class="table table-striped">
             <thead>
-                <tr>
-                    <th translate="pedelecs.table.header.manufacturerId">Manufacturer ID</th>
-                    <th translate="pedelecs.table.header.stateOfCharge">State of Charge</th>
-                    <th translate="pedelecs.table.header.state">State</th>
-                    <th translate="pedelecs.table.header.station">Station (Slot)</th>
-                    <th translate="pedelecs.table.header.customer">Customer</th>
-                    <th></th>
-                </tr>
+            <tr>
+                <th st-sort="manufacturerId" translate="pedelecs.table.header.manufacturerId">Manufacturer ID</th>
+                <th st-sort="stateOfCharge" translate="pedelecs.table.header.stateOfCharge">State of Charge</th>
+                <th st-sort="state" translate="pedelecs.table.header.state">State</th>
+                <th st-sort="station.stationName" translate="pedelecs.table.header.station">Station (Slot)</th>
+                <th st-sort="transaction.majorCustomerName" translate="pedelecs.table.header.customer">Customer</th>
+                <th st-sort="chargingState" translate="pedelecs.table.header.chargingState">Charging State</th>
+                <th st-sort="lastChargingUpdate" st-sort-default="reverse"
+                    translate="pedelecs.table.header.lastChargingUpdate">Last Charging Update
+                </th>
+                <th></th>
+            </tr>
+            <tr>
+                <th>
+                    <input st-search="manufacturerId" placeholder="search for manufacturer ID"
+                           class="input-sm form-control" type="search"/>
+                </th>
+
+                <th></th>
+                <th>
+                    <select class="form-control input-sm" st-search="state">
+                        <option value="">All</option>
+                        <option value="OPERATIVE">OPERATIVE</option>
+                        <option value="INOPERATIVE">INOPERATIVE</option>
+                    </select>
+                </th>
+                <th>
+                    <input st-search="station.stationName" placeholder="search for station name"
+                           class="input-sm form-control" type="search"/>
+                </th>
+                <th>
+                    <input st-search="transaction.majorCustomerName"
+                           placeholder="search for user's lastname" class="input-sm form-control" type="search"/>
+                </th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+
             </thead>
             <tbody>
-                <tr ng-repeat="pedelec in pedelecs">
-                    <td>{{pedelec.manufacturerId}}</td>
-                    <td>
-                        <div class="progress">
-                            <div class="progress-bar" role="progressbar" aria-valuenow="{{pedelec.stateOfCharge*100}}" aria-valuemin="0" aria-valuemax="100" style="width: {{pedelec.stateOfCharge*100}}%;">
-                                {{pedelec.stateOfCharge*100 | number : 0}}%
-                            </div>
+            <tr ng-repeat="pedelec in pedelecs">
+                <td><span class="h5">{{pedelec.manufacturerId}}</span></td>
+                <td>
+                    <div class="progress" style="margin-bottom: 0px;">
+                        <div class="progress-bar progress-bar-warning" role="progressbar"
+                             aria-valuenow="{{pedelec.stateOfCharge}}"
+                             aria-valuemin="0" aria-valuemax="100" style="width: {{pedelec.stateOfCharge}}%;">
+                            &nbsp;{{pedelec.stateOfCharge}} %
                         </div>
-                    </td>
-                    <td>{{pedelec.state}}</td>
-                    <td>{{pedelec.station.stationManufacturerId}} <span class="badge">{{pedelec.station.stationSlotPosition}}</span></td>
-                    <td ng-if="!pedelec.transaction.majorCustomerName">{{pedelec.transaction.firstname + " " + pedelec.transaction.lastname}}</td>
-                    <td ng-if="pedelec.transaction.majorCustomerName">{{pedelec.transaction.majorCustomerName}}</td>
-                    <td>
-                        <button type="button" class="btn btn-info pull-right" ui-sref="pedelecDetail({pedelecId:{{pedelec.pedelecId}}})">
-                            <span class="glyphicon glyphicon-eye-open"></span>
-                            <span translate="pedelecs.table.body.details">Details</span>
-                        </button>
-                    </td>
-                </tr>
+                    </div>
+                </td>
+                <td>
+                    <span ng-show="pedelec.state === 'OPERATIVE'" class="label label-success">{{pedelec.state}}</span>
+                    <span ng-show="pedelec.state === 'INOPERATIVE'" class="label label-danger">{{pedelec.state}}</span>
+                    <span ng-show="pedelec.state === 'DELETED'" class="label label-default">{{pedelec.state}}</span>
+
+                </td>
+
+                <td>
+                    <a ui-sref="stationDetail({stationId: pedelec.station.id})"><span class="small"
+                        ng-hide="pedelec.station.stationName == null">{{pedelec.station.stationName}}</span></a>
+                    <span ng-hide="pedelec.station.stationName == null"
+                        class="label label-info">Slot {{pedelec.station.stationSlotPosition}}</span>
+                </td>
+                <td>
+                    <span ng-show="!pedelec.transaction.majorCustomerName">
+                        {{pedelec.transaction.firstname + " " + pedelec.transaction.lastname}}
+                    </span>
+                    <span ng-show="pedelec.transaction.majorCustomerName">
+                        {{pedelec.transaction.majorCustomerName}}
+                    </span>
+                </td>
+                <td>
+                    <span ng-show="pedelec.chargingState === 'COMPLETED'" class="label label-success">{{pedelec.chargingState}}</span>
+                    <span ng-show="pedelec.chargingState === 'NOT_CHARGING'" class="label label-default">{{pedelec.chargingState}}</span>
+                    <span ng-show="pedelec.chargingState === 'CHARGING'" class="label label-warning">{{pedelec.chargingState}}</span>
+
+                </td>
+                <td>{{pedelec.lastChargingUpdate | date:'short'}}</td>
+                <td>
+                    <button type="button" class="btn btn-info pull-right btn-xs"
+                            ui-sref="pedelecDetail({pedelecId:{{pedelec.pedelecId}}})">
+                        <span class="glyphicon glyphicon-eye-open"></span>
+                        <span translate="pedelecs.table.body.details">Details</span>
+                    </button>
+                </td>
+            </tr>
             </tbody>
         </table>
     </div>

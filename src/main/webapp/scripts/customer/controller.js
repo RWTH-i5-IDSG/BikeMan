@@ -69,7 +69,7 @@ bikeManApp.controller('CustomerDetailController', ['$scope', 'resolvedCustomer',
 
         $scope.customer = resolvedCustomer;
 
-        $http.get('app/rest/tariffs').success(function(data) {
+        $http.get('api/tariffs').success(function(data) {
             $scope.tariffs = data;
         });
 
@@ -123,11 +123,16 @@ bikeManApp.controller('CustomerDetailController', ['$scope', 'resolvedCustomer',
                 "cardId": $scope.customer.cardId,
                 "cardPin": $scope.customer.cardPin,
                 "tariff": $scope.customer.tariff,
-                "isActivated": $scope.customer.isActivated
+                "isActivated": $scope.customer.isActivated,
+                "cardOperationState": $scope.customer.cardOperationState
             }
 
             Customer.update($scope.saveCustomerDTO, function() {
                 $scope.isEditing = false;
+
+                if (!$scope.customer.isActivated) {
+                    $scope.customer.cardOperationState = 'INOPERATIVE';
+                }
             })
         }
 
@@ -138,10 +143,10 @@ bikeManApp.controller('CustomerCreateController', ['$scope', 'Customer', '$timeo
 
         $scope.maxDate = new Date();
 
-        $http.get('app/rest/tariffs').success(function(data) {
+        $http.get('api/tariffs').success(function(data) {
             $scope.tariffs = data;
         });
-        
+
         $scope.create = function () {
             $scope.$broadcast('show-errors-check-validity');
 

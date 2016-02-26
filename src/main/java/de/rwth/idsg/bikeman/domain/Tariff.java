@@ -5,15 +5,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.TableGenerator;
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 
 /**
  * Created by Wolfgang Kluth on 16/01/15.
@@ -38,10 +32,24 @@ public class Tariff {
     @Column(name = "tariff_type")
     private TariffType name;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tariff_category")
+    private TariffCategory category;
+
     @Column(name = "active")
     private Boolean active;
 
-    @Column(name = "mounthly_rate")
-    private Float mounthlyRate;
+    @Column(name = "description")
+    private String description;
+
+    @Column(name = "term")
+    private Integer term;
+
+    @Column(name = "periodic_rate")
+    private BigDecimal periodicRate;
+
+    @NotNull
+    @Column(name = "max_num_pedelecs")
+    private Integer maxNumberPedelecs;
 
 }

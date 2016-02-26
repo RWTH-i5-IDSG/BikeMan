@@ -6,30 +6,20 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import lombok.Builder;
 import org.hibernate.annotations.Type;
 import org.joda.time.LocalDateTime;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.TableGenerator;
+import javax.persistence.*;
 
 /**
  * @author Sevket Goekay <goekay@dbis.rwth-aachen.de>
  * @since 20.11.2014
  */
 @Entity
-@Builder
 @Table(name="T_RESERVATION")
 @TableGenerator(name="reservation_gen", initialValue=0, allocationSize=1)
 @EqualsAndHashCode(of = {"reservationId"})
-@ToString(includeFieldNames = true)
+@ToString(includeFieldNames = true, exclude = {"booking"})
 @Getter
 @Setter
 @AllArgsConstructor
@@ -45,15 +35,22 @@ public class Reservation {
     @JoinColumn(name = "card_account_id")
     private CardAccount cardAccount;
 
-    @Column(name = "start_datetime", nullable = false, updatable = false)
+    @Column(name = "start_datetime", nullable = false)
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
     private LocalDateTime startDateTime;
 
-    @Column(name = "end_datetime", nullable = false, updatable = false)
+    @Column(name = "end_datetime", nullable = false)
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
     private LocalDateTime endDateTime;
 
     @ManyToOne
     @JoinColumn(name = "pedelec_id")
     private Pedelec pedelec;
+
+    @Column(name = "state")
+    @Enumerated(EnumType.STRING)
+    private ReservationState state = ReservationState.CREATED;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "reservation")
+    private Booking booking;
 }

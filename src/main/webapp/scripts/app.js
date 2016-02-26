@@ -2,7 +2,8 @@
 
 /* App Module */
 var bikeManApp = angular.module('bikeManApp', ['http-auth-interceptor', 'tmh.dynamicLocale',
-    'ngResource', 'ngCookies', 'bikeManAppUtils', 'pascalprecht.translate', 'truncate', 'ui.router', 'ui.bootstrap', 'ui.bootstrap.showErrors']);
+    'ngResource', 'ngCookies', 'bikeManAppUtils', 'pascalprecht.translate', 'truncate', 'ui.router',
+    'ui.bootstrap', 'ui.bootstrap.showErrors', 'angular-loading-bar', 'smart-table']);
 
 var httpHeaders;
 
@@ -111,60 +112,6 @@ bikeManApp
                     }
                 });
 
-
-            // GLOBAL MESSAGES
-            $httpProvider.responseInterceptors.push(['$timeout', '$q', '$rootScope', function ($timeout, $q, $rootScope) {
-                return function (promise) {
-                    var errorInterval = 3000;
-                    var successInterval = 1500;
-
-                    return promise.then(function (successResponse) {
-
-                        $rootScope.$broadcast('remove-error-message');
-
-                        if (successResponse.config.method.toUpperCase() != 'GET') {
-                            var alertType = 'alert-success';
-                            //showMessage('Successful', 'successMessage', successInterval, alertType);
-                            $rootScope.$broadcast('new-success-message', {msg: "Successful"});
-                        }
-                        return successResponse;
-
-                    }, function (errorResponse) {
-                        var alertType = 'alert-danger';
-                        switch (errorResponse.status) {
-                            // remove this because 401 is used for checking user auth
-                            case 400:
-                                //showMessage(errorResponse.data.message + "\n" + errorResponse.data.fieldErrors.join("\n"), 'errorMessage', errorInterval, alertType);
-
-                                $rootScope.$broadcast('new-error-message', {msg: errorResponse.data.message, errors: errorResponse.data.fieldErrors});
-                                break;
-                            case 401:
-                                // do nothing for now
-//                                showMessage('Wrong usename or password', 'errorMessage', errorInterval, alertType);
-                                break;
-                            case 403:
-                                //showMessage('You don\'t have the right to do this', 'errorMessage', errorInterval, alertType);
-                                $rootScope.$broadcast('new-error-message', {msg: 'You don\'t have the right to do this'});
-                                break;
-                            case 404:
-                                //showMessage('Not Found', 'errorMessage', errorInterval, alertType);
-                                $rootScope.$broadcast('new-error-message', {msg: 'You don\'t have the right to do this'});
-                                break;
-                            case 500:
-                                $rootScope.$broadcast('new-error-message', {msg: errorResponse.data.message, error: errorResponse.data.fieldErrors});
-                                break;
-                            default:
-//                                showMessage('Error ' + errorResponse.status + ': ' + errorResponse.data.message, 'errorMessage', errorInterval, alertType);
-//                                console.log(errorResponse);
-                                //showMessage(errorResponse.data.message, 'errorMessage', errorInterval, alertType);
-                                $rootScope.$broadcast('new-error-message', {msg: 'You don\'t have the right to do this'});
-                                break;
-                        }
-                        return $q.reject(errorResponse);
-                    });
-                };
-            }]);
-
 //            $compileProvider.directive('appMessages', function() {
 //                var directiveDefinitionObject = {
 //                    link: function(scope, element, attrs) { elementsList.push($(element)); }
@@ -172,9 +119,9 @@ bikeManApp
 //                return directiveDefinitionObject;
 //            });
 
-            // END Global Messages
+// END Global Messages
 
-            // Initialize angular-translate
+// Initialize angular-translate
             $translateProvider.useStaticFilesLoader({
                 prefix: 'i18n/',
                 suffix: '.json'
@@ -189,6 +136,10 @@ bikeManApp
 
             httpHeaders = $httpProvider.defaults.headers;
         }])
+    .config(['$httpProvider', function ($httpProvider) {
+        $httpProvider.interceptors.push('responseRejector');
+        $httpProvider.interceptors.push('responseRecoverer');
+    }])
     .run(['$rootScope', '$state', 'AuthenticationSharedService', 'USER_ROLES',
         function ($rootScope, $state, AuthenticationSharedService, USER_ROLES) {
             $rootScope.isAuthorized = AuthenticationSharedService.isAuthorized;
@@ -221,14 +172,15 @@ bikeManApp
             });
 
             // Call when the 401 response is returned by the server
-            $rootScope.$on('event:auth-loginRequired', function(rejection) {
+            $rootScope.$on('event:auth-loginRequired', function (rejection) {
                 Session.invalidate();
                 $rootScope.authenticated = false;
-                if ($location.path() !== "/" && $location.path() !== "" && $location.path() !== "/register" &&
-                    $location.path() !== "/activate" && $location.path() !== "/login") {
-                    var redirect = $location.path();
-                    $location.path('/login').search('redirect', redirect).replace();
-                }
+                //if ($location.path() !== "/" && $location.path() !== "" && $location.path() !== "/register" &&
+                //    $location.path() !== "/activate" && $location.path() !== "/login") {
+                //    var redirect = $location.path();
+                //    $location.path('/login').search('redirect', redirect).replace();
+                //}
+                $state.go("login");
             });
 
             // Call when the the client is confirmed
@@ -267,3 +219,61 @@ bikeManApp
                 $state.go("login");
             });
         }]);
+//            $httpProvider.interceptors.push(function ($timeout, $q, $rootScope) {
+//                return {
+//                    'response': function (response) {
+//                        var errorInterval = 3000;
+//                        var successInterval = 1500;
+//
+//                        $rootScope.$broadcast('remove-error-message');
+//
+//                        if (response.config.method.toUpperCase() != 'GET') {
+//                            var alertType = 'alert-success';
+//                            //showMessage('Successful', 'successMessage', successInterval, alertType);
+//                            $rootScope.$broadcast('new-success-message', {msg: "Successful"});
+//                        }
+//                    },
+//
+//                    'responseError': function(rejection) {
+//                        // do something on error
+//                        var alertType = 'alert-danger';
+//                        switch (rejection.status) {
+//                            // remove this because 401 is used for checking user auth
+//                            case 400:
+//                                //showMessage(errorResponse.data.message + "\n" + errorResponse.data.fieldErrors.join("\n"), 'errorMessage', errorInterval, alertType);
+//
+//                                //$rootScope.$broadcast('new-error-message', {
+//                                //    msg: rejection.data.message,
+//                                //    errors: rejection.data.fieldErrors
+//                                //});
+//                                break;
+//                            case 401:
+//                                // do nothing for now
+////                                showMessage('Wrong usename or password', 'errorMessage', errorInterval, alertType);
+//                                break;
+//                            case 403:
+//                                //showMessage('You don\'t have the right to do this', 'errorMessage', errorInterval, alertType);
+//                                $rootScope.$broadcast('new-error-message', {msg: 'You don\'t have the right to do this'});
+//                                break;
+//                            case 404:
+//                                //showMessage('Not Found', 'errorMessage', errorInterval, alertType);
+//                                $rootScope.$broadcast('new-error-message', {msg: 'You don\'t have the right to do this'});
+//                                break;
+//                            case 500:
+//                                //$rootScope.$broadcast('new-error-message', {
+//                                //    msg: rejection.data.message,
+//                                //    error: rejection.data.fieldErrors
+//                                //});
+//                                break;
+//                            default:
+////                                showMessage('Error ' + errorResponse.status + ': ' + errorResponse.data.message, 'errorMessage', errorInterval, alertType);
+////                                console.log(errorResponse);
+//                                //showMessage(errorResponse.data.message, 'errorMessage', errorInterval, alertType);
+//                                $rootScope.$broadcast('new-error-message', {msg: 'You don\'t have the right to do this'});
+//                                break;
+//                        }
+//                        return $q.reject(rejection);
+//                    }
+//                }
+//            });
+

@@ -1,7 +1,9 @@
 package de.rwth.idsg.bikeman;
 
 import de.rwth.idsg.bikeman.config.Constants;
-import lombok.extern.slf4j.Slf4j;
+import org.joda.time.DateTimeZone;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.actuate.autoconfigure.MetricFilterAutoConfiguration;
 import org.springframework.boot.actuate.autoconfigure.MetricRepositoryAutoConfiguration;
@@ -9,22 +11,27 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.SimpleCommandLinePropertySource;
+import com.google.common.base.Joiner;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Arrays;
+import java.util.TimeZone;
 
 @ComponentScan
 @EnableAutoConfiguration(exclude = {MetricFilterAutoConfiguration.class, MetricRepositoryAutoConfiguration.class})
-@Slf4j
 public class Application {
+
+    private static final Logger log = LoggerFactory.getLogger(Application.class);
 
     @Inject
     private Environment env;
 
     /**
-     * Initializes bikeman.
+     * Initializes BikeMan.
      * <p/>
      * Spring profiles can be configured with a program arguments --spring.profiles.active=your-active-profile
      * <p/>
@@ -36,16 +43,13 @@ public class Application {
         } else {
             log.info("Running with Spring profile(s) : {}", Arrays.toString(env.getActiveProfiles()));
         }
-
     }
 
     /**
      * Main method, used to run the application.
-     *
-     * To run the application with hot reload enabled, add the following arguments to your JVM:
-     * "-javaagent:spring_loaded/springloaded-jhipster.jar -noverify -Dspringloaded=plugins=io.github.jhipster.loaded.instrument.JHipsterLoadtimeInstrumentationPlugin"
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws UnknownHostException {
+
         SpringApplication app = new SpringApplication(Application.class);
         app.setShowBanner(false);
 
@@ -54,11 +58,15 @@ public class Application {
         // Check if the selected profile has been set as argument.
         // if not the development profile will be added
         addDefaultProfile(app, source);
-
-        // Fallback to set the list of liquibase package list
         addLiquibaseScanPackages();
+        Environment env = app.run(args).getEnvironment();
+        log.info("Access URLs:\n----------------------------------------------------------\n\t" +
+            "Local: \t\thttp://127.0.0.1:{}\n\t" +
+            "External: \thttp://{}:{}\n----------------------------------------------------------",
+            env.getProperty("server.port"),
+            InetAddress.getLocalHost().getHostAddress(),
+            env.getProperty("server.port"));
 
-        app.run(args);
     }
 
     /**
@@ -71,16 +79,15 @@ public class Application {
     }
 
     /**
-     * Set the liquibases.scan.packages to avoid an exception from ServiceLocator
-     * <p/>
-     * See the following JIRA issue https://liquibase.jira.com/browse/CORE-677
+     * Set the liquibases.scan.packages to avoid an exception from ServiceLocator.
      */
     private static void addLiquibaseScanPackages() {
-        System.setProperty("liquibase.scan.packages", "liquibase.change" + "," + "liquibase.database" + "," +
-                "liquibase.parser" + "," + "liquibase.precondition" + "," + "liquibase.datatype" + "," +
-                "liquibase.serializer" + "," + "liquibase.sqlgenerator" + "," + "liquibase.executor" + "," +
-                "liquibase.snapshot" + "," + "liquibase.logging" + "," + "liquibase.diff" + "," +
-                "liquibase.structure" + "," + "liquibase.structurecompare" + "," + "liquibase.lockservice" + "," +
-                "liquibase.ext" + "," + "liquibase.changelog");
+        System.setProperty("liquibase.scan.packages", Joiner.on(",").join(
+            "liquibase.change", "liquibase.database", "liquibase.parser",
+            "liquibase.precondition", "liquibase.datatype",
+            "liquibase.serializer", "liquibase.sqlgenerator", "liquibase.executor",
+            "liquibase.snapshot", "liquibase.logging", "liquibase.diff",
+            "liquibase.structure", "liquibase.structurecompare", "liquibase.lockservice",
+            "liquibase.ext", "liquibase.changelog"));
     }
 }

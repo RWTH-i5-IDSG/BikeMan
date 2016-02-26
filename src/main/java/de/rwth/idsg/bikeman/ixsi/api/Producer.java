@@ -1,7 +1,7 @@
 package de.rwth.idsg.bikeman.ixsi.api;
 
 import de.rwth.idsg.bikeman.ixsi.CommunicationContext;
-import de.rwth.idsg.bikeman.ixsi.schema.IxsiMessageType;
+import xjc.schema.ixsi.IxsiMessageType;
 
 import java.util.Set;
 

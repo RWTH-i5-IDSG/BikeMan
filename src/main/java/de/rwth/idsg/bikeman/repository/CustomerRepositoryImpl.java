@@ -6,9 +6,6 @@ import de.rwth.idsg.bikeman.domain.BookedTariff_;
 import de.rwth.idsg.bikeman.domain.CardAccount_;
 import de.rwth.idsg.bikeman.domain.Customer_;
 import de.rwth.idsg.bikeman.domain.Tariff_;
-import de.rwth.idsg.bikeman.domain.login.Authority;
-import de.rwth.idsg.bikeman.psinterface.exception.PsErrorCode;
-import de.rwth.idsg.bikeman.psinterface.exception.PsException;
 import de.rwth.idsg.bikeman.security.AuthoritiesConstants;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditAddressDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditCustomerDTO;
@@ -25,13 +22,7 @@ import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.Path;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
 import java.util.HashSet;
 import java.util.List;
 
@@ -105,19 +96,8 @@ public class CustomerRepositoryImpl implements CustomerRepository {
 
     @Override
     @Transactional(readOnly = true)
-    public CardAccount findByCardIdAndCardPin(String cardId, String cardPin) throws DatabaseException {
-        final String query = "SELECT c FROM CardAccount c WHERE c.cardId = :cardId AND c.cardPin = :cardPin";
-        try {
-            return em.createQuery(query, CardAccount.class)
-                    .setParameter("cardId", cardId)
-                    .setParameter("cardPin", cardPin)
-                    .getSingleResult();
-        } catch (NoResultException e) {
-            throw new PsException("No customer found with cardId " + cardId + " and cardPin " + cardPin, e, PsErrorCode.CONSTRAINT_FAILED);
-
-        } catch (Exception e) {
-            throw new PsException("Failed during database operation.", e, PsErrorCode.DATABASE_OPERATION_FAILED);
-        }
+    public Customer findOne(long userId) throws DatabaseException {
+        return getCustomerEntity(userId);
     }
 
     @Override
@@ -126,6 +106,8 @@ public class CustomerRepositoryImpl implements CustomerRepository {
         Customer customer = getCustomerEntity(userId);
         try {
             customer.setIsActivated(true);
+            customer.getCardAccount().setAuthenticationTrialCount(0);
+            customer.getCardAccount().setOperationState(OperationState.OPERATIVE);
             em.merge(customer);
             log.debug("Activated customer {}", customer);
 
@@ -140,6 +122,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
         Customer customer = getCustomerEntity(userId);
         try {
             customer.setIsActivated(false);
+            customer.getCardAccount().setOperationState(OperationState.INOPERATIVE);
             em.merge(customer);
             log.debug("Deactivated customer {}", customer);
 
@@ -250,7 +233,14 @@ public class CustomerRepositoryImpl implements CustomerRepository {
 
                 BookedTariff newBookedTariff = new BookedTariff();
                 newBookedTariff.setBookedFrom(new LocalDateTime());
-                newBookedTariff.setBookedUntil(new LocalDateTime().plusYears(1));
+
+                if (tariffRepository.findByName(dto.getTariff()).getTerm() == null) {
+                    newBookedTariff.setBookedUntil(null);
+                } else {
+                    newBookedTariff.setBookedUntil(new LocalDateTime().plusDays(
+                            tariffRepository.findByName(dto.getTariff()).getTerm()
+                    ));
+                }
                 newBookedTariff.setTariff(tariffRepository.findByName(dto.getTariff()));
                 newBookedTariff.setUsedCardAccount(newCardAccount);
                 newCardAccount.setCurrentTariff(newBookedTariff);
@@ -274,12 +264,32 @@ public class CustomerRepositoryImpl implements CustomerRepository {
                 cardAccount.setCardId(dto.getCardId());
                 cardAccount.setCardPin(dto.getCardPin());
 
-                BookedTariff updateBookedTariff = new BookedTariff();
-                updateBookedTariff.setBookedFrom(new LocalDateTime());
-                updateBookedTariff.setBookedUntil(new LocalDateTime().plusYears(1));
-                updateBookedTariff.setTariff(tariffRepository.findByName(dto.getTariff()));
-                cardAccount.setCurrentTariff(updateBookedTariff);
+                boolean newCardIsOperative = OperationState.OPERATIVE.equals(dto.getCardOperationState());
+                boolean oldCardIsInoperative = OperationState.INOPERATIVE.equals(cardAccount.getOperationState());
 
+                if (newCardIsOperative && oldCardIsInoperative) {
+                    cardAccount.setAuthenticationTrialCount(0);
+                }
+
+                if (dto.getIsActivated() || !newCardIsOperative) {
+                    cardAccount.setOperationState(dto.getCardOperationState());
+                }
+
+                // don't update the tariff if it has not been changed
+                if (!dto.getTariff().equals(cardAccount.getCurrentTariff().getName() )) {
+                    BookedTariff updateBookedTariff = new BookedTariff();
+                    updateBookedTariff.setBookedFrom(new LocalDateTime());
+
+                    if (tariffRepository.findByName(dto.getTariff()).getTerm() == null) {
+                        updateBookedTariff.setBookedUntil(null);
+                    } else {
+                        updateBookedTariff.setBookedUntil(new LocalDateTime().plusDays(
+                            tariffRepository.findByName(dto.getTariff()).getTerm()
+                        ));
+                    }
+                    updateBookedTariff.setTariff(tariffRepository.findByName(dto.getTariff()));
+                    cardAccount.setCurrentTariff(updateBookedTariff);
+                }
 
                 break;
         }
@@ -309,6 +319,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
                         customer.get(Customer_.birthday),
                         cardAccount.get(CardAccount_.cardId),
                         cardAccount.get(CardAccount_.cardPin),
+                        cardAccount.get(CardAccount_.operationState),
                         bookedTariff.get(BookedTariff_.tariff).get(Tariff_.name),
                         address.get(Address_.streetAndHousenumber),
                         address.get(Address_.zip),

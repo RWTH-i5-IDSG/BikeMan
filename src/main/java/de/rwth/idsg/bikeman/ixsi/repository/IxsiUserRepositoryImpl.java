@@ -98,7 +98,8 @@ public class IxsiUserRepositoryImpl implements IxsiUserRepository {
                             .getSingleResult();
             return Optional.of(name);
 
-        } catch (NoResultException e) {
+        } catch (Exception e) {
+            log.error("Error occurred", e);
             return Optional.absent();
         }
     }

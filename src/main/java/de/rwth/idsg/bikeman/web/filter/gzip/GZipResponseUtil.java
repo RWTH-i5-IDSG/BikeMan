@@ -1,12 +1,14 @@
 package de.rwth.idsg.bikeman.web.filter.gzip;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@Slf4j
 public final class GZipResponseUtil {
+
+    private static final Logger LOG = LoggerFactory.getLogger(GZipResponseUtil.class);
 
     /**
      * Gzipping an empty file or stream always results in a 20 byte output
@@ -38,8 +40,8 @@ public final class GZipResponseUtil {
 
         //Check for 0 length body
         if (compressedBytes.length == EMPTY_GZIPPED_CONTENT_SIZE) {
-            if (log.isTraceEnabled()) {
-                log.trace("{} resulted in an empty response.", request.getRequestURL());
+            if (LOG.isTraceEnabled()) {
+                LOG.trace("{} resulted in an empty response.", request.getRequestURL());
             }
             return true;
         } else {
@@ -64,8 +66,8 @@ public final class GZipResponseUtil {
 
         //Check for NO_CONTENT
         if (responseStatus == HttpServletResponse.SC_NO_CONTENT) {
-            if (log.isDebugEnabled()) {
-                log.debug("{} resulted in a {} response. Removing message body in accordance with RFC2616.",
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("{} resulted in a {} response. Removing message body in accordance with RFC2616.",
                         request.getRequestURL(), HttpServletResponse.SC_NO_CONTENT);
             }
             return true;
@@ -73,8 +75,8 @@ public final class GZipResponseUtil {
 
         //Check for NOT_MODIFIED
         if (responseStatus == HttpServletResponse.SC_NOT_MODIFIED) {
-            if (log.isDebugEnabled()) {
-                log.debug("{} resulted in a {} response. Removing message body in accordance with RFC2616.",
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("{} resulted in a {} response. Removing message body in accordance with RFC2616.",
                         request.getRequestURL(), HttpServletResponse.SC_NOT_MODIFIED);
             }
             return true;
@@ -94,7 +96,7 @@ public final class GZipResponseUtil {
      *                                                   from a {@link javax.servlet.RequestDispatcher#include(javax.servlet.ServletRequest, javax.servlet.ServletResponse)}
      *                                                   method and the set header is ignored.
      */
-    public static void addGzipHeader(final HttpServletResponse response) throws GzipResponseHeadersNotModifiableException {
+    public static void addGzipHeader(HttpServletResponse response) throws GzipResponseHeadersNotModifiableException {
         response.setHeader("Content-Encoding", "gzip");
         boolean containsEncoding = response.containsHeader("Content-Encoding");
         if (!containsEncoding) {

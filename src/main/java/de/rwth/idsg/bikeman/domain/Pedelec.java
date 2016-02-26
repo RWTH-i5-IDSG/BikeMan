@@ -9,6 +9,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -16,7 +17,7 @@ import java.util.Set;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @TableGenerator(name="pedelec_gen", initialValue=0, allocationSize=1)
 @EqualsAndHashCode(callSuper = false, of = {"pedelecId", "manufacturerId"})
-@ToString(includeFieldNames = true, exclude = {"transactions", "stationSlot"})
+@ToString(includeFieldNames = true, exclude = {"transactions", "stationSlot", "reservations"})
 @Getter
 @Setter
 public class Pedelec extends AbstractTimestampClass implements Serializable {
@@ -30,21 +31,24 @@ public class Pedelec extends AbstractTimestampClass implements Serializable {
     @Column(name = "manufacturer_id")
     private String manufacturerId;
 
-    @Column(name = "state_of_charge")
-    private Float stateOfCharge;
-
     @Column(name = "in_transaction")
-    private Boolean inTransaction;
+    private Boolean inTransaction = false;
 
     @Column(name = "state")
     @Enumerated(EnumType.STRING)
-    private OperationState state;
+    private OperationState state = OperationState.INOPERATIVE;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "pedelec")
     private Set<Transaction> transactions;
 
+    @OneToOne(fetch = FetchType.EAGER, mappedBy = "pedelec", cascade = CascadeType.ALL)
+    private PedelecChargingStatus chargingStatus;
+
     @OneToOne(mappedBy = "pedelec")
     private StationSlot stationSlot;
+
+    @OneToMany(mappedBy = "pedelec")
+    private List<Reservation> reservations;
 
     @Column(name = "error_code")
     private String errorCode;
@@ -55,13 +59,5 @@ public class Pedelec extends AbstractTimestampClass implements Serializable {
     @PrePersist
     public void prePersist() {
         super.prePersist();
-
-        if (stateOfCharge == null) {
-            stateOfCharge = 0.0f;
-        }
-
-        if (inTransaction == null) {
-            inTransaction = false;
-        }
     }
 }

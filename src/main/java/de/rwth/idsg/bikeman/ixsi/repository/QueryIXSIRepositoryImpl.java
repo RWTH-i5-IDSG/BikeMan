@@ -1,18 +1,21 @@
 package de.rwth.idsg.bikeman.ixsi.repository;
 
 import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
-import de.rwth.idsg.bikeman.ixsi.dto.query.AvailabilityResponseDTO;
-import de.rwth.idsg.bikeman.ixsi.dto.query.BookingTargetsInfoResponseDTO;
-import de.rwth.idsg.bikeman.ixsi.dto.query.ChangedProvidersResponseDTO;
-import de.rwth.idsg.bikeman.ixsi.dto.query.PedelecDTO;
-import de.rwth.idsg.bikeman.ixsi.dto.query.PlaceAvailabilityResponseDTO;
-import de.rwth.idsg.bikeman.ixsi.dto.query.StationDTO;
-import de.rwth.idsg.bikeman.ixsi.schema.BookingTargetIDType;
-import de.rwth.idsg.bikeman.ixsi.schema.BookingTargetPropertiesType;
-import de.rwth.idsg.bikeman.ixsi.schema.GeoCircleType;
-import de.rwth.idsg.bikeman.ixsi.schema.GeoRectangleType;
+import de.rwth.idsg.bikeman.ixsi.dto.AvailabilityResponseDTO;
+import de.rwth.idsg.bikeman.ixsi.dto.BookingTargetsInfoResponseDTO;
+import de.rwth.idsg.bikeman.ixsi.dto.ChangedProvidersResponseDTO;
+import de.rwth.idsg.bikeman.ixsi.dto.InavailabilityDTO;
+import de.rwth.idsg.bikeman.ixsi.dto.PedelecDTO;
+import de.rwth.idsg.bikeman.ixsi.dto.PlaceAvailabilityResponseDTO;
+import de.rwth.idsg.bikeman.ixsi.dto.StationDTO;
 import lombok.extern.slf4j.Slf4j;
+import org.joda.time.LocalDateTime;
 import org.springframework.stereotype.Repository;
+import xjc.schema.ixsi.BookingTargetIDType;
+import xjc.schema.ixsi.BookingTargetPropertiesType;
+import xjc.schema.ixsi.GeoCircleType;
+import xjc.schema.ixsi.GeoRectangleType;
+import xjc.schema.ixsi.TimePeriodType;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -21,6 +24,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Created by max on 06/10/14.
@@ -35,17 +40,19 @@ public class QueryIXSIRepositoryImpl implements QueryIXSIRepository {
     @Override
     public BookingTargetsInfoResponseDTO bookingTargetInfos() {
 
-        // TODO: The value 0 for maxDistance is a placeholder! Pedelec entity has to be expanded to contain such a property
-        //
-        final String pedelecQuery = "SELECT new de.rwth.idsg.bikeman.ixsi.dto.query." +
-                                    "PedelecDTO(p.manufacturerId, 0) " +
-                                    "FROM Pedelec p";
+        final String pedelecQuery = "SELECT new de.rwth.idsg.bikeman.ixsi.dto." +
+                                    "PedelecDTO(p.manufacturerId) " +
+                                    "FROM Pedelec p " +
+                                    "WHERE p.state = de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE";
 
-        final String stationQuery = "SELECT new de.rwth.idsg.bikeman.ixsi.dto.query." +
+        final String stationQuery = "SELECT new de.rwth.idsg.bikeman.ixsi.dto." +
                                     "StationDTO(s.manufacturerId, s.locationLongitude, s.locationLatitude, " +
-                                    "s.stationSlots.size, s.name, s.note, " +
+                                    "(SELECT count(sl) FROM StationSlot sl WHERE s = sl.station AND NOT sl.state = de.rwth.idsg.bikeman.domain.OperationState.DELETED), " +
+                                    "s.name, s.note, " +
                                     "a.streetAndHousenumber, a.zip, a.city, a.country) " +
-                                    "FROM Station s LEFT JOIN s.address a";
+                                    "FROM Station s " +
+                                    "LEFT JOIN s.address a " +
+                                    "WHERE s.state = de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE";
 
         List<PedelecDTO> pedelecList = em.createQuery(pedelecQuery, PedelecDTO.class).getResultList();
         List<StationDTO> stationList = em.createQuery(stationQuery, StationDTO.class).getResultList();
@@ -106,19 +113,100 @@ public class QueryIXSIRepositoryImpl implements QueryIXSIRepository {
     @Override
     @SuppressWarnings("unchecked")
     public List<AvailabilityResponseDTO> availability(List<BookingTargetIDType> targets) {
-        Query q = em.createQuery(
-                "SELECT new de.rwth.idsg.bikeman.ixsi.dto.query.AvailabilityResponseDTO(" +
-                "p.manufacturerId, s.manufacturerId, p.stateOfCharge) " +
-                "FROM Pedelec p JOIN p.stationSlot slot JOIN slot.station s " +
-                "WHERE p.manufacturerId in :targets");
 
-        List<String> idList = new ArrayList<>();
+        // -------------------------------------------------------------------------
+        // 1. Get all data as flat tables
+        // -------------------------------------------------------------------------
+
+        // Open reservations
+        String reservationQuery = "SELECT new de.rwth.idsg.bikeman.ixsi.dto." +
+                                  "InavailabilityDTO(p.manufacturerId, r.startDateTime, r.endDateTime) " +
+                                  "FROM Reservation r " +
+                                  "JOIN r.pedelec p " +
+                                  "WHERE p.manufacturerId IN :idList " +
+                                  "AND r.state = de.rwth.idsg.bikeman.domain.ReservationState.CREATED " +
+                                  "AND (:now BETWEEN r.startDateTime AND r.endDateTime)";
+
+        // Open transactions
+        String transactionQuery = "SELECT new de.rwth.idsg.bikeman.ixsi.dto." +
+                                  "InavailabilityDTO(p.manufacturerId, t.startDateTime, t.endDateTime) " +
+                                  "FROM Transaction t " +
+                                  "JOIN t.pedelec p " +
+                                  "WHERE p.manufacturerId IN :idList " +
+                                  "AND t.endDateTime IS NULL " +
+                                  "AND t.toSlot IS NULL";
+
+        String statusQuery = "SELECT new de.rwth.idsg.bikeman.ixsi.dto." +
+                             "AvailabilityResponseDTO(p.manufacturerId, s.manufacturerId, cs.batteryStateOfCharge) " +
+                             "FROM Pedelec p " +
+                             "JOIN p.chargingStatus cs " +
+                             "LEFT JOIN p.stationSlot.station s " +
+                             "WHERE p.manufacturerId IN :idList " +
+                             "AND p.stationSlot.state = de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE " +
+                             "AND s.state = de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE ";
+
+        List<String> idList = new ArrayList<>(targets.size());
         for (BookingTargetIDType id : targets) {
             idList.add(id.getBookeeID());
         }
-        q.setParameter("targets", idList);
 
-        return q.getResultList();
+        List<InavailabilityDTO> reservList = em.createQuery(reservationQuery, InavailabilityDTO.class)
+                                               .setParameter("idList", idList)
+                                               .setParameter("now", new LocalDateTime())
+                                               .getResultList();
+
+        List<InavailabilityDTO> transList = em.createQuery(transactionQuery, InavailabilityDTO.class)
+                                              .setParameter("idList", idList)
+                                              .getResultList();
+
+        List<AvailabilityResponseDTO> responseList = em.createQuery(statusQuery, AvailabilityResponseDTO.class)
+                                                       .setParameter("idList", idList)
+                                                       .getResultList();
+
+        // -------------------------------------------------------------------------
+        // 2. Build the object graph
+        // -------------------------------------------------------------------------
+
+        Map<String, List<TimePeriodType>> inavailabilityMap = merge(toMap(reservList), toMap(transList));
+
+        responseList.forEach(p -> p.setInavailabilities(inavailabilityMap.get(p.getManufacturerId())));
+
+        return responseList;
+    }
+
+    /**
+     * Applies two transformations:
+     *
+     * 1. Converts the list to map using the manufacturer id as the key.
+     *    Result is of the form Map<String, List<InavailabilityDTO>>.
+     *
+     * 2. Converts the entry value List<InavailabilityDTO> to List<TimePeriodType>
+     *    for every entry in the map.
+     */
+    private Map<String, List<TimePeriodType>> toMap(List<InavailabilityDTO> list) {
+        return list.stream()
+                   .collect(Collectors.groupingBy(InavailabilityDTO::getPedelecManufacturerId))
+                   .entrySet()
+                   .parallelStream()
+                   .collect(Collectors.toMap(Map.Entry::getKey,
+                                             e -> e.getValue()
+                                                   .parallelStream()
+                                                   .map(i -> new TimePeriodType().withBegin(i.getBegin())
+                                                                                 .withEnd(i.getEnd()))
+                                                   .collect(Collectors.toList())));
+    }
+
+    /**
+     * Merges m2 into m1
+     */
+    private Map<String, List<TimePeriodType>> merge(Map<String, List<TimePeriodType>> m1,
+                                                    Map<String, List<TimePeriodType>> m2) {
+
+        m2.forEach((k, v) ->
+                m1.merge(k, v, (list1, list2) ->
+                        { list1.addAll(list2);
+                          return list1; }));
+        return m1;
     }
 
     @Override
@@ -168,7 +256,7 @@ public class QueryIXSIRepositoryImpl implements QueryIXSIRepository {
                     (String) row[1],
                     (BigDecimal) row[2],
                     (BigDecimal) row[3],
-                    (Float) row[4]);
+                    (Double) row[4]);
 
             myList.add(dto);
         }
@@ -182,16 +270,33 @@ public class QueryIXSIRepositoryImpl implements QueryIXSIRepository {
     @Override
     @SuppressWarnings("unchecked")
     public List<PlaceAvailabilityResponseDTO> placeAvailability(List<String> placeIdList) {
-        final String q = "SELECT new de.rwth.idsg.bikeman.ixsi.dto.query.PlaceAvailabilityResponseDTO(" +
-                         "slot.station.manufacturerId, CAST(count(slot) as integer)) " +
-                         "FROM StationSlot slot " +
-                         "WHERE NOT slot.isOccupied = true AND " +
-                         "slot.station.manufacturerId in :placeIds " +
-                         "GROUP by slot.station.manufacturerId";
+        Query q = em.createNativeQuery(
+                "SELECT s.manufacturer_id, CAST(count(slot) as Integer) " +
+                "FROM t_station s " +
+                "LEFT JOIN t_station_slot slot ON s.station_id = slot.station_id " +
+                "AND slot.state = 'OPERATIVE' " +
+                "AND slot.is_occupied = FALSE " +
+                "WHERE s.manufacturer_id IN (:placeIds) " +
+                "GROUP BY s.manufacturer_id"
+        );
 
-        return em.createQuery(q, PlaceAvailabilityResponseDTO.class)
-                 .setParameter("placeIds", placeIdList)
-                 .getResultList();
+        q.setParameter("placeIds", placeIdList);
+
+        return getPlaceAvailabilityResponseDTOs(q);
+
+//        final String q = "SELECT new de.rwth.idsg.bikeman.ixsi.dto.PlaceAvailabilityResponseDTO(" +
+//                         "slot.station.manufacturerId, CAST(count(slot) as Integer) " +
+//                         "FROM Station s " +
+//                         "LEFT JOIN StationSlot slot " +
+//                         "ON slot.station = s " +
+//                         "AND slot.isOccupied = false " +
+//                         "AND slot.state = de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE " +
+//                         "WHERE slot.station.manufacturerId in :placeIds " +
+//                         "GROUP by slot.station.manufacturerId";
+//
+//        return em.createQuery(q, PlaceAvailabilityResponseDTO.class)
+//                 .setParameter("placeIds", placeIdList)
+//                 .getResultList();
     }
 
     @Override

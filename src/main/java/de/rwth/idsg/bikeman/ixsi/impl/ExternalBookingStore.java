@@ -1,7 +1,7 @@
 package de.rwth.idsg.bikeman.ixsi.impl;
 
-import de.rwth.idsg.bikeman.ixsi.schema.UserInfoType;
 import org.springframework.stereotype.Component;
+import xjc.schema.ixsi.UserInfoType;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;

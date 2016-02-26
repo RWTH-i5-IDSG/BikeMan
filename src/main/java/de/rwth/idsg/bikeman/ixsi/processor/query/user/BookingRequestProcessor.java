@@ -1,22 +1,23 @@
 package de.rwth.idsg.bikeman.ixsi.processor.query.user;
 
 import com.google.common.base.Optional;
+import de.rwth.idsg.bikeman.domain.Booking;
 import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
+import de.rwth.idsg.bikeman.ixsi.IxsiCodeException;
 import de.rwth.idsg.bikeman.ixsi.IxsiProcessingException;
-import de.rwth.idsg.bikeman.ixsi.processor.TokenValidator;
 import de.rwth.idsg.bikeman.ixsi.processor.api.UserRequestProcessor;
-import de.rwth.idsg.bikeman.ixsi.schema.BookingRequestType;
-import de.rwth.idsg.bikeman.ixsi.schema.BookingResponseType;
-import de.rwth.idsg.bikeman.ixsi.schema.BookingType;
-import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
-import de.rwth.idsg.bikeman.ixsi.schema.Language;
-import de.rwth.idsg.bikeman.ixsi.schema.UserInfoType;
+import de.rwth.idsg.bikeman.ixsi.service.AvailabilityPushService;
+import de.rwth.idsg.bikeman.ixsi.service.BookingCheckService;
 import de.rwth.idsg.bikeman.ixsi.service.BookingService;
-import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
+import xjc.schema.ixsi.BookingRequestType;
+import xjc.schema.ixsi.BookingResponseType;
+import xjc.schema.ixsi.BookingType;
+import xjc.schema.ixsi.ErrorType;
+import xjc.schema.ixsi.Language;
+import xjc.schema.ixsi.TimePeriodType;
+import xjc.schema.ixsi.UserInfoType;
 
 /**
  * @author Sevket Goekay <goekay@dbis.rwth-aachen.de>
@@ -26,55 +27,57 @@ import java.util.List;
 public class BookingRequestProcessor implements
         UserRequestProcessor<BookingRequestType, BookingResponseType> {
 
-    @Autowired BookingService bookingService;
-    @Autowired TokenValidator tokenValidator;
+    @Autowired private BookingService bookingService;
+    @Autowired private AvailabilityPushService availabilityPushService;
+    @Autowired private BookingCheckService bookingCheckService;
+
+    @Override
+    public Class<BookingRequestType> getProcessingClass() {
+        return BookingRequestType.class;
+    }
 
     @Override
     public BookingResponseType processAnonymously(BookingRequestType request, Optional<Language> lan) {
-        return buildError(ErrorFactory.invalidRequest("Anonymous booking makes no sense", null));
+        return buildError(ErrorFactory.Auth.notAnonym("Anonymous booking makes no sense", null));
     }
 
-    /**
-     * This method has to validate the user infos !!!!
-     */
     @Override
     public BookingResponseType processForUser(BookingRequestType request, Optional<Language> lan,
-                                              List<UserInfoType> userInfoList) {
-        BookingResponseType bookingResponse = new BookingResponseType();
-
-        // validate user auth token
-        TokenValidator.Results results = tokenValidator.validate(userInfoList);
-
-        List<ErrorType> errors = results.getErrors();
-        if (!errors.isEmpty()) {
-            bookingResponse.getError().addAll(errors);
-        }
-
-        List<UserInfoType> validUsers = results.getValidUsers();
-        if (validUsers.size() != 1) {
-            return buildError(ErrorFactory.invalidRequest("Invalid Request", "Not more than one user allowed per request"));
-        }
-        UserInfoType user = validUsers.get(0);
-
-        // validate that user has the right to reserve for given time period
-        if (!request.isSetBookingTargetID() || !request.isSetTimePeriodProposal()) {
-            return buildError(ErrorFactory.invalidRequest("Invalid Parameters", "Invalid Parameters"));
-        }
-
+                                              UserInfoType userInfo) {
         try {
-            long bookingId = bookingService.createBookingForUser(request.getBookingTargetID().getBookeeID(),
-                                                                 user.getUserID(),
-                                                                 request.getTimePeriodProposal());
-            BookingType booking = new BookingType()
-                    .withID(String.valueOf(bookingId));
-            bookingResponse.setBooking(booking);
-            return bookingResponse;
+            Booking createdBooking = bookingService.createBookingForUser(
+                request.getBookingTargetID().getBookeeID(),
+                userInfo.getUserID(),
+                request.getTimePeriodProposal()
+            );
 
-        } catch (DatabaseException e) {
-            return buildError(ErrorFactory.backendFailed(e.getMessage(), "Booking not possible due to backend error"));
+            TimePeriodType timePeriod = new TimePeriodType()
+                .withBegin(createdBooking.getReservation().getStartDateTime().toDateTime())
+                .withEnd(createdBooking.getReservation().getEndDateTime().toDateTime());
+
+            String placeId = createdBooking.getReservation()
+                                           .getPedelec()
+                                           .getStationSlot()
+                                           .getStation()
+                                           .getManufacturerId();
+
+            availabilityPushService.placedBooking(request.getBookingTargetID().getBookeeID(), placeId, timePeriod);
+            bookingCheckService.placedBooking(createdBooking);
+
+            BookingType booking = new BookingType()
+                .withID(String.valueOf(createdBooking.getIxsiBookingId()))
+                .withTimePeriod(timePeriod);
+
+            return new BookingResponseType().withBooking(booking);
+
+        } catch (IxsiCodeException e) {
+            return buildError(ErrorFactory.buildFromException(e));
 
         } catch (IxsiProcessingException e) {
-            return buildError(ErrorFactory.bookingTargetNotAvail(e.getMessage(), e.getMessage()));
+            return buildError(ErrorFactory.Booking.targetNotAvail(e.getMessage(), e.getMessage()));
+
+        } catch (Exception e) {
+            return buildError(ErrorFactory.Sys.backendFailed(e.getMessage(), "Booking not possible due to backend error"));
         }
     }
 

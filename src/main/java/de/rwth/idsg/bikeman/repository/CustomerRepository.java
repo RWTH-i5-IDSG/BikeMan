@@ -1,6 +1,6 @@
 package de.rwth.idsg.bikeman.repository;
 
-import de.rwth.idsg.bikeman.domain.CardAccount;
+import de.rwth.idsg.bikeman.domain.Customer;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditCustomerDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.view.ViewCustomerDTO;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
@@ -27,13 +27,7 @@ public interface CustomerRepository {
      */
     ViewCustomerDTO findbyLogin(String login) throws DatabaseException;
 
-
-    /**
-     * Find unique customer with card-id and pin
-     *
-     * @return userId
-     */
-    CardAccount findByCardIdAndCardPin(String cardId, String cardPin) throws DatabaseException;
+    Customer findOne (long userId) throws DatabaseException;
 
     void activate(long userId) throws DatabaseException;
 

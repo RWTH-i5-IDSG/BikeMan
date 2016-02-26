@@ -1,10 +1,11 @@
 package de.rwth.idsg.bikeman.ixsi.processor.subscription.complete;
 
+import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
 import de.rwth.idsg.bikeman.ixsi.processor.api.SubscriptionRequestMessageProcessor;
-import de.rwth.idsg.bikeman.ixsi.schema.CompleteExternalBookingRequestType;
-import de.rwth.idsg.bikeman.ixsi.schema.CompleteExternalBookingResponseType;
-import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
 import org.springframework.stereotype.Component;
+import xjc.schema.ixsi.CompleteExternalBookingRequestType;
+import xjc.schema.ixsi.CompleteExternalBookingResponseType;
+import xjc.schema.ixsi.ErrorType;
 
 /**
  * @author Sevket Goekay <goekay@dbis.rwth-aachen.de>
@@ -15,8 +16,14 @@ public class CompleteExternalBookingRequestProcessor implements
         SubscriptionRequestMessageProcessor<CompleteExternalBookingRequestType, CompleteExternalBookingResponseType> {
 
     @Override
+    public Class<CompleteExternalBookingRequestType> getProcessingClass() {
+        return CompleteExternalBookingRequestType.class;
+    }
+
+    @Override
     public CompleteExternalBookingResponseType process(CompleteExternalBookingRequestType request, String systemId) {
-        return null;
+        // TODO FUTURE
+        return buildError(ErrorFactory.Sys.notImplemented(null, null));
     }
 
     // -------------------------------------------------------------------------
@@ -25,6 +32,8 @@ public class CompleteExternalBookingRequestProcessor implements
 
     @Override
     public CompleteExternalBookingResponseType buildError(ErrorType e) {
-        return new CompleteExternalBookingResponseType().withError(e);
+        return new CompleteExternalBookingResponseType()
+            .withError(e)
+            .withMessageBlockID("none");
     }
 }

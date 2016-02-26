@@ -1,0 +1,37 @@
+<div>
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">Station Errors</h1>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table st-table="stationErrors" st-safe-src="sfStationErrors" class="table table-striped">
+            <thead>
+            <tr>
+                <th>Timestamp</th>
+                <th>Station</th>
+                <th>Slot</th>
+                <th>Error Code</th>
+                <th>Error Info</th>
+                <th>Error Type</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            <tr ng-repeat="stationError in stationErrors">
+                <td>{{stationError.lastUpdated | date:'d.M.yy - HH:mm:ss'}}</td>
+                <td><a ui-sref="stationDetail({stationId: stationError.stationId})">
+                    <h5>{{stationError.stationName}}<br><small>{{stationError.stationManufacturerId}}</small></h5>
+                    </a>
+                </td>
+                <td>{{stationError.slotPosition}}</td>
+                <td>{{stationError.errorCode}}</td>
+                <td>{{stationError.errorInfo}}</td>
+                <td>{{stationError.type}}</td>
+            </tr>
+
+            </tbody>
+        </table>
+    </div>
+</div>

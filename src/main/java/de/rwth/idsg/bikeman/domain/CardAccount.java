@@ -1,15 +1,14 @@
 package de.rwth.idsg.bikeman.domain;
 
-import de.rwth.idsg.bikeman.domain.login.User;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import lombok.Builder;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.joda.time.LocalDateTime;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -20,7 +19,6 @@ import java.util.Set;
  */
 
 @Entity
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "T_CARD_ACCOUNT",
@@ -28,7 +26,7 @@ import java.util.Set;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @TableGenerator(name="card_account_gen", initialValue=0, allocationSize=1)
 @EqualsAndHashCode(of = {"cardId"}, callSuper = false)
-@ToString(includeFieldNames = true, exclude = {})
+@ToString(includeFieldNames = true, exclude = {"transactions", "bookedTariffs"})
 @Getter
 @Setter
 public class CardAccount extends AbstractTimestampClass implements Serializable {
@@ -46,12 +44,12 @@ public class CardAccount extends AbstractTimestampClass implements Serializable 
     private String cardPin;
 
     @Column(name = "in_transaction")
-    private Boolean inTransaction;
+    private Boolean inTransaction = false;
 
     @Column(name = "owner_type")
     @Enumerated(EnumType.STRING)
     private CustomerType ownerType;
-    
+
     @Column(name = "activation_key")
     private String activationKey;
 
@@ -64,10 +62,10 @@ public class CardAccount extends AbstractTimestampClass implements Serializable 
 
     @Column(name = "operation_state")
     @Enumerated(EnumType.STRING)
-    private OperationState operationState;
+    private OperationState operationState = OperationState.INOPERATIVE;
 
     @Column(name = "authentication_trial_count")
-    private Integer authenticationTrialCount;
+    private Integer authenticationTrialCount = 0;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "cardAccount", orphanRemoval = true)
     private Set<BookedTariff> bookedTariffs;
@@ -75,22 +73,24 @@ public class CardAccount extends AbstractTimestampClass implements Serializable 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "usedCardAccount")
     private BookedTariff currentTariff;
 
+    @Column(name = "auto_renew_tariff")
+    private Boolean autoRenewTariff;
+
     @PrePersist
     public void prePersist() {
         super.prePersist();
-
-        if (inTransaction == null) {
-            inTransaction = false;
-        }
     }
-    
+
     public void setCurrentTariff(BookedTariff bookedTariff) {
         if (this.currentTariff != null) {
+            if (this.currentTariff.getBookedUntil() == null) {
+                this.currentTariff.setBookedUntil(LocalDateTime.now());
+            }
             this.bookedTariffs.add(this.currentTariff);
             this.currentTariff.setCardAccount(this);
             this.currentTariff.setUsedCardAccount(null);
         }
-        
+
         this.currentTariff = bookedTariff;
         bookedTariff.setUsedCardAccount(this);
     }

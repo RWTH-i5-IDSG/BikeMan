@@ -1,0 +1,3 @@
+tariff_id,tariff_type,tariff_category,active,description,term,periodic_rate
+1,Ticket2000,Default,TRUE,"Standardtarif, der keine Grundgebühr beeinhaltet. Pro Minute werden 0,20 € berechnet.",NULL,0.0
+2,Ticket3000,MonthlySubscription,TRUE,"Monatsabo mit einer monatlichen Gebühr von 1234 €. Die erste halbe Stunde jeder Fahrt ist kostenlos, danach werden 0,50 € berechnet. .",30,1234

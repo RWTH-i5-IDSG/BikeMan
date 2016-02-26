@@ -4,17 +4,15 @@ import com.google.common.base.Optional;
 import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
 import de.rwth.idsg.bikeman.ixsi.processor.api.UserRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.repository.IxsiUserRepository;
-import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
-import de.rwth.idsg.bikeman.ixsi.schema.Language;
-import de.rwth.idsg.bikeman.ixsi.schema.TokenGenerationRequestType;
-import de.rwth.idsg.bikeman.ixsi.schema.TokenGenerationResponseType;
-import de.rwth.idsg.bikeman.ixsi.schema.UserInfoType;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
+import xjc.schema.ixsi.ErrorType;
+import xjc.schema.ixsi.Language;
+import xjc.schema.ixsi.TokenGenerationRequestType;
+import xjc.schema.ixsi.TokenGenerationResponseType;
+import xjc.schema.ixsi.UserInfoType;
 
 /**
  * @author Sevket Goekay <goekay@dbis.rwth-aachen.de>
@@ -28,30 +26,25 @@ public class TokenGenerationRequestProcessor implements
     @Autowired private IxsiUserRepository ixsiUserRepository;
 
     @Override
-    public TokenGenerationResponseType processAnonymously(TokenGenerationRequestType request, Optional<Language> lan) {
-        return buildError(ErrorFactory.invalidRequest("Anonymous token generation makes no sense", null));
+    public Class<TokenGenerationRequestType> getProcessingClass() {
+        return TokenGenerationRequestType.class;
     }
 
-    /**
-     * This method has to validate the user infos !!!!
-     */
+    @Override
+    public TokenGenerationResponseType processAnonymously(TokenGenerationRequestType request, Optional<Language> lan) {
+        return buildError(ErrorFactory.Auth.notAnonym("Anonymous token generation makes no sense", null));
+    }
+
     @Override
     public TokenGenerationResponseType processForUser(TokenGenerationRequestType request, Optional<Language> lan,
-                                                      List<UserInfoType> userInfoList) {
-
-        // For the token generation request there can be only one userInfo
-        if (userInfoList.size() != 1) {
-            return buildError(ErrorFactory.invalidRequest(null, null));
-        }
-
+                                                      UserInfoType userInfo) {
         try {
-            UserInfoType userInfo = userInfoList.get(0);
             String token = ixsiUserRepository.setUserToken(userInfo.getUserID(), userInfo.getPassword());
             return new TokenGenerationResponseType().withToken(token);
 
         } catch (DatabaseException e) {
             log.error("Error occurred", e);
-            return buildError(ErrorFactory.backendFailed(e.getLocalizedMessage(), null));
+            return buildError(ErrorFactory.Sys.backendFailed(e.getLocalizedMessage(), null));
         }
     }
 

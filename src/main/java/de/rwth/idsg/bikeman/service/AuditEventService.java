@@ -1,7 +1,7 @@
 package de.rwth.idsg.bikeman.service;
 
 import de.rwth.idsg.bikeman.config.audit.AuditEventConverter;
-import de.rwth.idsg.bikeman.domain.login.PersistentAuditEvent;
+import de.rwth.idsg.bikeman.domain.PersistentAuditEvent;
 import de.rwth.idsg.bikeman.repository.PersistenceAuditEventRepository;
 import org.joda.time.LocalDateTime;
 import org.springframework.boot.actuate.audit.AuditEvent;
@@ -33,8 +33,8 @@ public class AuditEventService {
     }
 
     public List<AuditEvent> findByDates(LocalDateTime fromDate, LocalDateTime toDate) {
-        final List<PersistentAuditEvent> persistentAuditEvents =
-                persistenceAuditEventRepository.findByDates(fromDate, toDate);
+        List<PersistentAuditEvent> persistentAuditEvents =
+            persistenceAuditEventRepository.findAllByAuditEventDateBetween(fromDate, toDate);
 
         return auditEventConverter.convertToAuditEvent(persistentAuditEvents);
     }

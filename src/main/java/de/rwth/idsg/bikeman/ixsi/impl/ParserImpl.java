@@ -1,13 +1,14 @@
 package de.rwth.idsg.bikeman.ixsi.impl;
 
 import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
+import de.rwth.idsg.bikeman.ixsi.IxsiProcessingException;
 import de.rwth.idsg.bikeman.ixsi.api.Parser;
-import de.rwth.idsg.bikeman.ixsi.schema.IxsiMessageType;
-import de.rwth.idsg.bikeman.ixsi.schema.ObjectFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.xml.sax.SAXException;
+import xjc.schema.ixsi.IxsiMessageType;
+import xjc.schema.ixsi.ObjectFactory;
 
 import javax.annotation.PostConstruct;
 import javax.xml.XMLConstants;
@@ -32,6 +33,7 @@ import java.net.URL;
 public class ParserImpl implements Parser {
 
     @Autowired private JAXBContext jaxbContext;
+
     private static final ObjectFactory OBJECT_FACTORY = new ObjectFactory();
     private Schema schema;
 
@@ -47,32 +49,42 @@ public class ParserImpl implements Parser {
     }
 
     @Override
-    public IxsiMessageType unmarshal(String str) throws JAXBException {
+    public IxsiMessageType unmarshal(String str) {
         log.trace("Entered unmarshal...");
 
-        Unmarshaller um = jaxbContext.createUnmarshaller();
-        // Validate against the schema
-        um.setSchema(schema);
-        StringReader reader = new StringReader(str);
-        StreamSource source = new StreamSource(reader);
-        return um.unmarshal(source, IxsiMessageType.class).getValue();
+        try {
+            Unmarshaller um = jaxbContext.createUnmarshaller();
+            // Validate against the schema
+            um.setSchema(schema);
+            StringReader reader = new StringReader(str);
+            StreamSource source = new StreamSource(reader);
+            return um.unmarshal(source, IxsiMessageType.class).getValue();
+
+        } catch (JAXBException e) {
+            throw new IxsiProcessingException("Could not unmarshal incoming message: " + str, e);
+        }
     }
 
     @Override
-    public String marshal(IxsiMessageType ixsi) throws JAXBException {
+    public String marshal(IxsiMessageType ixsi) {
         log.trace("Entered marshal...");
 
-        JAXBElement<IxsiMessageType> outgoing = OBJECT_FACTORY.createIxsi(ixsi);
-        Marshaller m = jaxbContext.createMarshaller();
-        // Validate against the schema
-        m.setSchema(schema);
-        // Pretty print?
-        m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.FALSE);
-        // Drop the XML declaration?
-        m.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
+        try {
+            JAXBElement<IxsiMessageType> outgoing = OBJECT_FACTORY.createIxsi(ixsi);
+            Marshaller m = jaxbContext.createMarshaller();
+            // Validate against the schema
+            m.setSchema(schema);
+            // Pretty print?
+            m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.FALSE);
+            // Drop the XML declaration?
+            m.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
 
-        StringWriter stringWriter = new StringWriter();
-        m.marshal(outgoing, stringWriter);
-        return stringWriter.toString();
+            StringWriter stringWriter = new StringWriter();
+            m.marshal(outgoing, stringWriter);
+            return stringWriter.toString();
+
+        } catch (JAXBException e) {
+            throw new IxsiProcessingException("Could not marshal outgoing message: " + ixsi.toString(),  e);
+        }
     }
 }

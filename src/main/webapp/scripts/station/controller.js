@@ -3,20 +3,35 @@
 bikeManApp.controller('StationController', ['$scope', 'resolvedStation', 'Station',
     function ($scope, resolvedStation, Station) {
 
-        $scope.stations = resolvedStation;
+        $scope.sfStations = resolvedStation;
 
-        $scope.getStationDetails = function(station) {
+        $scope.stations = [];
 
-            Station.get({id: station.stationId}, function(requestedStation) {
+        $scope.getStationDetails = function (station) {
+
+            Station.get({id: station.stationId}, function (requestedStation) {
                 station.slots = requestedStation.slots;
             });
-        }
+        };
 
         // numberOfSlots: null,
         $scope.clear = function () {
 //            $scope.station = {manufacturerId: null, address: null, name: null, locationLatitude: null, locationLongitude: null, note: null, state: 'OPERATIVE'}
             $scope.station = null;
         };
+
+
+        $scope.concatAddress = function (address) {
+            address.string = address.streetAndHousenumber + ', ' + address.zip + ' ' + address.city + ', ' + address.country;
+            return address.string;
+        };
+
+        $scope.getters = {
+            address: function (value) {
+                return value.address.streetAndHousenumber + ', ' + value.address.zip + ', ' + value.address.city + ', ' + value.address.country;
+            }
+        };
+
     }]);
 
 
@@ -56,7 +71,11 @@ bikeManApp.controller('StationDetailController', ['$scope', 'resolvedStation', '
         };
 
         $scope.getConfig = function () {
-            $scope.stationConfig = CreateEditStation.getConfig({id: $scope.station.stationId});
+            $scope.stationConfig = CreateEditStation.getConfig({id: $scope.station.stationId}, function (data) {
+            }, function (err) {
+                // dismiss the modal view on error!
+                $('#detailModal').modal('hide');
+            });
         };
 
         $scope.updateConfig = function () {
@@ -78,7 +97,17 @@ bikeManApp.controller('StationDetailController', ['$scope', 'resolvedStation', '
         $scope.initSlotToggle = function (stationSlotPosition, state) {
             $scope.slot.stationSlotPosition = stationSlotPosition;
             $scope.slot.state = state;
-        }
+        };
+
+        $scope.initUnlockSlot = function (station, slot) {
+            $scope.unlock = {};
+            $scope.unlock.station = station;
+            $scope.unlock.slot = slot;
+        };
+
+        $scope.unlockSlot = function (station, slot) {
+            Station.unlockSlot({id: station.stationId, slotId: slot.stationSlotId});
+        };
 
         $scope.toggleSlotState = function (stationSlotPosition, state) {
             var newState;
@@ -93,7 +122,7 @@ bikeManApp.controller('StationDetailController', ['$scope', 'resolvedStation', '
             $scope.changeStateDTO = {
                 "state": newState,
                 "slotPosition": stationSlotPosition
-            }
+            };
 
             CreateEditStation.slotState({id: $scope.station.stationId}, $scope.changeStateDTO, function () {
                 $scope.station = Station.get({id: $scope.station.stationId});
@@ -103,7 +132,7 @@ bikeManApp.controller('StationDetailController', ['$scope', 'resolvedStation', '
     }]);
 
 bikeManApp.controller('StationCreateController', ['$scope', 'CreateEditStation', '$timeout',
-    function ($scope, CreateEditStation, $timeout)  {
+    function ($scope, CreateEditStation, $timeout) {
 
         $scope.station = null;
 
@@ -114,7 +143,9 @@ bikeManApp.controller('StationCreateController', ['$scope', 'CreateEditStation',
 
             $scope.$broadcast('show-errors-check-validity');
 
-            if ($scope.form.$invalid) { return; }
+            if ($scope.form.$invalid) {
+                return;
+            }
 
             CreateEditStation.save($scope.station,
                 function () {

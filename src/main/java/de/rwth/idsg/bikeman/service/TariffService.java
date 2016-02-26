@@ -1,5 +1,7 @@
 package de.rwth.idsg.bikeman.service;
 
+import de.rwth.idsg.bikeman.app.dto.ViewTariffPriceDTO;
+import de.rwth.idsg.bikeman.domain.TariffType;
 import de.rwth.idsg.bikeman.domain.Transaction;
 import de.rwth.idsg.bikeman.service.tariffPriceCalculations.Ticket2000Impl;
 import de.rwth.idsg.bikeman.service.tariffPriceCalculations.Ticket3000Impl;
@@ -7,6 +9,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.math.BigDecimal;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by swam on 20/01/15.
@@ -26,10 +31,10 @@ public class TariffService {
 
     }
 
-    public double calculatePrice(Transaction transaction) {
-
-        if (transaction == null || transaction.getStartDateTime() == null || transaction.getEndDateTime() == null)
-            return 0;
+    public BigDecimal calculatePrice(Transaction transaction) {
+        if (transaction.getStartDateTime() == null || transaction.getEndDateTime() == null) {
+            return BigDecimal.ZERO;
+        }
 
         switch (transaction.getBookedTariff().getName()) {
             case Ticket2000:
@@ -39,10 +44,20 @@ public class TariffService {
                 return ticket3000.calculate(transaction);
 
             default:
-                break;
+                return BigDecimal.ZERO;
         }
+    }
 
-        return 0;
+    public List<ViewTariffPriceDTO> listPrice(TariffType name) {
+        switch (name) {
+            case Ticket2000:
+                return ticket2000.listPrice();
 
+            case Ticket3000:
+                return ticket3000.listPrice();
+
+            default:
+                return Collections.emptyList();
+        }
     }
 }

@@ -45,9 +45,9 @@
 
                 <div class="col-md-10">
                     <div class="progress remove-margin">
-                        <div class="progress-bar" role="progressbar" aria-valuenow="{{pedelec.stateOfCharge*100}}"
-                             aria-valuemin="0" aria-valuemax="100" style="width: {{pedelec.stateOfCharge*100}}%;">
-                            {{pedelec.stateOfCharge*100 | number : 0}}%
+                        <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="{{pedelec.stateOfCharge}}"
+                             aria-valuemin="0" aria-valuemax="100" style="width: {{pedelec.stateOfCharge}}%;">
+                            &nbsp;{{pedelec.stateOfCharge}} %
                         </div>
                     </div>
                 </div>
@@ -103,7 +103,9 @@
         </thead>
         <tbody>
         <tr ng-class='{warning:$first && pedelec.inTransaction}' ng-repeat="transaction in transactions">
-            <td>{{transaction.customer.lastname}}, {{transaction.customer.firstname}}</td>
+            <td ng-show="transaction.customer">{{transaction.customer.lastname}}, {{transaction.customer.firstname}}</td>
+            <td ng-show="transaction.majorCustomerName">{{transaction.majorCustomerName}} ({{transaction.cardId}})</td>
+            <td ng-show="transaction.fleetManagerLogin">{{transaction.fleetManagerLogin}} ({{transaction.cardId}})</td>
             <td>{{transaction.startDateTime | date:'medium'}}</td>
             <td><span ng-show="!pedelec.inTransaction || !$first">{{transaction.endDateTime | date:'medium'}}</span>
             </td>

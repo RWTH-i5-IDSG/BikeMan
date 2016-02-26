@@ -1,16 +1,19 @@
 package de.rwth.idsg.bikeman.ixsi.processor.subscription.complete;
 
 import de.rwth.idsg.bikeman.domain.Booking;
+import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
+import de.rwth.idsg.bikeman.ixsi.dto.BookingDTO;
 import de.rwth.idsg.bikeman.ixsi.impl.ConsumptionStore;
 import de.rwth.idsg.bikeman.ixsi.processor.api.SubscriptionRequestMessageProcessor;
-import de.rwth.idsg.bikeman.ixsi.schema.CompleteConsumptionRequestType;
-import de.rwth.idsg.bikeman.ixsi.schema.CompleteConsumptionResponseType;
-import de.rwth.idsg.bikeman.ixsi.schema.ConsumptionType;
-import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
 import de.rwth.idsg.bikeman.ixsi.service.ConsumptionPushService;
 import de.rwth.idsg.bikeman.repository.BookingRepository;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import xjc.schema.ixsi.CompleteConsumptionRequestType;
+import xjc.schema.ixsi.CompleteConsumptionResponseType;
+import xjc.schema.ixsi.ConsumptionType;
+import xjc.schema.ixsi.ErrorType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,31 +31,48 @@ public class CompleteConsumptionRequestProcessor implements
     @Autowired private ConsumptionPushService consumptionPushService;
 
     @Override
+    public Class<CompleteConsumptionRequestType> getProcessingClass() {
+        return CompleteConsumptionRequestType.class;
+    }
+
+    @Override
     public CompleteConsumptionResponseType process(CompleteConsumptionRequestType request, String systemId) {
-        List<String> bookingIdListString = consumptionStore.getSubscriptions(systemId);
+        try {
+            List<String> bookingIdListString = consumptionStore.getSubscriptions(systemId);
+            if (bookingIdListString.isEmpty()) {
+                return buildError(ErrorFactory.Sys.invalidRequest("No subscriptions", null));
+            }
 
-        List<Long> bookingIdListLong = new ArrayList<>();
-        for (String str : bookingIdListString) {
-            bookingIdListLong.add(Long.valueOf(str));
+            List<ConsumptionType> consumptionList = new ArrayList<>();
+
+            List<Booking> closedList = bookingRepository.findClosedBookings(bookingIdListString);
+            for (Booking b : closedList) {
+                consumptionList.add(consumptionPushService.createConsumption(b));
+            }
+
+            List<BookingDTO> notUsedList = bookingRepository.findNotUsedAndExpiredBookings(bookingIdListString);
+            for (BookingDTO b : notUsedList) {
+                String ixsiBookingId = b.getIxsiBookingId();
+                DateTime dt = b.getReservationStart();
+                consumptionList.add(consumptionPushService.createEmptyConsumption(ixsiBookingId, dt));
+            }
+
+            // for now, assume that client system is always able to process the full message
+            // therefore do not split messages!
+            return new CompleteConsumptionResponseType()
+                    .withLast(true)
+                    .withMessageBlockID("none")
+                    .withConsumption(consumptionList);
+
+        } catch (Exception e) {
+            return buildError(ErrorFactory.Sys.backendFailed(e.getMessage(), null));
         }
-        List<Booking> bookingList = bookingRepository.findClosedBookings(bookingIdListLong);
-
-        List<ConsumptionType> consumptionList = new ArrayList<>();
-        for (Booking b : bookingList) {
-            String bookingId = String.valueOf(b.getBookingId());
-            consumptionList.add(consumptionPushService.createConsumption(bookingId, b.getTransaction()));
-        }
-
-        // for now, assume that client system is always able to process the full message
-        // therefore do not split messages!
-        return new CompleteConsumptionResponseType()
-                .withLast(true)
-                .withMessageBlockID(String.valueOf(request.hashCode()))
-                .withConsumption(consumptionList);
     }
 
     @Override
     public CompleteConsumptionResponseType buildError(ErrorType e) {
-        return new CompleteConsumptionResponseType().withError(e);
+        return new CompleteConsumptionResponseType()
+            .withError(e)
+            .withMessageBlockID("none");
     }
 }

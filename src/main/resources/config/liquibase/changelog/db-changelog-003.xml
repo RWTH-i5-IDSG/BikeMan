@@ -1,12 +1,38 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
-    <changeSet author="jhipster" id="1402497091113-3">
-        <addUniqueConstraint catalogName="" columnNames="customer_id" constraintName="UC_T_CUSTOMER_CUSTOMER_ID" deferrable="false" disabled="false" initiallyDeferred="false" schemaName="public" tableName="T_CUSTOMER"/>
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1409564974609-01" author="goekay">
+        <dropColumn tableName="T_PEDELEC" columnName="meter_value"/>
+        <dropColumn tableName="T_PEDELEC" columnName="battery_state_of_charge"/>
+        <dropColumn tableName="T_PEDELEC" columnName="battery_cycle_count"/>
+        <dropColumn tableName="T_PEDELEC" columnName="battery_temperature"/>
+        <dropColumn tableName="T_PEDELEC" columnName="battery_voltage"/>
+        <dropColumn tableName="T_PEDELEC" columnName="battery_current"/>
+
+        <createTable tableName="T_PEDELEC_CHARGING_STATUS" schemaName="public">
+            <column name="pedelec_id" type="INT8"/>
+            <column name="state" type="VARCHAR(255)"/>
+            <column name="meter_value" type="DOUBLE" defaultValueNumeric="0.0"/>
+            <column name="battery_cycle_count" type="INT8" defaultValueNumeric="0"/>
+            <column name="battery_state_of_charge" type="DOUBLE" defaultValueNumeric="0.0"/>
+            <column name="battery_temperature" type="DOUBLE" defaultValueNumeric="0.0"/>
+            <column name="battery_voltage" type="DOUBLE" defaultValueNumeric="0.0"/>
+            <column name="battery_current" type="DOUBLE" defaultValueNumeric="0.0"/>
+            <column name="timestamp" type="timestamp"/>
+        </createTable>
+
+        <addPrimaryKey catalogName="" columnNames="pedelec_id" constraintName="PK_T_PEDELEC_CHARGING_STATUS"
+                       schemaName="public" tableName="T_PEDELEC_CHARGING_STATUS"/>
+
+        <addForeignKeyConstraint baseColumnNames="pedelec_id" baseTableCatalogName="" baseTableName="T_PEDELEC_CHARGING_STATUS"
+                                 baseTableSchemaName="public" constraintName="FK_T_PEDELEC_CHARGING_STATUS_pedelec_id"
+                                 deferrable="false" initiallyDeferred="false" referencedColumnNames="pedelec_id"
+                                 referencedTableCatalogName="" referencedTableName="T_PEDELEC"
+                                 referencedTableSchemaName="public"/>
+
     </changeSet>
-    <changeSet author="jhipster" id="1402497091113-4">
-        <dropNotNullConstraint catalogName="" columnDataType="varchar(255)" columnName="login" schemaName="public" tableName="T_USER"/>
-    </changeSet>
-    <changeSet author="jhipster" id="1402497091113-5">
-        <addUniqueConstraint catalogName="" columnNames="login" constraintName="UC_T_USER_LOGIN" deferrable="false" disabled="false" initiallyDeferred="false" schemaName="public" tableName="T_USER"/>
-    </changeSet>
+
 </databaseChangeLog>

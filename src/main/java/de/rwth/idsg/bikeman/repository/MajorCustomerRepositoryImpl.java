@@ -1,5 +1,6 @@
 package de.rwth.idsg.bikeman.repository;
 
+import de.rwth.idsg.bikeman.domain.Authority;
 import de.rwth.idsg.bikeman.domain.BookedTariff;
 import de.rwth.idsg.bikeman.domain.BookedTariff_;
 import de.rwth.idsg.bikeman.domain.CardAccount;
@@ -7,8 +8,7 @@ import de.rwth.idsg.bikeman.domain.CardAccount_;
 import de.rwth.idsg.bikeman.domain.MajorCustomer;
 import de.rwth.idsg.bikeman.domain.MajorCustomer_;
 import de.rwth.idsg.bikeman.domain.Tariff_;
-import de.rwth.idsg.bikeman.domain.login.Authority;
-import de.rwth.idsg.bikeman.domain.login.User_;
+import de.rwth.idsg.bikeman.domain.User_;
 import de.rwth.idsg.bikeman.security.AuthoritiesConstants;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditMajorCustomerDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.view.ViewCardAccountDTO;
@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.inject.Inject;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -32,7 +33,6 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Root;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by swam on 16/10/14.
@@ -46,12 +46,7 @@ public class MajorCustomerRepositoryImpl implements MajorCustomerRepository {
     private PasswordEncoder passwordEncoder;
 
     private enum Operation {CREATE, UPDATE}
-
-    ;
-
     private enum FindType {ALL, BY_ID, BY_LOGIN}
-
-    ;
 
     @PersistenceContext
     private EntityManager em;
@@ -108,64 +103,73 @@ public class MajorCustomerRepositoryImpl implements MajorCustomerRepository {
             throw new DatabaseException("Failed to get cards for major customer", e);
         }
 
-        if (list == null) {
-            majorCustomerDTO.setCardAccountDTOs(new HashSet<ViewCardAccountDTO>());
-            return majorCustomerDTO;
+        if (list == null || list.isEmpty()) {
+            majorCustomerDTO.setCardAccountDTOs(new HashSet<>());
+        } else {
+            majorCustomerDTO.setCardAccountDTOs(new HashSet<>(list));
         }
-
-        Set<ViewCardAccountDTO> set = new HashSet<>(list);
-        majorCustomerDTO.setCardAccountDTOs(set);
 
         return majorCustomerDTO;
     }
 
+//    @Override
+//    @Transactional(readOnly = true)
+//    public ViewMajorCustomerDTO findOne(long majorCustomerId) throws DatabaseException {
+//
+//        CriteriaBuilder builder = em.getCriteriaBuilder();
+//
+//        CriteriaQuery<ViewMajorCustomerDTO> criteria = this.getMajorCustomerQuery(builder, FindType.BY_ID, null, majorCustomerId);
+//        ViewMajorCustomerDTO majorCustomerDTO;
+//
+//        try {
+//            majorCustomerDTO = em.createQuery(criteria).getSingleResult();
+//        } catch (Exception e) {
+//            throw new DatabaseException("Failed to find majorcustomer with majorCustomerId: " + majorCustomerId, e);
+//        }
+//
+//        CriteriaQuery<ViewCardAccountDTO> cardAccountCriteria = builder.createQuery(ViewCardAccountDTO.class);
+//        Root<CardAccount> cardAccount = cardAccountCriteria.from(CardAccount.class);
+//        Join<CardAccount, BookedTariff> bookedTariff = cardAccount.join(CardAccount_.currentTariff, JoinType.LEFT);
+//
+//        cardAccountCriteria.select(
+//                builder.construct(
+//                        ViewCardAccountDTO.class,
+//                        cardAccount.get(CardAccount_.cardId),
+//                        cardAccount.get(CardAccount_.cardPin),
+//                        cardAccount.get(CardAccount_.inTransaction),
+//                        cardAccount.get(CardAccount_.operationState),
+//                        bookedTariff.get(BookedTariff_.tariff).get(Tariff_.name)
+//                )
+//        ).where(builder.equal(cardAccount.get(CardAccount_.user).get(User_.userId), majorCustomerId));
+//
+//        List<ViewCardAccountDTO> list;
+//
+//        try {
+//            list = em.createQuery(cardAccountCriteria).getResultList();
+//        } catch (Exception e) {
+//            throw new DatabaseException("Failed to get cards for major customer", e);
+//        }
+//
+//        if (list == null || list.isEmpty()) {
+//            majorCustomerDTO.setCardAccountDTOs(new HashSet<>());
+//        } else {
+//            majorCustomerDTO.setCardAccountDTOs(new HashSet<>(list));
+//        }
+//
+//        return majorCustomerDTO;
+//    }
+
+
     @Override
-    @Transactional(readOnly = true)
-    public ViewMajorCustomerDTO findOne(long majorCustomerId) throws DatabaseException {
-
-        CriteriaBuilder builder = em.getCriteriaBuilder();
-
-        CriteriaQuery<ViewMajorCustomerDTO> criteria = this.getMajorCustomerQuery(builder, FindType.BY_ID, null, majorCustomerId);
-        ViewMajorCustomerDTO majorCustomerDTO;
-
+    public MajorCustomer findByName(String name) throws DatabaseException {
+        final String query = "select mc from MajorCustomer mc where mc.name = :name";
         try {
-            majorCustomerDTO = em.createQuery(criteria).getSingleResult();
-        } catch (Exception e) {
-            throw new DatabaseException("Failed to find majorcustomer with majorCustomerId: " + majorCustomerId, e);
+            return em.createQuery(query, MajorCustomer.class)
+                .setParameter("name", name)
+                .getSingleResult();
+        } catch (NoResultException e) {
+            throw new DatabaseException("Could not find majorCustomer for specified name.", e);
         }
-
-        CriteriaQuery<ViewCardAccountDTO> cardAccountCriteria = builder.createQuery(ViewCardAccountDTO.class);
-        Root<CardAccount> cardAccount = cardAccountCriteria.from(CardAccount.class);
-        Join<CardAccount, BookedTariff> bookedTariff = cardAccount.join(CardAccount_.currentTariff, JoinType.LEFT);
-
-        cardAccountCriteria.select(
-                builder.construct(
-                        ViewCardAccountDTO.class,
-                        cardAccount.get(CardAccount_.cardId),
-                        cardAccount.get(CardAccount_.cardPin),
-                        cardAccount.get(CardAccount_.inTransaction),
-                        cardAccount.get(CardAccount_.operationState),
-                        bookedTariff.get(BookedTariff_.tariff).get(Tariff_.name)
-                )
-        ).where(builder.equal(cardAccount.get(CardAccount_.user).get(User_.userId), majorCustomerId));
-
-        List<ViewCardAccountDTO> list;
-
-        try {
-            list = em.createQuery(cardAccountCriteria).getResultList();
-        } catch (Exception e) {
-            throw new DatabaseException("Failed to get cards for major customer", e);
-        }
-
-        if (list == null) {
-            majorCustomerDTO.setCardAccountDTOs(new HashSet<ViewCardAccountDTO>());
-            return majorCustomerDTO;
-        }
-
-        Set<ViewCardAccountDTO> set = new HashSet<>(list);
-        majorCustomerDTO.setCardAccountDTOs(set);
-
-        return majorCustomerDTO;
     }
 
     @Override

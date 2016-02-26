@@ -5,34 +5,31 @@ import de.rwth.idsg.bikeman.service.StationService;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.ChangeStationOperationStateDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.CreateEditStationDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.StationConfigurationDTO;
+import de.rwth.idsg.bikeman.web.rest.dto.view.ViewErrorDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.view.ViewStationDTO;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import java.util.List;
 
 /**
  * REST controller for managing Station.
  */
 @RestController
-@RequestMapping("/app")
-@Produces(MediaType.APPLICATION_JSON)
+@RequestMapping(value = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
 public class StationResource {
 
-    @Autowired private StationService stationService;
+    @Autowired
+    private StationService stationService;
 
-    private static final String BASE_PATH = "/rest/stations";
-    private static final String ID_PATH = "/rest/stations/{id}";
+    private static final String BASE_PATH = "/stations";
+    private static final String ID_PATH = "/stations/{id}";
+    private static final String ERROR_PATH = "/stations/errors";
 
     @Timed
     @RequestMapping(value = BASE_PATH, method = RequestMethod.POST)
@@ -95,5 +92,18 @@ public class StationResource {
     public void updateConfig(@PathVariable Long id, @Valid @RequestBody StationConfigurationDTO dto) throws DatabaseException {
         log.debug("REST request to change station configuration: {}", dto);
         stationService.updateConfig(id, dto);
+    }
+
+    @Timed
+    @RequestMapping(value = ID_PATH + "/unlockSlot/{slotId}", method = RequestMethod.POST)
+    public void unlockSlot(@PathVariable("id") Long stationId, @PathVariable("slotId") Long slotId) {
+        stationService.unlockSlot(stationId, slotId);
+    }
+
+    @Timed
+    @RequestMapping(value = ERROR_PATH, method = RequestMethod.GET)
+    public List<ViewErrorDTO> getErrors() {
+        log.debug("REST request to get station and stationSlot errors.");
+        return stationService.getErrors();
     }
 }

@@ -1,15 +1,14 @@
 package de.rwth.idsg.bikeman.ixsi.processor.query.user;
 
 import com.google.common.base.Optional;
+import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
 import de.rwth.idsg.bikeman.ixsi.processor.api.UserRequestProcessor;
-import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
-import de.rwth.idsg.bikeman.ixsi.schema.Language;
-import de.rwth.idsg.bikeman.ixsi.schema.PriceInformationRequestType;
-import de.rwth.idsg.bikeman.ixsi.schema.PriceInformationResponseType;
-import de.rwth.idsg.bikeman.ixsi.schema.UserInfoType;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
+import xjc.schema.ixsi.ErrorType;
+import xjc.schema.ixsi.Language;
+import xjc.schema.ixsi.PriceInformationRequestType;
+import xjc.schema.ixsi.PriceInformationResponseType;
+import xjc.schema.ixsi.UserInfoType;
 
 /**
  * @author Sevket Goekay <goekay@dbis.rwth-aachen.de>
@@ -20,19 +19,21 @@ public class PriceInformationRequestProcessor implements
         UserRequestProcessor<PriceInformationRequestType, PriceInformationResponseType> {
 
     @Override
-    public PriceInformationResponseType processAnonymously(PriceInformationRequestType request, Optional<Language> lan) {
-        // TODO FUTURE
-        return null;
+    public Class<PriceInformationRequestType> getProcessingClass() {
+        return PriceInformationRequestType.class;
     }
 
-    /**
-     * This method has to validate the user infos !!!!
-     */
+    @Override
+    public PriceInformationResponseType processAnonymously(PriceInformationRequestType request, Optional<Language> lan) {
+        // TODO FUTURE
+        return buildError(ErrorFactory.Sys.notImplemented(null, null));
+    }
+
     @Override
     public PriceInformationResponseType processForUser(PriceInformationRequestType request, Optional<Language> lan,
-                                                       List<UserInfoType> userInfoList) {
+                                                       UserInfoType userInfo) {
         // TODO FUTURE
-        return null;
+        return buildError(ErrorFactory.Sys.notImplemented(null, null));
     }
 
     // -------------------------------------------------------------------------

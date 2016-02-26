@@ -1,7 +1,7 @@
 package de.rwth.idsg.bikeman.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import de.rwth.idsg.bikeman.domain.login.User;
+import de.rwth.idsg.bikeman.domain.User;
 import de.rwth.idsg.bikeman.repository.UserRepository;
 import de.rwth.idsg.bikeman.security.AuthoritiesConstants;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletResponse;
  * REST controller for managing users.
  */
 @RestController
-@RequestMapping("/app")
+@RequestMapping("/api")
 @Slf4j
 public class UserResource {
 
@@ -29,8 +29,8 @@ public class UserResource {
      * GET  /rest/users/:login -> get the "login" user.
      */
     @RequestMapping(value = "/rest/users/{login}",
-            method = RequestMethod.GET,
-            produces = "application/json")
+        method = RequestMethod.GET,
+        produces = "application/json")
     @Timed
     @RolesAllowed(AuthoritiesConstants.ADMIN)
     public User getUser(@PathVariable String login, HttpServletResponse response) {

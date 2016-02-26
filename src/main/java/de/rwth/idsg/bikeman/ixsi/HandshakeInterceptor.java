@@ -1,7 +1,9 @@
 package de.rwth.idsg.bikeman.ixsi;
 
+import de.rwth.idsg.bikeman.config.IxsiConfiguration;
 import de.rwth.idsg.bikeman.ixsi.repository.SystemValidator;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
@@ -15,15 +17,9 @@ import java.util.Map;
  * Created by max on 08/09/14.
  */
 @Slf4j
+@RequiredArgsConstructor
 public class HandshakeInterceptor extends HttpSessionHandshakeInterceptor {
-
-    public static final String SYSTEM_ID_KEY = "systemId";
-
     private final SystemValidator systemValidator;
-
-    public HandshakeInterceptor(SystemValidator systemValidator) {
-        this.systemValidator = systemValidator;
-    }
 
     @Override
     public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response,
@@ -35,7 +31,7 @@ public class HandshakeInterceptor extends HttpSessionHandshakeInterceptor {
         try {
             String systemId = systemValidator.getSystemID(ip);
             // to be be used in future
-            attributes.put(SYSTEM_ID_KEY, systemId);
+            attributes.put(IxsiConfiguration.SYSTEM_ID_KEY, systemId);
             return super.beforeHandshake(request, response, wsHandler, attributes);
 
         } catch (DatabaseException e) {

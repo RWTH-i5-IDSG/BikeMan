@@ -1,10 +1,14 @@
 package de.rwth.idsg.bikeman.ixsi.processor.subscription.request;
 
+import de.rwth.idsg.bikeman.ixsi.impl.BookingAlertStore;
 import de.rwth.idsg.bikeman.ixsi.processor.api.SubscriptionRequestProcessor;
-import de.rwth.idsg.bikeman.ixsi.schema.BookingAlertSubscriptionStatusRequestType;
-import de.rwth.idsg.bikeman.ixsi.schema.BookingAlertSubscriptionStatusResponseType;
-import de.rwth.idsg.bikeman.ixsi.schema.ErrorType;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import xjc.schema.ixsi.BookingAlertSubscriptionStatusRequestType;
+import xjc.schema.ixsi.BookingAlertSubscriptionStatusResponseType;
+import xjc.schema.ixsi.ErrorType;
+
+import java.util.List;
 
 /**
  * @author Sevket Goekay <goekay@dbis.rwth-aachen.de>
@@ -14,10 +18,18 @@ import org.springframework.stereotype.Component;
 public class BookingAlertSubscriptionStatusRequestProcessor implements
         SubscriptionRequestProcessor<BookingAlertSubscriptionStatusRequestType, BookingAlertSubscriptionStatusResponseType> {
 
+    @Autowired private BookingAlertStore bookingAlertStore;
+
+    @Override
+    public Class<BookingAlertSubscriptionStatusRequestType> getProcessingClass() {
+        return BookingAlertSubscriptionStatusRequestType.class;
+    }
+
     @Override
     public BookingAlertSubscriptionStatusResponseType process(BookingAlertSubscriptionStatusRequestType request, String systemId) {
-        // TODO FUTURE
-        return null;
+        List<String> bookingIds = bookingAlertStore.getSubscriptions(systemId);
+
+        return new BookingAlertSubscriptionStatusResponseType().withBookingID(bookingIds);
     }
 
     // -------------------------------------------------------------------------
