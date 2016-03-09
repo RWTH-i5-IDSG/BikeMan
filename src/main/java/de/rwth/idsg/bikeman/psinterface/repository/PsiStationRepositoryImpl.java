@@ -191,13 +191,17 @@ public class PsiStationRepositoryImpl implements PsiStationRepository {
                          "WHERE s.manufacturerId = :stationManufacturerId";
 
         try {
-            em.createQuery(s)
-              .setParameter("stationErrorCode", dto.getStationErrorCode())
-              .setParameter("stationErrorInfo", dto.getStationErrorInfo())
-              .setParameter("stationState", OperationState.valueOf(dto.getStationState().name()))
-              .setParameter("updated", new Date(dto.getTimestamp().getMillis()))
-              .setParameter("stationManufacturerId", dto.getStationManufacturerId())
-              .executeUpdate();
+            int count = em.createQuery(s)
+                          .setParameter("stationErrorCode", dto.getStationErrorCode())
+                          .setParameter("stationErrorInfo", dto.getStationErrorInfo())
+                          .setParameter("stationState", OperationState.valueOf(dto.getStationState().name()))
+                          .setParameter("updated", new Date(dto.getTimestamp().getMillis()))
+                          .setParameter("stationManufacturerId", dto.getStationManufacturerId())
+                          .executeUpdate();
+
+            if (count != 1) {
+                log.warn("Failed to update status of station with manufacturerId {}", dto.getStationManufacturerId());
+            }
         } catch (Exception e) {
             throw new DatabaseException("Failed to update the station status with manufacturerId "
                 + dto.getStationManufacturerId(), e);
@@ -216,13 +220,17 @@ public class PsiStationRepositoryImpl implements PsiStationRepository {
 
         for (SlotDTO.StationStatus slot : dto.getSlots()) {
             try {
-                em.createQuery(ss)
-                  .setParameter("slotErrorCode", slot.getSlotErrorCode())
-                  .setParameter("slotErrorInfo", slot.getSlotErrorInfo())
-                  .setParameter("slotState", OperationState.valueOf(slot.getSlotState().name()))
-                  .setParameter("slotManufacturerId", slot.getSlotManufacturerId())
-                  .setParameter("stationManufacturerId", dto.getStationManufacturerId())
-                  .executeUpdate();
+                int count = em.createQuery(ss)
+                              .setParameter("slotErrorCode", slot.getSlotErrorCode())
+                              .setParameter("slotErrorInfo", slot.getSlotErrorInfo())
+                              .setParameter("slotState", OperationState.valueOf(slot.getSlotState().name()))
+                              .setParameter("slotManufacturerId", slot.getSlotManufacturerId())
+                              .setParameter("stationManufacturerId", dto.getStationManufacturerId())
+                              .executeUpdate();
+
+                if (count != 1) {
+                    log.warn("Failed to update status of station slot with manufacturerId {}", dto.getStationManufacturerId());
+                }
             } catch (Exception e) {
                 throw new DatabaseException("Failed to update the slot status with manufacturerId "
                     + slot.getSlotManufacturerId(), e);

@@ -108,13 +108,17 @@ public class PsiPedelecRepositoryImpl implements PsiPedelecRepository {
             "WHERE p.manufacturerId = :pedelecManufacturerId";
 
         try {
-            em.createQuery(s)
-                .setParameter("pedelecErrorCode", dto.getPedelecErrorCode())
-                .setParameter("pedelecErrorInfo", dto.getPedelecErrorInfo())
-                .setParameter("pedelecState", OperationState.valueOf(dto.getPedelecState().name()))
-                .setParameter("updated", new Date(dto.getTimestamp().getMillis()))
-                .setParameter("pedelecManufacturerId", dto.getPedelecManufacturerId())
-                .executeUpdate();
+            int count = em.createQuery(s)
+                          .setParameter("pedelecErrorCode", dto.getPedelecErrorCode())
+                          .setParameter("pedelecErrorInfo", dto.getPedelecErrorInfo())
+                          .setParameter("pedelecState", OperationState.valueOf(dto.getPedelecState().name()))
+                          .setParameter("updated", new Date(dto.getTimestamp().getMillis()))
+                          .setParameter("pedelecManufacturerId", dto.getPedelecManufacturerId())
+                          .executeUpdate();
+
+            if (count != 1) {
+                log.warn("Failed to update status of pedelec with manufacturerId {}", dto.getPedelecManufacturerId());
+            }
         } catch (Exception e) {
             throw new DatabaseException("Failed to update the pedelec status with manufacturerId "
                 + dto.getPedelecManufacturerId(), e);
@@ -137,17 +141,21 @@ public class PsiPedelecRepositoryImpl implements PsiPedelecRepository {
 
         try {
             for (ChargingStatusDTO dto : dtoList) {
-                em.createQuery(s)
-                    .setParameter("state", dto.getChargingState())
-                    .setParameter("meterValue", dto.getMeterValue())
-                    .setParameter("cycleCount", dto.getBattery().getCycleCount())
-                    .setParameter("stateOfCharge", dto.getBattery().getSoc())
-                    .setParameter("temperature", dto.getBattery().getTemperature())
-                    .setParameter("voltage", dto.getBattery().getVoltage())
-                    .setParameter("current", dto.getBattery().getCurrent())
-                    .setParameter("timestamp", dto.getTimestamp().toLocalDateTime())
-                    .setParameter("pedelecManufacturerId", dto.getPedelecManufacturerId())
-                    .executeUpdate();
+                int count = em.createQuery(s)
+                              .setParameter("state", dto.getChargingState())
+                              .setParameter("meterValue", dto.getMeterValue())
+                              .setParameter("cycleCount", dto.getBattery().getCycleCount())
+                              .setParameter("stateOfCharge", dto.getBattery().getSoc())
+                              .setParameter("temperature", dto.getBattery().getTemperature())
+                              .setParameter("voltage", dto.getBattery().getVoltage())
+                              .setParameter("current", dto.getBattery().getCurrent())
+                              .setParameter("timestamp", dto.getTimestamp().toLocalDateTime())
+                              .setParameter("pedelecManufacturerId", dto.getPedelecManufacturerId())
+                              .executeUpdate();
+
+                if (count != 1) {
+                    log.warn("Failed to update charging status of pedelec with manufacturerId {}", dto.getPedelecManufacturerId());
+                }
             }
         } catch (Exception e) {
             throw new DatabaseException("Failed to update the charging status.", e);
