@@ -142,21 +142,6 @@ public class PsiService {
         log.debug("Perform Start Push for Transaction: {} and Booking: {}", transaction, booking);
     }
 
-    @Async
-    private void performExternalBookingPush(Booking booking, Transaction transaction) {
-        externalBookingPushService.report(booking, transaction);
-    }
-
-    @Async
-    public void performStartPush(StartTransactionDTO startTransactionDTO) {
-
-        availabilityPushService.takenFromPlace(
-                startTransactionDTO.getPedelecManufacturerId(),
-                startTransactionDTO.getTimestamp());
-
-        placeAvailabilityPushService.reportChange(startTransactionDTO.getStationManufacturerId());
-    }
-
     @Transactional
     public void handleStopTransaction(StopTransactionDTO stopTransactionDTO) throws DatabaseException {
         transactionEventService.createAndSaveStopTransactionEvent(stopTransactionDTO);
@@ -166,20 +151,6 @@ public class PsiService {
         if (t != null) {
             performStopPush(stopTransactionDTO, t);
         }
-    }
-
-    @Async
-    private void performStopPush(StopTransactionDTO stopTransactionDTO, Transaction t) {
-        Booking booking = bookingRepository.findByTransaction(t);
-        consumptionPushService.report(booking);
-
-        DateTime startDateTime = t.getStartDateTime().toDateTime();
-        availabilityPushService.arrivedAtPlace(
-                stopTransactionDTO.getPedelecManufacturerId(),
-                stopTransactionDTO.getStationManufacturerId(),
-                startDateTime);
-
-        placeAvailabilityPushService.reportChange(stopTransactionDTO.getStationManufacturerId());
     }
 
     public List<String> getAvailablePedelecs(String stationManufacturerId, String cardId) throws DatabaseException {
@@ -200,25 +171,93 @@ public class PsiService {
     }
 
     public void handleStationStatusNotification(StationStatusDTO stationStatusDTO) {
-        operationStateService.pushAvailability(stationStatusDTO);
-        operationStateService.pushInavailability(stationStatusDTO);
-
         stationRepository.updateStationStatus(stationStatusDTO);
-
+        asyncPushToIxsi(stationStatusDTO);
         checkForStationErrors(stationStatusDTO);
     }
 
     public void handlePedelecStatusNotification(PedelecStatusDTO pedelecStatusDTO) {
-        operationStateService.pushAvailability(pedelecStatusDTO);
-        operationStateService.pushInavailability(pedelecStatusDTO);
-
         pedelecRepository.updatePedelecStatus(pedelecStatusDTO);
-
+        asyncPushToIxsi(pedelecStatusDTO);
         checkForPedelecErrors(pedelecStatusDTO);
     }
 
     public void handleChargingStatusNotification(List<ChargingStatusDTO> chargingStatusDTO) {
         pedelecRepository.updatePedelecChargingStatus(chargingStatusDTO);
+    }
+
+    // -------------------------------------------------------------------------
+    // Async calls
+    // -------------------------------------------------------------------------
+
+    @Async
+    private void performStopPush(StopTransactionDTO stopTransactionDTO, Transaction t) {
+        Booking booking = bookingRepository.findByTransaction(t);
+        consumptionPushService.report(booking);
+
+        DateTime startDateTime = t.getStartDateTime().toDateTime();
+        availabilityPushService.arrivedAtPlace(
+                stopTransactionDTO.getPedelecManufacturerId(),
+                stopTransactionDTO.getStationManufacturerId(),
+                startDateTime);
+
+        placeAvailabilityPushService.reportChange(stopTransactionDTO.getStationManufacturerId());
+    }
+
+    @Async
+    private void performExternalBookingPush(Booking booking, Transaction transaction) {
+        externalBookingPushService.report(booking, transaction);
+    }
+
+    @Async
+    public void performStartPush(StartTransactionDTO startTransactionDTO) {
+
+        availabilityPushService.takenFromPlace(
+                startTransactionDTO.getPedelecManufacturerId(),
+                startTransactionDTO.getTimestamp());
+
+        placeAvailabilityPushService.reportChange(startTransactionDTO.getStationManufacturerId());
+    }
+
+    @Async
+    private void asyncPushToIxsi(PedelecStatusDTO dto) {
+        operationStateService.pushAvailability(dto);
+        operationStateService.pushInavailability(dto);
+    }
+
+
+    @Async
+    private void asyncPushToIxsi(StationStatusDTO dto) {
+        operationStateService.pushAvailability(dto);
+        operationStateService.pushInavailability(dto);
+    }
+
+    @Async
+    private void checkForStationErrors(StationStatusDTO stationStatusDTO) {
+        if (stationStatusDTO.getStationErrorCode() != null) {
+            errorHistoryService.createAndSaveErrorHistoryEntry(
+                    ErrorType.STATION_ERROR,
+                    stationStatusDTO.getStationErrorCode(),
+                    stationStatusDTO.getStationErrorInfo(),
+                    stationStatusDTO.getStationManufacturerId()
+            );
+        }
+
+        for (SlotDTO.StationStatus slotDTO : stationStatusDTO.getSlots()) {
+            checkForSlotErrors(slotDTO);
+        }
+    }
+
+    @Async
+    private void checkForPedelecErrors(PedelecStatusDTO pedelecStatusDTO) {
+        if (pedelecStatusDTO.getPedelecErrorCode() != null) {
+            errorHistoryService.createAndSaveErrorHistoryEntry(
+                    ErrorType.PEDELEC_ERROR,
+                    pedelecStatusDTO.getPedelecErrorCode(),
+                    pedelecStatusDTO.getPedelecErrorInfo(),
+                    pedelecStatusDTO.getPedelecManufacturerId()
+            );
+        }
     }
 
     // -------------------------------------------------------------------------
@@ -266,21 +305,6 @@ public class PsiService {
         }
     }
 
-    private void checkForStationErrors(StationStatusDTO stationStatusDTO) {
-        if (stationStatusDTO.getStationErrorCode() != null) {
-            errorHistoryService.createAndSaveErrorHistoryEntry(
-                    ErrorType.STATION_ERROR,
-                    stationStatusDTO.getStationErrorCode(),
-                    stationStatusDTO.getStationErrorInfo(),
-                    stationStatusDTO.getStationManufacturerId()
-            );
-        }
-
-        for (SlotDTO.StationStatus slotDTO : stationStatusDTO.getSlots()) {
-            checkForSlotErrors(slotDTO);
-        }
-    }
-
     private void checkForSlotErrors(SlotDTO.StationStatus slotDTO) {
         if (slotDTO.getSlotErrorCode() != null) {
             errorHistoryService.createAndSaveErrorHistoryEntry(
@@ -288,17 +312,6 @@ public class PsiService {
                     slotDTO.getSlotErrorCode(),
                     slotDTO.getSlotErrorInfo(),
                     slotDTO.getSlotManufacturerId()
-            );
-        }
-    }
-
-    private void checkForPedelecErrors(PedelecStatusDTO pedelecStatusDTO) {
-        if (pedelecStatusDTO.getPedelecErrorCode() != null) {
-            errorHistoryService.createAndSaveErrorHistoryEntry(
-                    ErrorType.PEDELEC_ERROR,
-                    pedelecStatusDTO.getPedelecErrorCode(),
-                    pedelecStatusDTO.getPedelecErrorInfo(),
-                    pedelecStatusDTO.getPedelecManufacturerId()
             );
         }
     }
