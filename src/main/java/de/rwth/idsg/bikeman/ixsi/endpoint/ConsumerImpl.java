@@ -1,16 +1,13 @@
-package de.rwth.idsg.bikeman.ixsi.impl;
+package de.rwth.idsg.bikeman.ixsi.endpoint;
 
 import de.rwth.idsg.bikeman.ixsi.CommunicationContext;
-import de.rwth.idsg.bikeman.ixsi.IxsiProcessingException;
-import de.rwth.idsg.bikeman.ixsi.api.Consumer;
-import de.rwth.idsg.bikeman.ixsi.api.Parser;
+import de.rwth.idsg.bikeman.ixsi.endpoint.Consumer;
+import de.rwth.idsg.bikeman.ixsi.endpoint.Parser;
 import de.rwth.idsg.bikeman.ixsi.dispatcher.IncomingIxsiDispatcher;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import xjc.schema.ixsi.IxsiMessageType;
-
-import javax.xml.bind.JAXBException;
 
 /**
  * Created by max on 08/09/14.

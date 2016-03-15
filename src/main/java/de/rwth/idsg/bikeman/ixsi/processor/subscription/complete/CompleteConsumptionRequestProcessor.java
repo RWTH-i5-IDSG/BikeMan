@@ -3,7 +3,7 @@ package de.rwth.idsg.bikeman.ixsi.processor.subscription.complete;
 import de.rwth.idsg.bikeman.domain.Booking;
 import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
 import de.rwth.idsg.bikeman.ixsi.dto.BookingDTO;
-import de.rwth.idsg.bikeman.ixsi.impl.ConsumptionStore;
+import de.rwth.idsg.bikeman.ixsi.store.ConsumptionStore;
 import de.rwth.idsg.bikeman.ixsi.processor.api.SubscriptionRequestMessageProcessor;
 import de.rwth.idsg.bikeman.ixsi.service.ConsumptionPushService;
 import de.rwth.idsg.bikeman.repository.BookingRepository;

@@ -1,8 +1,8 @@
 package de.rwth.idsg.bikeman.ixsi.service;
 
 import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
-import de.rwth.idsg.bikeman.ixsi.api.Producer;
-import de.rwth.idsg.bikeman.ixsi.impl.BookingAlertStore;
+import de.rwth.idsg.bikeman.ixsi.endpoint.Producer;
+import de.rwth.idsg.bikeman.ixsi.store.BookingAlertStore;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

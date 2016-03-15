@@ -1,4 +1,4 @@
-package de.rwth.idsg.bikeman.ixsi.api;
+package de.rwth.idsg.bikeman.ixsi.store;
 
 import com.google.common.base.Optional;
 import org.springframework.web.socket.WebSocketSession;

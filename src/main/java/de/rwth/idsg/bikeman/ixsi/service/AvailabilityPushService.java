@@ -1,8 +1,8 @@
 package de.rwth.idsg.bikeman.ixsi.service;
 
 import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
-import de.rwth.idsg.bikeman.ixsi.api.Producer;
-import de.rwth.idsg.bikeman.ixsi.impl.AvailabilityStore;
+import de.rwth.idsg.bikeman.ixsi.endpoint.Producer;
+import de.rwth.idsg.bikeman.ixsi.store.AvailabilityStore;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;

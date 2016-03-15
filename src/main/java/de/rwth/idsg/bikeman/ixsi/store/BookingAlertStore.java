@@ -1,19 +1,18 @@
-package de.rwth.idsg.bikeman.ixsi.impl;
+package de.rwth.idsg.bikeman.ixsi.store;
 
 import org.springframework.stereotype.Service;
-import xjc.schema.ixsi.BookingTargetIDType;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
 /**
- * Key : Pedelec ID / BookingTargetID
+ * Key : Booking ID
  *
  * @author Sevket Goekay <goekay@dbis.rwth-aachen.de>
- * @since 04.11.2014
+ * @since 18.11.2015
  */
 @Service
-public class AvailabilityStore extends AbstractSubscriptionStore<BookingTargetIDType> {
+public class BookingAlertStore extends AbstractSubscriptionStore<String> {
 
     @PostConstruct
     public void init() {
@@ -22,7 +21,7 @@ public class AvailabilityStore extends AbstractSubscriptionStore<BookingTargetID
 
     @PreDestroy
     public void preDestroy() {
-        log.debug("AvailabilityStore is being destroyed");
+        log.debug("BookingAlertStore is being destroyed");
         super.shutDownExecutor();
         // TODO Publish info about going down
     }

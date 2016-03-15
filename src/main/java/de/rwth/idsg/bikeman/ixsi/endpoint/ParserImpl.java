@@ -1,8 +1,8 @@
-package de.rwth.idsg.bikeman.ixsi.impl;
+package de.rwth.idsg.bikeman.ixsi.endpoint;
 
 import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
 import de.rwth.idsg.bikeman.ixsi.IxsiProcessingException;
-import de.rwth.idsg.bikeman.ixsi.api.Parser;
+import de.rwth.idsg.bikeman.ixsi.endpoint.Parser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

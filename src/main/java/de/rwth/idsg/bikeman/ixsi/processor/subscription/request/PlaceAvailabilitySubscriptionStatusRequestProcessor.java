@@ -1,7 +1,7 @@
 package de.rwth.idsg.bikeman.ixsi.processor.subscription.request;
 
 import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
-import de.rwth.idsg.bikeman.ixsi.impl.PlaceAvailabilityStore;
+import de.rwth.idsg.bikeman.ixsi.store.PlaceAvailabilityStore;
 import de.rwth.idsg.bikeman.ixsi.processor.api.SubscriptionRequestProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

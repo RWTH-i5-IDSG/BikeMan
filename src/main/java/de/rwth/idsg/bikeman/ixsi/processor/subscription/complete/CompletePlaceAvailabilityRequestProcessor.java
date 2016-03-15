@@ -2,7 +2,7 @@ package de.rwth.idsg.bikeman.ixsi.processor.subscription.complete;
 
 import de.rwth.idsg.bikeman.ixsi.ErrorFactory;
 import de.rwth.idsg.bikeman.ixsi.dto.PlaceAvailabilityResponseDTO;
-import de.rwth.idsg.bikeman.ixsi.impl.PlaceAvailabilityStore;
+import de.rwth.idsg.bikeman.ixsi.store.PlaceAvailabilityStore;
 import de.rwth.idsg.bikeman.ixsi.processor.api.SubscriptionRequestMessageProcessor;
 import de.rwth.idsg.bikeman.ixsi.processor.query.user.PlaceAvailabilityRequestProcessor;
 import de.rwth.idsg.bikeman.ixsi.repository.QueryIXSIRepository;

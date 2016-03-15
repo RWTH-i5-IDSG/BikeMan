@@ -1,4 +1,4 @@
-package de.rwth.idsg.bikeman.ixsi.impl;
+package de.rwth.idsg.bikeman.ixsi.store;
 
 import org.springframework.stereotype.Component;
 import xjc.schema.ixsi.UserInfoType;

@@ -1,13 +1,14 @@
-package de.rwth.idsg.bikeman.ixsi;
+package de.rwth.idsg.bikeman.ixsi.endpoint;
 
 import de.rwth.idsg.bikeman.config.IxsiConfiguration;
-import de.rwth.idsg.bikeman.ixsi.api.Consumer;
-import de.rwth.idsg.bikeman.ixsi.api.WebSocketSessionStore;
-import de.rwth.idsg.bikeman.ixsi.impl.AvailabilityStore;
-import de.rwth.idsg.bikeman.ixsi.impl.BookingAlertStore;
-import de.rwth.idsg.bikeman.ixsi.impl.ConsumptionStore;
-import de.rwth.idsg.bikeman.ixsi.impl.ExternalBookingStore;
-import de.rwth.idsg.bikeman.ixsi.impl.PlaceAvailabilityStore;
+import de.rwth.idsg.bikeman.ixsi.CommunicationContext;
+import de.rwth.idsg.bikeman.ixsi.IxsiProcessingException;
+import de.rwth.idsg.bikeman.ixsi.store.WebSocketSessionStore;
+import de.rwth.idsg.bikeman.ixsi.store.AvailabilityStore;
+import de.rwth.idsg.bikeman.ixsi.store.BookingAlertStore;
+import de.rwth.idsg.bikeman.ixsi.store.ConsumptionStore;
+import de.rwth.idsg.bikeman.ixsi.store.ExternalBookingStore;
+import de.rwth.idsg.bikeman.ixsi.store.PlaceAvailabilityStore;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

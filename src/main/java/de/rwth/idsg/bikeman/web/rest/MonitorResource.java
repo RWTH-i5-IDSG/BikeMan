@@ -1,12 +1,12 @@
 package de.rwth.idsg.bikeman.web.rest;
 
 import com.google.common.base.Optional;
-import de.rwth.idsg.bikeman.ixsi.api.WebSocketSessionStore;
-import de.rwth.idsg.bikeman.ixsi.impl.AvailabilityStore;
-import de.rwth.idsg.bikeman.ixsi.impl.BookingAlertStore;
-import de.rwth.idsg.bikeman.ixsi.impl.ConsumptionStore;
-import de.rwth.idsg.bikeman.ixsi.impl.ExternalBookingStore;
-import de.rwth.idsg.bikeman.ixsi.impl.PlaceAvailabilityStore;
+import de.rwth.idsg.bikeman.ixsi.store.WebSocketSessionStore;
+import de.rwth.idsg.bikeman.ixsi.store.AvailabilityStore;
+import de.rwth.idsg.bikeman.ixsi.store.BookingAlertStore;
+import de.rwth.idsg.bikeman.ixsi.store.ConsumptionStore;
+import de.rwth.idsg.bikeman.ixsi.store.ExternalBookingStore;
+import de.rwth.idsg.bikeman.ixsi.store.PlaceAvailabilityStore;
 import de.rwth.idsg.bikeman.web.rest.dto.monitor.EndpointDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.monitor.StoreDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.monitor.StoreItem;

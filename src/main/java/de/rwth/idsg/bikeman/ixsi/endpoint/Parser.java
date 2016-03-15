@@ -1,4 +1,4 @@
-package de.rwth.idsg.bikeman.ixsi.api;
+package de.rwth.idsg.bikeman.ixsi.endpoint;
 
 import xjc.schema.ixsi.IxsiMessageType;
 

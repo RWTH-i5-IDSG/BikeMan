@@ -1,5 +1,6 @@
-package de.rwth.idsg.bikeman.ixsi;
+package de.rwth.idsg.bikeman.ixsi.endpoint;
 
+import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
