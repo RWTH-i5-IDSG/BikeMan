@@ -117,7 +117,11 @@ public class WebSocketSessionStoreImpl implements WebSocketSessionStore {
     @Override
     public int size(String systemID) {
         Deque<WebSocketSession> sessionSet = lookupTable.get(systemID);
-        return sessionSet.size();
+        if (sessionSet == null) {
+            return 0;
+        } else {
+            return sessionSet.size();
+        }
     }
 
     @Override
