@@ -2,7 +2,7 @@ package de.rwth.idsg.bikeman.config;
 
 import de.rwth.idsg.bikeman.ixsi.HandshakeInterceptor;
 import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
-import de.rwth.idsg.bikeman.ixsi.WebSocketEndpoint;
+import de.rwth.idsg.bikeman.ixsi.endpoint.WebSocketEndpoint;
 import de.rwth.idsg.bikeman.ixsi.repository.SystemValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
