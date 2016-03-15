@@ -3,7 +3,6 @@ package de.rwth.idsg.bikeman.ixsi.store;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import java.util.List;
 
 /**
@@ -18,13 +17,6 @@ public class PlaceAvailabilityStore extends AbstractSubscriptionStore<String> {
     @PostConstruct
     public void init() {
         log.trace("Ready");
-    }
-
-    @PreDestroy
-    public void preDestroy() {
-        log.debug("PlaceAvailabilityStore is being destroyed");
-        super.shutDownExecutor();
-        // TODO Publish info about going down
     }
 
     @Override

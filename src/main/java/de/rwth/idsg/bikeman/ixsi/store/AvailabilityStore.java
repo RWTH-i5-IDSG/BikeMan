@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service;
 import xjc.schema.ixsi.BookingTargetIDType;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 
 /**
  * Key : Pedelec ID / BookingTargetID
@@ -19,12 +18,4 @@ public class AvailabilityStore extends AbstractSubscriptionStore<BookingTargetID
     public void init() {
         log.trace("Ready");
     }
-
-    @PreDestroy
-    public void preDestroy() {
-        log.debug("AvailabilityStore is being destroyed");
-        super.shutDownExecutor();
-        // TODO Publish info about going down
-    }
-
 }
