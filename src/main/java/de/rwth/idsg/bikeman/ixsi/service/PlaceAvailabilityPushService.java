@@ -24,12 +24,9 @@ import java.util.Set;
 @Service
 public class PlaceAvailabilityPushService {
 
-    @Autowired
-    private Producer producer;
-    @Autowired
-    private PlaceAvailabilityStore placeAvailabilityStore;
-    @Autowired
-    private QueryIXSIRepository queryIXSIRepository;
+    @Autowired private Producer producer;
+    @Autowired private PlaceAvailabilityStore placeAvailabilityStore;
+    @Autowired private QueryIXSIRepository queryIXSIRepository;
 
     public void reportChange(String placeID) {
         Set<String> systemIdSet = placeAvailabilityStore.getSubscribedSystems(placeID);

@@ -29,9 +29,9 @@ import java.util.List;
 @Slf4j
 public class IxsiUserService {
 
-    @Autowired CardAccountRepository cardAccountRepository;
-    @Autowired MajorCustomerRepository majorCustomerRepository;
-    @Autowired TariffRepository tariffRepository;
+    @Autowired private CardAccountRepository cardAccountRepository;
+    @Autowired private MajorCustomerRepository majorCustomerRepository;
+    @Autowired private TariffRepository tariffRepository;
 
     public List<UserType> createUsers(List<UserType> users) {
         List<UserType> acceptedUsers = new ArrayList<>();
