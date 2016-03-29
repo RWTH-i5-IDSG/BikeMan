@@ -260,7 +260,7 @@
         }
     },
     "customerDetail": {
-        "title": "Kunde: {{firstname}} {{lastname}}",
+        "title": "Kunde: ",
         "buttons": {
             "back": "Zurück",
             "edit": "Bearbeiten",
