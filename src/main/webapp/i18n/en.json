@@ -270,7 +270,7 @@
         }
     },
     "customerDetail": {
-        "title": "Customer: {{firstname}} {{lastname}}",
+        "title": "Customer:",
         "buttons": {
             "back": "Back",
             "edit": "Edit Customer",

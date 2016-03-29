@@ -1,19 +1,20 @@
 <div>
 
-    <h2 translate="customerDetail.title"
-        translate-values="{firstname: '{{customer.firstname}}', lastname: '{{customer.lastname}}'}">Customer:
-        {{customer.firstname}} {{customer.lastname}}</h2>
+    <h2>
+        <span translate="customerDetail.title">Customer: </span>
+        {{customer.firstname}} {{customer.lastname}}
+    </h2>
 
     <div ng-switch="isEditing">
         <button type="button" ui-sref="customers" class="btn btn-default" ng-disabled="isEditing">
             <span class="glyphicon glyphicon-arrow-left"></span> <span
-            translate="customerDetail.buttons.back"> Back</span></button>
+                translate="customerDetail.buttons.back"> Back</span></button>
         <button type="button" ng-switch-when="false" ng-click="toggleEdit()" class="btn btn-default">
             <span class="glyphicon glyphicon-pencil"></span> <span translate="customerDetail.buttons.edit"> Edit Customer</span>
         </button>
         <button type="button" ng-switch-when="true" ng-click="toggleEdit()" class="btn btn-warning">
             <span class="glyphicon glyphicon-pencil"></span> <span
-            translate="customerDetail.buttons.cancel"> Cancel</span></button>
+                translate="customerDetail.buttons.cancel"> Cancel</span></button>
         <button type="button" ng-click="saveCustomer()" class="btn btn-primary" ng-show="isEditing">
             <span class="glyphicon glyphicon-pencil"></span> <span translate="customerDetail.buttons.save"> Save Customer</span>
         </button>
@@ -104,7 +105,7 @@
                         {{customer.cardOperationState}}
                     </div>
                     <select ng-switch-when="true"
-                        type="text"
+                            type="text"
                             ng-model="customer.cardOperationState"
                             ng-options="value for value in ['OPERATIVE','INOPERATIVE']"
                             class="form-control">
@@ -248,13 +249,13 @@
                 <td>{{transaction.pedelec.manufacturerId}}</td>
                 <td>{{transaction.startDateTime | date:'medium'}}</td>
                 <td><span
-                    ng-hide="transaction.toStation.stationId == null">{{transaction.endDateTime | date:'medium'}}</span>
+                        ng-hide="transaction.toStation.stationId == null">{{transaction.endDateTime | date:'medium'}}</span>
                 </td>
                 <td>{{transaction.fromStation.name}} <span class="badge">{{transaction.fromStation.slotPosition}}</span>
                 </td>
                 <td>
                     <span ng-hide="transaction.toStation.stationId == null">{{transaction.toStation.name}} <span
-                        class="badge">{{transaction.toStation.slotPosition}}</span>
+                            class="badge">{{transaction.toStation.slotPosition}}</span>
                     </span>
                 </td>
             </tr>
