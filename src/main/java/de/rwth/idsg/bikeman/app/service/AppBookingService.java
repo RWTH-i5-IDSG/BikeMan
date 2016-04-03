@@ -56,8 +56,8 @@ public class AppBookingService {
 
         try {
             TimePeriodProposalType timePeriodProposal = new TimePeriodProposalType()
-                    .withBegin(new DateTime())
-                    .withEnd(new DateTime().plusMinutes(15));
+                .withBegin(new DateTime())
+                .withEnd(new DateTime().plusMinutes(15));
 
             Optional<Pedelec> optionalPedelec = appPedelecService.getRecommendedPedelecForBooking(stationId);
 
@@ -68,29 +68,29 @@ public class AppBookingService {
             Pedelec pedelec = optionalPedelec.get();
 
             Booking createdBooking = bookingService.createBookingForUser(
-                    pedelec.getManufacturerId(),
-                    customer.getCardAccount().getCardId(),
-                    timePeriodProposal
+                pedelec.getManufacturerId(),
+                customer.getCardAccount().getCardId(),
+                timePeriodProposal
             );
 
             TimePeriodType timePeriod = new TimePeriodType()
-                    .withBegin(createdBooking.getReservation().getStartDateTime().toDateTime())
-                    .withEnd(createdBooking.getReservation().getEndDateTime().toDateTime());
+                .withBegin(createdBooking.getReservation().getStartDateTime().toDateTime())
+                .withEnd(createdBooking.getReservation().getEndDateTime().toDateTime());
 
             String placeId = createdBooking.getReservation()
-                                           .getPedelec()
-                                           .getStationSlot()
-                                           .getStation()
-                                           .getManufacturerId();
+                .getPedelec()
+                .getStationSlot()
+                .getStation()
+                .getManufacturerId();
 
             availabilityPushService.placedBooking(pedelec.getManufacturerId(), placeId, timePeriod);
             bookingCheckService.placedBooking(createdBooking);
 
             ViewBookingDTO viewBookingDTO = ViewBookingDTO.builder()
-                                                          .expiryDateTime(new LocalDateTime(timePeriod.getEnd()))
-                                                          .stationSlotPosition(pedelec.getStationSlot().getStationSlotPosition())
-                                                          .stationId(stationId)
-                                                          .build();
+                .expiryDateTime(new LocalDateTime(timePeriod.getEnd()))
+                .stationSlotPosition(pedelec.getStationSlot().getStationSlotPosition())
+                .stationId(stationId)
+                .build();
 
             return Optional.of(viewBookingDTO);
 
@@ -112,11 +112,11 @@ public class AppBookingService {
         }
 
         return Optional.of(
-                ViewBookingDTO.builder()
-                              .stationId(optional.get().getPedelec().getStationSlot().getStation().getStationId())
-                              .stationSlotPosition(optional.get().getPedelec().getStationSlot().getStationSlotPosition())
-                              .expiryDateTime(optional.get().getEndDateTime())
-                              .build()
+            ViewBookingDTO.builder()
+                .stationId(optional.get().getPedelec().getStationSlot().getStation().getStationId())
+                .stationSlotPosition(optional.get().getPedelec().getStationSlot().getStationSlotPosition())
+                .expiryDateTime(optional.get().getEndDateTime())
+                .build()
         );
 
     }
@@ -130,10 +130,10 @@ public class AppBookingService {
         }
 
         return Optional.of(
-                ViewPedelecSlotDTO.builder()
-                                  .stationSlotId(optional.get().getPedelec().getStationSlot().getStationSlotId())
-                                  .stationSlotPosition(optional.get().getPedelec().getStationSlot().getStationSlotPosition())
-                                  .build()
+            ViewPedelecSlotDTO.builder()
+                .stationSlotId(optional.get().getPedelec().getStationSlot().getStationSlotId())
+                .stationSlotPosition(optional.get().getPedelec().getStationSlot().getStationSlotPosition())
+                .build()
         );
     }
 
@@ -148,7 +148,6 @@ public class AppBookingService {
         return Optional.of(optional.get().getPedelec().getStationSlot().getStationSlotId());
     }
 
-    // TODO: don't forget IXSI: see ChangeBookingRequestProcessor
     @Transactional
     public void delete(Customer customer) {
         Optional<Reservation> optional = this.getReservation(customer);
@@ -159,18 +158,31 @@ public class AppBookingService {
 
         Reservation reservation = optional.get();
 
-        String endpointAddress = reservation.getPedelec().getStationSlot().getStation().getEndpointAddress();
-        CancelReservationDTO cancelReservationDTO = new CancelReservationDTO(reservation.getPedelec().getManufacturerId());
-        cancelReservation(endpointAddress, cancelReservationDTO);
+        Booking booking = bookingService.cancel(reservation.getBooking().getIxsiBookingId(), customer.getCardAccount().getCardId());
 
-        bookingRepository.cancel(reservation.getBooking());
+        TimePeriodType timePeriod = new TimePeriodType()
+            .withBegin(booking.getReservation().getStartDateTime().toDateTime())
+            .withEnd(booking.getReservation().getEndDateTime().toDateTime());
+
+        String pedelecId = booking.getReservation()
+            .getPedelec()
+            .getManufacturerId();
+
+        String placeId = booking.getReservation()
+            .getPedelec()
+            .getStationSlot()
+            .getStation()
+            .getManufacturerId();
+
+        availabilityPushService.cancelledBooking(pedelecId, placeId, timePeriod);
+        bookingCheckService.cancelledBooking(booking);
     }
 
     @Transactional(readOnly = true)
     private Optional<Reservation> getReservation(Customer customer) {
         List<Reservation> reservations = reservationRepository.findByCustomerIdAndTime(
-                customer.getCardAccount().getCardAccountId(),
-                LocalDateTime.now());
+            customer.getCardAccount().getCardAccountId(),
+            LocalDateTime.now());
 
         if (reservations.isEmpty()) {
             return Optional.empty();
@@ -181,13 +193,6 @@ public class AppBookingService {
         }
 
         return Optional.of(reservations.get(0));
-    }
-
-    @Async
-    public void cancelReservation(String endpointAddress, CancelReservationDTO cancelReservationDTO)
-            throws DatabaseException {
-
-        stationClient.cancelReservation(cancelReservationDTO, endpointAddress);
     }
 
 }
