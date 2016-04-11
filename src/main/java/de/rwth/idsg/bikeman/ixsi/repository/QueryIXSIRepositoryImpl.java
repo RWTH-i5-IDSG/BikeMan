@@ -43,7 +43,7 @@ public class QueryIXSIRepositoryImpl implements QueryIXSIRepository {
         final String pedelecQuery = "SELECT new de.rwth.idsg.bikeman.ixsi.dto." +
                                     "PedelecDTO(p.manufacturerId) " +
                                     "FROM Pedelec p " +
-                                    "WHERE p.state = de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE";
+                                    "WHERE NOT p.state = de.rwth.idsg.bikeman.domain.OperationState.DELETED";
 
         final String stationQuery = "SELECT new de.rwth.idsg.bikeman.ixsi.dto." +
                                     "StationDTO(s.manufacturerId, s.locationLongitude, s.locationLatitude, " +
@@ -52,7 +52,7 @@ public class QueryIXSIRepositoryImpl implements QueryIXSIRepository {
                                     "a.streetAndHousenumber, a.zip, a.city, a.country) " +
                                     "FROM Station s " +
                                     "LEFT JOIN s.address a " +
-                                    "WHERE s.state = de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE";
+                                    "WHERE NOT s.state = de.rwth.idsg.bikeman.domain.OperationState.DELETED";
 
         List<PedelecDTO> pedelecList = em.createQuery(pedelecQuery, PedelecDTO.class).getResultList();
         List<StationDTO> stationList = em.createQuery(stationQuery, StationDTO.class).getResultList();
