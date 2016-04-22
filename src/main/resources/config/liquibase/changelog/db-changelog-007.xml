@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1461313624000-01" author="goekay">
+        <dropPrimaryKey constraintName="pk_ixsi_client_system"
+                        tableName="IXSI_CLIENT_SYSTEM"/>
+
+        <dropUniqueConstraint constraintName="ixsi_client_system_ip_address_key"
+                              tableName="IXSI_CLIENT_SYSTEM"/>
+
+        <addUniqueConstraint catalogName="" schemaName="public"
+                             deferrable="false" disabled="false" initiallyDeferred="false"
+                             columnNames="system_id,ip_address" constraintName="UQ_ixsi_client_system_id_ip"
+                             tableName="IXSI_CLIENT_SYSTEM"/>
+    </changeSet>
+
+</databaseChangeLog>
