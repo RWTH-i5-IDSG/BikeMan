@@ -650,7 +650,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <envName>local</envName>
+                <envName>dev</envName>
             </properties>
             <dependencies>
                 <dependency>
@@ -662,15 +662,14 @@
         <profile>
             <id>prod</id>
 
-            <!-- Since we don't run the app in embedded server and deploy the war to local Tomcat instance,
-                 this dependency is not needed. Thus, the commented dependency -->
-
-            <!--<dependencies>-->
-                <!--<dependency>-->
-                    <!--<groupId>org.springframework.boot</groupId>-->
-                    <!--<artifactId>spring-boot-starter-tomcat</artifactId>-->
-                <!--</dependency>-->
-            <!--</dependencies>-->
+            <!-- This dependency should only be included when running the app as fat jar (with embedded server).
+                 Otherwise, when deploying as war to local Tomcat instance comment it out! -->
+            <dependencies>
+                <dependency>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-tomcat</artifactId>
+                </dependency>
+            </dependencies>
 
             <build>
                 <plugins>
@@ -725,7 +724,7 @@
                 </plugins>
             </build>
             <properties>
-                <envName>remote</envName>
+                <envName>prod</envName>
             </properties>
         </profile>
     </profiles>
