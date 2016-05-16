@@ -391,6 +391,8 @@
             </resource>
             <resource>
                 <directory>src/main/resources/config/logback/${envName}</directory>
+                <!-- replace the parameters with their values in logback.xml  -->
+                <filtering>true</filtering>
             </resource>
         </resources>
         <pluginManagement>
