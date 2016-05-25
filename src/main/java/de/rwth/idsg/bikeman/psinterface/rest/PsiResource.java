@@ -72,7 +72,7 @@ public class PsiResource {
     public BootConfirmationDTO bootNotification(@RequestBody BootNotificationDTO bootNotificationDTO,
                                                 HttpServletRequest request) throws DatabaseException {
         String from = Utils.getFrom(request);
-        log.debug("[From: {}] Received bootNotification {}", from, bootNotificationDTO);
+        log.info("[From: {}] Received bootNotification {}", from, bootNotificationDTO);
         BootConfirmationDTO dto = psiService.handleBootNotification(bootNotificationDTO);
         log.debug("bootNotification returns {}", dto);
         return dto;
@@ -91,7 +91,7 @@ public class PsiResource {
     public List<String> getAvailablePedelecs(@RequestParam(value = "cardId", required = false) String cardId,
                                              HttpServletRequest request) throws DatabaseException {
         String from = Utils.getFrom(request);
-        log.debug("[From: {}] Received getAvailablePedelecs for cardId '{}'", from, cardId);
+        log.info("[From: {}] Received getAvailablePedelecs for cardId '{}'", from, cardId);
         List<String> list = psiService.getAvailablePedelecs(from, cardId);
         log.debug("getAvailablePedelecs returns {}", list);
         return list;
@@ -119,7 +119,7 @@ public class PsiResource {
                                               HttpServletRequest request) throws DatabaseException {
         log.info("[From: {}] Received authorize {}", Utils.getFrom(request), customerAuthorizeDTO);
         AuthorizeConfirmationDTO dto = psiService.handleAuthorize(customerAuthorizeDTO);
-        log.info("authorize returns {}", dto);
+        log.debug("authorize returns {}", dto);
         return dto;
     }
 
@@ -148,7 +148,7 @@ public class PsiResource {
     @RequestMapping(value = CARD_ACTIVATION_STATUS_PATH, method = RequestMethod.POST)
     public void stationCardActivationNotification(@RequestBody CardActivationStatusDTO dto,
                                                   HttpServletRequest request) {
-        log.debug("[From: {}] Received cardActivationNotification: {}", Utils.getFrom(request), dto);
+        log.info("[From: {}] Received cardActivationNotification: {}", Utils.getFrom(request), dto);
 
         if (dto.isSuccessfulActivation()) {
             cardAccountService.setCardOperative(dto.getCardId());
@@ -161,35 +161,35 @@ public class PsiResource {
     @RequestMapping(value = STATION_STATUS_PATH, method = RequestMethod.POST)
     public void stationStatusNotification(@RequestBody StationStatusDTO stationStatusDTO,
                                           HttpServletRequest request) {
-        log.debug("[From: {}] Received stationStatusNotification: {}", Utils.getFrom(request), stationStatusDTO);
+        log.info("[From: {}] Received stationStatusNotification: {}", Utils.getFrom(request), stationStatusDTO);
         psiService.handleStationStatusNotification(stationStatusDTO);
     }
 
     @RequestMapping(value = PEDELEC_STATUS_PATH, method = RequestMethod.POST)
     public void pedelecStatusNotification(@RequestBody PedelecStatusDTO pedelecStatusDTO,
                                           HttpServletRequest request) {
-        log.debug("[From: {}] Received pedelecStatusNotification: {}", Utils.getFrom(request), pedelecStatusDTO);
+        log.info("[From: {}] Received pedelecStatusNotification: {}", Utils.getFrom(request), pedelecStatusDTO);
         psiService.handlePedelecStatusNotification(pedelecStatusDTO);
     }
 
     @RequestMapping(value = CHARGING_STATUS_PATH, method = RequestMethod.POST)
     public void chargingStatusNotification(@Valid @RequestBody List<ChargingStatusDTO> chargingStatusDTOs,
                                            HttpServletRequest request) {
-        log.debug("[From: {}] Received chargingStatusNotification: {}", Utils.getFrom(request), chargingStatusDTOs);
+        log.info("[From: {}] Received chargingStatusNotification: {}", Utils.getFrom(request), chargingStatusDTOs);
         psiService.handleChargingStatusNotification(chargingStatusDTOs);
     }
 
     @RequestMapping(value = FIRMWARE_STATUS_PATH, method = RequestMethod.POST)
     public void firmwareStatusNotification(@RequestBody FirmwareStatusDTO firmwareStatusDTO,
                                            HttpServletRequest request) {
-        log.debug("[From: {}] Received firmwareStatusNotification: {}", Utils.getFrom(request), firmwareStatusDTO);
+        log.info("[From: {}] Received firmwareStatusNotification: {}", Utils.getFrom(request), firmwareStatusDTO);
         // TODO
     }
 
     @RequestMapping(value = LOGS_STATUS_PATH, method = RequestMethod.POST)
     public void logsStatusNotification(@RequestBody LogsStatusDTO logsStatusDTO,
                                        HttpServletRequest request) {
-        log.debug("[From: {}] Received logsStatusNotification: {}", Utils.getFrom(request), logsStatusDTO);
+        log.info("[From: {}] Received logsStatusNotification: {}", Utils.getFrom(request), logsStatusDTO);
         // TODO
     }
 

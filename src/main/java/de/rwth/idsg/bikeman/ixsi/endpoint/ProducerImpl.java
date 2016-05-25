@@ -30,7 +30,7 @@ public class ProducerImpl implements Producer {
             TextMessage out = new TextMessage(str);
 
             WebSocketSession session = context.getSession();
-            log.debug("[id: {}] Sending message: {}", session.getId(), str);
+            log.info("[id: {}] Sending message: {}", session.getId(), str);
             session.sendMessage(out);
 
         } catch (Exception e) {
@@ -56,7 +56,7 @@ public class ProducerImpl implements Producer {
     private void push(String systemId, TextMessage out) {
         try {
             WebSocketSession session = webSocketSessionStore.getNext(systemId);
-            log.debug("[id: {}] Sending message: {}", session.getId(), out.getPayload());
+            log.info("[id: {}] Sending message: {}", session.getId(), out.getPayload());
             session.sendMessage(out);
 
         } catch (Exception e) {
