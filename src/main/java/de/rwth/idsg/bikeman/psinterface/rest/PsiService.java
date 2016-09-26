@@ -171,14 +171,24 @@ public class PsiService {
     }
 
     public void handleStationStatusNotification(StationStatusDTO stationStatusDTO) {
+        try {
+            pushToIxsi(stationStatusDTO);
+        } catch (Exception e) {
+            log.warn("Error occurred during IXSI availability push", e);
+        }
+
         stationRepository.updateStationStatus(stationStatusDTO);
-        asyncPushToIxsi(stationStatusDTO);
         checkForStationErrors(stationStatusDTO);
     }
 
     public void handlePedelecStatusNotification(PedelecStatusDTO pedelecStatusDTO) {
+        try {
+            pushToIxsi(pedelecStatusDTO);
+        } catch (Exception e) {
+            log.warn("Error occurred during IXSI availability push", e);
+        }
+
         pedelecRepository.updatePedelecStatus(pedelecStatusDTO);
-        asyncPushToIxsi(pedelecStatusDTO);
         checkForPedelecErrors(pedelecStatusDTO);
     }
 
@@ -220,19 +230,6 @@ public class PsiService {
     }
 
     @Async
-    private void asyncPushToIxsi(PedelecStatusDTO dto) {
-        operationStateService.pushAvailability(dto);
-        operationStateService.pushInavailability(dto);
-    }
-
-
-    @Async
-    private void asyncPushToIxsi(StationStatusDTO dto) {
-        operationStateService.pushAvailability(dto);
-        operationStateService.pushInavailability(dto);
-    }
-
-    @Async
     private void checkForStationErrors(StationStatusDTO stationStatusDTO) {
         if (stationStatusDTO.getStationErrorCode() != null) {
             errorHistoryService.createAndSaveErrorHistoryEntry(
@@ -263,6 +260,16 @@ public class PsiService {
     // -------------------------------------------------------------------------
     // Private helpers
     // -------------------------------------------------------------------------
+
+    private void pushToIxsi(PedelecStatusDTO dto) {
+        operationStateService.pushAvailability(dto);
+        operationStateService.pushInavailability(dto);
+    }
+
+    private void pushToIxsi(StationStatusDTO dto) {
+        operationStateService.pushAvailability(dto);
+        operationStateService.pushInavailability(dto);
+    }
 
     private void checkOperationState(CardAccount ca, CustomerAuthorizeDTO dto) {
         if (OperationState.OPERATIVE.equals(ca.getOperationState())) {
