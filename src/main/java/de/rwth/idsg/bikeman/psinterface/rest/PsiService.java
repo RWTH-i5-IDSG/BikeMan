@@ -33,7 +33,6 @@ import de.rwth.idsg.bikeman.psinterface.repository.PsiTransactionRepository;
 import de.rwth.idsg.bikeman.service.ErrorHistoryService;
 import de.rwth.idsg.bikeman.service.OperationStateService;
 import de.rwth.idsg.bikeman.service.TransactionEventService;
-import de.rwth.idsg.bikeman.utils.QueueProcessor;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
@@ -42,11 +41,8 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 
 import static de.rwth.idsg.bikeman.psinterface.exception.PsErrorCode.AUTH_ATTEMPTS_EXCEEDED;
 import static de.rwth.idsg.bikeman.psinterface.exception.PsErrorCode.CONSTRAINT_FAILED;
@@ -58,8 +54,6 @@ import static de.rwth.idsg.bikeman.psinterface.exception.PsErrorCode.CONSTRAINT_
 @Service
 @Slf4j
 public class PsiService {
-
-    @Inject private ExecutorService executorService;
 
     @Inject private PsiCustomerRepository customerRepository;
     @Inject private PsiTransactionRepository transactionRepository;
@@ -79,23 +73,6 @@ public class PsiService {
 
     private static final Integer HEARTBEAT_INTERVAL_IN_SECONDS = 60;
     private static final int MAX_AUTH_RETRIES = 3;
-
-    private QueueProcessor<StationStatusDTO> stationStatusProcessor;
-
-    @PostConstruct
-    private void init() {
-        stationStatusProcessor = new QueueProcessor<>(
-                executorService,
-                this::handleStationStatusNotificationInternal,
-                "StationStatusDTO-Queue"
-        );
-        stationStatusProcessor.start();
-    }
-
-    @PreDestroy
-    private void destroy() {
-        stationStatusProcessor.stop();
-    }
 
     public BootConfirmationDTO handleBootNotification(BootNotificationDTO bootNotificationDTO)
             throws DatabaseException {
@@ -194,7 +171,14 @@ public class PsiService {
     }
 
     public void handleStationStatusNotification(StationStatusDTO stationStatusDTO) {
-        stationStatusProcessor.add(stationStatusDTO);
+        try {
+            pushToIxsi(stationStatusDTO);
+        } catch (Exception e) {
+            log.warn("Error occurred during IXSI availability push", e);
+        }
+
+        stationRepository.updateStationStatus(stationStatusDTO);
+        checkForStationErrors(stationStatusDTO);
     }
 
     public void handlePedelecStatusNotification(PedelecStatusDTO pedelecStatusDTO) {
@@ -276,17 +260,6 @@ public class PsiService {
     // -------------------------------------------------------------------------
     // Private helpers
     // -------------------------------------------------------------------------
-
-    private void handleStationStatusNotificationInternal(StationStatusDTO stationStatusDTO) {
-        try {
-            pushToIxsi(stationStatusDTO);
-        } catch (Exception e) {
-            log.warn("Error occurred during IXSI availability push", e);
-        }
-
-        stationRepository.updateStationStatus(stationStatusDTO);
-        checkForStationErrors(stationStatusDTO);
-    }
 
     private void pushToIxsi(PedelecStatusDTO dto) {
         operationStateService.pushAvailability(dto);

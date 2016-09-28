@@ -1,6 +1,7 @@
 package de.rwth.idsg.bikeman.psinterface.rest;
 
 import com.google.common.base.Optional;
+import com.google.common.util.concurrent.Striped;
 import de.rwth.idsg.bikeman.psinterface.Utils;
 import de.rwth.idsg.bikeman.psinterface.dto.request.BootNotificationDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.CardActivationDTO;
@@ -35,6 +36,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
 
 /**
  * Created by swam on 31/07/14.
@@ -47,6 +49,8 @@ public class PsiResource {
 
     @Inject private PsiService psiService;
     @Inject private CardAccountService cardAccountService;
+
+    private final Striped<Lock> stationLocks = Striped.lock(25);
 
     private static final String BOOT_NOTIFICATION_PATH = "/boot";
     private static final String AUTHORIZE_PATH = "/authorize";
@@ -73,7 +77,16 @@ public class PsiResource {
                                                 HttpServletRequest request) throws DatabaseException {
         String stationId = Utils.getFrom(request);
         log.info("[From: {}] Received bootNotification {}", stationId, bootNotificationDTO);
-        BootConfirmationDTO dto = psiService.handleBootNotification(bootNotificationDTO);
+        BootConfirmationDTO dto;
+
+        Lock l = stationLocks.get(stationId);
+        l.lock();
+        try {
+            dto = psiService.handleBootNotification(bootNotificationDTO);
+        } finally {
+            l.unlock();
+        }
+
         log.debug("bootNotification returns {}", dto);
         return dto;
     }
@@ -93,7 +106,16 @@ public class PsiResource {
                                              HttpServletRequest request) throws DatabaseException {
         String stationId = Utils.getFrom(request);
         log.info("[From: {}] Received getAvailablePedelecs for cardId '{}'", stationId, cardId);
-        List<String> list = psiService.getAvailablePedelecs(stationId, cardId);
+        List<String> list;
+
+        Lock l = stationLocks.get(stationId);
+        l.lock();
+        try {
+            list = psiService.getAvailablePedelecs(stationId, cardId);
+        } finally {
+            l.unlock();
+        }
+
         log.debug("getAvailablePedelecs returns {}", list);
         return list;
     }
@@ -107,8 +129,16 @@ public class PsiResource {
                                                   HttpServletRequest request, HttpServletResponse response) {
         String stationId = Utils.getFrom(request);
         log.info("[From: {}] Received activateCard {}", stationId, cardActivationDTO);
+        Optional<CardActivationResponseDTO> optional;
 
-        Optional<CardActivationResponseDTO> optional = cardAccountService.activateCardAccount(cardActivationDTO);
+        Lock l = stationLocks.get(stationId);
+        l.lock();
+        try {
+            optional = cardAccountService.activateCardAccount(cardActivationDTO);
+        } finally {
+            l.unlock();
+        }
+
         if (optional.isPresent()) {
             return optional.get();
         } else {
@@ -121,7 +151,16 @@ public class PsiResource {
                                               HttpServletRequest request) throws DatabaseException {
         String stationId = Utils.getFrom(request);
         log.info("[From: {}] Received authorize {}", stationId, customerAuthorizeDTO);
-        AuthorizeConfirmationDTO dto = psiService.handleAuthorize(customerAuthorizeDTO);
+        AuthorizeConfirmationDTO dto;
+
+        Lock l = stationLocks.get(stationId);
+        l.lock();
+        try {
+            dto = psiService.handleAuthorize(customerAuthorizeDTO);
+        } finally {
+            l.unlock();
+        }
+
         log.debug("authorize returns {}", dto);
         return dto;
     }
@@ -135,7 +174,14 @@ public class PsiResource {
                                  HttpServletRequest request) throws DatabaseException {
         String stationId = Utils.getFrom(request);
         log.info("[From: {}] Received startTransaction: {}", stationId, startTransactionDTO);
-        psiService.handleStartTransaction(startTransactionDTO);
+
+        Lock l = stationLocks.get(stationId);
+        l.lock();
+        try {
+            psiService.handleStartTransaction(startTransactionDTO);
+        } finally {
+            l.unlock();
+        }
     }
 
     @RequestMapping(value = TRANSACTION_STOP_PATH, method = RequestMethod.POST)
@@ -143,7 +189,14 @@ public class PsiResource {
                                 HttpServletRequest request) throws DatabaseException {
         String stationId = Utils.getFrom(request);
         log.info("[From: {}] Received stopTransaction: {}", stationId, stopTransactionDTO);
-        psiService.handleStopTransaction(stopTransactionDTO);
+
+        Lock l = stationLocks.get(stationId);
+        l.lock();
+        try {
+            psiService.handleStopTransaction(stopTransactionDTO);
+        } finally {
+            l.unlock();
+        }
     }
 
     // -------------------------------------------------------------------------
@@ -156,11 +209,12 @@ public class PsiResource {
         String stationId = Utils.getFrom(request);
         log.info("[From: {}] Received cardActivationNotification: {}", stationId, dto);
 
-        if (dto.isSuccessfulActivation()) {
-            cardAccountService.setCardOperative(dto.getCardId());
-        } else {
-            // TODO: We should probably raise an exception, or notice somebody instead
-            log.warn("The cardId '{}' could not be activated", dto.getCardId());
+        Lock l = stationLocks.get(stationId);
+        l.lock();
+        try {
+            cardAccountService.setCardOperative(dto);
+        } finally {
+            l.unlock();
         }
     }
 
@@ -169,7 +223,14 @@ public class PsiResource {
                                           HttpServletRequest request) {
         String stationId = Utils.getFrom(request);
         log.info("[From: {}] Received stationStatusNotification: {}", stationId, stationStatusDTO);
-        psiService.handleStationStatusNotification(stationStatusDTO);
+
+        Lock l = stationLocks.get(stationId);
+        l.lock();
+        try {
+            psiService.handleStationStatusNotification(stationStatusDTO);
+        } finally {
+            l.unlock();
+        }
     }
 
     @RequestMapping(value = PEDELEC_STATUS_PATH, method = RequestMethod.POST)
@@ -177,7 +238,14 @@ public class PsiResource {
                                           HttpServletRequest request) {
         String stationId = Utils.getFrom(request);
         log.info("[From: {}] Received pedelecStatusNotification: {}", stationId, pedelecStatusDTO);
-        psiService.handlePedelecStatusNotification(pedelecStatusDTO);
+
+        Lock l = stationLocks.get(stationId);
+        l.lock();
+        try {
+            psiService.handlePedelecStatusNotification(pedelecStatusDTO);
+        } finally {
+            l.unlock();
+        }
     }
 
     @RequestMapping(value = CHARGING_STATUS_PATH, method = RequestMethod.POST)
@@ -185,7 +253,14 @@ public class PsiResource {
                                            HttpServletRequest request) {
         String stationId = Utils.getFrom(request);
         log.info("[From: {}] Received chargingStatusNotification: {}", stationId, chargingStatusDTOs);
-        psiService.handleChargingStatusNotification(chargingStatusDTOs);
+
+        Lock l = stationLocks.get(stationId);
+        l.lock();
+        try {
+            psiService.handleChargingStatusNotification(chargingStatusDTOs);
+        } finally {
+            l.unlock();
+        }
     }
 
     @RequestMapping(value = FIRMWARE_STATUS_PATH, method = RequestMethod.POST)

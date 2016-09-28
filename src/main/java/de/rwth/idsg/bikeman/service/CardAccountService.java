@@ -8,6 +8,7 @@ import de.rwth.idsg.bikeman.domain.OperationState;
 import de.rwth.idsg.bikeman.domain.TariffType;
 import de.rwth.idsg.bikeman.domain.User;
 import de.rwth.idsg.bikeman.psinterface.dto.request.CardActivationDTO;
+import de.rwth.idsg.bikeman.psinterface.dto.request.CardActivationStatusDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.response.CardActivationResponseDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.response.CardWriteKeyDTO;
 import de.rwth.idsg.bikeman.psinterface.repository.PsiStationRepository;
@@ -68,8 +69,13 @@ public class CardAccountService {
         return Optional.of(dto);
     }
 
-    public void setCardOperative(String cardId) {
-        cardAccountRepository.setOperationStateForCardId(OperationState.OPERATIVE, cardId);
+    public void setCardOperative(CardActivationStatusDTO dto) {
+        if (dto.isSuccessfulActivation()) {
+            cardAccountRepository.setOperationStateForCardId(OperationState.OPERATIVE, dto.getCardId());
+        } else {
+            // TODO: We should probably raise an exception, or notice somebody instead
+            log.warn("The cardId '{}' could not be activated", dto.getCardId());
+        }
     }
 
     @Transactional(readOnly = true)
