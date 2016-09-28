@@ -71,8 +71,8 @@ public class PsiResource {
     @RequestMapping(value = BOOT_NOTIFICATION_PATH, method = RequestMethod.POST)
     public BootConfirmationDTO bootNotification(@RequestBody BootNotificationDTO bootNotificationDTO,
                                                 HttpServletRequest request) throws DatabaseException {
-        String from = Utils.getFrom(request);
-        log.info("[From: {}] Received bootNotification {}", from, bootNotificationDTO);
+        String stationId = Utils.getFrom(request);
+        log.info("[From: {}] Received bootNotification {}", stationId, bootNotificationDTO);
         BootConfirmationDTO dto = psiService.handleBootNotification(bootNotificationDTO);
         log.debug("bootNotification returns {}", dto);
         return dto;
@@ -80,7 +80,8 @@ public class PsiResource {
 
     @RequestMapping(value = HEARTBEAT_PATH, method = RequestMethod.GET)
     public HeartbeatDTO heartbeat(HttpServletRequest request) {
-        log.debug("[From: {}] Received heartbeat", Utils.getFrom(request));
+        String stationId = Utils.getFrom(request);
+        log.debug("[From: {}] Received heartbeat", stationId);
 
         HeartbeatDTO heartbeatDTO = new HeartbeatDTO();
         heartbeatDTO.setTimestamp(DateTime.now());
@@ -90,9 +91,9 @@ public class PsiResource {
     @RequestMapping(value = AVAIL_PEDELECS_PATH, method = RequestMethod.GET)
     public List<String> getAvailablePedelecs(@RequestParam(value = "cardId", required = false) String cardId,
                                              HttpServletRequest request) throws DatabaseException {
-        String from = Utils.getFrom(request);
-        log.info("[From: {}] Received getAvailablePedelecs for cardId '{}'", from, cardId);
-        List<String> list = psiService.getAvailablePedelecs(from, cardId);
+        String stationId = Utils.getFrom(request);
+        log.info("[From: {}] Received getAvailablePedelecs for cardId '{}'", stationId, cardId);
+        List<String> list = psiService.getAvailablePedelecs(stationId, cardId);
         log.debug("getAvailablePedelecs returns {}", list);
         return list;
     }
@@ -104,7 +105,8 @@ public class PsiResource {
     @RequestMapping(value = ACTIVATE_CARD_PATH, method = RequestMethod.POST)
     public CardActivationResponseDTO activateCard(@RequestBody CardActivationDTO cardActivationDTO,
                                                   HttpServletRequest request, HttpServletResponse response) {
-        log.info("[From: {}] Received activateCard {}", Utils.getFrom(request), cardActivationDTO);
+        String stationId = Utils.getFrom(request);
+        log.info("[From: {}] Received activateCard {}", stationId, cardActivationDTO);
 
         Optional<CardActivationResponseDTO> optional = cardAccountService.activateCardAccount(cardActivationDTO);
         if (optional.isPresent()) {
@@ -117,7 +119,8 @@ public class PsiResource {
     @RequestMapping(value = AUTHORIZE_PATH, method = RequestMethod.POST)
     public AuthorizeConfirmationDTO authorize(@RequestBody CustomerAuthorizeDTO customerAuthorizeDTO,
                                               HttpServletRequest request) throws DatabaseException {
-        log.info("[From: {}] Received authorize {}", Utils.getFrom(request), customerAuthorizeDTO);
+        String stationId = Utils.getFrom(request);
+        log.info("[From: {}] Received authorize {}", stationId, customerAuthorizeDTO);
         AuthorizeConfirmationDTO dto = psiService.handleAuthorize(customerAuthorizeDTO);
         log.debug("authorize returns {}", dto);
         return dto;
@@ -130,14 +133,16 @@ public class PsiResource {
     @RequestMapping(value = TRANSACTION_START_PATH, method = RequestMethod.POST)
     public void startTransaction(@RequestBody StartTransactionDTO startTransactionDTO,
                                  HttpServletRequest request) throws DatabaseException {
-        log.info("[From: {}] Received startTransaction: {}", Utils.getFrom(request), startTransactionDTO);
+        String stationId = Utils.getFrom(request);
+        log.info("[From: {}] Received startTransaction: {}", stationId, startTransactionDTO);
         psiService.handleStartTransaction(startTransactionDTO);
     }
 
     @RequestMapping(value = TRANSACTION_STOP_PATH, method = RequestMethod.POST)
     public void stopTransaction(@RequestBody StopTransactionDTO stopTransactionDTO,
                                 HttpServletRequest request) throws DatabaseException {
-        log.info("[From: {}] Received stopTransaction: {}", Utils.getFrom(request), stopTransactionDTO);
+        String stationId = Utils.getFrom(request);
+        log.info("[From: {}] Received stopTransaction: {}", stationId, stopTransactionDTO);
         psiService.handleStopTransaction(stopTransactionDTO);
     }
 
@@ -148,7 +153,8 @@ public class PsiResource {
     @RequestMapping(value = CARD_ACTIVATION_STATUS_PATH, method = RequestMethod.POST)
     public void stationCardActivationNotification(@RequestBody CardActivationStatusDTO dto,
                                                   HttpServletRequest request) {
-        log.info("[From: {}] Received cardActivationNotification: {}", Utils.getFrom(request), dto);
+        String stationId = Utils.getFrom(request);
+        log.info("[From: {}] Received cardActivationNotification: {}", stationId, dto);
 
         if (dto.isSuccessfulActivation()) {
             cardAccountService.setCardOperative(dto.getCardId());
@@ -161,35 +167,40 @@ public class PsiResource {
     @RequestMapping(value = STATION_STATUS_PATH, method = RequestMethod.POST)
     public void stationStatusNotification(@RequestBody StationStatusDTO stationStatusDTO,
                                           HttpServletRequest request) {
-        log.info("[From: {}] Received stationStatusNotification: {}", Utils.getFrom(request), stationStatusDTO);
+        String stationId = Utils.getFrom(request);
+        log.info("[From: {}] Received stationStatusNotification: {}", stationId, stationStatusDTO);
         psiService.handleStationStatusNotification(stationStatusDTO);
     }
 
     @RequestMapping(value = PEDELEC_STATUS_PATH, method = RequestMethod.POST)
     public void pedelecStatusNotification(@RequestBody PedelecStatusDTO pedelecStatusDTO,
                                           HttpServletRequest request) {
-        log.info("[From: {}] Received pedelecStatusNotification: {}", Utils.getFrom(request), pedelecStatusDTO);
+        String stationId = Utils.getFrom(request);
+        log.info("[From: {}] Received pedelecStatusNotification: {}", stationId, pedelecStatusDTO);
         psiService.handlePedelecStatusNotification(pedelecStatusDTO);
     }
 
     @RequestMapping(value = CHARGING_STATUS_PATH, method = RequestMethod.POST)
     public void chargingStatusNotification(@Valid @RequestBody List<ChargingStatusDTO> chargingStatusDTOs,
                                            HttpServletRequest request) {
-        log.info("[From: {}] Received chargingStatusNotification: {}", Utils.getFrom(request), chargingStatusDTOs);
+        String stationId = Utils.getFrom(request);
+        log.info("[From: {}] Received chargingStatusNotification: {}", stationId, chargingStatusDTOs);
         psiService.handleChargingStatusNotification(chargingStatusDTOs);
     }
 
     @RequestMapping(value = FIRMWARE_STATUS_PATH, method = RequestMethod.POST)
     public void firmwareStatusNotification(@RequestBody FirmwareStatusDTO firmwareStatusDTO,
                                            HttpServletRequest request) {
-        log.info("[From: {}] Received firmwareStatusNotification: {}", Utils.getFrom(request), firmwareStatusDTO);
+        String stationId = Utils.getFrom(request);
+        log.info("[From: {}] Received firmwareStatusNotification: {}", stationId, firmwareStatusDTO);
         // TODO
     }
 
     @RequestMapping(value = LOGS_STATUS_PATH, method = RequestMethod.POST)
     public void logsStatusNotification(@RequestBody LogsStatusDTO logsStatusDTO,
                                        HttpServletRequest request) {
-        log.info("[From: {}] Received logsStatusNotification: {}", Utils.getFrom(request), logsStatusDTO);
+        String stationId = Utils.getFrom(request);
+        log.info("[From: {}] Received logsStatusNotification: {}", stationId, logsStatusDTO);
         // TODO
     }
 
