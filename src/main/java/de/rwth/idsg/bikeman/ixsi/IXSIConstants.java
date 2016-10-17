@@ -6,6 +6,9 @@ import xjc.schema.ixsi.ConsumptionClassType;
 import xjc.schema.ixsi.EngineType;
 import xjc.schema.ixsi.Language;
 
+import javax.annotation.Nonnull;
+
+
 /**
  * Created by max on 07/10/14.
  */
@@ -44,7 +47,7 @@ public final class IXSIConstants {
      *
      * TODO: Does not make sense at all. Find a solution!
      */
-    public static DateTime constructReturnDateTime(DateTime departure) {
+    public static DateTime constructReturnDateTime(@Nonnull DateTime departure) {
         return departure.plusHours(6);
     }
 }

@@ -10,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -134,6 +135,7 @@ public class IxsiUserRepositoryImpl implements IxsiUserRepository {
     /**
      * Captures the logic and essence of {@link QueryImpl#getSingleResult()} minus the exception throwing.
      */
+    @Nullable
     private static <T> T getSingleFromList(List<T> result) {
         if (result.size() == 0) {
             return null;

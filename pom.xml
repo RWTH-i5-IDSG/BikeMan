@@ -63,6 +63,12 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>jsr305</artifactId>
+            <version>3.0.1</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>de.rwth.idsg</groupId>
             <artifactId>ixsi-jaxb</artifactId>
             <version>0.10-4</version>
