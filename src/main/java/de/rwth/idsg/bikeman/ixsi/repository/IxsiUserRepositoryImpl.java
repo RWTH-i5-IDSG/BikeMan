@@ -5,6 +5,7 @@ import de.rwth.idsg.bikeman.domain.CardAccount;
 import de.rwth.idsg.bikeman.domain.ixsi.IxsiToken;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.jpa.internal.QueryImpl;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +15,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author Sevket Goekay <goekay@dbis.rwth-aachen.de>
@@ -93,10 +97,11 @@ public class IxsiUserRepositoryImpl implements IxsiUserRepository {
                          "MEMBER OF mj.cardAccounts";
 
         try {
-            String name = em.createQuery(p, String.class)
-                            .setParameter("cardId", cardId)
-                            .getSingleResult();
-            return Optional.of(name);
+            List<String> nameResult = em.createQuery(p, String.class)
+                                        .setParameter("cardId", cardId)
+                                        .getResultList();
+
+            return Optional.fromNullable(getSingleFromList(nameResult));
 
         } catch (Exception e) {
             log.error("Error occurred", e);
@@ -126,4 +131,22 @@ public class IxsiUserRepositoryImpl implements IxsiUserRepository {
         }
     }
 
+    /**
+     * Captures the logic and essence of {@link QueryImpl#getSingleResult()} minus the exception throwing.
+     */
+    private static <T> T getSingleFromList(List<T> result) {
+        if (result.size() == 0) {
+            return null;
+
+        } else if (result.size() > 1) {
+            Set<T> uniqueResult = new HashSet<>(result);
+            if (uniqueResult.size() > 1) {
+                log.warn("Query result returns more than one elements");
+            }
+            return uniqueResult.iterator().next();
+
+        } else {
+            return result.get(0);
+        }
+    }
 }
