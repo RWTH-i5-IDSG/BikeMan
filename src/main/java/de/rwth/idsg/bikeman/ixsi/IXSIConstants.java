@@ -1,5 +1,6 @@
 package de.rwth.idsg.bikeman.ixsi;
 
+import org.joda.time.DateTime;
 import xjc.schema.ixsi.ClassType;
 import xjc.schema.ixsi.ConsumptionClassType;
 import xjc.schema.ixsi.EngineType;
@@ -10,14 +11,6 @@ import xjc.schema.ixsi.Language;
  */
 public final class IXSIConstants {
     private IXSIConstants() {}
-
-    // Ixsi schema requires for every time period a BEGIN and an END. But in our parallel universe,
-    // pedelec rentals do not have a return timestamp (i.e. we don't know when transactions will end)
-    // Workaround is that we set an artificial END as BEGIN + 6 hours
-    //
-    // TODO: Does not make sense at all. Find a solution!
-    //
-    public static final int HOUR_OFFSET_FOR_OPEN_TRANSACTIONS = 6;
 
     public static final int MAX_TEXT_MSG_SIZE = 8388608;
 
@@ -42,5 +35,16 @@ public final class IXSIConstants {
 
     public final class PlaceGroup {
         public static final String id = "Velocity-Aachen";
+    }
+
+    /**
+     * Ixsi schema requires for every time period a BEGIN and an END. But in our parallel universe,
+     * pedelec rentals do not have a return timestamp (i.e. we don't know when transactions will end)
+     * Workaround is that we set an artificial END as BEGIN + 6 hours
+     *
+     * TODO: Does not make sense at all. Find a solution!
+     */
+    public static DateTime constructReturnDateTime(DateTime departure) {
+        return departure.plusHours(6);
     }
 }

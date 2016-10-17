@@ -5,8 +5,8 @@ import de.rwth.idsg.bikeman.domain.Booking;
 import de.rwth.idsg.bikeman.domain.Transaction;
 import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
 import de.rwth.idsg.bikeman.ixsi.endpoint.Producer;
-import de.rwth.idsg.bikeman.ixsi.store.ExternalBookingStore;
 import de.rwth.idsg.bikeman.ixsi.repository.IxsiUserRepository;
+import de.rwth.idsg.bikeman.ixsi.store.ExternalBookingStore;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,11 +48,10 @@ public class ExternalBookingPushService {
                 return;
             }
 
-            // TODO improve timeperiodtype creation: default end time
             DateTime dt = transaction.getStartDateTime().toDateTime();
             TimePeriodType time = new TimePeriodType()
                 .withBegin(dt)
-                .withEnd(dt.plusHours(6));
+                .withEnd(IXSIConstants.constructReturnDateTime(dt));
 
             BookingTargetIDType bookingTarget = new BookingTargetIDType()
                 .withBookeeID(String.valueOf(transaction.getPedelec().getManufacturerId()))

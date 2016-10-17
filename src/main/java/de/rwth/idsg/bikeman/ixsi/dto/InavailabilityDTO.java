@@ -23,7 +23,7 @@ public class InavailabilityDTO {
         this.begin = localBegin.toDateTime();
 
         if (localEnd == null) {
-            end = localBegin.toDateTime().plusHours(IXSIConstants.HOUR_OFFSET_FOR_OPEN_TRANSACTIONS);
+            end = IXSIConstants.constructReturnDateTime(localBegin.toDateTime());
         } else {
             end = localEnd.toDateTime();
         }
