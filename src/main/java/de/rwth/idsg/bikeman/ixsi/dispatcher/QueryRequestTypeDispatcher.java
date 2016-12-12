@@ -105,6 +105,7 @@ public class QueryRequestTypeDispatcher implements Dispatcher {
         try {
             res = p.process(req);
         } catch (Exception e) {
+            log.error("Error occurred", e);
             res = p.buildError(ErrorFactory.Sys.backendFailed(e.getMessage(), null));
         }
 
@@ -133,6 +134,7 @@ public class QueryRequestTypeDispatcher implements Dispatcher {
         try {
             res = delegateUserRequest(c, p, Optional.fromNullable(request.getLanguage()), request.getAuth());
         } catch (Exception e) {
+            log.error("Error occurred", e);
             res = p.buildError(ErrorFactory.Sys.backendFailed(e.getMessage(), null));
         }
 
