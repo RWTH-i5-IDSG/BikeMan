@@ -34,4 +34,5 @@ BikeMan implements [IXSI](https://github.com/RWTH-i5-IDSG/ixsi), which uses WebS
 The database table `ixsi_client_system` with columns `system_id` and `ip_address` should contain entries for IXSI client systems that are allowed to connect to BikeMan. 
    - `ip_address` is the IP address of the IXSI client system from which the WebSocket connection attempt is made.
    - `system_id` corresponds to the `SystemID` element in IXSI XML messages. XML messages should contain the same `SystemID` value as the value in the database.
-   
+  
+You can monitor open IXSI connections via `http://localhost:8080/#/monitor` (Administration > IXSI monitor at the right upper corner of the web interface).
