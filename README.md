@@ -27,3 +27,11 @@ It is designed to run as standalone, so a java servlet container / web server (e
     ```
     
 3. Access the web interface at `http://localhost:8080/`. The initial credentials are defined in [users.csv](src/main/resources/config/liquibase/users.csv). So, you can login with the email `admin@bikeman.com` and password `admin`. Change these in a production system!
+
+### IXSI Configuration
+
+BikeMan implements [IXSI](https://github.com/RWTH-i5-IDSG/ixsi), which uses WebSocket connections. 
+The database table `ixsi_client_system` with columns `system_id` and `ip_address` should contain entries for IXSI client systems that are allowed to connect to BikeMan. 
+   - `ip_address` is the IP address of the IXSI client system from which the WebSocket connection attempt is made.
+   - `system_id` corresponds to the `SystemID` element in IXSI XML messages. XML messages should contain the same `SystemID` value as the value in the database.
+   
