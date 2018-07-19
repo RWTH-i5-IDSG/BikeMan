@@ -265,9 +265,12 @@ public class PedelecRepositoryImpl implements PedelecRepository {
     @Transactional(rollbackFor = Exception.class)
     public void create(CreateEditPedelecDTO dto) throws DatabaseException {
         Pedelec pedelec = new Pedelec();
-        setFields(pedelec, dto);
+        pedelec.setManufacturerId(dto.getManufacturerId());
+        pedelec.setState(dto.getState());
+
         try {
             em.persist(pedelec);
+            conditionalChargingStatusInsert(pedelec);
             log.debug("Created new pedelec {}", pedelec);
 
         } catch (EntityExistsException e) {
@@ -287,10 +290,11 @@ public class PedelecRepositoryImpl implements PedelecRepository {
         }
 
         Pedelec pedelec = getPedelecEntity(pedelecId);
-        setFields(pedelec, dto);
+        pedelec.setState(dto.getState());
 
         try {
             em.merge(pedelec);
+            conditionalChargingStatusInsert(pedelec);
             log.debug("Updated pedelec {}", pedelec);
 
         } catch (Exception e) {
@@ -326,17 +330,12 @@ public class PedelecRepositoryImpl implements PedelecRepository {
         }
     }
 
-    /**
-     * This method sets the fields of the pedelec to the values in DTO.
-     * <p>
-     * Important: The ID is not set!
-     */
-    private void setFields(Pedelec pedelec, CreateEditPedelecDTO dto) {
-        pedelec.setState(dto.getState());
-        pedelec.setManufacturerId(dto.getManufacturerId());
-
-        PedelecChargingStatus status = new PedelecChargingStatus();
-        status.setPedelec(pedelec);
-        pedelec.setChargingStatus(status);
+    private void conditionalChargingStatusInsert(Pedelec pedelec) {
+        if (pedelec.getChargingStatus() == null) {
+            PedelecChargingStatus status = new PedelecChargingStatus();
+            status.setPedelec(pedelec);
+            pedelec.setChargingStatus(status);
+            em.persist(status);
+        }
     }
 }
