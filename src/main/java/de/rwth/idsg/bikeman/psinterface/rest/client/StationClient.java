@@ -1,17 +1,13 @@
 package de.rwth.idsg.bikeman.psinterface.rest.client;
 
-import com.google.common.base.Strings;
 import de.rwth.idsg.bikeman.psinterface.dto.request.CancelReservationDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.RemoteAuthorizeDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.ReserveNowDTO;
-import de.rwth.idsg.bikeman.psinterface.exception.PsExceptionBuilder;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.ChangeStationOperationStateDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.StationConfigurationDTO;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpStatusCodeException;
-import org.springframework.web.client.RestTemplate;
 
 /**
  * @author Sevket Goekay <goekay@dbis.rwth-aachen.de>
@@ -19,10 +15,7 @@ import org.springframework.web.client.RestTemplate;
  */
 @Slf4j
 @Component
-public class StationClient {
-
-    @Autowired private RestTemplate restTemplate;
-    @Autowired private PsExceptionBuilder psExceptionBuilder;
+public class StationClient extends AbstractClient {
 
     private static final String STATE_PATH = "/state";
     private static final String CONFIG_PATH = "/config";
@@ -32,12 +25,6 @@ public class StationClient {
     private static final String CANCEL_RESERVATION_PATH = "/cancel-reservation";
     private static final String UNLOCK_SLOT_PATH = "/unlock/{slotPosition}";
     private static final String CANCEL_AUTHORIZE_PATH = "/authorize/cancel/{slotPosition}";
-
-    private void checkIfValid(String endpointAddress) {
-        if (Strings.isNullOrEmpty(endpointAddress)) {
-            throw psExceptionBuilder.buildFromMsg("Endpoint address of the station is not set");
-        }
-    }
 
     public void changeOperationState(String endpointAddress, ChangeStationOperationStateDTO dto) {
         checkIfValid(endpointAddress);
