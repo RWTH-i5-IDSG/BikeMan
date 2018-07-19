@@ -143,7 +143,7 @@ public class PedelecRepositoryImpl implements PedelecRepository {
         final String q = "SELECT new de.rwth.idsg.bikeman.web.rest.dto.view." +
                 "ViewPedelecDTO(p.pedelecId, p.manufacturerId, cs.batteryStateOfCharge, p.state, p.inTransaction) " +
                 "FROM Pedelec p " +
-                "JOIN p.chargingStatus cs " +
+                "LEFT JOIN p.chargingStatus cs " +
                 "WHERE p.pedelecId = :pedelecId";
 
         try {
