@@ -124,19 +124,19 @@ public class StationService {
     }
 
     public void changeSlotState(Long stationId, ChangeStationOperationStateDTO dto) throws DatabaseException {
-        ChangeStationOperationStateDTO changeDTO = new ChangeStationOperationStateDTO();
-        changeDTO.setState(dto.getState());
-        changeDTO.setSlotPosition(dto.getSlotPosition());
+        StationSlot slot = stationSlotRepository.findByStationSlotPositionAndStationStationId(dto.getSlotPosition(), stationId);
+        if (slot.getState() == dto.getState()) {
+            return;
+        }
 
         // first, communicate with the station to update status
+        stationClient.changeOperationState(slot.getStation().getEndpointAddress(), dto);
+
         // then, update in DB
-        String endpointAddress = stationRepository.getEndpointAddress(stationId);
-        stationClient.changeOperationState(endpointAddress, changeDTO);
-        stationRepository.changeSlotState(stationId, dto.getSlotPosition(), dto.getState());
+        slot.setState(dto.getState());
+        stationSlotRepository.save(slot);
 
-        StationSlot stationSlot = stationSlotRepository.findByStationSlotPositionAndStationStationId(dto.getSlotPosition(), stationId);
-
-        operationStateService.pushSlotChange(stationSlot);
+        operationStateService.pushSlotChange(slot);
     }
 
     @Async
