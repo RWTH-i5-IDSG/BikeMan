@@ -30,4 +30,8 @@ public class PsExceptionBuilder {
                 e, PsErrorCode.UNKNOWN_SERVER_ERROR);
         }
     }
+
+    public PsException buildFromMsg(String errorString) {
+        return new PsException(errorString, PsErrorCode.UNKNOWN_SERVER_ERROR);
+    }
 }

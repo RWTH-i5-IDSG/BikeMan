@@ -35,7 +35,7 @@ public class StationClient {
 
     private void checkIfValid(String endpointAddress) {
         if (Strings.isNullOrEmpty(endpointAddress)) {
-            throw psExceptionBuilder.build("Endpoint address of the station is not set");
+            throw psExceptionBuilder.buildFromMsg("Endpoint address of the station is not set");
         }
     }
 
