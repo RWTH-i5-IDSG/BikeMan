@@ -4,6 +4,7 @@ import de.rwth.idsg.bikeman.domain.Booking;
 import de.rwth.idsg.bikeman.domain.CardAccount;
 import de.rwth.idsg.bikeman.domain.Pedelec;
 import de.rwth.idsg.bikeman.domain.Reservation;
+import de.rwth.idsg.bikeman.domain.Station;
 import de.rwth.idsg.bikeman.domain.StationSlot;
 import de.rwth.idsg.bikeman.domain.Transaction;
 import de.rwth.idsg.bikeman.ixsi.service.BookingService;
@@ -108,15 +109,17 @@ public class StationService {
     }
 
     public void updateStation(CreateEditStationDTO dto) throws DatabaseException {
-        ChangeStationOperationStateDTO changeDTO = new ChangeStationOperationStateDTO();
-        changeDTO.setState(dto.getState());
+        Station station = stationRepository.findByManufacturerId(dto.getManufacturerId());
 
-        // first, communicate with the station to update status
+        // first, communicate with the station to update status (if it is changed)
         // then, update in DB
-        String endpointAddress = stationRepository.getEndpointAddress(dto.getStationId());
-        stationClient.changeOperationState(endpointAddress, changeDTO);
-        stationRepository.update(dto);
+        if (station.getState() != dto.getState()) {
+            ChangeStationOperationStateDTO changeDTO = new ChangeStationOperationStateDTO();
+            changeDTO.setState(dto.getState());
+            stationClient.changeOperationState(station.getEndpointAddress(), changeDTO);
+        }
 
+        stationRepository.update(dto);
         operationStateService.pushStationChange(dto);
     }
 
