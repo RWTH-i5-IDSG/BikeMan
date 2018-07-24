@@ -32,16 +32,13 @@ public class PlaceAvailabilityPushService {
     @Autowired private StationRepository stationRepository;
 
     public void reportChange(String placeID) {
-        Integer freeSlots = getFreeSlots(placeID);
-        reportChange(placeID, freeSlots);
-    }
-
-    private void reportChange(String placeID, int freeSlots) {
         Set<String> systemIdSet = placeAvailabilityStore.getSubscribedSystems(placeID);
         if (systemIdSet.isEmpty()) {
             log.debug("Will not push. There is no subscribed system for placeID '{}'", placeID);
             return;
         }
+
+        Integer freeSlots = getFreeSlots(placeID);
 
         ProviderPlaceIDType placeIDType = new ProviderPlaceIDType()
                 .withPlaceID(placeID)
