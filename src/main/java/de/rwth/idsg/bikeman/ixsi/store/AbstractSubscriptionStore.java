@@ -35,7 +35,7 @@ public abstract class AbstractSubscriptionStore<T> implements SubscriptionStore<
     private final ConcurrentHashMap<T, Set<String>> lookupTable = new ConcurrentHashMap<>();
 
     @Override
-    public void subscribe(String systemID, List<T> itemIDs, Integer expireIntervalinMinutes) {
+    public void subscribe(String systemID, List<T> itemIDs, long expireIntervalinMinutes) {
         subscribeInternal(systemID, itemIDs);
         scheduleRemove(systemID, itemIDs, expireIntervalinMinutes);
         log.debug("System '{}' subscribed to '{}'. This subscription is scheduled to expire in {} minutes",
