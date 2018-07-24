@@ -48,7 +48,11 @@ public class OperationStateService {
                 break;
 
             case DELETED:
+                pushStationDeletion(dto.getManufacturerId());
                 break;
+
+            default:
+                throw new RuntimeException("Unexpected state");
         }
     }
 
@@ -63,8 +67,47 @@ public class OperationStateService {
                 break;
 
             case DELETED:
+                pushSlotDeletion(slot.getStation().getManufacturerId(), slot.getManufacturerId());
                 break;
+
+            default:
+                throw new RuntimeException("Unexpected state");
         }
+    }
+
+    public void pushPedelecChange(String manufacturerId, de.rwth.idsg.bikeman.domain.OperationState state) {
+        switch (state) {
+            case OPERATIVE:
+                pushPedelecAvailability(manufacturerId);
+                break;
+
+            case INOPERATIVE:
+                pushPedelecInavailability(manufacturerId);
+                break;
+
+            case DELETED:
+                pushPedelecDeletion(manufacturerId);
+                break;
+
+            default:
+                throw new RuntimeException("Unexpected state");
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // PUSH DELETE
+    // -------------------------------------------------------------------------
+
+    private void pushStationDeletion(String stationManufacturerId) {
+        throw new RuntimeException("Not implemented");
+    }
+
+    private void pushSlotDeletion(String stationManufacturerId, String slotManufacturerId) {
+        throw new RuntimeException("Not implemented");
+    }
+
+    private void pushPedelecDeletion(String manufacturerId) {
+        throw new RuntimeException("Not implemented");
     }
 
     // -------------------------------------------------------------------------
@@ -274,4 +317,5 @@ public class OperationStateService {
         idList.parallelStream()
               .forEach(s -> availabilityPushService.cancelledBooking(s, stationManufacturerId, timePeriodType));
     }
+
 }

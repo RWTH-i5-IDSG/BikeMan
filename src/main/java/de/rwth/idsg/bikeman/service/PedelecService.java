@@ -78,11 +78,7 @@ public class PedelecService {
 
         pedelecRepository.update(dto);
 
-        if (dto.getState() == OperationState.INOPERATIVE) {
-            operationStateService.pushPedelecInavailability(pedelec.getManufacturerId());
-        } else {
-            operationStateService.pushPedelecAvailability(pedelec.getManufacturerId());
-        }
+        operationStateService.pushPedelecChange(pedelec.getManufacturerId(), dto.getState());
     }
 
     public PedelecConfigurationDTO getConfig(Long pedelecId) throws DatabaseException, RestClientException {
