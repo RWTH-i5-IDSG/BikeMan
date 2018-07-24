@@ -667,6 +667,20 @@
                 </dependency>
             </dependencies>
         </profile>
+
+        <profile>
+            <id>prod-fit</id>
+            <properties>
+                <envName>prod-fit</envName>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-tomcat</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
+
         <profile>
             <id>prod</id>
 
