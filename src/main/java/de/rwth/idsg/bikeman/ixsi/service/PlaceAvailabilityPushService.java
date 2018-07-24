@@ -1,9 +1,11 @@
 package de.rwth.idsg.bikeman.ixsi.service;
 
+import de.rwth.idsg.bikeman.domain.Station;
 import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
 import de.rwth.idsg.bikeman.ixsi.endpoint.Producer;
-import de.rwth.idsg.bikeman.ixsi.store.PlaceAvailabilityStore;
 import de.rwth.idsg.bikeman.ixsi.repository.QueryIXSIRepository;
+import de.rwth.idsg.bikeman.ixsi.store.PlaceAvailabilityStore;
+import de.rwth.idsg.bikeman.repository.StationRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,15 +29,14 @@ public class PlaceAvailabilityPushService {
     @Autowired private Producer producer;
     @Autowired private PlaceAvailabilityStore placeAvailabilityStore;
     @Autowired private QueryIXSIRepository queryIXSIRepository;
+    @Autowired private StationRepository stationRepository;
 
     public void reportChange(String placeID) {
-        Integer freeSlots = queryIXSIRepository.placeAvailability(Arrays.asList(placeID))
-                                               .get(0)
-                                               .getAvailableSlots();
+        Integer freeSlots = getFreeSlots(placeID);
         reportChange(placeID, freeSlots);
     }
 
-    public void reportChange(String placeID, int freeSlots) {
+    private void reportChange(String placeID, int freeSlots) {
         Set<String> systemIdSet = placeAvailabilityStore.getSubscribedSystems(placeID);
         if (systemIdSet.isEmpty()) {
             log.debug("Will not push. There is no subscribed system for placeID '{}'", placeID);
@@ -55,5 +56,23 @@ public class PlaceAvailabilityPushService {
         IxsiMessageType ixsi = new IxsiMessageType().withSubscriptionMessage(sub);
 
         producer.send(ixsi, systemIdSet);
+    }
+
+    /**
+     * If the station is inoperative/deleted, the place availability based on slot state does not matter.
+     */
+    private Integer getFreeSlots(String placeID) {
+        Station station = stationRepository.findByManufacturerId(placeID);
+        switch (station.getState()) {
+            case OPERATIVE:
+                return queryIXSIRepository.placeAvailability(Arrays.asList(placeID))
+                                          .get(0)
+                                          .getAvailableSlots();
+            case INOPERATIVE:
+            case DELETED:
+                return 0;
+            default:
+                throw new RuntimeException("Unexpected state");
+        }
     }
 }

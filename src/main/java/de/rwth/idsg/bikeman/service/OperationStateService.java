@@ -99,7 +99,7 @@ public class OperationStateService {
     }
 
     private void pushStationInavailability(String stationManufacturerId) {
-        placeAvailabilityPushService.reportChange(stationManufacturerId, 0);
+        placeAvailabilityPushService.reportChange(stationManufacturerId);
 
         List<String> pedelecManufacturerIds = pedelecRepository.findManufacturerIdsByStation(stationManufacturerId);
 

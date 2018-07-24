@@ -172,24 +172,22 @@ public class PsiService {
     }
 
     public void handleStationStatusNotification(StationStatusDTO stationStatusDTO) {
+        stationRepository.updateStationStatus(stationStatusDTO);
         try {
             pushToIxsi(stationStatusDTO);
         } catch (Exception e) {
             log.warn("Error occurred during IXSI availability push", e);
         }
-
-        stationRepository.updateStationStatus(stationStatusDTO);
         checkForStationErrors(stationStatusDTO);
     }
 
     public void handlePedelecStatusNotification(PedelecStatusDTO pedelecStatusDTO) {
+        pedelecRepository.updatePedelecStatus(pedelecStatusDTO);
         try {
             pushToIxsi(pedelecStatusDTO);
         } catch (Exception e) {
             log.warn("Error occurred during IXSI availability push", e);
         }
-
-        pedelecRepository.updatePedelecStatus(pedelecStatusDTO);
         checkForPedelecErrors(pedelecStatusDTO);
     }
 
