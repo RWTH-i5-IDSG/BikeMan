@@ -123,7 +123,7 @@ public class WebSocketEndpoint extends ConcurrentTextWebSocketHandler {
     }
 
     private void unSubscribeStores(String systemId) {
-        log.debug("There are no open connections left to system '{}'. "
+        log.info("There are no open connections left to system '{}'. "
                 + "Removing it from all the subscription stores", systemId);
 
         availabilityStore.unsubscribeAll(systemId);
