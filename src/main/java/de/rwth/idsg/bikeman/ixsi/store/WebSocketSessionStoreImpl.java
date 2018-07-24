@@ -53,10 +53,10 @@ public class WebSocketSessionStoreImpl implements WebSocketSessionStore {
     }
 
     @Override
-    public synchronized void remove(String systemID, WebSocketSession session) {
+    public synchronized int remove(String systemID, WebSocketSession session) {
         Deque<WebSocketSession> sessionSet = lookupTable.get(systemID);
         if (sessionSet == null) {
-            return;
+            return 0;
         }
 
         // Prevent java.util.ConcurrentModificationException: null
@@ -78,6 +78,8 @@ public class WebSocketSessionStoreImpl implements WebSocketSessionStore {
             log.error("Failed to remove the WebSocketSession with id '{}' for system '{}'",
                     session.getId(), systemID);
         }
+
+        return size(systemID);
     }
 
     @Override

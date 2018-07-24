@@ -28,8 +28,6 @@ import java.util.Map;
 @Component
 public class WebSocketEndpoint extends ConcurrentTextWebSocketHandler {
 
-    private static final Object LOCK = new Object();
-
     @Autowired private WebSocketSessionStore webSocketSessionStore;
     @Autowired private Consumer consumer;
 
@@ -77,12 +75,10 @@ public class WebSocketEndpoint extends ConcurrentTextWebSocketHandler {
     public void onClose(WebSocketSession session, CloseStatus closeStatus) throws Exception {
         log.info("[id={}] Connection was closed, status: {}", session.getId(), closeStatus);
         String systemId = (String) session.getAttributes().get(IxsiConfiguration.SYSTEM_ID_KEY);
-        synchronized (LOCK) {
-            webSocketSessionStore.remove(systemId, session);
 
-            if (webSocketSessionStore.size(systemId) == 0) {
-                unSubscribeStores(systemId);
-            }
+        int sizeAfter = webSocketSessionStore.remove(systemId, session);
+        if (sizeAfter == 0) {
+            unSubscribeStores(systemId);
         }
     }
 

@@ -35,7 +35,7 @@ public abstract class AbstractSubscriptionStore<T> implements SubscriptionStore<
     private final ConcurrentHashMap<T, Set<String>> lookupTable = new ConcurrentHashMap<>();
 
     @Override
-    public void subscribe(String systemID, List<T> itemIDs, long expireIntervalinMinutes) {
+    public synchronized void subscribe(String systemID, List<T> itemIDs, long expireIntervalinMinutes) {
         subscribeInternal(systemID, itemIDs);
         scheduleRemove(systemID, itemIDs, expireIntervalinMinutes);
         log.debug("System '{}' subscribed to '{}'. This subscription is scheduled to expire in {} minutes",
@@ -43,12 +43,12 @@ public abstract class AbstractSubscriptionStore<T> implements SubscriptionStore<
     }
 
     @Override
-    public void subscribe(String systemID, List<T> itemIDs) {
+    public synchronized void subscribe(String systemID, List<T> itemIDs) {
         subscribeInternal(systemID, itemIDs);
         log.debug("System '{}' subscribed to '{}'", systemID, itemIDs);
     }
 
-    private void subscribeInternal(String systemID, List<T> itemIDs) {
+    private synchronized void subscribeInternal(String systemID, List<T> itemIDs) {
         Set<String> systemIDSet;
         for (T itemID : itemIDs) {
             systemIDSet = lookupTable.get(itemID);
@@ -65,7 +65,7 @@ public abstract class AbstractSubscriptionStore<T> implements SubscriptionStore<
     }
 
     @Override
-    public void unsubscribe(String systemID, List<T> itemIDs) {
+    public synchronized void unsubscribe(String systemID, List<T> itemIDs) {
         Set<String> systemIDSet;
         for (T itemID : itemIDs) {
             systemIDSet = lookupTable.get(itemID);
@@ -78,14 +78,14 @@ public abstract class AbstractSubscriptionStore<T> implements SubscriptionStore<
     }
 
     @Override
-    public void unsubscribeAll(String systemID) {
+    public synchronized void unsubscribeAll(String systemID) {
         for (Set<String> systemList : lookupTable.values()) {
             systemList.remove(systemID);
         }
     }
 
     @Override
-    public Set<String> getSubscribedSystems(T itemID) {
+    public synchronized Set<String> getSubscribedSystems(T itemID) {
         Set<String> set = lookupTable.get(itemID);
         if (set == null) {
             return Collections.emptySet();
@@ -95,7 +95,7 @@ public abstract class AbstractSubscriptionStore<T> implements SubscriptionStore<
     }
 
     @Override
-    public List<T> getSubscriptions(String systemID) {
+    public synchronized List<T> getSubscriptions(String systemID) {
         List<T> subscriptions = new ArrayList<>();
         for (Map.Entry<T, Set<String>> entry : lookupTable.entrySet()) {
             if (entry.getValue().contains(systemID)) {
@@ -106,7 +106,7 @@ public abstract class AbstractSubscriptionStore<T> implements SubscriptionStore<
     }
 
     @Override
-    public void clear() {
+    public synchronized void clear() {
         lookupTable.clear();
         log.debug("Cleared the subscription store");
     }

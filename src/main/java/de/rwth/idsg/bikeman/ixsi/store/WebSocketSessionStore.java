@@ -11,11 +11,20 @@ import java.util.concurrent.ConcurrentHashMap;
  * @since 06.11.2014
  */
 public interface WebSocketSessionStore {
+
     void add(String systemID, WebSocketSession session);
-    void remove(String systemID, WebSocketSession session);
+
+    /**
+     * @return the size for this systemId after removal
+     */
+    int remove(String systemID, WebSocketSession session);
+
     Optional<WebSocketSession> get(String systemID, String sessionID);
+
     WebSocketSession getNext(String systemID);
+
     int size(String systemID);
+
     void clear();
 
     ConcurrentHashMap<String, Deque<WebSocketSession>> getLookupTable();
