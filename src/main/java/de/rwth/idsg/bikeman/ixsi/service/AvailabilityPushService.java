@@ -77,7 +77,7 @@ public class AvailabilityPushService {
     // -------------------------------------------------------------------------
 
     @Async
-    private void buildAndSend(String bookeeID, String placeID, TimePeriodType period, boolean isAvailable) {
+    public void buildAndSend(String bookeeID, String placeID, TimePeriodType period, boolean isAvailable) {
         BookingTargetIDType bookingTargetID = new BookingTargetIDType()
                 .withBookeeID(bookeeID)
                 .withProviderID(IXSIConstants.Provider.id);

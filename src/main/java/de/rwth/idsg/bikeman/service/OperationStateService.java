@@ -95,46 +95,8 @@ public class OperationStateService {
     }
 
     // -------------------------------------------------------------------------
-    // PUSH DELETE
+    // Station
     // -------------------------------------------------------------------------
-
-    private void pushStationDeletion(String stationManufacturerId) {
-        throw new RuntimeException("Not implemented");
-    }
-
-    private void pushSlotDeletion(String stationManufacturerId, String slotManufacturerId) {
-        throw new RuntimeException("Not implemented");
-    }
-
-    private void pushPedelecDeletion(String manufacturerId) {
-        throw new RuntimeException("Not implemented");
-    }
-
-    // -------------------------------------------------------------------------
-    // PUSH INAVAILABILITY
-    // -------------------------------------------------------------------------
-
-    private void pushStationInavailability(String stationManufacturerId) {
-        List<String> pedelecManufacturerIds = pedelecRepository.findManufacturerIdsByStation(stationManufacturerId);
-
-        pushInavailability(stationManufacturerId, pedelecManufacturerIds);
-    }
-
-    private void pushSlotInavailability(String stationManufacturerId, String slotManufacturerId) {
-        Optional<Pedelec> pedelec = pedelecRepository.findPedelecsByStationSlot(stationManufacturerId, slotManufacturerId);
-
-        if (pedelec.isPresent()) {
-            pushInavailability(pedelec.get());
-        }
-    }
-
-    public void pushPedelecInavailability(String pedelecManufacturerId) {
-        Pedelec pedelec = pedelecRepository.findByManufacturerId(pedelecManufacturerId);
-
-        if (pedelec.getStationSlot() != null) {
-            pushInavailability(pedelec);
-        }
-    }
 
     public void pushInavailability(StationStatusDTO dto) {
         if (isInoperative(dto.getStationState())) {
@@ -157,44 +119,6 @@ public class OperationStateService {
                    .collect(Collectors.toList());
 
         pushInavailability(dto.getStationManufacturerId(), pedelecManufacturerIds);
-    }
-
-    public void pushInavailability(PedelecStatusDTO dto) {
-        if (isInoperative(dto.getPedelecState())) {
-            pushPedelecInavailability(dto.getPedelecManufacturerId());
-        }
-    }
-
-    // -------------------------------------------------------------------------
-    // PUSH AVAILABILITY
-    // -------------------------------------------------------------------------
-
-    private void pushStationAvailability(String stationManufacturerId) {
-        List<Pedelec> pedelecs = pedelecRepository.findByStation(stationManufacturerId);
-
-        List<String> pedelecManufacturerIds =
-                pedelecs.parallelStream()
-                        .filter(this::shouldSendAvailability)
-                        .map(Pedelec::getManufacturerId)
-                        .collect(Collectors.toList());
-
-        pushAvailability(stationManufacturerId, pedelecManufacturerIds);
-    }
-
-    private void pushSlotAvailability(String stationManufacturerId, String slotManufacturerId) {
-        Optional<Pedelec> pedelec = pedelecRepository.findPedelecsByStationSlot(stationManufacturerId, slotManufacturerId);
-
-        if (pedelec.isPresent() && shouldSendAvailability(pedelec.get())) {
-            pushAvailability(pedelec.get());
-        }
-    }
-
-    public void pushPedelecAvailability(String pedelecManufacturerId) {
-        Pedelec pedelec = pedelecRepository.findByManufacturerId(pedelecManufacturerId);
-
-        if (shouldSendAvailability(pedelec)) {
-            pushAvailability(pedelec);
-        }
     }
 
     public void pushAvailability(StationStatusDTO dto) {
@@ -221,10 +145,86 @@ public class OperationStateService {
         pushAvailability(dto.getStationManufacturerId(), pedelecManufacturerIds);
     }
 
+    private void pushStationAvailability(String stationManufacturerId) {
+        List<Pedelec> pedelecs = pedelecRepository.findByStation(stationManufacturerId);
+
+        List<String> pedelecManufacturerIds =
+                pedelecs.parallelStream()
+                        .filter(this::shouldSendAvailability)
+                        .map(Pedelec::getManufacturerId)
+                        .collect(Collectors.toList());
+
+        pushAvailability(stationManufacturerId, pedelecManufacturerIds);
+    }
+
+    private void pushStationInavailability(String stationManufacturerId) {
+        List<String> pedelecManufacturerIds = pedelecRepository.findManufacturerIdsByStation(stationManufacturerId);
+
+        pushInavailability(stationManufacturerId, pedelecManufacturerIds);
+    }
+
+    private void pushStationDeletion(String stationManufacturerId) {
+        throw new RuntimeException("Not implemented");
+    }
+
+    // -------------------------------------------------------------------------
+    // Slot
+    // -------------------------------------------------------------------------
+
+    private void pushSlotAvailability(String stationManufacturerId, String slotManufacturerId) {
+        Optional<Pedelec> pedelec = pedelecRepository.findPedelecsByStationSlot(stationManufacturerId, slotManufacturerId);
+
+        if (pedelec.isPresent() && shouldSendAvailability(pedelec.get())) {
+            pushAvailability(pedelec.get());
+        }
+    }
+
+    private void pushSlotInavailability(String stationManufacturerId, String slotManufacturerId) {
+        Optional<Pedelec> pedelec = pedelecRepository.findPedelecsByStationSlot(stationManufacturerId, slotManufacturerId);
+
+        if (pedelec.isPresent()) {
+            pushInavailability(pedelec.get());
+        }
+    }
+
+    private void pushSlotDeletion(String stationManufacturerId, String slotManufacturerId) {
+        throw new RuntimeException("Not implemented");
+    }
+
+    // -------------------------------------------------------------------------
+    // Pedelec
+    // -------------------------------------------------------------------------
+
     public void pushAvailability(PedelecStatusDTO dto) {
         if (isOperative(dto.getPedelecState())) {
             pushPedelecAvailability(dto.getPedelecManufacturerId());
         }
+    }
+
+    public void pushInavailability(PedelecStatusDTO dto) {
+        if (isInoperative(dto.getPedelecState())) {
+            pushPedelecInavailability(dto.getPedelecManufacturerId());
+        }
+    }
+
+    public void pushPedelecAvailability(String pedelecManufacturerId) {
+        Pedelec pedelec = pedelecRepository.findByManufacturerId(pedelecManufacturerId);
+
+        if (shouldSendAvailability(pedelec)) {
+            pushAvailability(pedelec);
+        }
+    }
+
+    public void pushPedelecInavailability(String pedelecManufacturerId) {
+        Pedelec pedelec = pedelecRepository.findByManufacturerId(pedelecManufacturerId);
+
+        if (pedelec.getStationSlot() != null) {
+            pushInavailability(pedelec);
+        }
+    }
+
+    private void pushPedelecDeletion(String manufacturerId) {
+        throw new RuntimeException("Not implemented");
     }
 
     // -------------------------------------------------------------------------
@@ -296,26 +296,26 @@ public class OperationStateService {
     // TODO: instead of pushing each pedelec on it's own, push a list
     // -------------------------------------------------------------------------
 
-    private void pushInavailability(String stationManufacturerId, List<String> idList) {
-        if (Utils.isEmpty(idList)) {
+    private void pushInavailability(String stationManufacturerId, List<String> pedelecIdList) {
+        if (Utils.isEmpty(pedelecIdList)) {
             return;
         }
 
         TimePeriodType timePeriodType = buildTimePeriod();
 
-        idList.parallelStream()
-              .forEach(s -> availabilityPushService.placedBooking(s, stationManufacturerId, timePeriodType));
+        pedelecIdList.parallelStream()
+                     .forEach(s -> availabilityPushService.buildAndSend(s, stationManufacturerId, timePeriodType, false));
     }
 
-    private void pushAvailability(String stationManufacturerId, List<String> idList) {
-        if (Utils.isEmpty(idList)) {
+    private void pushAvailability(String stationManufacturerId, List<String> pedelecIdList) {
+        if (Utils.isEmpty(pedelecIdList)) {
             return;
         }
 
         TimePeriodType timePeriodType = buildTimePeriod();
 
-        idList.parallelStream()
-              .forEach(s -> availabilityPushService.cancelledBooking(s, stationManufacturerId, timePeriodType));
+        pedelecIdList.parallelStream()
+                     .forEach(s -> availabilityPushService.buildAndSend(s, stationManufacturerId, timePeriodType, true));
     }
 
 }
