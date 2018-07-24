@@ -4,7 +4,6 @@ import com.google.common.base.Strings;
 import de.rwth.idsg.bikeman.domain.Booking;
 import de.rwth.idsg.bikeman.domain.CardAccount;
 import de.rwth.idsg.bikeman.domain.ErrorType;
-import de.rwth.idsg.bikeman.domain.OperationState;
 import de.rwth.idsg.bikeman.domain.Reservation;
 import de.rwth.idsg.bikeman.domain.ReservationState;
 import de.rwth.idsg.bikeman.domain.Transaction;
@@ -44,6 +43,8 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.inject.Inject;
 import java.util.List;
 
+import static de.rwth.idsg.bikeman.domain.OperationState.INOPERATIVE;
+import static de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE;
 import static de.rwth.idsg.bikeman.psinterface.exception.PsErrorCode.AUTH_ATTEMPTS_EXCEEDED;
 import static de.rwth.idsg.bikeman.psinterface.exception.PsErrorCode.CONSTRAINT_FAILED;
 
@@ -262,17 +263,33 @@ public class PsiService {
     // -------------------------------------------------------------------------
 
     private void pushToIxsi(PedelecStatusDTO dto) {
-        operationStateService.pushAvailability(dto);
-        operationStateService.pushInavailability(dto);
+        switch (dto.getPedelecState()) {
+            case OPERATIVE:
+                operationStateService.pushPedelecChange(dto.getPedelecManufacturerId(), OPERATIVE);
+                break;
+            case INOPERATIVE:
+                operationStateService.pushPedelecChange(dto.getPedelecManufacturerId(), INOPERATIVE);
+                break;
+            default:
+                throw new RuntimeException("Unexpected state");
+        }
     }
 
     private void pushToIxsi(StationStatusDTO dto) {
-        operationStateService.pushAvailability(dto);
-        operationStateService.pushInavailability(dto);
+        switch (dto.getStationState()) {
+            case OPERATIVE:
+                operationStateService.pushStationChange(dto.getStationManufacturerId(), OPERATIVE);
+                break;
+            case INOPERATIVE:
+                operationStateService.pushStationChange(dto.getStationManufacturerId(), INOPERATIVE);
+                break;
+            default:
+                throw new RuntimeException("Unexpected state");
+        }
     }
 
     private void checkOperationState(CardAccount ca, CustomerAuthorizeDTO dto) {
-        if (OperationState.OPERATIVE.equals(ca.getOperationState())) {
+        if (OPERATIVE.equals(ca.getOperationState())) {
             return;
         }
 
@@ -305,7 +322,7 @@ public class PsiService {
 
         // auth attempts exceeded
         if (exceeded) {
-            ca.setOperationState(OperationState.INOPERATIVE);
+            ca.setOperationState(INOPERATIVE);
 
             log.warn("Card with CardId {} authorization failed (3x wrong pin) with {}", ca.getCardId(), AUTH_ATTEMPTS_EXCEEDED);
             throw new PsException("No trials remaining and account gets disabled", AUTH_ATTEMPTS_EXCEEDED);

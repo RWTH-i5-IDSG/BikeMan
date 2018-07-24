@@ -120,7 +120,7 @@ public class StationService {
         }
 
         stationRepository.update(dto);
-        operationStateService.pushStationChange(dto);
+        operationStateService.pushStationChange(dto.getManufacturerId(), dto.getState());
     }
 
     public void changeSlotState(Long stationId, ChangeStationOperationStateDTO dto) throws DatabaseException {
@@ -134,7 +134,7 @@ public class StationService {
 
         // then, update in DB
         slot.setState(dto.getState());
-        stationSlotRepository.save(slot);
+        slot = stationSlotRepository.save(slot);
 
         operationStateService.pushSlotChange(slot);
     }
