@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
+import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.socket.WebSocketHandler;
@@ -50,6 +51,7 @@ public class HandshakeInterceptor extends HttpSessionHandshakeInterceptor {
 
     private String getSystemID(ServerHttpRequest request) {
         List<String> ipAddressList = getPossibleIpAddresses(request);
+        log.info("ipAddressList for this request: {}", ipAddressList);
 
         for (String ip : ipAddressList) {
             try {
@@ -68,6 +70,7 @@ public class HandshakeInterceptor extends HttpSessionHandshakeInterceptor {
                              .filter(s -> !Strings.isNullOrEmpty(s))
                              .forEach(ipAddressList::add);
 
+        ipAddressList.add(getWithInstanceOf(request));
         ipAddressList.add(getFromRemote(request));
         ipAddressList.add(getFromContext());
 
@@ -81,6 +84,18 @@ public class HandshakeInterceptor extends HttpSessionHandshakeInterceptor {
         } else {
             return strings;
         }
+    }
+
+    private static String getWithInstanceOf(ServerHttpRequest request) {
+        if (request instanceof ServletServerHttpRequest) {
+            ServletServerHttpRequest servletRequest = (ServletServerHttpRequest) request;
+            String ipAddress = servletRequest.getServletRequest().getHeader("X-FORWARDED-FOR");
+            if (ipAddress == null) {
+                ipAddress = servletRequest.getServletRequest().getRemoteAddr();
+            }
+            return ipAddress;
+        }
+        return null;
     }
 
     private static String getFromRemote(ServerHttpRequest request) {
