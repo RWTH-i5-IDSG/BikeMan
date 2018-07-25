@@ -203,8 +203,7 @@ public class OperationStateService {
 
         TimePeriodType timePeriodType = buildTimePeriod();
 
-        pedelecIdList.parallelStream()
-                     .forEach(s -> availabilityPushService.buildAndSend(s, stationManufacturerId, timePeriodType, false));
+        pedelecIdList.forEach(s -> availabilityPushService.buildAndSend(s, stationManufacturerId, timePeriodType, false));
     }
 
     private void pushPedelecAvailability(String stationManufacturerId, List<String> pedelecIdList) {
@@ -214,7 +213,6 @@ public class OperationStateService {
 
         TimePeriodType timePeriodType = buildTimePeriod();
 
-        pedelecIdList.parallelStream()
-                     .forEach(s -> availabilityPushService.buildAndSend(s, stationManufacturerId, timePeriodType, true));
+        pedelecIdList.forEach(s -> availabilityPushService.buildAndSend(s, stationManufacturerId, timePeriodType, true));
     }
 }
