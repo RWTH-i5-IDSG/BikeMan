@@ -16,6 +16,7 @@ import org.springframework.web.socket.server.support.HttpSessionHandshakeInterce
 import javax.servlet.http.HttpServletRequest;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -74,7 +75,12 @@ public class HandshakeInterceptor extends HttpSessionHandshakeInterceptor {
     }
 
     private static List<String> getFromProxy(ServerHttpRequest request) {
-        return request.getHeaders().get("X-FORWARDED-FOR");
+        List<String> strings = request.getHeaders().get("X-FORWARDED-FOR");
+        if (strings == null) {
+            return Collections.emptyList();
+        } else {
+            return strings;
+        }
     }
 
     private static String getFromRemote(ServerHttpRequest request) {
