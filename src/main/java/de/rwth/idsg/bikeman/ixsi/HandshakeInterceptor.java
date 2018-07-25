@@ -16,10 +16,11 @@ import org.springframework.web.socket.server.support.HttpSessionHandshakeInterce
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.InetSocketAddress;
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by max on 08/09/14.
@@ -50,10 +51,10 @@ public class HandshakeInterceptor extends HttpSessionHandshakeInterceptor {
     }
 
     private String getSystemID(ServerHttpRequest request) {
-        List<String> ipAddressList = getPossibleIpAddresses(request);
-        log.info("ipAddressList for this request: {}", ipAddressList);
+        Set<String> ipAddresses = getPossibleIpAddresses(request);
+        log.info("ipAddresses for this request: {}", ipAddresses);
 
-        for (String ip : ipAddressList) {
+        for (String ip : ipAddresses) {
             try {
                 return systemValidator.getSystemID(ip);
             } catch (DatabaseException e) {
@@ -63,8 +64,13 @@ public class HandshakeInterceptor extends HttpSessionHandshakeInterceptor {
         return null;
     }
 
-    private static List<String> getPossibleIpAddresses(ServerHttpRequest request) {
-        List<String> ipAddressList = new ArrayList<>();
+    // -------------------------------------------------------------------------
+    // Since Spring uses many abstractions for different APIs, we try every
+    // possible extraction method there available.
+    // -------------------------------------------------------------------------
+
+    private static Set<String> getPossibleIpAddresses(ServerHttpRequest request) {
+        Set<String> ipAddressList = new HashSet<>();
 
         getFromProxy(request).stream()
                              .filter(s -> !Strings.isNullOrEmpty(s))
@@ -77,12 +83,12 @@ public class HandshakeInterceptor extends HttpSessionHandshakeInterceptor {
         return ipAddressList;
     }
 
-    private static List<String> getFromProxy(ServerHttpRequest request) {
+    private static Set<String> getFromProxy(ServerHttpRequest request) {
         List<String> strings = request.getHeaders().get("X-FORWARDED-FOR");
         if (strings == null) {
-            return Collections.emptyList();
+            return Collections.emptySet();
         } else {
-            return strings;
+            return new HashSet<>(strings);
         }
     }
 
