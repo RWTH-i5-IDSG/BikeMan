@@ -1,5 +1,6 @@
 package de.rwth.idsg.bikeman.ixsi;
 
+import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import de.rwth.idsg.bikeman.config.IxsiConfiguration;
 import de.rwth.idsg.bikeman.ixsi.repository.SystemValidator;
@@ -15,12 +16,14 @@ import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
-import java.net.InetSocketAddress;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by max on 08/09/14.
@@ -28,19 +31,19 @@ import java.util.Set;
 @Slf4j
 @RequiredArgsConstructor
 public class HandshakeInterceptor extends HttpSessionHandshakeInterceptor {
+
+    private static final String X_FORWARDED_HEADER = "X-FORWARDED-FOR";
+    private static final Splitter COMMA_SPLITTER = Splitter.on(',').trimResults();
+
     private final SystemValidator systemValidator;
 
     @Override
     public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response,
                                    WebSocketHandler wsHandler, Map<String, Object> attributes) throws Exception {
         String systemId = getSystemID(request);
-        if (systemId == null) {
-            throw new DatabaseException("This ip address is not allowed for WebSocket communication");
-        } else {
-            // to be be used in future
-            attributes.put(IxsiConfiguration.SYSTEM_ID_KEY, systemId);
-            return super.beforeHandshake(request, response, wsHandler, attributes);
-        }
+        // to be be used in future
+        attributes.put(IxsiConfiguration.SYSTEM_ID_KEY, systemId);
+        return super.beforeHandshake(request, response, wsHandler, attributes);
     }
 
     @Override
@@ -52,7 +55,7 @@ public class HandshakeInterceptor extends HttpSessionHandshakeInterceptor {
 
     private String getSystemID(ServerHttpRequest request) {
         Set<String> ipAddresses = getPossibleIpAddresses(request);
-        log.info("ipAddresses for this request: {}", ipAddresses);
+        log.info("Possible client ip addresses for this WebSocket request: {}", ipAddresses);
 
         for (String ip : ipAddresses) {
             try {
@@ -61,56 +64,60 @@ public class HandshakeInterceptor extends HttpSessionHandshakeInterceptor {
                 // not in db, continue with the next in the list
             }
         }
-        return null;
-    }
 
-    // -------------------------------------------------------------------------
-    // Since Spring uses many abstractions for different APIs, we try every
-    // possible extraction method there available.
-    // -------------------------------------------------------------------------
+        // if we come thus far, we have to decline this WebSocket request
+        throw new DatabaseException("Not allowed for WebSocket communication");
+    }
 
     private static Set<String> getPossibleIpAddresses(ServerHttpRequest request) {
-        Set<String> ipAddressList = new HashSet<>();
+        List<String> ipAddressList = getFromProxy(request);
+        ipAddressList.add(getSingle(request));
 
-        getFromProxy(request).stream()
-                             .filter(s -> !Strings.isNullOrEmpty(s))
-                             .forEach(ipAddressList::add);
-
-        ipAddressList.add(getWithInstanceOf(request));
-        ipAddressList.add(getFromRemote(request));
-        ipAddressList.add(getFromContext());
-
-        return ipAddressList;
+        return ipAddressList.stream()
+                            .filter(s -> !Strings.isNullOrEmpty(s))
+                            .collect(Collectors.toSet());
     }
 
-    private static Set<String> getFromProxy(ServerHttpRequest request) {
-        List<String> strings = request.getHeaders().get("X-FORWARDED-FOR");
-        if (strings == null) {
-            return Collections.emptySet();
-        } else {
-            return new HashSet<>(strings);
+    private static List<String> getFromProxy(ServerHttpRequest request) {
+        return getHeaderValues(request.getHeaders().get(X_FORWARDED_HEADER));
+    }
+
+    /**
+     * Since Spring uses many abstractions with different APIs, we try every possible extraction method there available.
+     */
+    private static String getSingle(ServerHttpRequest request) {
+        String s = request.getRemoteAddress().getAddress().getHostAddress();
+
+        if (s == null) {
+            HttpServletRequest req = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+            s = req.getRemoteAddr();
         }
-    }
 
-    private static String getWithInstanceOf(ServerHttpRequest request) {
-        if (request instanceof ServletServerHttpRequest) {
-            ServletServerHttpRequest servletRequest = (ServletServerHttpRequest) request;
-            String ipAddress = servletRequest.getServletRequest().getHeader("X-FORWARDED-FOR");
-            if (ipAddress == null) {
-                ipAddress = servletRequest.getServletRequest().getRemoteAddr();
-            }
-            return ipAddress;
+        if (s == null && request instanceof ServletServerHttpRequest) {
+            HttpServletRequest req = ((ServletServerHttpRequest) request).getServletRequest();
+            s = req.getRemoteAddr();
         }
-        return null;
+
+        return s;
     }
 
-    private static String getFromRemote(ServerHttpRequest request) {
-        InetSocketAddress inetSocketAddress = request.getRemoteAddress();
-        return inetSocketAddress.getAddress().getHostAddress();
-    }
-
-    private static String getFromContext() {
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-        return request.getRemoteAddr();
+    /**
+     * Because we have to be able to handle both cases:
+     *
+     * 1) Multiple headers with the same key but different values:
+     *      someHeader = value1
+     *      someHeader = value2
+     *
+     * 2) One header with a comma separated list of values:
+     *      someHeader = value1,value2
+     */
+    private static List<String> getHeaderValues(Collection<String> col) {
+        Enumeration<String> valueEnums = Collections.enumeration(col);
+        List<String> valueList = new ArrayList<>();
+        while (valueEnums.hasMoreElements()) {
+            COMMA_SPLITTER.split(valueEnums.nextElement())
+                          .forEach(valueList::add);
+        }
+        return valueList;
     }
 }
