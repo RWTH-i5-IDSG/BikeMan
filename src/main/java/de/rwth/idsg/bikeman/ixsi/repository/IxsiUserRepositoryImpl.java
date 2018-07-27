@@ -110,6 +110,23 @@ public class IxsiUserRepositoryImpl implements IxsiUserRepository {
         }
     }
 
+    @Override
+    public Optional<String> getCustomerId(String cardId) {
+        final String p = "SELECT c.customerId FROM Customer c WHERE c.cardAccount.cardId = :cardId";
+
+        try {
+            List<String> nameResult = em.createQuery(p, String.class)
+                                        .setParameter("cardId", cardId)
+                                        .getResultList();
+
+            return Optional.fromNullable(getSingleFromList(nameResult));
+
+        } catch (Exception e) {
+            log.error("Error occurred", e);
+            return Optional.absent();
+        }
+    }
+
     /**
      * Does the CardAccount exist, at all? And is the pin correct?
      */

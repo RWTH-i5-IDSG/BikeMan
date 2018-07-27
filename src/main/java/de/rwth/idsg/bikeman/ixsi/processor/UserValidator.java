@@ -40,15 +40,20 @@ public class UserValidator {
         }
 
         String userId = userInfo.getUserID();
-        Optional<String> opt = ixsiUserRepository.getMajorCustomerName(userId);
+        Optional<String> majorCustomerName = ixsiUserRepository.getMajorCustomerName(userId);
 
-        if (opt.isPresent() && opt.get().equalsIgnoreCase(MAJOR_CUSTOMER_NAME)) {
+        if (majorCustomerName.isPresent() && majorCustomerName.get().equalsIgnoreCase(MAJOR_CUSTOMER_NAME)) {
             // Everything OK
             return Optional.absent();
-
-        } else {
-            final String msg = "User id '" + userId + "' is invalid";
-            return Optional.of(ErrorFactory.Auth.notAuthorized(msg, msg));
         }
+
+        Optional<String> customerId = ixsiUserRepository.getCustomerId(userId);
+        if (customerId.isPresent()) {
+            // Everything OK
+            return Optional.absent();
+        }
+
+        final String msg = "User id '" + userId + "' is invalid";
+        return Optional.of(ErrorFactory.Auth.notAuthorized(msg, msg));
     }
 }
