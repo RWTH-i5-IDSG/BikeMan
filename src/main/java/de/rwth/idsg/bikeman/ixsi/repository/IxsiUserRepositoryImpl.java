@@ -67,31 +67,6 @@ public class IxsiUserRepositoryImpl implements IxsiUserRepository {
     }
 
     @Override
-    @Transactional(readOnly = false)
-    public boolean validateUserToken(String cardId, String ixsiToken) {
-        final String q = "SELECT t FROM IxsiToken t " +
-                         "WHERE t.tokenValue = :ixsiToken " +
-                         "AND t.cardAccount.cardId = :cardId";
-
-        try {
-            IxsiToken t = em.createQuery(q, IxsiToken.class)
-                            .setParameter("cardId", cardId)
-                            .setParameter("ixsiToken", ixsiToken)
-                            .getSingleResult();
-
-            log.info("IxsiToken: {}", t);
-
-            t.setLastUsed(new Date());
-            em.merge(t);
-            return true;
-
-        } catch (Exception e) {
-            log.error("Error occurred", e);
-            return false;
-        }
-    }
-
-    @Override
     public Optional<String> getMajorCustomerName(String cardId) {
         final String p = "SELECT mj.name FROM MajorCustomer mj " +
                          "WHERE (SELECT ca FROM CardAccount ca WHERE ca.cardId = :cardId) " +

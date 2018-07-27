@@ -9,7 +9,6 @@ import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
  */
 public interface IxsiUserRepository {
     String setUserToken(String login, String password) throws DatabaseException;
-    boolean validateUserToken(String login, String ixsiToken);
     Optional<String> getMajorCustomerName(String cardId);
     Optional<String> getCustomerId(String cardId);
 }
