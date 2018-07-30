@@ -141,7 +141,7 @@ public class QueryIXSIRepositoryImpl implements QueryIXSIRepository {
                 "AND t.endDateTime IS NULL " +
                 "AND t.toSlot IS NULL";
 
-        String statusQuery = "SELECT p FROM Pedelec p WHERE p.manufacturerId IN :idList";
+        String pedelecQuery = "SELECT p FROM Pedelec p WHERE p.manufacturerId IN :idList";
 
         List<String> idList = new ArrayList<>(targets.size());
         for (BookingTargetIDType id : targets) {
@@ -157,7 +157,7 @@ public class QueryIXSIRepositoryImpl implements QueryIXSIRepository {
                                               .setParameter("idList", idList)
                                               .getResultList();
 
-        List<Pedelec> pedelecList = em.createQuery(statusQuery, Pedelec.class)
+        List<Pedelec> pedelecList = em.createQuery(pedelecQuery, Pedelec.class)
                                       .setParameter("idList", idList)
                                       .getResultList();
 
