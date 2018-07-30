@@ -341,7 +341,7 @@ public class QueryIXSIRepositoryImpl implements QueryIXSIRepository {
                         "AND slot.state = 'OPERATIVE' " +
                         "AND slot.is_occupied = FALSE " +
                         "WHERE s.manufacturer_id IN (:placeIds) " +
-                        "GROUP BY s.manufacturer_id"
+                        "GROUP BY s.manufacturer_id, s.state"
         );
 
         q.setParameter("placeIds", placeIdList);
@@ -373,7 +373,7 @@ public class QueryIXSIRepositoryImpl implements QueryIXSIRepository {
                         "WHERE NOT slot.is_occupied AND slot.state = 'OPERATIVE' AND " +
                         "st_dwithin(st_geographyfromtext('POINT( ' || s.location_Latitude || ' ' || s.location_Longitude || ')'), " +
                         "CAST(st_makepoint( :lat, :lon ) as geography), :radius) " +
-                        "GROUP BY s.manufacturer_id");
+                        "GROUP BY s.manufacturer_id, s.state");
 
         q.setParameter("lat", circle.getCenter().getLatitude());
         q.setParameter("lon", circle.getCenter().getLongitude());
@@ -392,7 +392,7 @@ public class QueryIXSIRepositoryImpl implements QueryIXSIRepository {
                         "WHERE NOT slot.is_occupied AND slot.state = 'OPERATIVE' AND " +
                         "st_contains(st_makeenvelope(:lat1, :lon1, :lat2, :lon2, 4326), " +
                         "st_geometryfromtext('POINT( ' || s.location_Latitude || ' ' || s.location_Longitude || ')', 4326)) " +
-                        "GROUP BY s.manufacturer_id");
+                        "GROUP BY s.manufacturer_id, s.state");
 
         q.setParameter("lat1", geoRectangle.getUpperLeft().getLatitude());
         q.setParameter("lon1", geoRectangle.getUpperLeft().getLongitude());
