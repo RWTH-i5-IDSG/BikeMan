@@ -335,7 +335,7 @@ public class QueryIXSIRepositoryImpl implements QueryIXSIRepository {
     @SuppressWarnings("unchecked")
     public List<PlaceAvailabilityResponseDTO> placeAvailability(List<String> placeIdList) {
         Query q = em.createNativeQuery(
-                "SELECT s.manufacturer_id, CAST(count(slot) as Integer) " +
+                "SELECT s.manufacturer_id, s.state, CAST(count(slot) as Integer) " +
                         "FROM t_station s " +
                         "LEFT JOIN t_station_slot slot ON s.station_id = slot.station_id " +
                         "AND slot.state = 'OPERATIVE' " +
@@ -366,11 +366,11 @@ public class QueryIXSIRepositoryImpl implements QueryIXSIRepository {
     @Override
     public List<PlaceAvailabilityResponseDTO> placeAvailability(GeoCircleType circle) {
         Query q = em.createNativeQuery(
-                "SELECT s.manufacturer_id, CAST(count(slot) as Integer) " +
+                "SELECT s.manufacturer_id, s.state, CAST(count(slot) as Integer) " +
                         "FROM t_Station s " +
                         "LEFT JOIN t_Station_slot slot " +
                         "ON slot.station_id = s.station_id " +
-                        "WHERE NOT slot.is_occupied AND " +
+                        "WHERE NOT slot.is_occupied AND slot.state = 'OPERATIVE' AND " +
                         "st_dwithin(st_geographyfromtext('POINT( ' || s.location_Latitude || ' ' || s.location_Longitude || ')'), " +
                         "CAST(st_makepoint( :lat, :lon ) as geography), :radius) " +
                         "GROUP BY s.manufacturer_id");
@@ -385,11 +385,11 @@ public class QueryIXSIRepositoryImpl implements QueryIXSIRepository {
     @Override
     public List<PlaceAvailabilityResponseDTO> placeAvailability(GeoRectangleType geoRectangle) {
         Query q = em.createNativeQuery(
-                "SELECT s.manufacturer_id, CAST(count(slot) as Integer) " +
+                "SELECT s.manufacturer_id, s.state, CAST(count(slot) as Integer) " +
                         "FROM t_station s " +
                         "LEFT JOIN t_station_slot slot " +
                         "ON slot.station_id = s.station_id " +
-                        "WHERE NOT slot.is_occupied AND " +
+                        "WHERE NOT slot.is_occupied AND slot.state = 'OPERATIVE' AND " +
                         "st_contains(st_makeenvelope(:lat1, :lon1, :lat2, :lon2, 4326), " +
                         "st_geometryfromtext('POINT( ' || s.location_Latitude || ' ' || s.location_Longitude || ')', 4326)) " +
                         "GROUP BY s.manufacturer_id");
@@ -408,12 +408,25 @@ public class QueryIXSIRepositoryImpl implements QueryIXSIRepository {
 
         List<Object[]> fooList = q.getResultList();
         for (Object[] row : fooList) {
-            PlaceAvailabilityResponseDTO dto = new PlaceAvailabilityResponseDTO(
-                    (String) row[0],
-                    (Integer) row[1]
-            );
 
-            myList.add(dto);
+            String manufacturerId = (String) row[0];
+            String stationState = (String) row[1];
+
+            OperationState state = OperationState.fromValue(stationState);
+            Integer availableSlotCount;
+            switch (state) {
+                case OPERATIVE:
+                    availableSlotCount = (Integer) row[2];
+                    break;
+                case INOPERATIVE:
+                case DELETED:
+                    availableSlotCount = 0;
+                    break;
+                default:
+                    throw new RuntimeException("Unexpected state");
+            }
+
+            myList.add(new PlaceAvailabilityResponseDTO(manufacturerId, availableSlotCount));
         }
         return myList;
     }
