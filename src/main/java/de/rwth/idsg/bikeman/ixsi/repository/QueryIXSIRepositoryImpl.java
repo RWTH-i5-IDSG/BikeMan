@@ -1,5 +1,9 @@
 package de.rwth.idsg.bikeman.ixsi.repository;
 
+import de.rwth.idsg.bikeman.domain.OperationState;
+import de.rwth.idsg.bikeman.domain.Pedelec;
+import de.rwth.idsg.bikeman.domain.Station;
+import de.rwth.idsg.bikeman.domain.StationSlot;
 import de.rwth.idsg.bikeman.ixsi.IXSIConstants;
 import de.rwth.idsg.bikeman.ixsi.dto.AvailabilityResponseDTO;
 import de.rwth.idsg.bikeman.ixsi.dto.BookingTargetsInfoResponseDTO;
@@ -22,10 +26,13 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static de.rwth.idsg.bikeman.ixsi.IXSIConstants.constructInavailabilityTimePeriod;
 
 /**
  * Created by max on 06/10/14.
@@ -136,14 +143,7 @@ public class QueryIXSIRepositoryImpl implements QueryIXSIRepository {
                                   "AND t.endDateTime IS NULL " +
                                   "AND t.toSlot IS NULL";
 
-        String statusQuery = "SELECT new de.rwth.idsg.bikeman.ixsi.dto." +
-                             "AvailabilityResponseDTO(p.manufacturerId, s.manufacturerId, cs.batteryStateOfCharge) " +
-                             "FROM Pedelec p " +
-                             "JOIN p.chargingStatus cs " +
-                             "LEFT JOIN p.stationSlot.station s " +
-                             "WHERE p.manufacturerId IN :idList " +
-                             "AND p.stationSlot.state = de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE " +
-                             "AND s.state = de.rwth.idsg.bikeman.domain.OperationState.OPERATIVE ";
+        String statusQuery = "SELECT p FROM Pedelec p WHERE p.manufacturerId IN :idList";
 
         List<String> idList = new ArrayList<>(targets.size());
         for (BookingTargetIDType id : targets) {
@@ -159,19 +159,66 @@ public class QueryIXSIRepositoryImpl implements QueryIXSIRepository {
                                               .setParameter("idList", idList)
                                               .getResultList();
 
-        List<AvailabilityResponseDTO> responseList = em.createQuery(statusQuery, AvailabilityResponseDTO.class)
-                                                       .setParameter("idList", idList)
-                                                       .getResultList();
+        List<Pedelec> pedelecList = em.createQuery(statusQuery, Pedelec.class)
+                                      .setParameter("idList", idList)
+                                      .getResultList();
 
         // -------------------------------------------------------------------------
         // 2. Build the object graph
         // -------------------------------------------------------------------------
 
+        List<AvailabilityResponseDTO> responseList = new ArrayList<>();
+
         Map<String, List<TimePeriodType>> inavailabilityMap = merge(toMap(reservList), toMap(transList));
 
-        responseList.forEach(p -> p.setInavailabilities(inavailabilityMap.get(p.getManufacturerId())));
+        for (Pedelec p : pedelecList) {
+            String stationManufacturerId = null;
+            if (p.getStationSlot() != null) {
+                stationManufacturerId = p.getStationSlot().getStation().getManufacturerId();
+            }
+
+            Double stateOfCharge = null;
+            if (p.getChargingStatus() != null) {
+                stateOfCharge = p.getChargingStatus().getBatteryStateOfCharge();
+            }
+
+            AvailabilityResponseDTO dto = new AvailabilityResponseDTO(p.getManufacturerId(), stationManufacturerId, stateOfCharge);
+
+            List<TimePeriodType> inavails = inavailabilityMap.get(p.getManufacturerId());
+
+            if (inavails != null && !inavails.isEmpty()) {
+                dto.setInavailabilities(inavails);
+            } else if (isInoperative(p)) {
+                dto.setInavailabilities(Collections.singletonList(constructInavailabilityTimePeriod()));
+            }
+
+            responseList.add(dto);
+        }
 
         return responseList;
+    }
+
+    private boolean isInoperative(Pedelec pedelec) {
+        StationSlot stationSlot = pedelec.getStationSlot();
+
+        // actually to prevent NPE but also because in this case pedelec is in transaction and therefore has to be operative
+        if (stationSlot == null) {
+            return false;
+        }
+
+        if (pedelec.getState() == OperationState.INOPERATIVE) {
+            return true;
+        }
+
+        if (stationSlot.getState() == OperationState.INOPERATIVE) {
+            return true;
+        }
+
+        if (stationSlot.getStation().getState() == OperationState.INOPERATIVE) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
