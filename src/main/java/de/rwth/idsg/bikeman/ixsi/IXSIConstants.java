@@ -1,5 +1,6 @@
 package de.rwth.idsg.bikeman.ixsi;
 
+import de.rwth.idsg.bikeman.domain.OperationState;
 import org.joda.time.DateTime;
 import xjc.schema.ixsi.ClassType;
 import xjc.schema.ixsi.ConsumptionClassType;
@@ -52,6 +53,9 @@ public final class IXSIConstants {
         return departure.plusHours(6);
     }
 
+    /**
+     * For situations where state is {@link OperationState#INOPERATIVE}
+     */
     public static TimePeriodType constructInavailabilityTimePeriod() {
         DateTime now = DateTime.now();
 
