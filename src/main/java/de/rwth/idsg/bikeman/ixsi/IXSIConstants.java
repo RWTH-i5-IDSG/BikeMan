@@ -5,6 +5,7 @@ import xjc.schema.ixsi.ClassType;
 import xjc.schema.ixsi.ConsumptionClassType;
 import xjc.schema.ixsi.EngineType;
 import xjc.schema.ixsi.Language;
+import xjc.schema.ixsi.TimePeriodType;
 
 import javax.annotation.Nonnull;
 
@@ -49,5 +50,13 @@ public final class IXSIConstants {
      */
     public static DateTime constructReturnDateTime(@Nonnull DateTime departure) {
         return departure.plusHours(6);
+    }
+
+    public static TimePeriodType constructInavailabilityTimePeriod() {
+        DateTime now = DateTime.now();
+
+        return new TimePeriodType()
+                .withBegin(now)
+                .withEnd(now.plusDays(90));
     }
 }

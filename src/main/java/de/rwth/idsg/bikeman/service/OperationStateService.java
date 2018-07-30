@@ -8,7 +8,6 @@ import de.rwth.idsg.bikeman.ixsi.service.AvailabilityPushService;
 import de.rwth.idsg.bikeman.ixsi.service.PlaceAvailabilityPushService;
 import de.rwth.idsg.bikeman.psinterface.Utils;
 import de.rwth.idsg.bikeman.repository.PedelecRepository;
-import org.joda.time.DateTime;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import xjc.schema.ixsi.TimePeriodType;
@@ -16,6 +15,8 @@ import xjc.schema.ixsi.TimePeriodType;
 import javax.inject.Inject;
 import java.util.Collections;
 import java.util.List;
+
+import static de.rwth.idsg.bikeman.ixsi.IXSIConstants.constructInavailabilityTimePeriod;
 
 /**
  * Created by Wolfgang Kluth on 03/09/15.
@@ -182,14 +183,6 @@ public class OperationStateService {
         );
     }
 
-    private TimePeriodType buildTimePeriod() {
-        DateTime now = DateTime.now();
-
-        return new TimePeriodType()
-                .withBegin(now)
-                .withEnd(now.plusDays(90));
-    }
-
     // -------------------------------------------------------------------------
     // Main methods for IXSI calls
     //
@@ -201,7 +194,7 @@ public class OperationStateService {
             return;
         }
 
-        TimePeriodType timePeriodType = buildTimePeriod();
+        TimePeriodType timePeriodType = constructInavailabilityTimePeriod();
 
         pedelecIdList.forEach(s -> availabilityPushService.buildAndSend(s, stationManufacturerId, timePeriodType, false));
     }
@@ -211,7 +204,7 @@ public class OperationStateService {
             return;
         }
 
-        TimePeriodType timePeriodType = buildTimePeriod();
+        TimePeriodType timePeriodType = constructInavailabilityTimePeriod();
 
         pedelecIdList.forEach(s -> availabilityPushService.buildAndSend(s, stationManufacturerId, timePeriodType, true));
     }
