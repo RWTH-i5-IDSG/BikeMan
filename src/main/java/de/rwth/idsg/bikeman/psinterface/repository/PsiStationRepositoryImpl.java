@@ -12,6 +12,7 @@ import de.rwth.idsg.bikeman.psinterface.dto.response.CardReadKeyDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.response.CardWriteKeyDTO;
 import de.rwth.idsg.bikeman.psinterface.exception.PsErrorCode;
 import de.rwth.idsg.bikeman.psinterface.exception.PsException;
+import de.rwth.idsg.bikeman.psinterface.IgnoreUtils;
 import de.rwth.idsg.bikeman.repository.PedelecRepository;
 import de.rwth.idsg.bikeman.utils.ItemIdComparator;
 import de.rwth.idsg.bikeman.web.rest.exception.DatabaseException;
@@ -102,7 +103,7 @@ public class PsiStationRepositoryImpl implements PsiStationRepository {
 
         List<String> updateList = idComparator.getForUpdate();
         List<String> insertList = idComparator.getForInsert();
-        List<String> deleteList = idComparator.getForDelete();
+        List<String> deleteList = IgnoreUtils.getSlotsToDelete(station, idComparator);
 
         // -------------------------------------------------------------------------
         // Update/Insert

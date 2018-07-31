@@ -116,7 +116,7 @@ public class StationService {
         if (station.getState() != dto.getState()) {
             ChangeStationOperationStateDTO changeDTO = new ChangeStationOperationStateDTO();
             changeDTO.setState(dto.getState());
-            stationClient.changeOperationState(station.getEndpointAddress(), changeDTO);
+            stationClient.changeOperationState(station.getEndpointAddress(), changeDTO, station.getManufacturerId());
         }
 
         stationRepository.update(dto);
@@ -130,7 +130,7 @@ public class StationService {
         }
 
         // first, communicate with the station to update status
-        stationClient.changeOperationState(slot.getStation().getEndpointAddress(), dto);
+        stationClient.changeOperationState(slot.getStation().getEndpointAddress(), dto, slot.getStation().getManufacturerId());
 
         // then, update in DB
         slot.setState(dto.getState());
@@ -176,7 +176,7 @@ public class StationService {
 
         // send unlock command to station
         try {
-            stationClient.unlockSlot(slot.getStationSlotPosition(), endpointAddress);
+            stationClient.unlockSlot(slot.getStationSlotPosition(), endpointAddress, slot.getStation().getManufacturerId());
         } catch (PsException e) {
             log.error("Error occured while opening StationSlot with ID: {}", stationSlotId);
         }

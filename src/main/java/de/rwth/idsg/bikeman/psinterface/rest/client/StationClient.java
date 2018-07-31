@@ -3,6 +3,7 @@ package de.rwth.idsg.bikeman.psinterface.rest.client;
 import de.rwth.idsg.bikeman.psinterface.dto.request.CancelReservationDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.RemoteAuthorizeDTO;
 import de.rwth.idsg.bikeman.psinterface.dto.request.ReserveNowDTO;
+import de.rwth.idsg.bikeman.psinterface.IgnoreUtils;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.ChangeStationOperationStateDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.StationConfigurationDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +27,11 @@ public class StationClient extends AbstractClient {
     private static final String UNLOCK_SLOT_PATH = "/unlock/{slotPosition}";
     private static final String CANCEL_AUTHORIZE_PATH = "/authorize/cancel/{slotPosition}";
 
-    public void changeOperationState(String endpointAddress, ChangeStationOperationStateDTO dto) {
+    public void changeOperationState(String endpointAddress, ChangeStationOperationStateDTO dto, String stationManufacturerId) {
+        if (IgnoreUtils.ignoreSlot(stationManufacturerId, dto.getSlotPosition())) {
+            return;
+        }
+
         checkIfValid(endpointAddress);
 
         String uri = endpointAddress + STATE_PATH;
@@ -114,7 +119,11 @@ public class StationClient extends AbstractClient {
         }
     }
 
-    public void unlockSlot(Integer slotPosition, String endpointAddress) {
+    public void unlockSlot(Integer slotPosition, String endpointAddress, String stationManufacturerId) {
+        if (IgnoreUtils.ignoreSlot(stationManufacturerId, slotPosition)) {
+            return;
+        }
+
         checkIfValid(endpointAddress);
 
         String uri = endpointAddress + UNLOCK_SLOT_PATH;

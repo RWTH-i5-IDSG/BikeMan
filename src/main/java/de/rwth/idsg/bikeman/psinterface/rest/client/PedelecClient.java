@@ -1,5 +1,6 @@
 package de.rwth.idsg.bikeman.psinterface.rest.client;
 
+import de.rwth.idsg.bikeman.psinterface.IgnoreUtils;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.ChangePedelecOperationStateDTO;
 import de.rwth.idsg.bikeman.web.rest.dto.modify.PedelecConfigurationDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,10 @@ public class PedelecClient extends AbstractClient {
     private static final String CONFIG_PATH = "/pedelecs/{pedelecManufacturerId}/config";
 
     public void changeOperationState(String endpointAddress, String pedelecManufacturerId, ChangePedelecOperationStateDTO dto) {
+        if (IgnoreUtils.ignorePedelec(pedelecManufacturerId)) {
+            return;
+        }
+
         checkIfValid(endpointAddress);
 
         String uri = endpointAddress + STATE_PATH;
