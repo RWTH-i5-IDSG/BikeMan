@@ -20,8 +20,6 @@ public class UserValidator {
 
     @Autowired private IxsiUserRepository ixsiUserRepository;
 
-    private static final String MAJOR_CUSTOMER_NAME = "ASEAG"; // TODO: get mc-name from anywhere
-
     /**
      * If a check fails, we don't really want to continue and check other fields but exit early.
      * Hence the "return"s.
@@ -42,7 +40,7 @@ public class UserValidator {
         String userId = userInfo.getUserID();
         Optional<String> majorCustomerName = ixsiUserRepository.getMajorCustomerName(userId);
 
-        if (majorCustomerName.isPresent() && majorCustomerName.get().equalsIgnoreCase(MAJOR_CUSTOMER_NAME)) {
+        if (majorCustomerName.isPresent()) {
             // Everything OK
             return Optional.absent();
         }
