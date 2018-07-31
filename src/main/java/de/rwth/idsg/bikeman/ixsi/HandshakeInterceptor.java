@@ -112,12 +112,12 @@ public class HandshakeInterceptor extends HttpSessionHandshakeInterceptor {
      *      someHeader = value1,value2
      */
     private static List<String> getHeaderValues(Collection<String> col) {
+        List<String> valueList = new ArrayList<>();
         if (col == null) {
-            return Collections.emptyList();
+            return valueList;
         }
 
         Enumeration<String> valueEnums = Collections.enumeration(col);
-        List<String> valueList = new ArrayList<>();
         while (valueEnums.hasMoreElements()) {
             COMMA_SPLITTER.split(valueEnums.nextElement())
                           .forEach(valueList::add);
